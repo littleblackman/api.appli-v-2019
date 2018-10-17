@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
+use App\Entity\Traits\SuppressionTrait;
 
 /**
  * Person
@@ -16,6 +17,7 @@ use App\Entity\Traits\CreationTrait;
 class Person
 {
     use CreationTrait;
+    use SuppressionTrait;
 
     /**
      * @var int

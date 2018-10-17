@@ -74,11 +74,13 @@ class PersonController extends AbstractController
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "POST"})
      */
-    public function modify(Person $person)
+    public function modify(Request $request, Person $person)
     {
         $this->denyAccessUnlessGranted('personModify', $person);
-dd('here');
-        return new JsonResponse(array());
+
+        $modifiedData = $this->personService->modify($person, $request->query);
+
+        return new JsonResponse($modifiedData);
     }
 
 //DELETE
@@ -90,12 +92,14 @@ dd('here');
      * @Route("/person/delete/{id}",
      *    name="person_delete",
      *    requirements={"id": "^([0-9]+)"},
-     *    methods={"HEAD", "POST"})
+     *    methods={"HEAD", "DELETE"})
      */
     public function delete(Person $person)
     {
         $this->denyAccessUnlessGranted('personDelete', $person);
-dd('here');
-        return new JsonResponse(array());
+
+        $suppressedData = $this->personService->delete($person);
+
+        return new JsonResponse($suppressedData);
     }
 }

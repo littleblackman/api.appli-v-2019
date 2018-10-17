@@ -74,11 +74,13 @@ class ChildController extends AbstractController
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "POST"})
      */
-    public function modify(Child $child)
+    public function modify(Request $request, Child $child)
     {
         $this->denyAccessUnlessGranted('childModify', $child);
-dd('here');
-        return new JsonResponse(array());
+
+        $modifiedData = $this->childService->modify($child, $request->query);
+
+        return new JsonResponse($modifiedData);
     }
 
 //DELETE
@@ -90,12 +92,14 @@ dd('here');
      * @Route("/child/delete/{id}",
      *    name="child_delete",
      *    requirements={"id": "^([0-9]+)"},
-     *    methods={"HEAD", "POST"})
+     *    methods={"HEAD", "DELETE"})
      */
     public function delete(Child $child)
     {
         $this->denyAccessUnlessGranted('childDelete', $child);
-dd('here');
-        return new JsonResponse(array());
+
+        $suppressedData = $this->childService->delete($child);
+
+        return new JsonResponse($suppressedData);
     }
 }

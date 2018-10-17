@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.2
+- Ajout des champs "suppressed", "SuppressedAt", "suppressedBy" (17/10/2018)
+- Ajout getters et setters manquants pour creationTrait (17/10/2018)
+- Ajout des possibilités de modification/suppression Child et Person (17/10/2018)
+
 v0.1.1
 - Ajout des champs "createdAt", "updatedAt", "createdBy" et "updatedBy" (17/10/2018)
 
