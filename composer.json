@@ -10,6 +10,7 @@
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/apache-pack": "^1.0",
         "symfony/console": "*",
+        "symfony/dotenv": "*",
         "symfony/expression-language": "*",
         "symfony/flex": "^1.1",
         "symfony/form": "*",
@@ -27,7 +28,6 @@
     "require-dev": {
         "sensiolabs/security-checker": "^5.0",
         "symfony/debug-pack": "^1.0",
-        "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.7",
         "symfony/profiler-pack": "^1.0",
         "symfony/var-dumper": "*"

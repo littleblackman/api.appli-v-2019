@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.3.1
+- Ajout données manquantes (20/10/2018)
+
 v0.3
 - Ajout de la gestion des utilisateurs (20/10/2018)
 - Ajout de la création des Child + Person (20/10/2018)
