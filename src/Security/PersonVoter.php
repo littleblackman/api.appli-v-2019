@@ -2,25 +2,40 @@
 
 namespace App\Security;
 
-use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use App\Entity\Person;
 
 class PersonVoter extends Voter
 {
+    /**
+     * Stores AccessDecisionManagerInterface
+     * @var AccessDecisionManagerInterface
+     */
+    private $decisionManager;
+
+    public const PERSON_CREATE = 'personCreate';
     public const PERSON_DELETE = 'personDelete';
     public const PERSON_DISPLAY = 'personDisplay';
     public const PERSON_LIST = 'personList';
     public const PERSON_MODIFY = 'personModify';
 
     private const ATTRIBUTES = array(
+        self::PERSON_CREATE,
         self::PERSON_DELETE,
         self::PERSON_DISPLAY,
         self::PERSON_LIST,
         self::PERSON_MODIFY,
     );
+
+    public function __construct(
+        AccessDecisionManagerInterface $decisionManager
+    )
+    {
+        $this->decisionManager = $decisionManager;
+    }
 
     protected function supports($attribute, $subject)
     {
@@ -35,11 +50,13 @@ class PersonVoter extends Voter
     {
         //Defines access rights
         switch ($attribute) {
+            case self::PERSON_CREATE:
+                return $this->decisionManager->decide($token, array('ROLE_USER'));
+                break;
             case self::PERSON_DELETE:
             case self::PERSON_DISPLAY:
-            case self::PERSON_LIST:
             case self::PERSON_MODIFY:
-//TODO basé sur same origin
+            case self::PERSON_LIST:
 return true;
                 break;
         }

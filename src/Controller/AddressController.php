@@ -36,6 +36,26 @@ class AddressController extends AbstractController
         return new JsonResponse($address->toArray());
     }
 
+//CREATE
+    /**
+     * Creates ana ddress "/address/create"
+     * @return JsonResponse
+     * @throws AccessDeniedException
+     *
+     * @Route("/address/create",
+     *    name="address_create",
+     *    methods={"HEAD", "POST"})
+     */
+    public function create(Request $request)
+    {
+        $address = new Address();
+        $this->denyAccessUnlessGranted('addressCreate', $address);
+
+        $createdData = $this->personService->create($address, $request->query);
+
+        return new JsonResponse($createdData);
+    }
+
 //MODIFY
     /**
      * Modifiy specific address using "/address/modify/{id}"
@@ -50,8 +70,10 @@ class AddressController extends AbstractController
     public function modify(Address $address)
     {
         $this->denyAccessUnlessGranted('addressModify', $address);
-dd('here');
-        return new JsonResponse(array());
+
+        $modifiedData = $this->addressService->create($address, $request->query);
+
+        return new JsonResponse($modifiedData);
     }
 
 //DELETE
@@ -68,7 +90,9 @@ dd('here');
     public function delete(Address $address)
     {
         $this->denyAccessUnlessGranted('addressDelete', $address);
-dd('here');
-        return new JsonResponse(array());
+
+        $suppressedData = $this->addressService->create($address, $request->query);
+
+        return new JsonResponse($suppressedData);
     }
 }

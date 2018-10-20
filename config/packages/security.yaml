@@ -1,24 +1,42 @@
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    encoders:
+        c975L\UserBundle\Entity\UserLight: bcrypt
+    role_hierarchy:
+        ROLE_MODERATOR: 'ROLE_USER'
+        ROLE_ADMIN: [ROLE_MODERATOR, ROLE_USER]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER]
     providers:
-        in_memory: { memory: ~ }
+        c975_l_userbundle:
+            entity:
+                class: c975L\UserBundle\Entity\UserLight
+    access_decision_manager:
+        strategy: unanimous
+        allow_if_all_abstain: true
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            pattern: ^/
+            provider: c975_l_userbundle
+            form_login:
+                login_path: user_signin
+                check_path: user_signin
+                default_target_path: user_dashboard
+                csrf_token_generator: security.csrf.token_manager
+            json_login:
+                check_path: user_api_authenticate
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 31536000
+                path: /
+                secure: true
             anonymous: true
-
-            # activate different ways to authenticate
-
-            # http_basic: true
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+            logout_on_user_change: true
+            logout:
+                path: user_signout
+                handlers: [c975L\UserBundle\Listener\LogoutListener]
+            guard:
+                authenticators:
+                    - c975L\UserBundle\Security\TokenAuthenticator
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }

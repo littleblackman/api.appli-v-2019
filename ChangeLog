@@ -1,5 +1,12 @@
 ChangeLog
 
+v0.3
+- Ajout de la gestion des utilisateurs (20/10/2018)
+- Ajout de la création des Child + Person (20/10/2018)
+- Ajout de la création/modification/suppression des adresses (20/10/2018)
+- Ajout de l'id de la personne modifiant/supprimant Child + Person (20/10/2018)
+- Ajout de la gestion des accès aux données par les Voter (20/10/2018)
+
 v0.2
 - Ajout des champs "suppressed", "SuppressedAt", "suppressedBy" (17/10/2018)
 - Ajout getters et setters manquants pour creationTrait (17/10/2018)

@@ -4,16 +4,59 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use App\Entity\Child;
 use App\Service\ChildServiceInterface;
 
 class ChildService implements ChildServiceInterface
 {
     private $em;
+    private $user;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(
+        EntityManagerInterface $em,
+        TokenStorageInterface $tokenStorage
+    )
     {
         $this->em = $em;
+        $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create(Child $child, ParameterBag $parameters)
+    {
+        if (null !== $parameters->get('firstname') && null !== $parameters->get('lastname')) {
+            $create = $this->hydrate($child, $parameters);
+
+            //Child created
+            if (!is_array($create)) {
+                $child
+                    ->setCreatedAt(new \DateTime())
+                    ->setCreatedBy($this->user->getId())
+                    ->setSuppressed(false)
+                ;
+
+                //Persists in DB
+                $this->em->persist($child);
+                $this->em->flush();
+
+                $message = 'Enfant ajouté';
+            //Child NOT created
+            } else {
+                $message = 'Erreur ! => ' . key($create) . ' : ' . current($create);
+            }
+
+            //Returns data
+            return array(
+                'status' => $create,
+                'message' => $message,
+                'child' => $child->toArray(),
+            );
+        }
+
+        return false;
     }
 
     /**
@@ -24,7 +67,7 @@ class ChildService implements ChildServiceInterface
         $child
             ->setSuppressed(true)
             ->setSuppressedAt(new \DateTime())
-->setSuppressedBy(1)
+            ->setSuppressedBy($this->user->getId())
         ;
 
         //Persists in DB
@@ -76,7 +119,7 @@ class ChildService implements ChildServiceInterface
         if (!is_array($modify)) {
             $child
                 ->setUpdatedAt(new \DateTime())
-->setUpdatedBy(1)
+                ->setUpdatedBy($this->user->getId())
             ;
 
             //Persists in DB

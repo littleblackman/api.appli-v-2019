@@ -8,6 +8,12 @@ use App\Entity\Child;
 interface ChildServiceInterface
 {
     /**
+     * Creates the child
+     * @return array
+     */
+    public function create(Child $child, ParameterBag $parameters);
+
+    /**
      * Marks the child as deleted
      * @return array
      */

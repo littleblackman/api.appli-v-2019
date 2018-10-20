@@ -45,6 +45,26 @@ class PersonController extends AbstractController
         return new JsonResponse($persons->getItems());
     }
 
+//CREATE
+    /**
+     * Creates a person "/person/create"
+     * @return JsonResponse
+     * @throws AccessDeniedException
+     *
+     * @Route("/person/create",
+     *    name="person_create",
+     *    methods={"HEAD", "POST"})
+     */
+    public function create(Request $request)
+    {
+        $person = new Person();
+        $this->denyAccessUnlessGranted('personCreate', $person);
+
+        $createdData = $this->personService->create($person, $request->query);
+
+        return new JsonResponse($createdData);
+    }
+
 //DISPLAY
     /**
      * Specific person using "/person/display/{id}"

@@ -14,4 +14,11 @@ return [
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true, 'test' => true],
+    Misd\PhoneNumberBundle\MisdPhoneNumberBundle::class => ['all' => true],
+    c975L\ToolbarBundle\c975LToolbarBundle::class => ['all' => true],
+    c975L\ServicesBundle\c975LServicesBundle::class => ['all' => true],
+    c975L\IncludeLibraryBundle\c975LIncludeLibraryBundle::class => ['all' => true],
+    c975L\ConfigBundle\c975LConfigBundle::class => ['all' => true],
+    c975L\EmailBundle\c975LEmailBundle::class => ['all' => true],
+    c975L\UserBundle\c975LUserBundle::class => ['all' => true],
 ];

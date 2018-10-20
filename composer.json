@@ -5,12 +5,14 @@
         "php": "^7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "c975l/user-bundle": "^2.0",
         "knplabs/knp-paginator-bundle": "^2.8",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/apache-pack": "^1.0",
         "symfony/console": "*",
         "symfony/expression-language": "*",
         "symfony/flex": "^1.1",
+        "symfony/form": "*",
         "symfony/framework-bundle": "*",
         "symfony/orm-pack": "^1.0",
         "symfony/property-access": "*",
@@ -18,7 +20,9 @@
         "symfony/security-bundle": "*",
         "symfony/swiftmailer-bundle": "^3.2",
         "symfony/translation": "*",
-        "symfony/yaml": "*"
+        "symfony/validator": "*",
+        "symfony/yaml": "*",
+        "twig/extensions": "^1.5"
     },
     "require-dev": {
         "sensiolabs/security-checker": "^5.0",

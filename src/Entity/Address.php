@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\CreationTrait;
+use App\Entity\Traits\SuppressionTrait;
 
 /**
  * Address
@@ -12,6 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Address
 {
+    use CreationTrait;
+    use SuppressionTrait;
+
     /**
      * @var int
      *

@@ -45,6 +45,26 @@ class ChildController extends AbstractController
         return new JsonResponse($children->getItems());
     }
 
+//CREATE
+    /**
+     * Creates a child "/child/create"
+     * @return JsonResponse
+     * @throws AccessDeniedException
+     *
+     * @Route("/child/create",
+     *    name="child_create",
+     *    methods={"HEAD", "POST"})
+     */
+    public function create(Request $request)
+    {
+        $child = new Child();
+        $this->denyAccessUnlessGranted('childCreate', $child);
+
+        $createdData = $this->childService->create($child, $request->query);
+
+        return new JsonResponse($createdData);
+    }
+
 //DISPLAY
     /**
      * Specific child using "/child/display/{id}"
@@ -56,7 +76,7 @@ class ChildController extends AbstractController
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "GET"})
      */
-    public function display(Child $child)
+    public function display(Request $request, Child $child)
     {
         $this->denyAccessUnlessGranted('childDisplay', $child);
 

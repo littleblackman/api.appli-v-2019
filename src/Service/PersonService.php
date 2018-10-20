@@ -4,16 +4,59 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use App\Entity\Person;
 use App\Service\PersonServiceInterface;
 
 class PersonService implements PersonServiceInterface
 {
     private $em;
+    private $user;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(
+        EntityManagerInterface $em,
+        TokenStorageInterface $tokenStorage
+    )
     {
         $this->em = $em;
+        $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create(Person $person, ParameterBag $parameters)
+    {
+        if (null !== $parameters->get('firstname') && null !== $parameters->get('lastname')) {
+            $create = $this->hydrate($person, $parameters);
+
+            //Person created
+            if (!is_array($create)) {
+                $person
+                    ->setCreatedAt(new \DateTime())
+                    ->setCreatedBy($this->user->getId())
+                    ->setSuppressed(false)
+                ;
+
+                //Persists in DB
+                $this->em->persist($person);
+                $this->em->flush();
+
+                $message = 'Personne ajoutée';
+            //Person NOT created
+            } else {
+                $message = 'Erreur ! => ' . key($create) . ' : ' . current($create);
+            }
+
+            //Returns data
+            return array(
+                'status' => $create,
+                'message' => $message,
+                'person' => $person->toArray(),
+            );
+        }
+
+        return false;
     }
 
     /**
@@ -24,7 +67,7 @@ class PersonService implements PersonServiceInterface
         $person
             ->setSuppressed(true)
             ->setSuppressedAt(new \DateTime())
-->setSuppressedBy(1)
+            ->setSuppressedBy($this->user->getId())
         ;
 
         //Persists in DB
@@ -76,7 +119,7 @@ class PersonService implements PersonServiceInterface
         if (!is_array($modify)) {
             $person
                 ->setUpdatedAt(new \DateTime())
-->setUpdatedBy(1)
+                ->setUpdatedBy($this->user->getId())
             ;
 
             //Persists in DB
