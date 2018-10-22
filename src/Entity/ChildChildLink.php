@@ -22,7 +22,7 @@ class ChildChildLink
     private $childChildLinkId;
 
     /**
-     * @var \Child
+     * @var App\Entity\Child
      *
      * @ORM\ManyToOne(targetEntity="Child")
      * @ORM\JoinColumns({
@@ -32,7 +32,7 @@ class ChildChildLink
     private $child;
 
     /**
-     * @var \Child
+     * @var App\Entity\Child
      *
      * @ORM\ManyToOne(targetEntity="Child")
      * @ORM\JoinColumns({

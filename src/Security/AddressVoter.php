@@ -3,18 +3,18 @@
 namespace App\Security;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use App\Entity\Address;
 
 class AddressVoter extends Voter
 {
     /**
-     * Stores AccessDecisionManagerInterface
-     * @var AccessDecisionManagerInterface
+     * Stores Security
+     * @var Security
      */
-    private $decisionManager;
+    private $security;
 
     public const ADDRESS_CREATE = 'addressCreate';
     public const ADDRESS_DELETE = 'addressDelete';
@@ -30,11 +30,9 @@ class AddressVoter extends Voter
         self::ADDRESS_MODIFY,
     );
 
-    public function __construct(
-        AccessDecisionManagerInterface $decisionManager
-    )
+    public function __construct(Security $security)
     {
-        $this->decisionManager = $decisionManager;
+        $this->security = $security;
     }
 
     protected function supports($attribute, $subject)
@@ -51,7 +49,7 @@ class AddressVoter extends Voter
         //Defines access rights
         switch ($attribute) {
             case self::ADDRESS_CREATE:
-                return $this->decisionManager->decide($token, array('ROLE_USER'));
+                return $this->security->isGranted('ROLE_USER');
                 break;
             case self::ADDRESS_DELETE:
             case self::ADDRESS_DISPLAY:

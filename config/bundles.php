@@ -21,4 +21,5 @@ return [
     c975L\ConfigBundle\c975LConfigBundle::class => ['all' => true],
     c975L\EmailBundle\c975LEmailBundle::class => ['all' => true],
     c975L\UserBundle\c975LUserBundle::class => ['all' => true],
+    Nelmio\CorsBundle\NelmioCorsBundle::class => ['all' => true],
 ];

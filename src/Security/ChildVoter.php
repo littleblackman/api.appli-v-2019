@@ -3,18 +3,18 @@
 namespace App\Security;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use App\Entity\Child;
 
 class ChildVoter extends Voter
 {
     /**
-     * Stores AccessDecisionManagerInterface
-     * @var AccessDecisionManagerInterface
+     * Stores Security
+     * @var Security
      */
-    private $decisionManager;
+    private $security;
 
     public const CHILD_CREATE = 'childCreate';
     public const CHILD_DELETE = 'childDelete';
@@ -30,11 +30,9 @@ class ChildVoter extends Voter
         self::CHILD_MODIFY,
     );
 
-    public function __construct(
-        AccessDecisionManagerInterface $decisionManager
-    )
+    public function __construct(Security $security)
     {
-        $this->decisionManager = $decisionManager;
+        $this->security = $security;
     }
 
     protected function supports($attribute, $subject)
@@ -51,10 +49,10 @@ class ChildVoter extends Voter
         //Defines access rights
         switch ($attribute) {
             case self::CHILD_CREATE:
-                return $this->decisionManager->decide($token, array('ROLE_USER'));
+                return $this->security->isGranted('ROLE_USER');
                 break;
             case self::CHILD_DISPLAY:
-                return $this->isAllowedDisplay($token);
+                return $this->isAllowedDisplay($token, $subject);
                 break;
             case self::CHILD_DELETE:
             case self::CHILD_MODIFY:
@@ -67,18 +65,59 @@ class ChildVoter extends Voter
         throw new \LogicException('Invalid attribute: ' . $attribute);
     }
 
-    private function isAdmin($token)
+    /**
+     * Checks if is allowed to display
+     */
+    private function isAllowedDisplay($token, $subject)
     {
-        return $this->decisionManager->decide($token, array('ROLE_ADMIN'));
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ADMIN',
+            'ROLE_BACKOFFICE',
+            'ROLE_COACH',
+            'ROLE_DRIVER',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return $this->isLinked($token, $subject);
     }
 
-    private function isAllowedDisplay($token)
-    {
-        return $this->decisionManager->decide($token, array('ROLE_ADMIN', 'ROLE_BACKOFFICE', 'ROLE_COACH', 'ROLE_DRIVER'));
-    }
-
+    /**
+     * Checks if is allowed to modify/delete
+     */
     private function isAllowedModify($token, $subject)
     {
-        return $this->isAdmin($token);
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return $this->isLinked($token, $subject);
+    }
+
+    /**
+     * Checks if child is linked to the user
+     */
+    public function isLinked($token, $subject)
+    {
+        $personId = $token->getUser()->getUserPersonLink()->getPerson()->getPersonId();
+        foreach ($subject->getPersons() as $person) {
+            if ($person->getPerson()->getPersonId() === $personId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

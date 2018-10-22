@@ -6,7 +6,7 @@ c975LUser:
     signinAttempts: 5
     touUrl: 'conditions-utilisation'
     avatar: false
-    entity: c975L\UserBundle\Entity\UserLight
+    entity: App\Entity\User
     social: false
     address: false
     business: false

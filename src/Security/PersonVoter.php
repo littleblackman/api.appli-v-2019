@@ -3,18 +3,18 @@
 namespace App\Security;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use App\Entity\Person;
 
 class PersonVoter extends Voter
 {
     /**
-     * Stores AccessDecisionManagerInterface
-     * @var AccessDecisionManagerInterface
+     * Stores Security
+     * @var Security
      */
-    private $decisionManager;
+    private $security;
 
     public const PERSON_CREATE = 'personCreate';
     public const PERSON_DELETE = 'personDelete';
@@ -30,11 +30,9 @@ class PersonVoter extends Voter
         self::PERSON_MODIFY,
     );
 
-    public function __construct(
-        AccessDecisionManagerInterface $decisionManager
-    )
+    public function __construct(Security $security)
     {
-        $this->decisionManager = $decisionManager;
+        $this->security = $security;
     }
 
     protected function supports($attribute, $subject)
@@ -51,7 +49,7 @@ class PersonVoter extends Voter
         //Defines access rights
         switch ($attribute) {
             case self::PERSON_CREATE:
-                return $this->decisionManager->decide($token, array('ROLE_USER'));
+                return $this->security->isGranted('ROLE_USER');
                 break;
             case self::PERSON_DELETE:
             case self::PERSON_DISPLAY:

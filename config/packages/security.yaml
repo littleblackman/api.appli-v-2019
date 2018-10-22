@@ -1,6 +1,6 @@
 security:
     encoders:
-        c975L\UserBundle\Entity\UserLight: bcrypt
+        App\Entity\User: bcrypt
     role_hierarchy:
         ROLE_MODERATOR: 'ROLE_USER'
         ROLE_ADMIN: [ROLE_MODERATOR, ROLE_USER]
@@ -8,7 +8,7 @@ security:
     providers:
         c975_l_userbundle:
             entity:
-                class: c975L\UserBundle\Entity\UserLight
+                class: App\Entity\User
     access_decision_manager:
         strategy: unanimous
         allow_if_all_abstain: true

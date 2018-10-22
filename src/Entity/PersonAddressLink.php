@@ -22,7 +22,7 @@ class PersonAddressLink
     private $personAddressLinkId;
 
     /**
-     * @var \Address
+     * @var App\Entity\Address
      *
      * @ORM\ManyToOne(targetEntity="Address")
      * @ORM\JoinColumns({
@@ -32,7 +32,7 @@ class PersonAddressLink
     private $address;
 
     /**
-     * @var \Person
+     * @var App\Entity\Person
      *
      * @ORM\ManyToOne(targetEntity="Person")
      * @ORM\JoinColumns({
