@@ -111,13 +111,15 @@ class ChildVoter extends Voter
      */
     public function isLinked($token, $subject)
     {
-        $personId = $token->getUser()->getUserPersonLink()->getPerson()->getPersonId();
-        foreach ($subject->getPersons() as $person) {
-            if ($person->getPerson()->getPersonId() === $personId) {
-                return true;
+        if (null !== $token->getUser()->getUserPersonLink()) {
+            $personId = $token->getUser()->getUserPersonLink()->getPerson()->getPersonId();
+            foreach ($subject->getPersons() as $person) {
+                if ($person->getPerson()->getPersonId() === $personId) {
+                    return true;
+                }
             }
-        }
 
-        return false;
+            return false;
+        }
     }
 }

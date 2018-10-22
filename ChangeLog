@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.4.1
+- Correction ChildVoter si personne n'est lié à l'enfant (22/10/2018)
+
 v0.4
 - Remplacement de `AccessDecisionManagerInterface` par `Security` (22/10/2018)
 - Ajout de la gestion des droits pour les Child (22/10/2018)
