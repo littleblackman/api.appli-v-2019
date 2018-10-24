@@ -263,16 +263,16 @@
         },
         {
             "name": "c975l/user-bundle",
-            "version": "v2.1",
+            "version": "v2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/UserBundle.git",
-                "reference": "4cf61394c13803a7f6c13b24ff484d2592d80c2d"
+                "reference": "8b6c99a1df1d9ebbcf6150b86ba3549a773c2700"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/UserBundle/zipball/4cf61394c13803a7f6c13b24ff484d2592d80c2d",
-                "reference": "4cf61394c13803a7f6c13b24ff484d2592d80c2d",
+                "url": "https://api.github.com/repos/975L/UserBundle/zipball/8b6c99a1df1d9ebbcf6150b86ba3549a773c2700",
+                "reference": "8b6c99a1df1d9ebbcf6150b86ba3549a773c2700",
                 "shasum": ""
             },
             "require": {
@@ -316,7 +316,7 @@
                 "symfony",
                 "user"
             ],
-            "time": "2018-10-20T19:08:59+00:00"
+            "time": "2018-10-23T21:10:02+00:00"
         },
         {
             "name": "doctrine/annotations",

@@ -46,19 +46,20 @@ class ChildVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
+#Supprimer lorsque la gestion des droits sera ok (24/10/2018)
+return true;
         //Defines access rights
         switch ($attribute) {
             case self::CHILD_CREATE:
                 return $this->security->isGranted('ROLE_USER');
                 break;
+            case self::CHILD_LIST:
             case self::CHILD_DISPLAY:
                 return $this->isAllowedDisplay($token, $subject);
                 break;
             case self::CHILD_DELETE:
             case self::CHILD_MODIFY:
                 return $this->isAllowedModify($token, $subject);
-                break;
-            case self::CHILD_LIST:
                 break;
         }
 

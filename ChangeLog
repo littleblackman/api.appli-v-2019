@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.4.2
+- Suppression de l'utilisation des voters en attendant la gestion des CORS (24/10/2018)
+
 v0.4.1
 - Correction ChildVoter si personne n'est lié à l'enfant (22/10/2018)
 

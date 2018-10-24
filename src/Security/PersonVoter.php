@@ -46,6 +46,8 @@ class PersonVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
+#Supprimer lorsque la gestion des droits sera ok (24/10/2018)
+return true;
         //Defines access rights
         switch ($attribute) {
             case self::PERSON_CREATE:
