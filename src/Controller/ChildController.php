@@ -45,6 +45,27 @@ class ChildController extends AbstractController
         return new JsonResponse($children->getItems());
     }
 
+//SEARCH
+    /**
+     * Search within database "/child/search/{term}"
+     * Optionnal: size(int) Number of records
+     * @return JsonResponse
+     * @throws AccessDeniedException
+     *
+     * @Route("/child/search/{term}",
+     *    name="child_search",
+     *    requirements={"term": "^([a-zA-Z]+)"},
+     *    methods={"HEAD", "GET"})
+     */
+    public function search(Request $request, string $term)
+    {
+        $this->denyAccessUnlessGranted('childSearch', false);
+
+        $searchData = $this->childService->search($term, $request->query->getInt('size', 50));
+
+        return new JsonResponse($searchData);
+    }
+
 //CREATE
     /**
      * Creates a child "/child/create"
@@ -80,7 +101,9 @@ class ChildController extends AbstractController
     {
         $this->denyAccessUnlessGranted('childDisplay', $child);
 
-        return new JsonResponse($child->toArray());
+        $childArray = $this->childService->filter($child->toArray());
+
+        return new JsonResponse($childArray);
     }
 
 //MODIFY

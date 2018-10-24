@@ -5,20 +5,28 @@ namespace App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 use App\Entity\Person;
+use App\Service\AddressServiceInterface;
 use App\Service\PersonServiceInterface;
 
 class PersonService implements PersonServiceInterface
 {
+    private $addressService;
     private $em;
+    private $security;
     private $user;
 
     public function __construct(
+        AddressServiceInterface $addressService,
         EntityManagerInterface $em,
+        Security $security,
         TokenStorageInterface $tokenStorage
     )
     {
+        $this->addressService = $addressService;
         $this->em = $em;
+        $this->security = $security;
         $this->user = $tokenStorage->getToken()->getUser();
     }
 
@@ -52,7 +60,7 @@ class PersonService implements PersonServiceInterface
             return array(
                 'status' => $create,
                 'message' => $message,
-                'person' => $person->toArray(),
+                'person' => $this->filter($person->toArray()),
             );
         }
 
@@ -78,6 +86,50 @@ class PersonService implements PersonServiceInterface
             'status' => true,
             'message' => 'Personne supprimée',
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function filter(array $personArray)
+    {
+        //Global data
+        $globalData = array(
+            '__initializer__',
+            '__cloner__',
+            '__isInitialized__',
+        );
+
+        //User's role linked data
+        $specificData = array();
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            $specificData = array_merge(
+                $specificData,
+                array(
+                    'createdAt',
+                    'createdBy',
+                    'updatedAt',
+                    'updatedBy',
+                    'suppressed',
+                    'suppressedAt',
+                    'suppressedBy',
+                )
+            );
+        }
+        foreach (array_merge($globalData, $specificData) as $unsetData) {
+            unset($personArray[$unsetData]);
+        }
+
+        //Filters addresses
+        if (isset($personArray['addresses']) && is_array($personArray['addresses'])) {
+            $addresses = array();
+            foreach ($personArray['addresses'] as $key => $value) {
+                $addresses[] = $this->addressService->filter($value);
+            }
+            $personArray['addresses'] = $addresses;
+        }
+
+        return $personArray;
     }
 
     /**
@@ -136,7 +188,25 @@ class PersonService implements PersonServiceInterface
         return array(
             'status' => $modify,
             'message' => $message,
-            'person' => $person->toArray(),
+            'person' => $this->filter($person->toArray()),
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function search(string $term, int $size)
+    {
+        $persons = $this->em
+            ->getRepository('App:Person')
+            ->search($term, $size)
+        ;
+
+        $searchData = array();
+        foreach ($persons as $person) {
+            $searchData[] = $this->filter($person->toArray());
+        }
+
+        return $searchData;
     }
 }

@@ -69,6 +69,4 @@ class PersonAddressLink
 
         return $this;
     }
-
-
 }

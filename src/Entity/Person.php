@@ -47,29 +47,44 @@ class Person
      */
     private $addresses;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ChildPersonLink", mappedBy="person")
+     */
+    private $children;
+
     public function __construct()
     {
-        $this->persons = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     /**
      * Converts the entity in an array
      */
-    public function toArray()
+    public function toArray($getAddresses = true, $getChildren = true)
     {
-        $person = get_object_vars($this);
-        unset($person['__initializer__']);
-        unset($person['__cloner__']);
-        unset($person['__isInitialized__']);
+        $personArray = get_object_vars($this);
 
         //Gets related addresses
-        $addresses = array();
-        foreach($this->getAddresses()->toArray() as $address) {
-            $addresses[] = $address->getAddress()->toArray();
+        if ($getAddresses) {
+            $addresses = array();
+            foreach($this->getAddresses()->toArray() as $address) {
+                $addresses[] = $address->getAddress()->toArray();
+            }
+            $personArray['addresses'] = $addresses;
         }
-        $person['addresses'] = $addresses;
 
-        return $person;
+        //Gets related children
+        if ($getChildren) {
+            $children = array();
+            foreach($this->getChildren()->toArray() as $child) {
+                $children[] = array(
+                    'childId' => $child->getChild()->getChildId(),
+                );
+            }
+            $personArray['children'] = $children;
+        }
+
+        return $personArray;
     }
 
     public function getPersonId(): ?int
@@ -104,5 +119,10 @@ class Person
     public function getAddresses(): Collection
     {
         return $this->addresses;
+    }
+
+    public function getChildren(): Collection
+    {
+        return $this->children;
     }
 }

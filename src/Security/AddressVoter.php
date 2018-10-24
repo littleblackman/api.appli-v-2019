@@ -53,14 +53,74 @@ return true;
             case self::ADDRESS_CREATE:
                 return $this->security->isGranted('ROLE_USER');
                 break;
-            case self::ADDRESS_DELETE:
             case self::ADDRESS_DISPLAY:
-            case self::ADDRESS_MODIFY:
             case self::ADDRESS_LIST:
-return true;
+                return $this->isAllowedDisplay($token, $subject);
+                break;
+            case self::ADDRESS_DELETE:
+            case self::ADDRESS_MODIFY:
+                return $this->isAllowedModify($token, $subject);
                 break;
         }
 
         throw new \LogicException('Invalid attribute: ' . $attribute);
+    }
+
+    /**
+     * Checks if is allowed to display
+     */
+    private function isAllowedDisplay($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ADMIN',
+            'ROLE_BACKOFFICE',
+            'ROLE_COACH',
+            'ROLE_DRIVER',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return $this->isLinked($token, $subject);
+    }
+
+    /**
+     * Checks if is allowed to modify/delete
+     */
+    private function isAllowedModify($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return $this->isLinked($token, $subject);
+    }
+
+    /**
+     * Checks if child is linked to the user
+     */
+    public function isLinked($token, $subject)
+    {
+        if (null !== $token->getUser()->getUserPersonLink()) {
+            $personId = $token->getUser()->getUserPersonLink()->getPerson()->getPersonId();
+            foreach ($subject->getPersons() as $person) {
+                if ($person->getPerson()->getPersonId() === $personId) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

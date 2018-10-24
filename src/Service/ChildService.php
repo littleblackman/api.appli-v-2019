@@ -5,20 +5,28 @@ namespace App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 use App\Entity\Child;
+use App\Service\PersonServiceInterface;
 use App\Service\ChildServiceInterface;
 
 class ChildService implements ChildServiceInterface
 {
     private $em;
+    private $personService;
+    private $security;
     private $user;
 
     public function __construct(
         EntityManagerInterface $em,
+        PersonServiceInterface $personService,
+        Security $security,
         TokenStorageInterface $tokenStorage
     )
     {
         $this->em = $em;
+        $this->personService = $personService;
+        $this->security = $security;
         $this->user = $tokenStorage->getToken()->getUser();
     }
 
@@ -52,7 +60,7 @@ class ChildService implements ChildServiceInterface
             return array(
                 'status' => $create,
                 'message' => $message,
-                'child' => $child->toArray(),
+                'child' => $this->filter($child->toArray()),
             );
         }
 
@@ -78,6 +86,56 @@ class ChildService implements ChildServiceInterface
             'status' => true,
             'message' => 'Enfant supprimé',
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function filter(array $childArray)
+    {
+        //Global data
+        $globalData = array(
+        );
+
+        //User's role linked data
+        $specificData = array();
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            $specificData = array_merge(
+                $specificData,
+                array(
+                    'createdAt',
+                    'createdBy',
+                    'updatedAt',
+                    'updatedBy',
+                    'suppressed',
+                    'suppressedAt',
+                    'suppressedBy',
+                )
+            );
+        }
+        foreach (array_merge($globalData, $specificData) as $unsetData) {
+            unset($childArray[$unsetData]);
+        }
+
+        //Filters persons
+        if (isset($childArray['persons']) && is_array($childArray['persons'])) {
+            $persons = array();
+            foreach ($childArray['persons'] as $key => $value) {
+                $persons[] = $this->personService->filter($value);
+            }
+            $childArray['persons'] = $persons;
+        }
+
+        //Filters siblings
+        if (isset($childArray['siblings']) && is_array($childArray['siblings'])) {
+            $siblings = array();
+            foreach ($childArray['siblings'] as $key => $value) {
+                $siblings[] = $this->filter($value);
+            }
+            $childArray['siblings'] = $siblings;
+        }
+
+        return $childArray;
     }
 
     /**
@@ -136,7 +194,25 @@ class ChildService implements ChildServiceInterface
         return array(
             'status' => $modify,
             'message' => $message,
-            'child' => $child->toArray(),
+            'child' => $this->filter($child->toArray()),
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function search(string $term, int $size)
+    {
+        $children = $this->em
+            ->getRepository('App:Child')
+            ->search($term, $size)
+        ;
+
+        $searchData = array();
+        foreach ($children as $child) {
+            $searchData[] = $this->filter($child->toArray());
+        }
+
+        return $searchData;
     }
 }

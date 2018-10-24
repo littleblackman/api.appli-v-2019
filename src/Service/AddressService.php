@@ -4,20 +4,24 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 use App\Entity\Address;
 use App\Service\AddressServiceInterface;
 
 class AddressService implements AddressServiceInterface
 {
     private $em;
+    private $security;
     private $user;
 
     public function __construct(
         EntityManagerInterface $em,
+        Security $security,
         TokenStorageInterface $tokenStorage
     )
     {
         $this->em = $em;
+        $this->security = $security;
         $this->user = $tokenStorage->getToken()->getUser();
     }
 
@@ -51,7 +55,7 @@ class AddressService implements AddressServiceInterface
             return array(
                 'status' => $create,
                 'message' => $message,
-                'address' => $address->toArray(),
+                'address' => $this->filter($address->toArray()),
             );
         }
 
@@ -77,6 +81,41 @@ class AddressService implements AddressServiceInterface
             'status' => true,
             'message' => 'Adresse supprimée',
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function filter(array $addressArray)
+    {
+        //Global data
+        $globalData = array(
+            '__initializer__',
+            '__cloner__',
+            '__isInitialized__',
+        );
+
+        //User's role linked data
+        $specificData = array();
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            $specificData = array_merge(
+                $specificData,
+                array(
+                    'createdAt',
+                    'createdBy',
+                    'updatedAt',
+                    'updatedBy',
+                    'suppressed',
+                    'suppressedAt',
+                    'suppressedBy',
+                )
+            );
+        }
+        foreach (array_merge($globalData, $specificData) as $unsetData) {
+            unset($addressArray[$unsetData]);
+        }
+
+        return $addressArray;
     }
 
     /**
@@ -135,7 +174,7 @@ class AddressService implements AddressServiceInterface
         return array(
             'status' => $modify,
             'message' => $message,
-            'address' => $address->toArray(),
+            'address' => $this->filter($address->toArray()),
         );
     }
 }

@@ -14,6 +14,12 @@ interface PersonServiceInterface
     public function delete(Person $person);
 
     /**
+     * Filters the array to return only data allowed to User's Role
+     * @return array
+     */
+    public function filter(array $personArray);
+
+    /**
      * Returns the list of all persons in the array format
      */
     public function getAllInArray();
@@ -29,4 +35,10 @@ interface PersonServiceInterface
      * @return array
      */
     public function modify(Person $person, ParameterBag $parameters);
+
+    /**
+     * Searches the term in the Person collection
+     * @return array
+     */
+    public function search(string $term, int $size);
 }

@@ -101,15 +101,7 @@ class Child
      */
     public function toArraySibling()
     {
-        $child = get_object_vars($this);
-        unset($child['__initializer__']);
-        unset($child['__cloner__']);
-        unset($child['__isInitialized__']);
-
-        unset($child['persons']);
-        unset($child['siblings']);
-
-        return $child;
+        return get_object_vars($this);
     }
 
     public function getChildId(): ?int

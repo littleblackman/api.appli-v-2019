@@ -21,6 +21,7 @@ class PersonVoter extends Voter
     public const PERSON_DISPLAY = 'personDisplay';
     public const PERSON_LIST = 'personList';
     public const PERSON_MODIFY = 'personModify';
+    public const PERSON_SEARCH = 'personSearch';
 
     private const ATTRIBUTES = array(
         self::PERSON_CREATE,
@@ -28,6 +29,7 @@ class PersonVoter extends Voter
         self::PERSON_DISPLAY,
         self::PERSON_LIST,
         self::PERSON_MODIFY,
+        self::PERSON_SEARCH,
     );
 
     public function __construct(Security $security)
@@ -53,14 +55,73 @@ return true;
             case self::PERSON_CREATE:
                 return $this->security->isGranted('ROLE_USER');
                 break;
-            case self::PERSON_DELETE:
             case self::PERSON_DISPLAY:
-            case self::PERSON_MODIFY:
             case self::PERSON_LIST:
-return true;
+            case self::PERSON_SEARCH:
+                return $this->isAllowedDisplay($token, $subject);
+                break;
+            case self::PERSON_DELETE:
+            case self::PERSON_MODIFY:
+                return $this->isAllowedModify($token, $subject);
                 break;
         }
 
         throw new \LogicException('Invalid attribute: ' . $attribute);
+    }
+
+    /**
+     * Checks if is allowed to display
+     */
+    private function isAllowedDisplay($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ADMIN',
+            'ROLE_BACKOFFICE',
+            'ROLE_COACH',
+            'ROLE_DRIVER',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return $this->isLinked($token, $subject);
+    }
+
+    /**
+     * Checks if is allowed to modify/delete
+     */
+    private function isAllowedModify($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return $this->isLinked($token, $subject);
+    }
+
+    /**
+     * Checks if child is linked to the user
+     */
+    public function isLinked($token, $subject)
+    {
+        if (null !== $token->getUser()->getUserPersonLink()) {
+            $personId = $token->getUser()->getUserPersonLink()->getPerson()->getPersonId();
+            if ($subject->getPersonId() === $personId) {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

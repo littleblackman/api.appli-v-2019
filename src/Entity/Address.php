@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\SuppressionTrait;
 
@@ -10,7 +11,7 @@ use App\Entity\Traits\SuppressionTrait;
  * Address
  *
  * @ORM\Table(name="address")
- * @ORM\Entity(repositoryClass="App\Repository\AddressRepository")
+ * @ORM\Entity
  */
 class Address
 {
@@ -75,6 +76,12 @@ class Address
      */
     private $phone;
 
+    /**
+     * @ORM\OneToMany(targetEntity="PersonAddressLink", mappedBy="address")
+     */
+    private $persons;
+
+
     public function __construct()
     {
         $this->persons = new ArrayCollection();
@@ -85,12 +92,18 @@ class Address
      */
     public function toArray()
     {
-        $address = get_object_vars($this);
-        unset($address['__initializer__']);
-        unset($address['__cloner__']);
-        unset($address['__isInitialized__']);
+        $addressArray = get_object_vars($this);
 
-        return $address;
+        //Gets related persons
+        $persons = array();
+        foreach($this->getPersons()->toArray() as $person) {
+            $persons[] = array(
+                'personId' => $person->getPerson()->getPersonId(),
+            );
+        }
+        $addressArray['persons'] = $persons;
+
+        return $addressArray;
     }
 
     public function getAddressId(): ?int
@@ -182,5 +195,8 @@ class Address
         return $this;
     }
 
-
+    public function getPersons(): Collection
+    {
+        return $this->persons;
+    }
 }

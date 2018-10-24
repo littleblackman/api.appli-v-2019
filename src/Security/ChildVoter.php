@@ -21,6 +21,7 @@ class ChildVoter extends Voter
     public const CHILD_DISPLAY = 'childDisplay';
     public const CHILD_LIST = 'childList';
     public const CHILD_MODIFY = 'childModify';
+    public const CHILD_SEARCH = 'childSearch';
 
     private const ATTRIBUTES = array(
         self::CHILD_CREATE,
@@ -28,6 +29,7 @@ class ChildVoter extends Voter
         self::CHILD_DISPLAY,
         self::CHILD_LIST,
         self::CHILD_MODIFY,
+        self::CHILD_SEARCH,
     );
 
     public function __construct(Security $security)
@@ -53,8 +55,9 @@ return true;
             case self::CHILD_CREATE:
                 return $this->security->isGranted('ROLE_USER');
                 break;
-            case self::CHILD_LIST:
             case self::CHILD_DISPLAY:
+            case self::CHILD_LIST:
+            case self::CHILD_SEARCH:
                 return $this->isAllowedDisplay($token, $subject);
                 break;
             case self::CHILD_DELETE:

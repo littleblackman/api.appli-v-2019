@@ -1,5 +1,12 @@
 ChangeLog
 
+v0.5
+- Ajout de la fonctionanlité de recherchge pour Child et Person (24/10/2018)
+- Ajout du filtrage des json en fonction des rôles (24/10/2018)
+- Correction des appels de services utilisés pour la création/modification/suppression des adresses (24/10/2018)
+- Ajout du lien Address -> Person (24/10/2018)
+- Ajout du lien Person -> Child (24/10/2018)
+
 v0.4.2
 - Suppression de l'utilisation des voters en attendant la gestion des CORS (24/10/2018)
 

@@ -16,4 +16,19 @@ class ChildRepository extends EntityRepository
             ->getArrayResult()
         ;
     }
+
+    /**
+     * Returns all the children corresponding to the searched term
+     */
+    public function search(string $term, int $size)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('LOWER(c.firstname) LIKE :term')
+            ->orWhere('LOWER(c.lastname) LIKE :term')
+            ->setParameter('term', '%' . strtolower($term) . '%')
+            ->setMaxResults($size)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

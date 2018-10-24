@@ -34,7 +34,9 @@ class AddressController extends AbstractController
     {
         $this->denyAccessUnlessGranted('addressDisplay', $address);
 
-        return new JsonResponse($address->toArray());
+        $addressArray = $this->addressService->filter($address->toArray());
+
+        return new JsonResponse($addressArray);
     }
 
 //CREATE
@@ -52,7 +54,7 @@ class AddressController extends AbstractController
         $address = new Address();
         $this->denyAccessUnlessGranted('addressCreate', $address);
 
-        $createdData = $this->personService->create($address, $request->query);
+        $createdData = $this->addressService->create($address, $request->query);
 
         return new JsonResponse($createdData);
     }
@@ -72,7 +74,7 @@ class AddressController extends AbstractController
     {
         $this->denyAccessUnlessGranted('addressModify', $address);
 
-        $modifiedData = $this->addressService->create($address, $request->query);
+        $modifiedData = $this->addressService->modify($address, $request->query);
 
         return new JsonResponse($modifiedData);
     }
@@ -92,7 +94,7 @@ class AddressController extends AbstractController
     {
         $this->denyAccessUnlessGranted('addressDelete', $address);
 
-        $suppressedData = $this->addressService->create($address, $request->query);
+        $suppressedData = $this->addressService->delete($address);
 
         return new JsonResponse($suppressedData);
     }

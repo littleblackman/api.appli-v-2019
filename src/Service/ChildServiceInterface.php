@@ -20,6 +20,12 @@ interface ChildServiceInterface
     public function delete(Child $child);
 
     /**
+     * Filters the array to return only data allowed to User's Role
+     * @return array
+     */
+    public function filter(array $childArray);
+
+    /**
      * Returns the list of all children in the array format
      */
     public function getAllInArray();
@@ -35,4 +41,10 @@ interface ChildServiceInterface
      * @return array
      */
     public function modify(Child $child, ParameterBag $parameters);
+
+    /**
+     * Searches the term in the Child collection
+     * @return array
+     */
+    public function search(string $term, int $size);
 }

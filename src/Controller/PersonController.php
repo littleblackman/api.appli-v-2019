@@ -45,6 +45,27 @@ class PersonController extends AbstractController
         return new JsonResponse($persons->getItems());
     }
 
+//SEARCH
+    /**
+     * Search within database "/person/search/{term}"
+     * Optionnal: size(int) Number of records
+     * @return JsonResponse
+     * @throws AccessDeniedException
+     *
+     * @Route("/person/search/{term}",
+     *    name="person_search",
+     *    requirements={"term": "^([a-zA-Z]+)"},
+     *    methods={"HEAD", "GET"})
+     */
+    public function search(Request $request, string $term)
+    {
+        $this->denyAccessUnlessGranted('personSearch', false);
+
+        $searchData = $this->personService->search($term, $request->query->getInt('size', 50));
+
+        return new JsonResponse($searchData);
+    }
+
 //CREATE
     /**
      * Creates a person "/person/create"
@@ -80,7 +101,9 @@ class PersonController extends AbstractController
     {
         $this->denyAccessUnlessGranted('personDisplay', $person);
 
-        return new JsonResponse($person->toArray());
+        $personArray = $this->personService->filter($person->toArray());
+
+        return new JsonResponse($personArray);
     }
 
 //MODIFY
