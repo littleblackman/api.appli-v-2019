@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.5.1
+- Mise en place de la gestion des CORS (27/10/2018)
+
 v0.5
 - Ajout de la fonctionanlité de recherchge pour Child et Person (24/10/2018)
 - Ajout du filtrage des json en fonction des rôles (24/10/2018)
