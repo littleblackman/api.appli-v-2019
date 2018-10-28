@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.5.4
+- Ajout d'une condition sur les Voters pour vérifier si un user est authentifié (28/10/2018)
+- Ajout de HomeController (28/10/2018)
+
 v0.5.3
 - Ajout des bundles (twig, monolog, security, security-checker) enregistrés dans env=prod alors qu'appelés par require=dev (https://github.com/symfony/flex/issues/329) (28/10/2018)
 

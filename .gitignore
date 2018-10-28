@@ -7,3 +7,4 @@
 ###< symfony/framework-bundle ###
 apidoc
 Documentation
+config_bundles.yaml

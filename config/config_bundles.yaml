@@ -17,7 +17,8 @@ c975LUser:
     archiveUser: false
     formLayout: bootstrap_3_layout
     api: true
-    apiOnly: true
+    apiOnly: false
+    authToken: false
 c975LCommon:
     site: 'EnergyAcademy'
     author: 'EnergyAcademy'

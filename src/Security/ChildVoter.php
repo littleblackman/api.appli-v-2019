@@ -48,6 +48,11 @@ class ChildVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
+        //Checks current user
+        if (null === $token->getUser() || is_string($token->getUser())) {
+            return false;
+        }
+
         //Defines access rights
         switch ($attribute) {
             case self::CHILD_CREATE:
