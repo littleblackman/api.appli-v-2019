@@ -116,6 +116,16 @@ class PersonService implements PersonServiceInterface
                 )
             );
         }
+        if ($this->security->isGranted('ROLE_TRAINEE') || $this->security->isGranted('ROLE_COACH')) {
+            $specificData = array_merge(
+                $specificData,
+                array(
+                    'addresses',
+                )
+            );
+
+        }
+
         foreach (array_merge($globalData, $specificData) as $unsetData) {
             unset($personArray[$unsetData]);
         }

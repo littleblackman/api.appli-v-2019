@@ -48,21 +48,25 @@ class ChildVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-#Supprimer lorsque la gestion des droits sera ok (24/10/2018)
-return true;
         //Defines access rights
         switch ($attribute) {
             case self::CHILD_CREATE:
-                return $this->security->isGranted('ROLE_USER');
-                break;
-            case self::CHILD_DISPLAY:
-            case self::CHILD_LIST:
-            case self::CHILD_SEARCH:
-                return $this->isAllowedDisplay($token, $subject);
+                return $this->canCreate($token, $subject);
                 break;
             case self::CHILD_DELETE:
+                return $this->canDelete($token, $subject);
+                break;
+            case self::CHILD_DISPLAY:
+                return $this->canDisplay($token, $subject);
+                break;
+            case self::CHILD_LIST:
+                return $this->canList($token, $subject);
+                break;
             case self::CHILD_MODIFY:
-                return $this->isAllowedModify($token, $subject);
+                return $this->canModify($token, $subject);
+                break;
+            case self::CHILD_SEARCH:
+                return $this->canSearch($token, $subject);
                 break;
         }
 
@@ -70,16 +74,49 @@ return true;
     }
 
     /**
-     * Checks if is allowed to display
+     * Checks if is allowed to create
      */
-    private function isAllowedDisplay($token, $subject)
+    private function canCreate($token, $subject)
     {
         //Checks roles allowed
         $roles = array(
+            'ROLE_LEADER',
             'ROLE_ADMIN',
-            'ROLE_BACKOFFICE',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        //Checks roles UNallowed
+        $roles = array(
+            'ROLE_TRAINEE',
             'ROLE_COACH',
             'ROLE_DRIVER',
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return false;
+            }
+        }
+
+        return $this->security->isGranted('ROLE_USER');
+    }
+
+    /**
+     * Checks if is allowed to delete
+     */
+    private function canDelete($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
         );
 
         foreach ($roles as $role) {
@@ -92,12 +129,18 @@ return true;
     }
 
     /**
-     * Checks if is allowed to modify/delete
+     * Checks if is allowed to display
      */
-    private function isAllowedModify($token, $subject)
+    private function canDisplay($token, $subject)
     {
         //Checks roles allowed
         $roles = array(
+            'ROLE_TRAINEE',
+            'ROLE_COACH',
+            'ROLE_DRIVER',
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -108,6 +151,73 @@ return true;
         }
 
         return $this->isLinked($token, $subject);
+    }
+
+    /**
+     * Checks if is allowed to list
+     */
+    private function canList($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_DRIVER',
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if is allowed to modify
+     */
+    private function canModify($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return $this->isLinked($token, $subject);
+    }
+
+    /**
+     * Checks if is allowed to search
+     */
+    private function canSearch($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_DRIVER',
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

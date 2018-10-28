@@ -19,14 +19,12 @@ class AddressVoter extends Voter
     public const ADDRESS_CREATE = 'addressCreate';
     public const ADDRESS_DELETE = 'addressDelete';
     public const ADDRESS_DISPLAY = 'addressDisplay';
-    public const ADDRESS_LIST = 'addressList';
     public const ADDRESS_MODIFY = 'addressModify';
 
     private const ATTRIBUTES = array(
         self::ADDRESS_CREATE,
         self::ADDRESS_DELETE,
         self::ADDRESS_DISPLAY,
-        self::ADDRESS_LIST,
         self::ADDRESS_MODIFY,
     );
 
@@ -46,37 +44,70 @@ class AddressVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-#Supprimer lorsque la gestion des droits sera ok (24/10/2018)
-return true;
         //Defines access rights
         switch ($attribute) {
             case self::ADDRESS_CREATE:
-                return $this->security->isGranted('ROLE_USER');
-                break;
-            case self::ADDRESS_DISPLAY:
-            case self::ADDRESS_LIST:
-                return $this->isAllowedDisplay($token, $subject);
+                return $this->canCreate($token, $subject);
                 break;
             case self::ADDRESS_DELETE:
+                return $this->canDelete($token, $subject);
+                break;
+            case self::ADDRESS_DISPLAY:
+                return $this->canDisplay($token, $subject);
+                break;
             case self::ADDRESS_MODIFY:
-                return $this->isAllowedModify($token, $subject);
+                return $this->canModify($token, $subject);
                 break;
         }
 
         throw new \LogicException('Invalid attribute: ' . $attribute);
     }
 
+
     /**
-     * Checks if is allowed to display
+     * Checks if is allowed to create
      */
-    private function isAllowedDisplay($token, $subject)
+    private function canCreate($token, $subject)
     {
         //Checks roles allowed
         $roles = array(
+            'ROLE_LEADER',
             'ROLE_ADMIN',
-            'ROLE_BACKOFFICE',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        //Checks roles UNallowed
+        $roles = array(
+            'ROLE_TRAINEE',
             'ROLE_COACH',
             'ROLE_DRIVER',
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return false;
+            }
+        }
+
+        return $this->security->isGranted('ROLE_USER');
+    }
+
+    /**
+     * Checks if is allowed to delete
+     */
+    private function canDelete($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
         );
 
         foreach ($roles as $role) {
@@ -89,12 +120,37 @@ return true;
     }
 
     /**
-     * Checks if is allowed to modify/delete
+     * Checks if is allowed to display
      */
-    private function isAllowedModify($token, $subject)
+    private function canDisplay($token, $subject)
     {
         //Checks roles allowed
         $roles = array(
+            'ROLE_DRIVER',
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return $this->isLinked($token, $subject);
+    }
+
+    /**
+     * Checks if is allowed to modify
+     */
+    private function canModify($token, $subject)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

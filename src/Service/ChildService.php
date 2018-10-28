@@ -95,6 +95,9 @@ class ChildService implements ChildServiceInterface
     {
         //Global data
         $globalData = array(
+            '__initializer__',
+            '__cloner__',
+            '__isInitialized__',
         );
 
         //User's role linked data
