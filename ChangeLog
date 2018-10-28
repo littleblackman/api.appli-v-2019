@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.5.5
+- Ajout de la gestion des sesions en DB (28/10/2018)
+
 v0.5.4
 - Ajout d'une condition sur les Voters pour vérifier si un user est authentifié (28/10/2018)
 - Ajout de HomeController (28/10/2018)
