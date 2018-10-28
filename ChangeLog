@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.5.3
+- Ajout des bundles (twig, monolog, security, security-checker) enregistrés dans env=prod alors qu'appelés par require=dev (https://github.com/symfony/flex/issues/329) (28/10/2018)
+
 v0.5.2
 - Ajout des nouveaux rôles (28/10/2018)
 - Suppression de la hiérarchie des rôles (28/10/2018)
