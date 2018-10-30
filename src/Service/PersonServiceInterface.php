@@ -8,6 +8,12 @@ use App\Entity\Person;
 interface PersonServiceInterface
 {
     /**
+     * Creates the person
+     * @return array|false
+     */
+    public function create(Person $person, ParameterBag $parameters);
+
+    /**
      * Marks the person as deleted
      * @return array
      */
@@ -21,12 +27,12 @@ interface PersonServiceInterface
 
     /**
      * Returns the list of all persons in the array format
+     * @return array
      */
     public function getAllInArray();
 
     /**
      * Hydrates the person with the new values
-     * @return true|array
      */
     public function hydrate(Person $person, ParameterBag $parameters);
 

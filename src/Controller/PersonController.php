@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use App\Service\PersonServiceInterface;
 use App\Entity\Person;
 
@@ -81,7 +82,7 @@ class PersonController extends AbstractController
         $person = new Person();
         $this->denyAccessUnlessGranted('personCreate', $person);
 
-        $createdData = $this->personService->create($person, $request->query);
+        $createdData = $this->personService->create($person, $request->request);
 
         return new JsonResponse($createdData);
     }
@@ -96,6 +97,7 @@ class PersonController extends AbstractController
      *    name="person_display",
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "GET"})
+     * @Entity("person", expr="repository.findOneById(id)")
      */
     public function display(Person $person)
     {
@@ -116,12 +118,13 @@ class PersonController extends AbstractController
      *    name="person_modify",
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "POST"})
+     * @Entity("person", expr="repository.findOneById(id)")
      */
     public function modify(Request $request, Person $person)
     {
         $this->denyAccessUnlessGranted('personModify', $person);
 
-        $modifiedData = $this->personService->modify($person, $request->query);
+        $modifiedData = $this->personService->modify($person, $request->request);
 
         return new JsonResponse($modifiedData);
     }
@@ -135,7 +138,8 @@ class PersonController extends AbstractController
      * @Route("/person/delete/{id}",
      *    name="person_delete",
      *    requirements={"id": "^([0-9]+)"},
-     *    methods={"HEAD", "DELETE"})
+     *    methods={"HEAD", "POST"})
+     * @Entity("person", expr="repository.findOneById(id)")
      */
     public function delete(Person $person)
     {

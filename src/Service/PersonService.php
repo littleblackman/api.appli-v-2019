@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Person;
+use App\Entity\UserPersonLink;
 use App\Service\AddressServiceInterface;
 use App\Service\PersonServiceInterface;
 
@@ -38,23 +39,25 @@ class PersonService implements PersonServiceInterface
         if (null !== $parameters->get('firstname') && null !== $parameters->get('lastname')) {
             $create = $this->hydrate($person, $parameters);
 
-            //Person created
-            if (!is_array($create)) {
-                $person
-                    ->setCreatedAt(new \DateTime())
-                    ->setCreatedBy($this->user->getId())
-                    ->setSuppressed(false)
-                ;
+            $person
+                ->setCreatedAt(new \DateTime())
+                ->setCreatedBy($this->user->getId())
+                ->setSuppressed(false)
+            ;
+            $this->em->persist($person);
 
-                //Persists in DB
-                $this->em->persist($person);
-                $this->em->flush();
+            //Adds links from user to person
+            $userPersonLink = new UserPersonLink();
+            $userPersonLink
+                ->setUser($this->user)
+                ->setPerson($person)
+            ;
+            $this->em->persist($userPersonLink);
 
-                $message = 'Personne ajoutée';
-            //Person NOT created
-            } else {
-                $message = 'Erreur ! => ' . key($create) . ' : ' . current($create);
-            }
+            //Persists in DB
+            $this->em->flush();
+
+            $message = 'Personne ajoutée';
 
             //Returns data
             return array(
@@ -77,9 +80,31 @@ class PersonService implements PersonServiceInterface
             ->setSuppressedAt(new \DateTime())
             ->setSuppressedBy($this->user->getId())
         ;
+        $this->em->persist($person);
+
+        //Removes links from user to person
+        $userPersonLink = $this->em->getRepository('App:UserPersonLink')->findOneByPerson($person);
+        if ($userPersonLink instanceof UserPersonLink) {
+            $this->em->remove($userPersonLink);
+        }
+
+        //Removes links from person to child
+        $childPersonLinks = $this->em->getRepository('App:ChildPersonLink')->findByPerson($person);
+        foreach ($childPersonLinks as $childPersonLink) {
+            if ($childPersonLink instanceof ChildPersonLink) {
+                $this->em->remove($childPersonLink);
+            }
+        }
+
+        //Removes links from person to address
+        $personAddressLinks = $this->em->getRepository('App:PersonAddressLink')->findByPerson($person);
+        foreach ($personAddressLinks as $personAddressLink) {
+            if ($personAddressLink instanceof PersonAddressLink) {
+                $this->em->remove($personAddressLink);
+            }
+        }
 
         //Persists in DB
-        $this->em->persist($person);
         $this->em->flush();
 
         return array(
@@ -161,13 +186,9 @@ class PersonService implements PersonServiceInterface
         foreach ($parameters as $key => $value) {
             $method = 'set' . ucfirst($key);
             if (method_exists($person, $method)) {
-                $person->$method($value);
-            } else {
-                return array($key => $value);
+                $person->$method(htmlspecialchars($value));
             }
         }
-
-        return true;
     }
 
     /**
@@ -177,22 +198,16 @@ class PersonService implements PersonServiceInterface
     {
         $modify = $this->hydrate($person, $parameters);
 
-        //Child updated
-        if (!is_array($modify)) {
-            $person
-                ->setUpdatedAt(new \DateTime())
-                ->setUpdatedBy($this->user->getId())
-            ;
+        $person
+            ->setUpdatedAt(new \DateTime())
+            ->setUpdatedBy($this->user->getId())
+        ;
 
-            //Persists in DB
-            $this->em->persist($person);
-            $this->em->flush();
+        //Persists in DB
+        $this->em->persist($person);
+        $this->em->flush();
 
-            $message = 'Personne modifiée';
-        //Child NOT updated
-        } else {
-            $message = 'Erreur ! => ' . key($modify) . ' : ' . current($modify);
-        }
+        $message = 'Personne modifiée';
 
         //Returns data
         return array(

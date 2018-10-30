@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Child;
+use App\Entity\ChildPersonLink;
+use App\Entity\Person;
 use App\Service\PersonServiceInterface;
 use App\Service\ChildServiceInterface;
 
@@ -38,23 +40,34 @@ class ChildService implements ChildServiceInterface
         if (null !== $parameters->get('firstname') && null !== $parameters->get('lastname')) {
             $create = $this->hydrate($child, $parameters);
 
-            //Child created
-            if (!is_array($create)) {
-                $child
-                    ->setCreatedAt(new \DateTime())
-                    ->setCreatedBy($this->user->getId())
-                    ->setSuppressed(false)
-                ;
+            $child
+                ->setCreatedAt(new \DateTime())
+                ->setCreatedBy($this->user->getId())
+                ->setSuppressed(false)
+            ;
+            $this->em->persist($child);
 
-                //Persists in DB
-                $this->em->persist($child);
-                $this->em->flush();
-
-                $message = 'Enfant ajouté';
-            //Child NOT created
-            } else {
-                $message = 'Erreur ! => ' . key($create) . ' : ' . current($create);
+            //Adds links from person/s to child
+            $links = $parameters->get('links');
+            if (null !== $links && is_array($links) && !empty($links)) {
+                foreach ($links as $personId => $relation) {
+                    $person = $this->em->getRepository('App:Person')->findOneById((int) $personId);
+                    if ($person instanceof Person) {
+                        $childPersonLink = new ChildPersonLink();
+                        $childPersonLink
+                            ->setRelation(htmlspecialchars($relation))
+                            ->setChild($child)
+                            ->setPerson($person)
+                        ;
+                        $this->em->persist($childPersonLink);
+                    }
+                }
             }
+
+            //Persists in DB
+            $this->em->flush();
+
+            $message = 'Enfant ajouté';
 
             //Returns data
             return array(
@@ -70,16 +83,29 @@ class ChildService implements ChildServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(Child $child)
+    public function delete(Child $child, ParameterBag $parameters)
     {
         $child
             ->setSuppressed(true)
             ->setSuppressedAt(new \DateTime())
             ->setSuppressedBy($this->user->getId())
         ;
+        $this->em->persist($child);
+        //Removes links from person/s to address
+        if (null !== $parameters->get('links')) {
+            $links = $parameters->get('links');
+            if (is_array($links) && !empty($links)) {
+                foreach ($links as $personId) {
+                    $person = $this->em->getRepository('App:Person')->findOneById((int) $personId);
+                    if ($person instanceof Person) {
+                        $childPersonLink = $this->em->getRepository('App:ChildPersonLink')->findOneBy(array('child' => $child, 'person' => $person));
+                        $this->em->remove($childPersonLink);
+                    }
+                }
+            }
+        }
 
         //Persists in DB
-        $this->em->persist($child);
         $this->em->flush();
 
         return array(
@@ -160,13 +186,9 @@ class ChildService implements ChildServiceInterface
         foreach ($parameters as $key => $value) {
             $method = 'set' . ucfirst($key);
             if (method_exists($child, $method)) {
-                $child->$method($value);
-            } else {
-                return array($key => $value);
+                $child->$method(htmlspecialchars($value));
             }
         }
-
-        return true;
     }
 
     /**
@@ -176,22 +198,16 @@ class ChildService implements ChildServiceInterface
     {
         $modify = $this->hydrate($child, $parameters);
 
-        //Child updated
-        if (!is_array($modify)) {
-            $child
-                ->setUpdatedAt(new \DateTime())
-                ->setUpdatedBy($this->user->getId())
-            ;
+        $child
+            ->setUpdatedAt(new \DateTime())
+            ->setUpdatedBy($this->user->getId())
+        ;
 
-            //Persists in DB
-            $this->em->persist($child);
-            $this->em->flush();
+        //Persists in DB
+        $this->em->persist($child);
+        $this->em->flush();
 
-            $message = 'Enfant modifié';
-        //Child NOT updated
-        } else {
-            $message = 'Erreur ! => ' . key($modify) . ' : ' . current($modify);
-        }
+        $message = 'Enfant modifié';
 
         //Returns data
         return array(

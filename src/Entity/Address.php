@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\SuppressionTrait;
@@ -11,7 +12,7 @@ use App\Entity\Traits\SuppressionTrait;
  * Address
  *
  * @ORM\Table(name="address")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\AddressRepository")
  */
 class Address
 {

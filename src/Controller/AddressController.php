@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use App\Service\AddressServiceInterface;
 use App\Entity\Address;
 
@@ -29,6 +30,7 @@ class AddressController extends AbstractController
      *    name="address_display",
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "GET"})
+     * @Entity("address", expr="repository.findOneById(id)")
      */
     public function display(Address $address)
     {
@@ -54,7 +56,7 @@ class AddressController extends AbstractController
         $address = new Address();
         $this->denyAccessUnlessGranted('addressCreate', $address);
 
-        $createdData = $this->addressService->create($address, $request->query);
+        $createdData = $this->addressService->create($address, $request->request);
 
         return new JsonResponse($createdData);
     }
@@ -69,12 +71,13 @@ class AddressController extends AbstractController
      *    name="address_modify",
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "POST"})
+     * @Entity("address", expr="repository.findOneById(id)")
      */
     public function modify(Address $address)
     {
         $this->denyAccessUnlessGranted('addressModify', $address);
 
-        $modifiedData = $this->addressService->modify($address, $request->query);
+        $modifiedData = $this->addressService->modify($address, $request->request);
 
         return new JsonResponse($modifiedData);
     }
@@ -89,12 +92,13 @@ class AddressController extends AbstractController
      *    name="address_delete",
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "POST"})
+     * @Entity("address", expr="repository.findOneById(id)")
      */
-    public function delete(Address $address)
+    public function delete(Request $request, Address $address)
     {
         $this->denyAccessUnlessGranted('addressDelete', $address);
 
-        $suppressedData = $this->addressService->delete($address);
+        $suppressedData = $this->addressService->delete($address, $request->request);
 
         return new JsonResponse($suppressedData);
     }

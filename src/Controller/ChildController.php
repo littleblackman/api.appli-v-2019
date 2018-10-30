@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use App\Service\ChildServiceInterface;
 use App\Entity\Child;
 
@@ -81,7 +82,7 @@ class ChildController extends AbstractController
         $child = new Child();
         $this->denyAccessUnlessGranted('childCreate', $child);
 
-        $createdData = $this->childService->create($child, $request->query);
+        $createdData = $this->childService->create($child, $request->request);
 
         return new JsonResponse($createdData);
     }
@@ -96,6 +97,7 @@ class ChildController extends AbstractController
      *    name="child_display",
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "GET"})
+     * @Entity("child", expr="repository.findOneById(id)")
      */
     public function display(Request $request, Child $child)
     {
@@ -116,12 +118,13 @@ class ChildController extends AbstractController
      *    name="child_modify",
      *    requirements={"id": "^([0-9]+)"},
      *    methods={"HEAD", "POST"})
+     * @Entity("child", expr="repository.findOneById(id)")
      */
     public function modify(Request $request, Child $child)
     {
         $this->denyAccessUnlessGranted('childModify', $child);
 
-        $modifiedData = $this->childService->modify($child, $request->query);
+        $modifiedData = $this->childService->modify($child, $request->request);
 
         return new JsonResponse($modifiedData);
     }
@@ -135,13 +138,14 @@ class ChildController extends AbstractController
      * @Route("/child/delete/{id}",
      *    name="child_delete",
      *    requirements={"id": "^([0-9]+)"},
-     *    methods={"HEAD", "DELETE"})
+     *    methods={"HEAD", "POST"})
+     * @Entity("child", expr="repository.findOneById(id)")
      */
-    public function delete(Child $child)
+    public function delete(Request $request, Child $child)
     {
         $this->denyAccessUnlessGranted('childDelete', $child);
 
-        $suppressedData = $this->childService->delete($child);
+        $suppressedData = $this->childService->delete($child, $request->request);
 
         return new JsonResponse($suppressedData);
     }

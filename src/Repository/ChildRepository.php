@@ -12,8 +12,23 @@ class ChildRepository extends EntityRepository
     public function findAllInArray()
     {
         return $this->createQueryBuilder('c')
+            ->where('c.suppressed = 0')
             ->getQuery()
             ->getArrayResult()
+        ;
+    }
+
+    /**
+     * Returns the child if not suppressed
+     */
+    public function findOneById($id)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.childId = :id')
+            ->andWhere('c.suppressed = 0')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
         ;
     }
 
@@ -23,8 +38,8 @@ class ChildRepository extends EntityRepository
     public function search(string $term, int $size)
     {
         return $this->createQueryBuilder('c')
-            ->where('LOWER(c.firstname) LIKE :term')
-            ->orWhere('LOWER(c.lastname) LIKE :term')
+            ->where('LOWER(c.firstname) LIKE :term OR LOWER(c.lastname) LIKE :term')
+            ->andWhere('c.suppressed = 0')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->setMaxResults($size)
             ->getQuery()

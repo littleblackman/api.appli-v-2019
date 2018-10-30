@@ -12,8 +12,23 @@ class PersonRepository extends EntityRepository
     public function findAllInArray()
     {
         return $this->createQueryBuilder('p')
+            ->where('p.suppressed = 0')
             ->getQuery()
             ->getArrayResult()
+        ;
+    }
+
+    /**
+     * Returns the person if not suppressed
+     */
+    public function findOneById($id)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.personId = :id')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
         ;
     }
 
@@ -23,8 +38,8 @@ class PersonRepository extends EntityRepository
     public function search(string $term, int $size)
     {
         return $this->createQueryBuilder('p')
-            ->where('LOWER(p.firstname) LIKE :term')
-            ->orWhere('LOWER(p.lastname) LIKE :term')
+            ->where('LOWER(p.firstname) LIKE :term OR LOWER(p.lastname) LIKE :term')
+            ->andWhere('p.suppressed = 0')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->setMaxResults($size)
             ->getQuery()

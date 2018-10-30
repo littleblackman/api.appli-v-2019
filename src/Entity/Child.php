@@ -150,8 +150,12 @@ class Child
         return $this->birthdate;
     }
 
-    public function setBirthdate(?\DateTimeInterface $birthdate): self
+    public function setBirthdate($birthdate)
     {
+        if (!$birthdate instanceof \DateTime) {
+            $birthdate = new \DateTime($birthdate);
+        }
+
         $this->birthdate = $birthdate;
 
         return $this;

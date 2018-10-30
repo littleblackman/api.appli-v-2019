@@ -120,16 +120,16 @@
         },
         {
             "name": "c975l/includelibrary-bundle",
-            "version": "v1.8.1.1",
+            "version": "v1.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/IncludeLibraryBundle.git",
-                "reference": "13dea31eca1efb5931b39fe4ed17b53a0ef60a27"
+                "reference": "21fa3cde6f411bcef151413324d25e01d25b5600"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/IncludeLibraryBundle/zipball/13dea31eca1efb5931b39fe4ed17b53a0ef60a27",
-                "reference": "13dea31eca1efb5931b39fe4ed17b53a0ef60a27",
+                "url": "https://api.github.com/repos/975L/IncludeLibraryBundle/zipball/21fa3cde6f411bcef151413324d25e01d25b5600",
+                "reference": "21fa3cde6f411bcef151413324d25e01d25b5600",
                 "shasum": ""
             },
             "require": {
@@ -164,7 +164,7 @@
                 "library",
                 "symfony"
             ],
-            "time": "2018-08-26T18:45:39+00:00"
+            "time": "2018-10-28T18:30:41+00:00"
         },
         {
             "name": "c975l/services-bundle",
@@ -216,16 +216,16 @@
         },
         {
             "name": "c975l/toolbar-bundle",
-            "version": "v1.8.8",
+            "version": "v1.8.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/ToolbarBundle.git",
-                "reference": "afa836c9f930aca0956b3474b6ed8d146cf817b6"
+                "reference": "f085f3c9922aa31a1b7c45e8debb6be1b4996656"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/ToolbarBundle/zipball/afa836c9f930aca0956b3474b6ed8d146cf817b6",
-                "reference": "afa836c9f930aca0956b3474b6ed8d146cf817b6",
+                "url": "https://api.github.com/repos/975L/ToolbarBundle/zipball/f085f3c9922aa31a1b7c45e8debb6be1b4996656",
+                "reference": "f085f3c9922aa31a1b7c45e8debb6be1b4996656",
                 "shasum": ""
             },
             "require": {
@@ -259,20 +259,20 @@
                 "bundle",
                 "symfony"
             ],
-            "time": "2018-09-03T17:54:00+00:00"
+            "time": "2018-10-29T14:37:05+00:00"
         },
         {
             "name": "c975l/user-bundle",
-            "version": "v2.1.2",
+            "version": "v2.2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/UserBundle.git",
-                "reference": "8b6c99a1df1d9ebbcf6150b86ba3549a773c2700"
+                "reference": "a1e9361191c09601f55ea19df1b2f5b11babd84c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/UserBundle/zipball/8b6c99a1df1d9ebbcf6150b86ba3549a773c2700",
-                "reference": "8b6c99a1df1d9ebbcf6150b86ba3549a773c2700",
+                "url": "https://api.github.com/repos/975L/UserBundle/zipball/a1e9361191c09601f55ea19df1b2f5b11babd84c",
+                "reference": "a1e9361191c09601f55ea19df1b2f5b11babd84c",
                 "shasum": ""
             },
             "require": {
@@ -316,7 +316,7 @@
                 "symfony",
                 "user"
             ],
-            "time": "2018-10-23T21:10:02+00:00"
+            "time": "2018-10-30T12:34:52+00:00"
         },
         {
             "name": "composer/ca-bundle",

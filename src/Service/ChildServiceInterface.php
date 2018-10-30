@@ -9,7 +9,7 @@ interface ChildServiceInterface
 {
     /**
      * Creates the child
-     * @return array
+     * @return array|false
      */
     public function create(Child $child, ParameterBag $parameters);
 
@@ -17,7 +17,7 @@ interface ChildServiceInterface
      * Marks the child as deleted
      * @return array
      */
-    public function delete(Child $child);
+    public function delete(Child $child, ParameterBag $parameters);
 
     /**
      * Filters the array to return only data allowed to User's Role
@@ -32,7 +32,6 @@ interface ChildServiceInterface
 
     /**
      * Hydrates the child with the new values
-     * @return true|array
      */
     public function hydrate(Child $child, ParameterBag $parameters);
 
