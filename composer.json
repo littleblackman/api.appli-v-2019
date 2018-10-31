@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "c975l/user-bundle": "^2.0",
         "knplabs/knp-paginator-bundle": "^2.8",
+        "lcobucci/jwt": "^3.2",
         "nelmio/cors-bundle": "^1.5",
         "sensio/framework-extra-bundle": "^5.2",
         "sensiolabs/security-checker": "^5.0",
