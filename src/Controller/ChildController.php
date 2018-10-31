@@ -60,7 +60,7 @@ class ChildController extends AbstractController
      */
     public function search(Request $request, string $term)
     {
-        $this->denyAccessUnlessGranted('childSearch', false);
+        $this->denyAccessUnlessGranted('childSearch');
 
         $searchData = $this->childService->search($term, $request->query->getInt('size', 50));
 

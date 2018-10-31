@@ -60,7 +60,7 @@ class PersonController extends AbstractController
      */
     public function search(Request $request, string $term)
     {
-        $this->denyAccessUnlessGranted('personSearch', false);
+        $this->denyAccessUnlessGranted('personSearch');
 
         $searchData = $this->personService->search($term, $request->query->getInt('size', 50));
 

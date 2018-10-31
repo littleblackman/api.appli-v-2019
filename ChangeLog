@@ -1,5 +1,7 @@
 ChangeLog
 
+- Correction Child + Person Search (31/10/2018)
+
 v0.6
 - Correction de l'ajout d'une date de naissance pour les child pour accepter une chaîne (30/10/2018)
 - Suppression de l'envoi d'erreur lors de l'hydratation des objets (Child, etc.) pour permettre l'envoi d'autres paramètres (30/10/2018)
