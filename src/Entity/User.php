@@ -7,6 +7,8 @@ use c975L\UserBundle\Entity\UserLightAbstract;
 /**
  * @ORM\Table(name="user", indexes={@ORM\Index(name="un_email", columns={"name", "email"})})
  * @ORM\Entity(repositoryClass="c975L\UserBundle\Repository\UserRepository")
+ *
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class User extends UserLightAbstract
 {

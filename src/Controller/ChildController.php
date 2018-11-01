@@ -9,9 +9,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use App\Service\ChildServiceInterface;
+use App\Form\ChildType;
 use App\Entity\Child;
 
+/**
+ * ChildController class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 class ChildController extends AbstractController
 {
     private $childService;
@@ -23,15 +30,37 @@ class ChildController extends AbstractController
 
 //LIST
     /**
-     * List of all the children using "/child/list"
-     * Optional: page(int) Number of the page /
-     * Optionnal: size(int) Number of records
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Lists all the children
      *
      * @Route("/child/list",
      *    name="child_list",
      *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Child::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Child")
      */
     public function listAll(Request $request, PaginatorInterface $paginator)
     {
@@ -48,15 +77,43 @@ class ChildController extends AbstractController
 
 //SEARCH
     /**
-     * Search within database "/child/search/{term}"
-     * Optionnal: size(int) Number of records
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Searches for %{term}% in firstname|lastname for Child
      *
      * @Route("/child/search/{term}",
      *    name="child_search",
      *    requirements={"term": "^([a-zA-Z]+)"},
      *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Child::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="term",
+     *     in="path",
+     *     required=true,
+     *     description="Searched term",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Child")
      */
     public function search(Request $request, string $term)
     {
@@ -69,35 +126,74 @@ class ChildController extends AbstractController
 
 //CREATE
     /**
-     * Creates a child "/child/create"
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Creates a child
      *
      * @Route("/child/create",
      *    name="child_create",
      *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Child::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Child",
+     *     required=true,
+     *     @Model(type=ChildType::class)
+     * )
+     * @SWG\Tag(name="Child")
      */
     public function create(Request $request)
     {
         $child = new Child();
         $this->denyAccessUnlessGranted('childCreate', $child);
 
-        $createdData = $this->childService->create($child, $request->request);
+        $createdData = $this->childService->create($child, $request->getContent());
 
         return new JsonResponse($createdData);
     }
 
 //DISPLAY
     /**
-     * Specific child using "/child/display/{id}"
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Displays child
      *
-     * @Route("/child/display/{id}",
+     * @Route("/child/display/{childId}",
      *    name="child_display",
-     *    requirements={"id": "^([0-9]+)"},
+     *    requirements={"childId": "^([0-9]+)"},
      *    methods={"HEAD", "GET"})
-     * @Entity("child", expr="repository.findOneById(id)")
+     * @Entity("child", expr="repository.findOneById(childId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Child::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="childId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the child",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Child")
      */
     public function display(Request $request, Child $child)
     {
@@ -110,42 +206,88 @@ class ChildController extends AbstractController
 
 //MODIFY
     /**
-     * Modify specific child using "/child/modify/{id}"
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Modifies child
      *
-     * @Route("/child/modify/{id}",
+     * @Route("/child/modify/{childId}",
      *    name="child_modify",
-     *    requirements={"id": "^([0-9]+)"},
-     *    methods={"HEAD", "POST"})
-     * @Entity("child", expr="repository.findOneById(id)")
+     *    requirements={"childId": "^([0-9]+)"},
+     *    methods={"HEAD", "PUT"})
+     * @Entity("child", expr="repository.findOneById(childId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Child::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="childId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the child",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Child")
      */
     public function modify(Request $request, Child $child)
     {
         $this->denyAccessUnlessGranted('childModify', $child);
 
-        $modifiedData = $this->childService->modify($child, $request->request);
+        $modifiedData = $this->childService->modify($child, $request->getContent());
 
         return new JsonResponse($modifiedData);
     }
 
 //DELETE
     /**
-     * Deletes specific child using "/child/delete/{id}"
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Deletes child
      *
-     * @Route("/child/delete/{id}",
+     * @Route("/child/delete/{childId}",
      *    name="child_delete",
-     *    requirements={"id": "^([0-9]+)"},
-     *    methods={"HEAD", "POST"})
-     * @Entity("child", expr="repository.findOneById(id)")
+     *    requirements={"childId": "^([0-9]+)"},
+     *    methods={"HEAD", "DELETE"})
+     * @Entity("child", expr="repository.findOneById(childId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="childId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the child",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Child")
      */
     public function delete(Request $request, Child $child)
     {
         $this->denyAccessUnlessGranted('childDelete', $child);
 
-        $suppressedData = $this->childService->delete($child, $request->request);
+        $suppressedData = $this->childService->delete($child, $request->getContent());
 
         return new JsonResponse($suppressedData);
     }

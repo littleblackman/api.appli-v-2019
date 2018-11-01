@@ -3,30 +3,37 @@
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Person;
 use App\Entity\UserPersonLink;
+use App\Form\AppFormFactoryInterface;
 use App\Service\AddressServiceInterface;
 use App\Service\PersonServiceInterface;
 
+/**
+ * PersonService class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 class PersonService implements PersonServiceInterface
 {
     private $addressService;
     private $em;
+    private $formFactory;
     private $security;
     private $user;
 
     public function __construct(
         AddressServiceInterface $addressService,
         EntityManagerInterface $em,
+        AppFormFactoryInterface $formFactory,
         Security $security,
         TokenStorageInterface $tokenStorage
     )
     {
         $this->addressService = $addressService;
         $this->em = $em;
+        $this->formFactory = $formFactory;
         $this->security = $security;
         $this->user = $tokenStorage->getToken()->getUser();
     }
@@ -34,40 +41,36 @@ class PersonService implements PersonServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Person $person, ParameterBag $parameters)
+    public function create(Person $person, string $data)
     {
-        if (null !== $parameters->get('firstname') && null !== $parameters->get('lastname')) {
-            $create = $this->hydrate($person, $parameters);
+        $data = json_decode($data, true);
+        $form = $this->formFactory->create('person-create', $person);
+        $form->submit($data);
 
-            $person
-                ->setCreatedAt(new \DateTime())
-                ->setCreatedBy($this->user->getId())
-                ->setSuppressed(false)
-            ;
-            $this->em->persist($person);
+        $person
+            ->setCreatedAt(new \DateTime())
+            ->setCreatedBy($this->user->getId())
+            ->setSuppressed(false)
+        ;
+        $this->em->persist($person);
 
-            //Adds links from user to person
-            $userPersonLink = new UserPersonLink();
-            $userPersonLink
-                ->setUser($this->user)
-                ->setPerson($person)
-            ;
-            $this->em->persist($userPersonLink);
+        //Adds links from user to person
+        $userPersonLink = new UserPersonLink();
+        $userPersonLink
+            ->setUser($this->user)
+            ->setPerson($person)
+        ;
+        $this->em->persist($userPersonLink);
 
-            //Persists in DB
-            $this->em->flush();
+        //Persists in DB
+        $this->em->flush();
 
-            $message = 'Personne ajoutée';
-
-            //Returns data
-            return array(
-                'status' => $create,
-                'message' => $message,
-                'person' => $this->filter($person->toArray()),
-            );
-        }
-
-        return false;
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Personne ajoutée',
+            'person' => $this->filter($person->toArray()),
+        );
     }
 
     /**
@@ -151,6 +154,7 @@ class PersonService implements PersonServiceInterface
 
         }
 
+        //Deletes unwanted data
         foreach (array_merge($globalData, $specificData) as $unsetData) {
             unset($personArray[$unsetData]);
         }
@@ -181,22 +185,11 @@ class PersonService implements PersonServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function hydrate(Person $person, ParameterBag $parameters)
+    public function modify(Person $person, string $data)
     {
-        foreach ($parameters as $key => $value) {
-            $method = 'set' . ucfirst($key);
-            if (method_exists($person, $method)) {
-                $person->$method(htmlspecialchars($value));
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function modify(Person $person, ParameterBag $parameters)
-    {
-        $modify = $this->hydrate($person, $parameters);
+        $data = json_decode($data, true);
+        $form = $this->formFactory->create('person-modify', $person);
+        $form->submit($data);
 
         $person
             ->setUpdatedAt(new \DateTime())
@@ -207,12 +200,10 @@ class PersonService implements PersonServiceInterface
         $this->em->persist($person);
         $this->em->flush();
 
-        $message = 'Personne modifiée';
-
         //Returns data
         return array(
-            'status' => $modify,
-            'message' => $message,
+            'status' => true,
+            'message' => 'Personne modifiée',
             'person' => $this->filter($person->toArray()),
         );
     }

@@ -13,6 +13,8 @@ use App\Entity\Traits\SuppressionTrait;
  *
  * @ORM\Table(name="address")
  * @ORM\Entity(repositoryClass="App\Repository\AddressRepository")
+ *
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class Address
 {

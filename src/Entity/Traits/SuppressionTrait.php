@@ -4,6 +4,10 @@ namespace App\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * SuppressionTrait class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 trait SuppressionTrait
 {
     /**

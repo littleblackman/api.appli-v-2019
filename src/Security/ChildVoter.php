@@ -8,6 +8,10 @@ use Symfony\Component\Security\Core\Security;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use App\Entity\Child;
 
+/**
+ * ChildVoter class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 class ChildVoter extends Voter
 {
     /**

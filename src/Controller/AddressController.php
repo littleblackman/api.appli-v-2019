@@ -6,11 +6,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use App\Service\AddressServiceInterface;
 use App\Entity\Address;
+use App\Entity\PersonAddressLink;
+use App\Form\AddressType;
+use App\Form\PersonAddressLinkType;
 
+/**
+ * AddressController class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 class AddressController extends AbstractController
 {
     private $addressService;
@@ -22,15 +30,34 @@ class AddressController extends AbstractController
 
 //DISPLAY
     /**
-     * Specific address using "/address/display/{id}"
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Displays address
      *
-     * @Route("/address/display/{id}",
+     * @Route("/address/display/{addressId}",
      *    name="address_display",
-     *    requirements={"id": "^([0-9]+)"},
+     *    requirements={"addressId": "^([0-9]+)"},
      *    methods={"HEAD", "GET"})
-     * @Entity("address", expr="repository.findOneById(id)")
+     * @Entity("address", expr="repository.findOneById(addressId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Address::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="addressId",
+     *     in="path",
+     *     description="Id of the address",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Address")
      */
     public function display(Address $address)
     {
@@ -43,62 +70,135 @@ class AddressController extends AbstractController
 
 //CREATE
     /**
-     * Creates ana ddress "/address/create"
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Creates address
      *
      * @Route("/address/create",
      *    name="address_create",
      *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Address::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Address",
+     *     required=true,
+     *     @Model(type=AddressType::class)
+     * )
+     * @SWG\Tag(name="Address")
      */
     public function create(Request $request)
     {
         $address = new Address();
         $this->denyAccessUnlessGranted('addressCreate', $address);
 
-        $createdData = $this->addressService->create($address, $request->request);
+        $createdData = $this->addressService->create($address, $request->getContent());
 
-        return new JsonResponse($createdData);
+        return new JsonResponse($createdData, 201);
     }
 
 //MODIFY
     /**
-     * Modifiy specific address using "/address/modify/{id}"
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Modifies address
      *
-     * @Route("/address/modify/{id}",
+     * @Route("/address/modify/{addressId}",
      *    name="address_modify",
-     *    requirements={"id": "^([0-9]+)"},
-     *    methods={"HEAD", "POST"})
-     * @Entity("address", expr="repository.findOneById(id)")
+     *    requirements={"addressId": "^([0-9]+)"},
+     *    methods={"HEAD", "PUT"})
+     * @Entity("address", expr="repository.findOneById(addressId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Address::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="addressId",
+     *     in="path",
+     *     description="Id for the address",
+     *     required=true,
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Address",
+     *     required=true,
+     *     @Model(type=AddressType::class)
+     * )
+     * @SWG\Tag(name="Address")
      */
-    public function modify(Address $address)
+    public function modify(Request $request, Address $address)
     {
         $this->denyAccessUnlessGranted('addressModify', $address);
 
-        $modifiedData = $this->addressService->modify($address, $request->request);
+        $modifiedData = $this->addressService->modify($address, $request->getContent());
 
         return new JsonResponse($modifiedData);
     }
 
 //DELETE
     /**
-     * Delete specific address using "/address/delete/{id}"
-     * @return JsonResponse
-     * @throws AccessDeniedException
+     * Deletes address
      *
-     * @Route("/address/delete/{id}",
+     * @Route("/address/delete/{addressId}",
      *    name="address_delete",
-     *    requirements={"id": "^([0-9]+)"},
-     *    methods={"HEAD", "POST"})
-     * @Entity("address", expr="repository.findOneById(id)")
+     *    requirements={"addressId": "^([0-9]+)"},
+     *    methods={"HEAD", "DELETE"})
+     * @Entity("address", expr="repository.findOneById(addressId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="addressId",
+     *     in="path",
+     *     description="Id for the address",
+     *     required=true,
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="links",
+     *     in="body",
+     *     description="Data for the Address",
+     *     required=true,
+     *     @Model(type=PersonAddressLinkType::class)
+     * )
+     * @SWG\Tag(name="Address")
      */
     public function delete(Request $request, Address $address)
     {
         $this->denyAccessUnlessGranted('addressDelete', $address);
 
-        $suppressedData = $this->addressService->delete($address, $request->request);
+        $suppressedData = $this->addressService->delete($address, $request->getContent());
 
         return new JsonResponse($suppressedData);
     }

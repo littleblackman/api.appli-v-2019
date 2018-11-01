@@ -4,6 +4,10 @@ namespace App\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * ChildRepository class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 class ChildRepository extends EntityRepository
 {
     /**
@@ -21,12 +25,12 @@ class ChildRepository extends EntityRepository
     /**
      * Returns the child if not suppressed
      */
-    public function findOneById($id)
+    public function findOneById($childId)
     {
         return $this->createQueryBuilder('c')
-            ->where('c.childId = :id')
+            ->where('c.childId = :childId')
             ->andWhere('c.suppressed = 0')
-            ->setParameter('id', $id)
+            ->setParameter('childId', $childId)
             ->getQuery()
             ->getOneOrNullResult()
         ;

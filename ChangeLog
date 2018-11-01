@@ -1,7 +1,11 @@
 ChangeLog
 
+v0.7
 - Renommage des Routes `child_all` et `person_all` (01/11/2018)
 - Ajout de NelmioApiDocBundle (01/11/2018)
+- Mise en place des Tags Swagger (01/11/2018)
+- Mise en place des Forms pour les Address, Child et Person (01/11/2018)
+- Mise en place de la pagination sur les méthodes search (01/11/2018)
 
 v0.6.1
 - Correction Child + Person Search (31/10/2018)

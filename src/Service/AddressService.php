@@ -3,27 +3,34 @@
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Address;
 use App\Entity\Person;
 use App\Entity\PersonAddressLink;
+use App\Form\AppFormFactoryInterface;
 use App\Service\AddressServiceInterface;
 
+/**
+ * AddressService class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 class AddressService implements AddressServiceInterface
 {
     private $em;
+    private $formFactory;
     private $security;
     private $user;
 
     public function __construct(
         EntityManagerInterface $em,
+        AppFormFactoryInterface $formFactory,
         Security $security,
         TokenStorageInterface $tokenStorage
     )
     {
         $this->em = $em;
+        $this->formFactory = $formFactory;
         $this->security = $security;
         $this->user = $tokenStorage->getToken()->getUser();
     }
@@ -31,56 +38,52 @@ class AddressService implements AddressServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Address $address, ParameterBag $parameters)
+    public function create(Address $address, string $data)
     {
-        if (null !== $parameters->get('name') && null !== $parameters->get('address')) {
-            $create = $this->hydrate($address, $parameters);
+        $data = json_decode($data, true);
+        $form = $this->formFactory->create('address-create', $address);
+        $form->submit($data);
 
-            $address
-                ->setCreatedAt(new \DateTime())
-                ->setCreatedBy($this->user->getId())
-                ->setSuppressed(false)
-            ;
-            $this->em->persist($address);
+        $address
+            ->setCreatedAt(new \DateTime())
+            ->setCreatedBy($this->user->getId())
+            ->setSuppressed(false)
+        ;
+        $this->em->persist($address);
 
-            //Adds links from person/s to address
-            $links = $parameters->get('links');
-            if (null !== $links && is_array($links) && !empty($links)) {
-                foreach ($links as $personId) {
-                    $person = $this->em->getRepository('App:Person')->findOneById((int) $personId);
+        //Adds links from person/s to address
+        $links = $data['links'];
+        if (null !== $links && is_array($links) && !empty($links)) {
+            $person = $this->em->getRepository('App:Person')->findOneById((int) $links['personId']);
 
-                    if ($person instanceof Person) {
-                        $personAddressLink = new PersonAddressLink();
-                        $personAddressLink
-                            ->setPerson($person)
-                            ->setAddress($address)
-                        ;
-                        $this->em->persist($personAddressLink);
-                    }
-                }
+            if ($person instanceof Person) {
+                $personAddressLink = new PersonAddressLink();
+                $personAddressLink
+                    ->setPerson($person)
+                    ->setAddress($address)
+                ;
+                $this->em->persist($personAddressLink);
             }
-
-            //Persists in DB
-            $this->em->flush();
-
-            $message = 'Adresse ajoutée';
-
-            //Returns data
-            return array(
-                'status' => $create,
-                'message' => $message,
-                'address' => $this->filter($address->toArray()),
-            );
         }
 
-        return false;
+        //Persists in DB
+        $this->em->flush();
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Adresse ajoutée',
+            'address' => $this->filter($address->toArray()),
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Address $address, ParameterBag $parameters)
+    public function delete(Address $address, string $data)
     {
+        $data = json_decode($data, true);
+
         $address
             ->setSuppressed(true)
             ->setSuppressedAt(new \DateTime())
@@ -89,16 +92,12 @@ class AddressService implements AddressServiceInterface
         $this->em->persist($address);
 
         //Removes links from person/s to address
-        if (null !== $parameters->get('links')) {
-            $links = $parameters->get('links');
-            if (is_array($links) && !empty($links)) {
-                foreach ($links as $personId) {
-                    $person = $this->em->getRepository('App:Person')->findOneById((int) $personId);
-                    if ($person instanceof Person) {
-                        $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $person, 'address' => $address));
-                        $this->em->remove($personAddressLink);
-                    }
-                }
+        $links = $data['links'];
+        if (null !== $links && is_array($links) && !empty($links)) {
+            $person = $this->em->getRepository('App:Person')->findOneById((int) $links['personId']);
+            if ($person instanceof Person) {
+                $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $person, 'address' => $address));
+                $this->em->remove($personAddressLink);
             }
         }
 
@@ -139,6 +138,8 @@ class AddressService implements AddressServiceInterface
                 )
             );
         }
+
+        //Deletes unwanted data
         foreach (array_merge($globalData, $specificData) as $unsetData) {
             unset($addressArray[$unsetData]);
         }
@@ -160,22 +161,11 @@ class AddressService implements AddressServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function hydrate(Address $address, ParameterBag $parameters)
+    public function modify(Address $address, string $data)
     {
-        foreach ($parameters as $key => $value) {
-            $method = 'set' . ucfirst($key);
-            if (method_exists($address, $method)) {
-                $address->$method(htmlspecialchars($value));
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function modify(Address $address, ParameterBag $parameters)
-    {
-        $modify = $this->hydrate($address, $parameters);
+        $data = json_decode($data, true);
+        $form = $this->formFactory->create('address-modify', $address);
+        $form->submit($data);
 
         $address
             ->setUpdatedAt(new \DateTime())
@@ -186,12 +176,10 @@ class AddressService implements AddressServiceInterface
         $this->em->persist($address);
         $this->em->flush();
 
-        $message = 'Adresse modifiée';
-
         //Returns data
         return array(
-            'status' => $modify,
-            'message' => $message,
+            'status' => true,
+            'message' => 'Adresse modifiée',
             'address' => $this->filter($address->toArray()),
         );
     }

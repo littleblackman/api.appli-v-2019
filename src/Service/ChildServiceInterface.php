@@ -2,22 +2,25 @@
 
 namespace App\Service;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
 use App\Entity\Child;
 
+/**
+ * ChildServiceInterface class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 interface ChildServiceInterface
 {
     /**
      * Creates the child
      * @return array|false
      */
-    public function create(Child $child, ParameterBag $parameters);
+    public function create(Child $child, string $data);
 
     /**
      * Marks the child as deleted
      * @return array
      */
-    public function delete(Child $child, ParameterBag $parameters);
+    public function delete(Child $child, string $data);
 
     /**
      * Filters the array to return only data allowed to User's Role
@@ -31,15 +34,10 @@ interface ChildServiceInterface
     public function getAllInArray();
 
     /**
-     * Hydrates the child with the new values
-     */
-    public function hydrate(Child $child, ParameterBag $parameters);
-
-    /**
      * Modifies the child
      * @return array
      */
-    public function modify(Child $child, ParameterBag $parameters);
+    public function modify(Child $child, string $data);
 
     /**
      * Searches the term in the Child collection

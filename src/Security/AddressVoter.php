@@ -8,6 +8,10 @@ use Symfony\Component\Security\Core\Security;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
 use App\Entity\Address;
 
+/**
+ * AddressVoter class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 class AddressVoter extends Voter
 {
     /**

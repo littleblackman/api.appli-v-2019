@@ -4,6 +4,10 @@ namespace App\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * PersonRepository class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 class PersonRepository extends EntityRepository
 {
     /**
@@ -21,12 +25,12 @@ class PersonRepository extends EntityRepository
     /**
      * Returns the person if not suppressed
      */
-    public function findOneById($id)
+    public function findOneById($personId)
     {
         return $this->createQueryBuilder('p')
-            ->where('p.personId = :id')
+            ->where('p.personId = :personId')
             ->andWhere('p.suppressed = 0')
-            ->setParameter('id', $id)
+            ->setParameter('personId', $personId)
             ->getQuery()
             ->getOneOrNullResult()
         ;

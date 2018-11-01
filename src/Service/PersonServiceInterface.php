@@ -2,16 +2,19 @@
 
 namespace App\Service;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
 use App\Entity\Person;
 
+/**
+ * PersonServiceInterface class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 interface PersonServiceInterface
 {
     /**
      * Creates the person
-     * @return array|false
+     * @return array
      */
-    public function create(Person $person, ParameterBag $parameters);
+    public function create(Person $person, string $data);
 
     /**
      * Marks the person as deleted
@@ -32,15 +35,10 @@ interface PersonServiceInterface
     public function getAllInArray();
 
     /**
-     * Hydrates the person with the new values
-     */
-    public function hydrate(Person $person, ParameterBag $parameters);
-
-    /**
      * Modifies the person
      * @return array
      */
-    public function modify(Person $person, ParameterBag $parameters);
+    public function modify(Person $person, string $data);
 
     /**
      * Searches the term in the Person collection

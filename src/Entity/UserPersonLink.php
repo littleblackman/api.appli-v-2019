@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="user_person_link", indexes={@ORM\Index(name="user_person_link_user_FK", columns={"id"}), @ORM\Index(name="user_person_link_person_FK", columns={"person_id"})})
  * @ORM\Entity
+ *
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class UserPersonLink
 {

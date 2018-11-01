@@ -2,23 +2,25 @@
 
 namespace App\Service;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
 use App\Entity\Address;
 
+/**
+ * AddressServiceInterface class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
 interface AddressServiceInterface
 {
     /**
      * Creates the <address>
-         @return array|false
-     </address>
+     * @return array
      */
-    public function create(Address $address, ParameterBag $parameters);
+    public function create(Address $address, string $data);
 
     /**
      * Marks the address as deleted
      * @return array
      */
-    public function delete(Address $address, ParameterBag $parameters);
+    public function delete(Address $address, string $data);
 
     /**
      * Filters the array to return only data allowed to User's Role
@@ -32,13 +34,8 @@ interface AddressServiceInterface
     public function getAllInArray();
 
     /**
-     * Hydrates the address with the new values
-     */
-    public function hydrate(Address $address, ParameterBag $parameters);
-
-    /**
      * Modifies the address
      * @return array
      */
-    public function modify(Address $address, ParameterBag $parameters);
+    public function modify(Address $address, string $data);
 }
