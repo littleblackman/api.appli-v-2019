@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Swagger\Annotations as SWG;
 use App\Service\PersonServiceInterface;
 use App\Entity\Person;
 
@@ -23,17 +26,33 @@ class PersonController extends AbstractController
 
 //LIST
     /**
-     * List of all the persons using "/person/list".
-     * Optional: page(int) Number of the page /
-     * Optionnal: size(int) Number of records
+     * List of all the persons
      * @return JsonResponse
      * @throws AccessDeniedException
      *
      * @Route("/person/list",
-     *    name="person_all",
+     *    name="person_list",
      *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     * )
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Person::class)
+     * )
      */
-    public function all(Request $request, PaginatorInterface $paginator)
+    public function listAll(Request $request, PaginatorInterface $paginator)
     {
         $this->denyAccessUnlessGranted('personList');
 

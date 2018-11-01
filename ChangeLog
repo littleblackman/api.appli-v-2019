@@ -1,6 +1,11 @@
 ChangeLog
 
+- Renommage des Routes `child_all` et `person_all` (01/11/2018)
+- Ajout de NelmioApiDocBundle (01/11/2018)
+
+v0.6.1
 - Correction Child + Person Search (31/10/2018)
+- Mise à jour des bundles pour la gestion des JWT (31/10/2018)
 
 v0.6
 - Correction de l'ajout d'une date de naissance pour les child pour accepter une chaîne (30/10/2018)

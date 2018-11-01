@@ -30,10 +30,10 @@ class ChildController extends AbstractController
      * @throws AccessDeniedException
      *
      * @Route("/child/list",
-     *    name="child_all",
+     *    name="child_list",
      *    methods={"HEAD", "GET"})
      */
-    public function all(Request $request, PaginatorInterface $paginator)
+    public function listAll(Request $request, PaginatorInterface $paginator)
     {
         $this->denyAccessUnlessGranted('childList');
 
