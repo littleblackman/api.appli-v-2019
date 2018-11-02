@@ -60,8 +60,6 @@ class Child
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="photo", type="string", length=35, nullable=true)
      */
     private $photo;
 
@@ -86,6 +84,11 @@ class Child
      */
     public function toArray()
     {
+        //Adds photo
+        $photo = '/var/www/vhosts/appli-v.net/httpdocs/photos/' . $this->getChildId() . '.jpg';
+        $photo = is_file($photo) ? $photo : null;
+        $this->setPhoto($photo);
+
         $child = get_object_vars($this);
 
         //Gets related persons
@@ -179,7 +182,7 @@ class Child
         return $this->photo;
     }
 
-    public function setPhoto(?string $photo): self
+    public function setPhoto($photo): self
     {
         $this->photo = $photo;
 
