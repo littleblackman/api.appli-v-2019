@@ -124,7 +124,7 @@ class PersonController extends AbstractController
      * )
      * @SWG\Tag(name="Person")
      */
-    public function search(Request $request, PaginatorInterface $paginato, string $term)
+    public function search(Request $request, PaginatorInterface $paginator, string $term)
     {
         $this->denyAccessUnlessGranted('personSearch');
 

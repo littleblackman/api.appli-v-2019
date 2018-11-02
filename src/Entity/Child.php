@@ -59,6 +59,13 @@ class Child
     private $birthdate;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="photo", type="string", length=35, nullable=true)
+     */
+    private $photo;
+
+    /**
      * @ORM\OneToMany(targetEntity="ChildPersonLink", mappedBy="child")
      */
     private $persons;
@@ -163,6 +170,18 @@ class Child
         }
 
         $this->birthdate = $birthdate;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

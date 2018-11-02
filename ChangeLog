@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.7.3
+- Ajout du champ photo sur child (02/11/2018)
+- Correction person/search (02/11/2018)
+
 v0.7.2
 - Mise en place des redirections sur le display après un create/modify (02/11/2018)
 - Filtrage des données sur les list/search (02/11/2018)

@@ -44,6 +44,7 @@ class ChildController extends AbstractController
      *         @SWG\Property(property="firstname", type="string"),
      *         @SWG\Property(property="lastname", type="string"),
      *         @SWG\Property(property="birthdate", type="datetime"),
+     *         @SWG\Property(property="photo", type="string"),
      *     )
      * )
      * @SWG\Response(
@@ -94,6 +95,7 @@ class ChildController extends AbstractController
      *         @SWG\Property(property="firstname", type="string"),
      *         @SWG\Property(property="lastname", type="string"),
      *         @SWG\Property(property="birthdate", type="datetime"),
+     *         @SWG\Property(property="photo", type="string"),
      *     )
      * )
      * @SWG\Response(
