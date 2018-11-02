@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.7.2
+- Mise en place des redirections sur le display après un create/modify (02/11/2018)
+- Filtrage des données sur les list/search (02/11/2018)
+- Mise en place de "page" sur les search (02/11/2018)
+
 v0.7.1
 - Ajout d'un gestionnaire d'exceptions (02/11/2018)
 - Correction lors de l'ajout de child/person (02/11/2018)

@@ -16,7 +16,23 @@ class ChildRepository extends EntityRepository
     public function findAllInArray()
     {
         return $this->createQueryBuilder('c')
+            ->select('c.childId', 'c.firstname', 'c.lastname', 'c.birthdate')
             ->where('c.suppressed = 0')
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+    /**
+     * Returns all the children corresponding to the searched term
+     */
+    public function findAllInSearch(string $term)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.childId', 'c.firstname', 'c.lastname', 'c.birthdate')
+            ->where('LOWER(c.firstname) LIKE :term OR LOWER(c.lastname) LIKE :term')
+            ->andWhere('c.suppressed = 0')
+            ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
             ->getArrayResult()
         ;
@@ -33,21 +49,6 @@ class ChildRepository extends EntityRepository
             ->setParameter('childId', $childId)
             ->getQuery()
             ->getOneOrNullResult()
-        ;
-    }
-
-    /**
-     * Returns all the children corresponding to the searched term
-     */
-    public function search(string $term, int $size)
-    {
-        return $this->createQueryBuilder('c')
-            ->where('LOWER(c.firstname) LIKE :term OR LOWER(c.lastname) LIKE :term')
-            ->andWhere('c.suppressed = 0')
-            ->setParameter('term', '%' . strtolower($term) . '%')
-            ->setMaxResults($size)
-            ->getQuery()
-            ->getResult()
         ;
     }
 }

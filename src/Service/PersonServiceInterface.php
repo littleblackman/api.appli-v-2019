@@ -12,7 +12,6 @@ interface PersonServiceInterface
 {
     /**
      * Creates the person
-     * @return array
      */
     public function create(Person $person, string $data);
 
@@ -32,7 +31,13 @@ interface PersonServiceInterface
      * Returns the list of all persons in the array format
      * @return array
      */
-    public function getAllInArray();
+    public function findAllInArray();
+
+    /**
+     * Searches the term in the Child collection
+     * @return array
+     */
+    public function findAllInSearch(string $term);
 
     /**
      * Checks if the entity has been well filled
@@ -42,13 +47,6 @@ interface PersonServiceInterface
 
     /**
      * Modifies the person
-     * @return array
      */
     public function modify(Person $person, string $data);
-
-    /**
-     * Searches the term in the Person collection
-     * @return array
-     */
-    public function search(string $term, int $size);
 }

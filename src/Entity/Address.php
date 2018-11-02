@@ -198,7 +198,7 @@ class Address
         return $this;
     }
 
-    public function getPersons(): Collection
+    public function getPersons()
     {
         return $this->persons;
     }

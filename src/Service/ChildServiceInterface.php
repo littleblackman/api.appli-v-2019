@@ -12,7 +12,6 @@ interface ChildServiceInterface
 {
     /**
      * Creates the child
-     * @return array|false
      */
     public function create(Child $child, string $data);
 
@@ -31,7 +30,13 @@ interface ChildServiceInterface
     /**
      * Returns the list of all children in the array format
      */
-    public function getAllInArray();
+    public function findAllInArray();
+
+    /**
+     * Searches the term in the Child collection
+     * @return array
+     */
+    public function findAllInSearch(string $term);
 
     /**
      * Checks if the entity has been well filled
@@ -41,13 +46,6 @@ interface ChildServiceInterface
 
     /**
      * Modifies the child
-     * @return array
      */
     public function modify(Child $child, string $data);
-
-    /**
-     * Searches the term in the Child collection
-     * @return array
-     */
-    public function search(string $term, int $size);
 }

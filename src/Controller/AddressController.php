@@ -99,9 +99,9 @@ class AddressController extends AbstractController
         $address = new Address();
         $this->denyAccessUnlessGranted('addressCreate', $address);
 
-        $createdData = $this->addressService->create($address, $request->getContent());
+        $this->addressService->create($address, $request->getContent());
 
-        return new JsonResponse($createdData, 201);
+        return $this->redirectToRoute('address_display', array('addressId' => $address->getAddressId()));
     }
 
 //MODIFY
@@ -147,9 +147,9 @@ class AddressController extends AbstractController
     {
         $this->denyAccessUnlessGranted('addressModify', $address);
 
-        $modifiedData = $this->addressService->modify($address, $request->getContent());
+        $this->addressService->modify($address, $request->getContent());
 
-        return new JsonResponse($modifiedData);
+        return $this->redirectToRoute('address_display', array('addressId' => $address->getAddressId()));
     }
 
 //DELETE

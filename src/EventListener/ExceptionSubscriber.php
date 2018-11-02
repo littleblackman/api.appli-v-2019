@@ -8,13 +8,13 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-class ApiExceptionSubscriber implements EventSubscriberInterface
+class ExceptionSubscriber implements EventSubscriberInterface
 {
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
         $response = new JsonResponse(array(
-            'error' => $exception->getStatusCode(),
+            'error' => method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 'No ErrorCode',
             'type' => get_class($exception),
             'message' => $exception->getMessage(),
         ));

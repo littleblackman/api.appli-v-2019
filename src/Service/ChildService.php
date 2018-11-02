@@ -77,13 +77,6 @@ class ChildService implements ChildServiceInterface
 
         //Persists in DB
         $this->em->flush();
-
-        //Returns data
-        return array(
-            'status' => true,
-            'message' => 'Enfant ajouté',
-            'child' => $this->filter($child->toArray()),
-        );
     }
 
     /**
@@ -179,11 +172,22 @@ class ChildService implements ChildServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getAllInArray()
+    public function findAllInArray()
     {
         return $this->em
             ->getRepository('App:Child')
             ->findAllInArray()
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findAllInSearch(string $term)
+    {
+        return $this->em
+            ->getRepository('App:Child')
+            ->findAllInSearch($term)
         ;
     }
 
@@ -219,30 +223,5 @@ class ChildService implements ChildServiceInterface
         //Persists in DB
         $this->em->persist($child);
         $this->em->flush();
-
-        //Returns data
-        return array(
-            'status' => true,
-            'message' => 'Enfant modifié',
-            'child' => $this->filter($child->toArray()),
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function search(string $term, int $size)
-    {
-        $children = $this->em
-            ->getRepository('App:Child')
-            ->search($term, $size)
-        ;
-
-        $searchData = array();
-        foreach ($children as $child) {
-            $searchData[] = $this->filter($child->toArray());
-        }
-
-        return $searchData;
     }
 }

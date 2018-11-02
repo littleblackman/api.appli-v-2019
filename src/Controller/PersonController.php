@@ -39,7 +39,11 @@ class PersonController extends AbstractController
      * @SWG\Response(
      *     response=200,
      *     description="Success",
-     *     @Model(type=Person::class)
+     *     @SWG\Schema(
+     *         @SWG\Property(property="personId", type="integer"),
+     *         @SWG\Property(property="firstname", type="string"),
+     *         @SWG\Property(property="lastname", type="string"),
+     *     )
      * )
      * @SWG\Response(
      *     response=403,
@@ -64,7 +68,7 @@ class PersonController extends AbstractController
         $this->denyAccessUnlessGranted('personList');
 
         $persons = $paginator->paginate(
-            $this->personService->getAllInArray(),
+            $this->personService->findAllInArray(),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
@@ -85,8 +89,10 @@ class PersonController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Person::class))
+     *         @SWG\Property(property="childId", type="integer"),
+     *         @SWG\Property(property="firstname", type="string"),
+     *         @SWG\Property(property="lastname", type="string"),
+     *         @SWG\Property(property="birthdate", type="datetime"),
      *     )
      * )
      * @SWG\Response(
@@ -105,6 +111,12 @@ class PersonController extends AbstractController
      *     type="string",
      * )
      * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
      *     name="size",
      *     in="query",
      *     description="Number of records",
@@ -112,13 +124,17 @@ class PersonController extends AbstractController
      * )
      * @SWG\Tag(name="Person")
      */
-    public function search(Request $request, string $term)
+    public function search(Request $request, PaginatorInterface $paginato, string $term)
     {
         $this->denyAccessUnlessGranted('personSearch');
 
-        $searchData = $this->personService->search($term, $request->query->getInt('size', 50));
+        $persons = $paginator->paginate(
+            $this->personService->findAllInSearch($term),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
 
-        return new JsonResponse($searchData);
+        return new JsonResponse($persons->getItems());
     }
 
 //CREATE
@@ -152,9 +168,9 @@ class PersonController extends AbstractController
         $person = new Person();
         $this->denyAccessUnlessGranted('personCreate', $person);
 
-        $createdData = $this->personService->create($person, $request->getContent());
+        $this->personService->create($person, $request->getContent());
 
-        return new JsonResponse($createdData);
+        return $this->redirectToRoute('person_display', array('personId' => $person->getPersonId()));
     }
 
 //DISPLAY
@@ -240,9 +256,9 @@ class PersonController extends AbstractController
     {
         $this->denyAccessUnlessGranted('personModify', $person);
 
-        $modifiedData = $this->personService->modify($person, $request->getContent());
+        $this->personService->modify($person, $request->getContent());
 
-        return new JsonResponse($modifiedData);
+        return $this->redirectToRoute('person_display', array('personId' => $person->getPersonId()));
     }
 
 //DELETE

@@ -40,8 +40,10 @@ class ChildController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Child::class))
+     *         @SWG\Property(property="childId", type="integer"),
+     *         @SWG\Property(property="firstname", type="string"),
+     *         @SWG\Property(property="lastname", type="string"),
+     *         @SWG\Property(property="birthdate", type="datetime"),
      *     )
      * )
      * @SWG\Response(
@@ -67,7 +69,7 @@ class ChildController extends AbstractController
         $this->denyAccessUnlessGranted('childList');
 
         $children = $paginator->paginate(
-            $this->childService->getAllInArray(),
+            $this->childService->findAllInArray(),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
@@ -88,8 +90,10 @@ class ChildController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Child::class))
+     *         @SWG\Property(property="childId", type="integer"),
+     *         @SWG\Property(property="firstname", type="string"),
+     *         @SWG\Property(property="lastname", type="string"),
+     *         @SWG\Property(property="birthdate", type="datetime"),
      *     )
      * )
      * @SWG\Response(
@@ -108,6 +112,12 @@ class ChildController extends AbstractController
      *     type="string",
      * )
      * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
      *     name="size",
      *     in="query",
      *     description="Number of records",
@@ -115,13 +125,17 @@ class ChildController extends AbstractController
      * )
      * @SWG\Tag(name="Child")
      */
-    public function search(Request $request, string $term)
+    public function search(Request $request, PaginatorInterface $paginator, string $term)
     {
         $this->denyAccessUnlessGranted('childSearch');
 
-        $searchData = $this->childService->search($term, $request->query->getInt('size', 50));
+        $children = $paginator->paginate(
+            $this->childService->findAllInSearch($term),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
 
-        return new JsonResponse($searchData);
+        return new JsonResponse($children->getItems());
     }
 
 //CREATE
@@ -155,9 +169,9 @@ class ChildController extends AbstractController
         $child = new Child();
         $this->denyAccessUnlessGranted('childCreate', $child);
 
-        $createdData = $this->childService->create($child, $request->getContent());
+        $this->childService->create($child, $request->getContent());
 
-        return new JsonResponse($createdData);
+        return $this->redirectToRoute('child_display', array('childId' => $child->getChildId()));
     }
 
 //DISPLAY
@@ -243,9 +257,9 @@ class ChildController extends AbstractController
     {
         $this->denyAccessUnlessGranted('childModify', $child);
 
-        $modifiedData = $this->childService->modify($child, $request->getContent());
+        $this->childService->modify($child, $request->getContent());
 
-        return new JsonResponse($modifiedData);
+        return $this->redirectToRoute('child_display', array('childId' => $child->getChildId()));
     }
 
 //DELETE

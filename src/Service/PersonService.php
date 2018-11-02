@@ -69,13 +69,6 @@ class PersonService implements PersonServiceInterface
 
         //Persists in DB
         $this->em->flush();
-
-        //Returns data
-        return array(
-            'status' => true,
-            'message' => 'Personne ajoutée',
-            'person' => $this->filter($person->toArray()),
-        );
     }
 
     /**
@@ -179,11 +172,23 @@ class PersonService implements PersonServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function getAllInArray()
+    public function findAllInArray()
     {
         return $this->em
             ->getRepository('App:Person')
             ->findAllInArray()
+        ;
+    }
+
+    /**
+     * Searches the term in the Person collection
+     * @return array
+     */
+    public function findAllInSearch(string $term)
+    {
+        return $this->em
+            ->getRepository('App:Person')
+            ->findAllInSearch($term)
         ;
     }
 
@@ -219,30 +224,5 @@ class PersonService implements PersonServiceInterface
         //Persists in DB
         $this->em->persist($person);
         $this->em->flush();
-
-        //Returns data
-        return array(
-            'status' => true,
-            'message' => 'Personne modifiée',
-            'person' => $this->filter($person->toArray()),
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function search(string $term, int $size)
-    {
-        $persons = $this->em
-            ->getRepository('App:Person')
-            ->search($term, $size)
-        ;
-
-        $searchData = array();
-        foreach ($persons as $person) {
-            $searchData[] = $this->filter($person->toArray());
-        }
-
-        return $searchData;
     }
 }

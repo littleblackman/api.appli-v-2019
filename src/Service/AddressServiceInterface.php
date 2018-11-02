@@ -12,7 +12,6 @@ interface AddressServiceInterface
 {
     /**
      * Creates the <address>
-     * @return array
      */
     public function create(Address $address, string $data);
 
@@ -41,7 +40,6 @@ interface AddressServiceInterface
 
     /**
      * Modifies the address
-     * @return array
      */
     public function modify(Address $address, string $data);
 }

@@ -16,7 +16,23 @@ class PersonRepository extends EntityRepository
     public function findAllInArray()
     {
         return $this->createQueryBuilder('p')
+            ->select('p.personId', 'p.firstname', 'p.lastname')
             ->where('p.suppressed = 0')
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
+    /**
+     * Returns all the persons corresponding to the searched term
+     */
+    public function findAllInSearch(string $term)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.personId', 'p.firstname', 'p.lastname')
+            ->where('LOWER(p.firstname) LIKE :term OR LOWER(p.lastname) LIKE :term')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
             ->getArrayResult()
         ;
@@ -33,21 +49,6 @@ class PersonRepository extends EntityRepository
             ->setParameter('personId', $personId)
             ->getQuery()
             ->getOneOrNullResult()
-        ;
-    }
-
-    /**
-     * Returns all the persons corresponding to the searched term
-     */
-    public function search(string $term, int $size)
-    {
-        return $this->createQueryBuilder('p')
-            ->where('LOWER(p.firstname) LIKE :term OR LOWER(p.lastname) LIKE :term')
-            ->andWhere('p.suppressed = 0')
-            ->setParameter('term', '%' . strtolower($term) . '%')
-            ->setMaxResults($size)
-            ->getQuery()
-            ->getResult()
         ;
     }
 }
