@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Person;
@@ -47,6 +48,10 @@ class PersonService implements PersonServiceInterface
         $form = $this->formFactory->create('person-create', $person);
         $form->submit($data);
 
+        //Checks if entity has been filled
+        $this->isEntityFilled($person);
+
+        //Adds data
         $person
             ->setCreatedAt(new \DateTime())
             ->setCreatedBy($this->user->getId())
@@ -185,12 +190,27 @@ class PersonService implements PersonServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function isEntityFilled(Person $person)
+    {
+        if (null === $person->getFirstname() ||
+            null === $person->getLastname()) {
+            throw new UnprocessableEntityHttpException('Missing data for Person -> ' . json_encode($person->toArray()));
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function modify(Person $person, string $data)
     {
         $data = json_decode($data, true);
         $form = $this->formFactory->create('person-modify', $person);
         $form->submit($data);
 
+        //Checks if entity has been filled
+        $this->isEntityFilled($person);
+
+        //Adds data
         $person
             ->setUpdatedAt(new \DateTime())
             ->setUpdatedBy($this->user->getId())

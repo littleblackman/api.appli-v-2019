@@ -34,6 +34,12 @@ interface AddressServiceInterface
     public function getAllInArray();
 
     /**
+     * Checks if the entity has been well filled
+     * @throw Exception
+     */
+    public function isEntityFilled(Address $address);
+
+    /**
      * Modifies the address
      * @return array
      */

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Address;
@@ -44,6 +45,10 @@ class AddressService implements AddressServiceInterface
         $form = $this->formFactory->create('address-create', $address);
         $form->submit($data);
 
+        //Checks if entity has been filled
+        $this->isEntityFilled($address);
+
+        //Adds data
         $address
             ->setCreatedAt(new \DateTime())
             ->setCreatedBy($this->user->getId())
@@ -161,12 +166,29 @@ class AddressService implements AddressServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function isEntityFilled(Address $address)
+    {
+        if (null === $address->getName() ||
+            null === $address->getAddress() ||
+            null === $address->getPostal() ||
+            null === $address->getTown()) {
+            throw new UnprocessableEntityHttpException('Missing data for Address -> ' . json_encode($address->toArray()));
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function modify(Address $address, string $data)
     {
         $data = json_decode($data, true);
         $form = $this->formFactory->create('address-modify', $address);
         $form->submit($data);
 
+        //Checks if entity has been filled
+        $this->isEntityFilled($address);
+
+        //Adds data
         $address
             ->setUpdatedAt(new \DateTime())
             ->setUpdatedBy($this->user->getId())

@@ -34,6 +34,12 @@ interface ChildServiceInterface
     public function getAllInArray();
 
     /**
+     * Checks if the entity has been well filled
+     * @throw Exception
+     */
+    public function isEntityFilled(Child $child);
+
+    /**
      * Modifies the child
      * @return array
      */

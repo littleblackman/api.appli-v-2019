@@ -35,6 +35,12 @@ interface PersonServiceInterface
     public function getAllInArray();
 
     /**
+     * Checks if the entity has been well filled
+     * @throw Exception
+     */
+    public function isEntityFilled(Person $person);
+
+    /**
      * Modifies the person
      * @return array
      */

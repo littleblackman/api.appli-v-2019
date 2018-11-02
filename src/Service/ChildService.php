@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Child;
@@ -48,6 +49,10 @@ class ChildService implements ChildServiceInterface
         $form = $this->formFactory->create('child-create', $child);
         $form->submit($data);
 
+        //Checks if entity has been filled
+        $this->isEntityFilled($child);
+
+        //Adds data
         $child
             ->setCreatedAt(new \DateTime())
             ->setCreatedBy($this->user->getId())
@@ -185,12 +190,27 @@ class ChildService implements ChildServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function isEntityFilled(Child $child)
+    {
+        if (null === $child->getFirstname() ||
+            null === $child->getLastname()) {
+            throw new UnprocessableEntityHttpException('Missing data for Child -> ' . json_encode($child->toArray()));
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function modify(Child $child, string $data)
     {
         $data = json_decode($data, true);
         $form = $this->formFactory->create('child-modify', $child);
         $form->submit($data);
 
+        //Checks if entity has been filled
+        $this->isEntityFilled($child);
+
+        //Adds data
         $child
             ->setUpdatedAt(new \DateTime())
             ->setUpdatedBy($this->user->getId())

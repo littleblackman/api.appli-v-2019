@@ -67,7 +67,7 @@ class Person
         $personArray = get_object_vars($this);
 
         //Gets related addresses
-        if ($getAddresses) {
+        if ($getAddresses && null !== $this->getAddresses()) {
             $addresses = array();
             foreach($this->getAddresses()->toArray() as $address) {
                 $addresses[] = $address->getAddress()->toArray();
@@ -118,12 +118,12 @@ class Person
         return $this;
     }
 
-    public function getAddresses(): Collection
+    public function getAddresses()
     {
         return $this->addresses;
     }
 
-    public function getChildren(): Collection
+    public function getChildren()
     {
         return $this->children;
     }

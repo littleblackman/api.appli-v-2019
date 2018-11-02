@@ -83,15 +83,19 @@ class Child
 
         //Gets related persons
         $persons = array();
-        foreach($this->getPersons()->toArray() as $person) {
-            $persons[] = $person->getPerson()->toArray();
+        if (null !== $this->getPersons()) {
+            foreach($this->getPersons()->toArray() as $person) {
+                $persons[] = $person->getPerson()->toArray();
+            }
         }
         $child['persons'] = $persons;
 
         //Gets related siblings
         $siblings = array();
-        foreach($this->getSiblings()->toArray() as $sibling) {
-            $siblings[] = $sibling->getSibling()->toArraySibling();
+        if (null !== $this->getSiblings()) {
+            foreach($this->getSiblings()->toArray() as $sibling) {
+                $siblings[] = $sibling->getSibling()->toArraySibling();
+            }
         }
         $child['siblings'] = $siblings;
 
@@ -163,12 +167,12 @@ class Child
         return $this;
     }
 
-    public function getPersons(): Collection
+    public function getPersons()
     {
         return $this->persons;
     }
 
-    public function getSiblings(): Collection
+    public function getSiblings()
     {
         return $this->siblings;
     }
