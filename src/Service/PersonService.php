@@ -69,6 +69,14 @@ class PersonService implements PersonServiceInterface
 
         //Persists in DB
         $this->em->flush();
+        $this->em->refresh($person);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Personne ajoutée',
+            'person' => $this->filter($person->toArray()),
+        );
     }
 
     /**
@@ -224,5 +232,13 @@ class PersonService implements PersonServiceInterface
         //Persists in DB
         $this->em->persist($person);
         $this->em->flush();
+        $this->em->refresh($person);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Personne modifiée',
+            'person' => $this->filter($person->toArray()),
+        );
     }
 }

@@ -12,6 +12,7 @@ interface PersonServiceInterface
 {
     /**
      * Creates the person
+     * @return array
      */
     public function create(Person $person, string $data);
 
@@ -47,6 +48,7 @@ interface PersonServiceInterface
 
     /**
      * Modifies the person
+     * @return array
      */
     public function modify(Person $person, string $data);
 }

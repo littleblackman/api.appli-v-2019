@@ -73,6 +73,14 @@ class AddressService implements AddressServiceInterface
 
         //Persists in DB
         $this->em->flush();
+        $this->em->refresh($address);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Adresse ajoutée',
+            'address' => $this->filter($address->toArray()),
+        );
     }
 
     /**
@@ -190,5 +198,13 @@ class AddressService implements AddressServiceInterface
         //Persists in DB
         $this->em->persist($address);
         $this->em->flush();
+        $this->em->refresh($address);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Adresse modifiée',
+            'address' => $this->filter($address->toArray()),
+        );
     }
 }

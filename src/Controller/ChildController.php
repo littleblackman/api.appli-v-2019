@@ -151,7 +151,11 @@ class ChildController extends AbstractController
      * @SWG\Response(
      *     response=200,
      *     description="Success",
-     *     @Model(type=Child::class)
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="child", @Model(type=Child::class)),
+     *     )
      * )
      * @SWG\Response(
      *     response=403,
@@ -171,9 +175,9 @@ class ChildController extends AbstractController
         $child = new Child();
         $this->denyAccessUnlessGranted('childCreate', $child);
 
-        $this->childService->create($child, $request->getContent());
+        $createdData = $this->childService->create($child, $request->getContent());
 
-        return $this->redirectToRoute('child_display', array('childId' => $child->getChildId()));
+        return new JsonResponse($createdData);
     }
 
 //DISPLAY
@@ -234,8 +238,9 @@ class ChildController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Child::class))
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="child", @Model(type=Child::class)),
      *     )
      * )
      * @SWG\Response(
@@ -259,9 +264,9 @@ class ChildController extends AbstractController
     {
         $this->denyAccessUnlessGranted('childModify', $child);
 
-        $this->childService->modify($child, $request->getContent());
+        $modifiedData = $this->childService->modify($child, $request->getContent());
 
-        return $this->redirectToRoute('child_display', array('childId' => $child->getChildId()));
+        return new JsonResponse($modifiedData);
     }
 
 //DELETE

@@ -77,6 +77,14 @@ class ChildService implements ChildServiceInterface
 
         //Persists in DB
         $this->em->flush();
+        $this->em->refresh($child);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Enfant ajouté',
+            'child' => $this->filter($child->toArray()),
+        );
     }
 
     /**
@@ -223,5 +231,13 @@ class ChildService implements ChildServiceInterface
         //Persists in DB
         $this->em->persist($child);
         $this->em->flush();
+        $this->em->refresh($child);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Enfant modifié',
+            'child' => $this->filter($child->toArray()),
+        );
     }
 }

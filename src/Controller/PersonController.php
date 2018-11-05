@@ -148,7 +148,11 @@ class PersonController extends AbstractController
      * @SWG\Response(
      *     response=200,
      *     description="Success",
-     *     @Model(type=Person::class)
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="person", @Model(type=Person::class)),
+     *     )
      * )
      * @SWG\Response(
      *     response=403,
@@ -168,9 +172,9 @@ class PersonController extends AbstractController
         $person = new Person();
         $this->denyAccessUnlessGranted('personCreate', $person);
 
-        $this->personService->create($person, $request->getContent());
+        $createdData = $this->personService->create($person, $request->getContent());
 
-        return $this->redirectToRoute('person_display', array('personId' => $person->getPersonId()));
+        return new JsonResponse($createdData);
     }
 
 //DISPLAY
@@ -231,8 +235,9 @@ class PersonController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Person::class))
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="person", @Model(type=Person::class)),
      *     )
      * )
      * @SWG\Response(
@@ -256,9 +261,9 @@ class PersonController extends AbstractController
     {
         $this->denyAccessUnlessGranted('personModify', $person);
 
-        $this->personService->modify($person, $request->getContent());
+        $modifiedData = $this->personService->modify($person, $request->getContent());
 
-        return $this->redirectToRoute('person_display', array('personId' => $person->getPersonId()));
+        return new JsonResponse($modifiedData);
     }
 
 //DELETE

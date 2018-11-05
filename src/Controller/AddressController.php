@@ -79,7 +79,11 @@ class AddressController extends AbstractController
      * @SWG\Response(
      *     response=200,
      *     description="Success",
-     *     @Model(type=Address::class)
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="address", @Model(type=Address::class)),
+     *     )
      * )
      * @SWG\Response(
      *     response=403,
@@ -99,9 +103,9 @@ class AddressController extends AbstractController
         $address = new Address();
         $this->denyAccessUnlessGranted('addressCreate', $address);
 
-        $this->addressService->create($address, $request->getContent());
+        $createdData = $this->addressService->create($address, $request->getContent());
 
-        return $this->redirectToRoute('address_display', array('addressId' => $address->getAddressId()));
+        return new JsonResponse($createdData, 201);
     }
 
 //MODIFY
@@ -117,7 +121,11 @@ class AddressController extends AbstractController
      * @SWG\Response(
      *     response=200,
      *     description="Success",
-     *     @Model(type=Address::class)
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="address", @Model(type=Address::class)),
+     *     )
      * )
      * @SWG\Response(
      *     response=403,
@@ -147,9 +155,9 @@ class AddressController extends AbstractController
     {
         $this->denyAccessUnlessGranted('addressModify', $address);
 
-        $this->addressService->modify($address, $request->getContent());
+        $modifiedData = $this->addressService->modify($address, $request->getContent());
 
-        return $this->redirectToRoute('address_display', array('addressId' => $address->getAddressId()));
+        return new JsonResponse($modifiedData, 201);
     }
 
 //DELETE

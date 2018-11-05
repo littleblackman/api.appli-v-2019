@@ -12,6 +12,7 @@ interface ChildServiceInterface
 {
     /**
      * Creates the child
+     * @return array
      */
     public function create(Child $child, string $data);
 
@@ -46,6 +47,7 @@ interface ChildServiceInterface
 
     /**
      * Modifies the child
+     * @return array
      */
     public function modify(Child $child, string $data);
 }
