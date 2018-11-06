@@ -11,6 +11,12 @@ use App\Entity\Address;
 interface AddressServiceInterface
 {
     /**
+     * Adds the links from person to address
+     * @return array
+     */
+    public function addLink(int $personId, Address $address);
+
+    /**
      * Creates the address
      * @return array
      */
@@ -44,4 +50,10 @@ interface AddressServiceInterface
      * @return array
      */
     public function modify(Address $address, string $data);
+
+    /**
+     * Removes the links from person to address
+     * @return array
+     */
+    public function removeLink(int $personId, Address $address);
 }

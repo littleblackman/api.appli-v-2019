@@ -36,6 +36,23 @@ class AddressService implements AddressServiceInterface
         $this->user = $tokenStorage->getToken()->getUser();
     }
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addLink(int $personId, Address $address)
+    {
+        $person = $this->em->getRepository('App:Person')->findOneById($personId);
+        if ($person instanceof Person) {
+            $personAddressLink = new PersonAddressLink();
+            $personAddressLink
+                ->setPerson($person)
+                ->setAddress($address)
+            ;
+            $this->em->persist($personAddressLink);
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -59,16 +76,7 @@ class AddressService implements AddressServiceInterface
         //Adds links from person/s to address
         $links = $data['links'];
         if (null !== $links && is_array($links) && !empty($links)) {
-            $person = $this->em->getRepository('App:Person')->findOneById((int) $links['personId']);
-
-            if ($person instanceof Person) {
-                $personAddressLink = new PersonAddressLink();
-                $personAddressLink
-                    ->setPerson($person)
-                    ->setAddress($address)
-                ;
-                $this->em->persist($personAddressLink);
-            }
+            $this->addLink((int) $links['personId'], $address);
         }
 
         //Persists in DB
@@ -100,11 +108,7 @@ class AddressService implements AddressServiceInterface
         //Removes links from person/s to address
         $links = $data['links'];
         if (null !== $links && is_array($links) && !empty($links)) {
-            $person = $this->em->getRepository('App:Person')->findOneById((int) $links['personId']);
-            if ($person instanceof Person) {
-                $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $person, 'address' => $address));
-                $this->em->remove($personAddressLink);
-            }
+            $this->removeLink((int) $links['personId'], $address);
         }
 
         //Persists in DB
@@ -206,5 +210,17 @@ class AddressService implements AddressServiceInterface
             'message' => 'Adresse modifiée',
             'address' => $this->filter($address->toArray()),
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeLink(int $personId, Address $address)
+    {
+        $person = $this->em->getRepository('App:Person')->findOneById($personId);
+        if ($person instanceof Person) {
+            $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $person, 'address' => $address));
+            $this->em->remove($personAddressLink);
+        }
     }
 }

@@ -43,6 +43,23 @@ class ChildService implements ChildServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function addLink(int $personId, string $relation, Child $child)
+    {
+        $person = $this->em->getRepository('App:Person')->findOneById($personId);
+        if ($person instanceof Person) {
+            $childPersonLink = new ChildPersonLink();
+            $childPersonLink
+                ->setRelation(htmlspecialchars($relation))
+                ->setChild($child)
+                ->setPerson($person)
+            ;
+            $this->em->persist($childPersonLink);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function create(Child $child, string $data)
     {
         $data = json_decode($data, true);
@@ -262,23 +279,6 @@ class ChildService implements ChildServiceInterface
             'message' => 'Enfant modifié',
             'child' => $this->filter($child->toArray()),
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addLink(int $personId, string $relation, Child $child)
-    {
-        $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person) {
-            $childPersonLink = new ChildPersonLink();
-            $childPersonLink
-                ->setRelation(htmlspecialchars($relation))
-                ->setChild($child)
-                ->setPerson($person)
-            ;
-            $this->em->persist($childPersonLink);
-        }
     }
 
     /**
