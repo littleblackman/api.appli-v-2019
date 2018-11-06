@@ -258,6 +258,13 @@ class ChildController extends AbstractController
      *     description="Id of the child",
      *     type="integer",
      * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Child",
+     *     required=true,
+     *     @Model(type=ChildType::class)
+     * )
      * @SWG\Tag(name="Child")
      */
     public function modify(Request $request, Child $child)
@@ -301,6 +308,13 @@ class ChildController extends AbstractController
      *     required=true,
      *     description="Id of the child",
      *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Child",
+     *     required=true,
+     *     @Model(type=ChildType::class)
      * )
      * @SWG\Tag(name="Child")
      */

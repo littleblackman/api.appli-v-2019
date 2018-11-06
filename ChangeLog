@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.7.6
+- Ajout/suppression des liens PersonChild sur modify (06/11/2018)
+- Mise à jour de la documentation (06/11/2018)
+
 v0.7.5
 - Suppression de la redirection pour create/modify Child, Address, Person (05/11/2018)
 

@@ -63,15 +63,17 @@ class ChildService implements ChildServiceInterface
         //Adds links from person/s to child
         $links = $data['links'];
         if (null !== $links && is_array($links) && !empty($links)) {
-            $person = $this->em->getRepository('App:Person')->findOneById((int) $links['personId']);
-            if ($person instanceof Person) {
-                $childPersonLink = new ChildPersonLink();
-                $childPersonLink
-                    ->setRelation(htmlspecialchars($links['relation']))
-                    ->setChild($child)
-                    ->setPerson($person)
-                ;
-                $this->em->persist($childPersonLink);
+            foreach ($links as $link) {
+                $person = $this->em->getRepository('App:Person')->findOneById((int) $link['personId']);
+                if ($person instanceof Person) {
+                    $childPersonLink = new ChildPersonLink();
+                    $childPersonLink
+                        ->setRelation(htmlspecialchars($link['relation']))
+                        ->setChild($child)
+                        ->setPerson($person)
+                    ;
+                    $this->em->persist($childPersonLink);
+                }
             }
         }
 
@@ -101,11 +103,11 @@ class ChildService implements ChildServiceInterface
         ;
         $this->em->persist($child);
 
-        //Removes links from person/s to address
+        //Removes links from person/s to child
         $links = $data['links'];
         if (null !== $links && is_array($links) && !empty($links)) {
-            foreach ($links as $personId) {
-                $person = $this->em->getRepository('App:Person')->findOneById((int) $personId);
+            foreach ($links as $link) {
+                $person = $this->em->getRepository('App:Person')->findOneById((int) $link['personId']);
                 if ($person instanceof Person) {
                     $childPersonLink = $this->em->getRepository('App:ChildPersonLink')->findOneBy(array('child' => $child, 'person' => $person));
                     $this->em->remove($childPersonLink);
@@ -227,9 +229,56 @@ class ChildService implements ChildServiceInterface
             ->setUpdatedAt(new \DateTime())
             ->setUpdatedBy($this->user->getId())
         ;
+        $this->em->persist($child);
+
+        //Gets existing links to person
+        $existingLinks = array();
+        $currentLinks = $child->getPersons()->toArray();
+        if (null !== $currentLinks && is_array($currentLinks) && !empty($currentLinks)) {
+            foreach ($currentLinks as $currentLink) {
+                $existingLinks[$currentLink->getPerson()->getPersonId()] = $currentLink->getRelation();
+            }
+        }
+
+        //Gets submitted links to person
+        $submittedLinks = array();
+        $links = $data['links'];
+        if (null !== $links && is_array($links) && !empty($links)) {
+            foreach ($links as $link) {
+                $submittedLinks[(int) $link['personId']] = $link['relation'];
+            }
+        }
+
+        //Adds links from person/s to child
+        $linksToAdd = array_diff($submittedLinks, $existingLinks);
+        if (!empty($linksToAdd)) {
+            foreach ($linksToAdd as $personId => $relation) {
+                $person = $this->em->getRepository('App:Person')->findOneById($personId);
+                if ($person instanceof Person) {
+                    $childPersonLink = new ChildPersonLink();
+                    $childPersonLink
+                        ->setRelation(htmlspecialchars($relation))
+                        ->setChild($child)
+                        ->setPerson($person)
+                    ;
+                    $this->em->persist($childPersonLink);
+                }
+            }
+        }
+
+        //Removes links from person/s to child
+        $linksToRemove = array_diff($existingLinks, $submittedLinks);
+        if (!empty($linksToRemove)) {
+            foreach ($linksToRemove as $personId => $relation) {
+                $person = $this->em->getRepository('App:Person')->findOneById($personId);
+                if ($person instanceof Person) {
+                    $childPersonLink = $this->em->getRepository('App:ChildPersonLink')->findOneBy(array('child' => $child, 'person' => $person));
+                    $this->em->remove($childPersonLink);
+                }
+            }
+        }
 
         //Persists in DB
-        $this->em->persist($child);
         $this->em->flush();
         $this->em->refresh($child);
 

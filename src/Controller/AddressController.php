@@ -105,7 +105,7 @@ class AddressController extends AbstractController
 
         $createdData = $this->addressService->create($address, $request->getContent());
 
-        return new JsonResponse($createdData, 201);
+        return new JsonResponse($createdData);
     }
 
 //MODIFY
@@ -157,7 +157,7 @@ class AddressController extends AbstractController
 
         $modifiedData = $this->addressService->modify($address, $request->getContent());
 
-        return new JsonResponse($modifiedData, 201);
+        return new JsonResponse($modifiedData);
     }
 
 //DELETE

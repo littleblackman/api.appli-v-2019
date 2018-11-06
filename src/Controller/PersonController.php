@@ -255,6 +255,13 @@ class PersonController extends AbstractController
      *     description="Id of the person",
      *     type="integer",
      * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Person",
+     *     required=true,
+     *     @Model(type=PersonType::class)
+     * )
      * @SWG\Tag(name="Person")
      */
     public function modify(Request $request, Person $person)
