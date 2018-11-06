@@ -11,6 +11,12 @@ use App\Entity\Child;
 interface ChildServiceInterface
 {
     /**
+     * Adds the links from person to child
+     * @return array
+     */
+    public function addLink(int $personId, string $relation, Child $child);
+
+    /**
      * Creates the child
      * @return array
      */
@@ -50,4 +56,10 @@ interface ChildServiceInterface
      * @return array
      */
     public function modify(Child $child, string $data);
+
+    /**
+     * Removes the links from person to child
+     * @return array
+     */
+    public function removeLink(int $personId, Child $child);
 }
