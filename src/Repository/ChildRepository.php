@@ -18,6 +18,8 @@ class ChildRepository extends EntityRepository
         return $this->createQueryBuilder('c')
             ->select('c.childId', 'c.firstname', 'c.lastname', 'c.birthdate')
             ->where('c.suppressed = 0')
+            ->orderBy('c.lastname', 'ASC')
+            ->addOrderBy('c.firstname', 'ASC')
             ->getQuery()
             ->getArrayResult()
         ;
@@ -32,6 +34,8 @@ class ChildRepository extends EntityRepository
             ->select('c.childId', 'c.firstname', 'c.lastname', 'c.birthdate')
             ->where('LOWER(c.firstname) LIKE :term OR LOWER(c.lastname) LIKE :term')
             ->andWhere('c.suppressed = 0')
+            ->orderBy('c.lastname', 'ASC')
+            ->addOrderBy('c.firstname', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
             ->getArrayResult()
