@@ -6,7 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
+use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 /**
  * Child
@@ -19,6 +22,7 @@ use App\Entity\Traits\SuppressionTrait;
 class Child
 {
     use CreationTrait;
+    use UpdateTrait;
     use SuppressionTrait;
 
     /**
@@ -65,6 +69,7 @@ class Child
 
     /**
      * @ORM\OneToMany(targetEntity="ChildPersonLink", mappedBy="child")
+     * @SWG\Property(ref=@Model(type=Person::class))
      */
     private $persons;
 
@@ -94,8 +99,10 @@ class Child
         //Gets related persons
         $persons = array();
         if (null !== $this->getPersons()) {
-            foreach($this->getPersons()->toArray() as $person) {
-                $persons[] = $person->getPerson()->toArray();
+            foreach($this->getPersons()->toArray() as $personLink) {
+                $personArray = $personLink->getPerson()->toArray();
+                $personArray['relation'] = $personLink->getRelation();
+                $persons[] = $personArray;
             }
         }
         $child['persons'] = $persons;
@@ -103,8 +110,10 @@ class Child
         //Gets related siblings
         $siblings = array();
         if (null !== $this->getSiblings()) {
-            foreach($this->getSiblings()->toArray() as $sibling) {
-                $siblings[] = $sibling->getSibling()->toArraySibling();
+            foreach($this->getSiblings()->toArray() as $siblingLink) {
+                $siblingArray = $siblingLink->getSibling()->toArraySibling();
+                $siblingArray['relation'] = $siblingLink->getRelation();
+                $siblings[] = $siblingArray;
             }
         }
         $child['siblings'] = $siblings;

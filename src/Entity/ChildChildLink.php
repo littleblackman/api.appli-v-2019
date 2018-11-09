@@ -26,7 +26,7 @@ class ChildChildLink
     /**
      * @var App\Entity\Child
      *
-     * @ORM\ManyToOne(targetEntity="Child")
+     * @ORM\ManyToOne(targetEntity="Child", inversedBy="siblings")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="child_id", referencedColumnName="child_id")
      * })

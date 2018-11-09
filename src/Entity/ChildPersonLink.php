@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Child;
+use App\Entity\Person;
 
 /**
  * ChildPersonLink
@@ -31,9 +33,9 @@ class ChildPersonLink
     private $relation;
 
     /**
-     * @var App\Entity\Child
+     * @var Child
      *
-     * @ORM\ManyToOne(targetEntity="Child")
+     * @ORM\ManyToOne(targetEntity="Child", inversedBy="persons")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="child_id", referencedColumnName="child_id")
      * })
@@ -41,9 +43,9 @@ class ChildPersonLink
     private $child;
 
     /**
-     * @var App\Entity\Person
+     * @var Person
      *
-     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="children")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
      * })

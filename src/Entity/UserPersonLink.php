@@ -36,7 +36,7 @@ class UserPersonLink
     /**
      * @var App\Entity\User
      *
-     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\OneToOne(targetEntity="User", inversedBy="userPersonLink")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })

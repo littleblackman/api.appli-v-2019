@@ -6,7 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
+use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 /**
  * Address
@@ -19,6 +22,7 @@ use App\Entity\Traits\SuppressionTrait;
 class Address
 {
     use CreationTrait;
+    use UpdateTrait;
     use SuppressionTrait;
 
     /**
@@ -81,6 +85,7 @@ class Address
 
     /**
      * @ORM\OneToMany(targetEntity="PersonAddressLink", mappedBy="address")
+     * @SWG\Property(ref=@Model(type=Person::class))
      */
     private $persons;
 
@@ -99,9 +104,9 @@ class Address
 
         //Gets related persons
         $persons = array();
-        foreach($this->getPersons()->toArray() as $person) {
+        foreach($this->getPersons()->toArray() as $personLink) {
             $persons[] = array(
-                'personId' => $person->getPerson()->getPersonId(),
+                'personId' => $personLink->getPerson()->getPersonId(),
             );
         }
         $addressArray['persons'] = $persons;

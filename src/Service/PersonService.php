@@ -189,8 +189,7 @@ class PersonService implements PersonServiceInterface
     }
 
     /**
-     * Searches the term in the Person collection
-     * @return array
+     * {@inheritdoc}
      */
     public function findAllInSearch(string $term)
     {

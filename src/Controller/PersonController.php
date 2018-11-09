@@ -54,12 +54,14 @@ class PersonController extends AbstractController
      *     in="query",
      *     description="Number of the page",
      *     type="integer",
+     *     default="1",
      * )
      * @SWG\Parameter(
      *     name="size",
      *     in="query",
      *     description="Number of records",
      *     type="integer",
+     *     default="50",
      * )
      * @SWG\Tag(name="Person")
      */
@@ -115,12 +117,14 @@ class PersonController extends AbstractController
      *     in="query",
      *     description="Number of the page",
      *     type="integer",
+     *     default="1",
      * )
      * @SWG\Parameter(
      *     name="size",
      *     in="query",
      *     description="Number of records",
      *     type="integer",
+     *     default="50",
      * )
      * @SWG\Tag(name="Person")
      */

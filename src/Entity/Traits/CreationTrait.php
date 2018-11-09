@@ -24,20 +24,6 @@ trait CreationTrait
      */
     private $createdBy;
 
-    /**
-     * @var datetime
-     *
-     * @ORM\Column(name="updated_at", type="datetime")
-     */
-    private $updatedAt;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="updated_by", type="integer")
-     */
-    private $updatedBy;
-
 
     public function getCreatedAt(): ?\DateTimeInterface
     {
@@ -59,30 +45,6 @@ trait CreationTrait
     public function setCreatedBy(?int $createdBy): self
     {
         $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getUpdatedBy(): ?int
-    {
-        return $this->updatedBy;
-    }
-
-    public function setUpdatedBy(?int $updatedBy): self
-    {
-        $this->updatedBy = $updatedBy;
 
         return $this;
     }

@@ -56,12 +56,14 @@ class ChildController extends AbstractController
      *     in="query",
      *     description="Number of the page",
      *     type="integer",
+     *     default="1",
      * )
      * @SWG\Parameter(
      *     name="size",
      *     in="query",
      *     description="Number of records",
      *     type="integer",
+     *     default="50",
      * )
      * @SWG\Tag(name="Child")
      */
@@ -118,12 +120,14 @@ class ChildController extends AbstractController
      *     in="query",
      *     description="Number of the page",
      *     type="integer",
+     *     default="1",
      * )
      * @SWG\Parameter(
      *     name="size",
      *     in="query",
      *     description="Number of records",
      *     type="integer",
+     *     default="50",
      * )
      * @SWG\Tag(name="Child")
      */
@@ -193,10 +197,7 @@ class ChildController extends AbstractController
      * @SWG\Response(
      *     response=200,
      *     description="Success",
-     *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Child::class))
-     *     )
+     *     @Model(type=Child::class),
      * )
      * @SWG\Response(
      *     response=403,

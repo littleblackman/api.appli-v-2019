@@ -6,7 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
+use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
+use App\Entity\Address;
+use App\Entity\Child;
 
 /**
  * Person
@@ -19,6 +24,7 @@ use App\Entity\Traits\SuppressionTrait;
 class Person
 {
     use CreationTrait;
+    use UpdateTrait;
     use SuppressionTrait;
 
     /**
@@ -46,6 +52,7 @@ class Person
 
     /**
      * @ORM\OneToMany(targetEntity="PersonAddressLink", mappedBy="person")
+     * @SWG\Property(ref=@Model(type=Address::class))
      */
     private $addresses;
 
@@ -70,8 +77,8 @@ class Person
         //Gets related addresses
         if ($getAddresses && null !== $this->getAddresses()) {
             $addresses = array();
-            foreach($this->getAddresses()->toArray() as $address) {
-                $addresses[] = $address->getAddress()->toArray();
+            foreach($this->getAddresses()->toArray() as $addressLink) {
+                $addresses[] = $addressLink->getAddress()->toArray();
             }
             $personArray['addresses'] = $addresses;
         }
@@ -79,9 +86,12 @@ class Person
         //Gets related children
         if ($getChildren) {
             $children = array();
-            foreach($this->getChildren()->toArray() as $child) {
+            foreach($this->getChildren()->toArray() as $childLink) {
                 $children[] = array(
-                    'childId' => $child->getChild()->getChildId(),
+                    'childId' => $childLink->getChild()->getChildId(),
+                    'firstname' => $childLink->getChild()->getFirstname(),
+                    'lastname' => $childLink->getChild()->getLastname(),
+                    'relation' => $childLink->getRelation(),
                 );
             }
             $personArray['children'] = $children;

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Address;
+use App\Entity\Person;
 
 /**
  * PersonAddressLink
@@ -24,9 +26,9 @@ class PersonAddressLink
     private $personAddressLinkId;
 
     /**
-     * @var App\Entity\Address
+     * @var Address
      *
-     * @ORM\ManyToOne(targetEntity="Address")
+     * @ORM\ManyToOne(targetEntity="Address", inversedBy="persons")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="address_id", referencedColumnName="address_id")
      * })
@@ -34,9 +36,9 @@ class PersonAddressLink
     private $address;
 
     /**
-     * @var App\Entity\Person
+     * @var Person
      *
-     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="addresses")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
      * })
