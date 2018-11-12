@@ -144,46 +144,6 @@ class ChildController extends AbstractController
         return new JsonResponse($children->getItems());
     }
 
-//CREATE
-    /**
-     * Creates a child
-     *
-     * @Route("/child/create",
-     *    name="child_create",
-     *    methods={"HEAD", "POST"})
-     *
-     * @SWG\Response(
-     *     response=200,
-     *     description="Success",
-     *     @SWG\Schema(
-     *         @SWG\Property(property="status", type="boolean"),
-     *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="child", @Model(type=Child::class)),
-     *     )
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="Access denied",
-     * )
-     * @SWG\Parameter(
-     *     name="data",
-     *     in="body",
-     *     description="Data for the Child",
-     *     required=true,
-     *     @Model(type=ChildType::class)
-     * )
-     * @SWG\Tag(name="Child")
-     */
-    public function create(Request $request)
-    {
-        $child = new Child();
-        $this->denyAccessUnlessGranted('childCreate', $child);
-
-        $createdData = $this->childService->create($child, $request->getContent());
-
-        return new JsonResponse($createdData);
-    }
-
 //DISPLAY
     /**
      * Displays child
@@ -223,6 +183,46 @@ class ChildController extends AbstractController
         $childArray = $this->childService->filter($child->toArray());
 
         return new JsonResponse($childArray);
+    }
+
+//CREATE
+    /**
+     * Creates a child
+     *
+     * @Route("/child/create",
+     *    name="child_create",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="child", @Model(type=Child::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Child",
+     *     required=true,
+     *     @Model(type=ChildType::class)
+     * )
+     * @SWG\Tag(name="Child")
+     */
+    public function create(Request $request)
+    {
+        $child = new Child();
+        $this->denyAccessUnlessGranted('childCreate', $child);
+
+        $createdData = $this->childService->create($child, $request->getContent());
+
+        return new JsonResponse($createdData);
     }
 
 //MODIFY

@@ -141,46 +141,6 @@ class PersonController extends AbstractController
         return new JsonResponse($persons->getItems());
     }
 
-//CREATE
-    /**
-     * Creates a Person
-     *
-     * @Route("/person/create",
-     *    name="person_create",
-     *    methods={"HEAD", "POST"})
-     *
-     * @SWG\Response(
-     *     response=200,
-     *     description="Success",
-     *     @SWG\Schema(
-     *         @SWG\Property(property="status", type="boolean"),
-     *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="person", @Model(type=Person::class)),
-     *     )
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="Access denied",
-     * )
-     * @SWG\Parameter(
-     *     name="data",
-     *     in="body",
-     *     description="Data for the Person",
-     *     required=true,
-     *     @Model(type=PersonType::class)
-     * )
-     * @SWG\Tag(name="Person")
-     */
-    public function create(Request $request)
-    {
-        $person = new Person();
-        $this->denyAccessUnlessGranted('personCreate', $person);
-
-        $createdData = $this->personService->create($person, $request->getContent());
-
-        return new JsonResponse($createdData);
-    }
-
 //DISPLAY
     /**
      * Displays person
@@ -223,6 +183,47 @@ class PersonController extends AbstractController
         $personArray = $this->personService->filter($person->toArray());
 
         return new JsonResponse($personArray);
+    }
+
+
+//CREATE
+    /**
+     * Creates a Person
+     *
+     * @Route("/person/create",
+     *    name="person_create",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="person", @Model(type=Person::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Person",
+     *     required=true,
+     *     @Model(type=PersonType::class)
+     * )
+     * @SWG\Tag(name="Person")
+     */
+    public function create(Request $request)
+    {
+        $person = new Person();
+        $this->denyAccessUnlessGranted('personCreate', $person);
+
+        $createdData = $this->personService->create($person, $request->getContent());
+
+        return new JsonResponse($createdData);
     }
 
 //MODIFY

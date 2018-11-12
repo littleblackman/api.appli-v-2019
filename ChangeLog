@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.8
+- Ajout des Ride (12/11/2018)
+- Ajout des Vehicle (12/11/2018)
+
 v0.7.9
 - Création du Trait UpdateTrait et suppression de ses données dans CreationTrait (08/11/2018)
 - Ajout de la relation et des prénom et nom de l'enfant pour person/display et child/display (09/11/2018)

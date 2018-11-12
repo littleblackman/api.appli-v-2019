@@ -8,6 +8,8 @@ use App\Form\AppFormFactoryInterface;
 use App\Form\AddressType;
 use App\Form\ChildType;
 use App\Form\PersonType;
+use App\Form\RideType;
+use App\Form\VehicleType;
 
 /**
  * AppFormFactory class
@@ -43,6 +45,14 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'person-create':
             case 'person-modify':
                 $form = PersonType::class;
+                break;
+            case 'ride-create':
+            case 'ride-modify':
+                $form = RideType::class;
+                break;
+            case 'vehicle-create':
+            case 'vehicle-modify':
+                $form = VehicleType::class;
                 break;
             default:
                 break;
