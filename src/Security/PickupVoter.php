@@ -6,13 +6,13 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Ride;
+use App\Entity\Pickup;
 
 /**
- * RideVoter class
+ * PickupVoter class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class RideVoter extends Voter
+class PickupVoter extends Voter
 {
     /**
      * Stores Security
@@ -20,18 +20,20 @@ class RideVoter extends Voter
      */
     private $security;
 
-    public const RIDE_CREATE = 'rideCreate';
-    public const RIDE_DELETE = 'rideDelete';
-    public const RIDE_DISPLAY = 'rideDisplay';
-    public const RIDE_LIST = 'rideList';
-    public const RIDE_MODIFY = 'rideModify';
+    public const PERSON_CREATE = 'pickupCreate';
+    public const PERSON_DELETE = 'pickupDelete';
+    public const PERSON_DISPLAY = 'pickupDisplay';
+    public const PERSON_LIST = 'pickupList';
+    public const PERSON_MODIFY = 'pickupModify';
+    public const PERSON_SEARCH = 'pickupSearch';
 
     private const ATTRIBUTES = array(
-        self::RIDE_CREATE,
-        self::RIDE_DELETE,
-        self::RIDE_DISPLAY,
-        self::RIDE_LIST,
-        self::RIDE_MODIFY,
+        self::PERSON_CREATE,
+        self::PERSON_DELETE,
+        self::PERSON_DISPLAY,
+        self::PERSON_LIST,
+        self::PERSON_MODIFY,
+        self::PERSON_SEARCH,
     );
 
     public function __construct(Security $security)
@@ -42,7 +44,7 @@ class RideVoter extends Voter
     protected function supports($attribute, $subject)
     {
         if (null !== $subject) {
-            return $subject instanceof Ride && in_array($attribute, self::ATTRIBUTES);
+            return $subject instanceof Pickup && in_array($attribute, self::ATTRIBUTES);
         }
 
         return in_array($attribute, self::ATTRIBUTES);
@@ -57,25 +59,29 @@ class RideVoter extends Voter
 
         //Defines access rights
         switch ($attribute) {
-            case self::RIDE_CREATE:
-                return $this->canCreate();
+            case self::PERSON_CREATE:
+                return $this->canCreate($token, $subject);
                 break;
-            case self::RIDE_DELETE:
-                return $this->canDelete();
+            case self::PERSON_DELETE:
+                return $this->canDelete($token, $subject);
                 break;
-            case self::RIDE_DISPLAY:
-                return $this->canDisplay();
+            case self::PERSON_DISPLAY:
+                return $this->canDisplay($token, $subject);
                 break;
-            case self::RIDE_LIST:
-                return $this->canList();
+            case self::PERSON_LIST:
+                return $this->canList($token, $subject);
                 break;
-            case self::RIDE_MODIFY:
-                return $this->canModify();
+            case self::PERSON_MODIFY:
+                return $this->canModify($token, $subject);
+                break;
+            case self::PERSON_SEARCH:
+                return $this->canSearch($token, $subject);
                 break;
         }
 
         throw new \LogicException('Invalid attribute: ' . $attribute);
     }
+
 
     /**
      * Checks if is allowed to create

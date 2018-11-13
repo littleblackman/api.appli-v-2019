@@ -70,34 +70,11 @@ class Person
     /**
      * Converts the entity in an array
      */
-    public function toArray($getAddresses = true, $getChildren = true)
+    public function toArray()
     {
-        $personArray = get_object_vars($this);
+        $objectArray = get_object_vars($this);
 
-        //Gets related addresses
-        if ($getAddresses && null !== $this->getAddresses()) {
-            $addresses = array();
-            foreach($this->getAddresses()->toArray() as $addressLink) {
-                $addresses[] = $addressLink->getAddress()->toArray();
-            }
-            $personArray['addresses'] = $addresses;
-        }
-
-        //Gets related children
-        if ($getChildren) {
-            $children = array();
-            foreach($this->getChildren()->toArray() as $childLink) {
-                $children[] = array(
-                    'childId' => $childLink->getChild()->getChildId(),
-                    'firstname' => $childLink->getChild()->getFirstname(),
-                    'lastname' => $childLink->getChild()->getLastname(),
-                    'relation' => $childLink->getRelation(),
-                );
-            }
-            $personArray['children'] = $children;
-        }
-
-        return $personArray;
+        return $objectArray;
     }
 
     public function getPersonId(): ?int
@@ -137,5 +114,51 @@ class Person
     public function getChildren()
     {
         return $this->children;
+    }
+
+    public function addAddress(PersonAddressLink $address): self
+    {
+        if (!$this->addresses->contains($address)) {
+            $this->addresses[] = $address;
+            $address->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddress(PersonAddressLink $address): self
+    {
+        if ($this->addresses->contains($address)) {
+            $this->addresses->removeElement($address);
+            // set the owning side to null (unless already changed)
+            if ($address->getPerson() === $this) {
+                $address->setPerson(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addChild(ChildPersonLink $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children[] = $child;
+            $child->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(ChildPersonLink $child): self
+    {
+        if ($this->children->contains($child)) {
+            $this->children->removeElement($child);
+            // set the owning side to null (unless already changed)
+            if ($child->getPerson() === $this) {
+                $child->setPerson(null);
+            }
+        }
+
+        return $this;
     }
 }

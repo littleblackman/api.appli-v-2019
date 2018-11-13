@@ -4,12 +4,9 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Security;
 use App\Entity\Address;
 use App\Entity\Person;
 use App\Entity\PersonAddressLink;
-use App\Form\AppFormFactoryInterface;
 use App\Service\AddressServiceInterface;
 
 /**
@@ -19,35 +16,28 @@ use App\Service\AddressServiceInterface;
 class AddressService implements AddressServiceInterface
 {
     private $em;
-    private $formFactory;
-    private $security;
-    private $user;
+    private $mainService;
 
     public function __construct(
         EntityManagerInterface $em,
-        AppFormFactoryInterface $formFactory,
-        Security $security,
-        TokenStorageInterface $tokenStorage
+        MainServiceInterface $mainService
     )
     {
         $this->em = $em;
-        $this->formFactory = $formFactory;
-        $this->security = $security;
-        $this->user = $tokenStorage->getToken()->getUser();
+        $this->mainService = $mainService;
     }
-
 
     /**
      * {@inheritdoc}
      */
-    public function addLink(int $personId, Address $address)
+    public function addLink(int $personId, Address $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
         if ($person instanceof Person) {
             $personAddressLink = new PersonAddressLink();
             $personAddressLink
                 ->setPerson($person)
-                ->setAddress($address)
+                ->setAddress($object)
             ;
             $this->em->persist($personAddressLink);
         }
@@ -56,63 +46,55 @@ class AddressService implements AddressServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Address $address, string $data)
+    public function create(Address $object, string $data)
     {
-        $data = json_decode($data, true);
-        $form = $this->formFactory->create('address-create', $address);
-        $form->submit($data);
+        //Submits data
+        $data = $this->mainService->submit($object, 'address-create', $data);
 
         //Checks if entity has been filled
-        $this->isEntityFilled($address);
+        $this->isEntityFilled($object);
 
-        //Adds data
-        $address
-            ->setCreatedAt(new \DateTime())
-            ->setCreatedBy($this->user->getId())
-            ->setSuppressed(false)
-        ;
-        $this->em->persist($address);
+        //Persists data
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
 
         //Adds links from person/s to address
         $links = $data['links'];
         if (null !== $links && is_array($links) && !empty($links)) {
-            $this->addLink((int) $links['personId'], $address);
-        }
+            $this->addLink((int) $links['personId'], $object);
 
-        //Persists in DB
-        $this->em->flush();
-        $this->em->refresh($address);
+            //Persists in DB
+            $this->em->flush();
+            $this->em->refresh($object);
+        }
 
         //Returns data
         return array(
             'status' => true,
             'message' => 'Adresse ajoutée',
-            'address' => $this->filter($address->toArray()),
+            'address' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Address $address, string $data)
+    public function delete(Address $object, string $data)
     {
         $data = json_decode($data, true);
 
-        $address
-            ->setSuppressed(true)
-            ->setSuppressedAt(new \DateTime())
-            ->setSuppressedBy($this->user->getId())
-        ;
-        $this->em->persist($address);
+        //Persists data
+        $this->mainService->delete($object);
+        $this->mainService->persist($object);
 
         //Removes links from person/s to address
         $links = $data['links'];
         if (null !== $links && is_array($links) && !empty($links)) {
-            $this->removeLink((int) $links['personId'], $address);
-        }
+            $this->removeLink((int) $links['personId'], $object);
 
-        //Persists in DB
-        $this->em->flush();
+            //Persists in DB
+            $this->em->flush();
+        }
 
         return array(
             'status' => true,
@@ -123,104 +105,68 @@ class AddressService implements AddressServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function filter(array $addressArray)
+    public function isEntityFilled(Address $object)
     {
-        //Global data
-        $globalData = array(
-            '__initializer__',
-            '__cloner__',
-            '__isInitialized__',
-        );
-
-        //User's role linked data
-        $specificData = array();
-        if (!$this->security->isGranted('ROLE_ADMIN')) {
-            $specificData = array_merge(
-                $specificData,
-                array(
-                    'createdAt',
-                    'createdBy',
-                    'updatedAt',
-                    'updatedBy',
-                    'suppressed',
-                    'suppressedAt',
-                    'suppressedBy',
-                )
-            );
-        }
-
-        //Deletes unwanted data
-        foreach (array_merge($globalData, $specificData) as $unsetData) {
-            unset($addressArray[$unsetData]);
-        }
-
-        return $addressArray;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAllInArray()
-    {
-        return $this->em
-            ->getRepository('App:Address')
-            ->findAllInArray()
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEntityFilled(Address $address)
-    {
-        if (null === $address->getName() ||
-            null === $address->getAddress() ||
-            null === $address->getPostal() ||
-            null === $address->getTown()) {
-            throw new UnprocessableEntityHttpException('Missing data for Address -> ' . json_encode($address->toArray()));
+        if (null === $object->getName() ||
+            null === $object->getAddress() ||
+            null === $object->getPostal() ||
+            null === $object->getTown()) {
+            throw new UnprocessableEntityHttpException('Missing data for Address -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function modify(Address $address, string $data)
+    public function modify(Address $object, string $data)
     {
-        $data = json_decode($data, true);
-        $form = $this->formFactory->create('address-modify', $address);
-        $form->submit($data);
+        //Submits data
+        $data = $this->mainService->submit($object, 'address-modify', $data);
 
         //Checks if entity has been filled
-        $this->isEntityFilled($address);
+        $this->isEntityFilled($object);
 
-        //Adds data
-        $address
-            ->setUpdatedAt(new \DateTime())
-            ->setUpdatedBy($this->user->getId())
-        ;
-
-        //Persists in DB
-        $this->em->persist($address);
-        $this->em->flush();
-        $this->em->refresh($address);
+        //Persists data
+        $this->mainService->modify($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(
             'status' => true,
             'message' => 'Adresse modifiée',
-            'address' => $this->filter($address->toArray()),
+            'address' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function removeLink(int $personId, Address $address)
+    public function removeLink(int $personId, Address $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
         if ($person instanceof Person) {
-            $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $person, 'address' => $address));
+            $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $person, 'address' => $object));
             $this->em->remove($personAddressLink);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(Address $object)
+    {
+        //Main data
+        $objectArray = $this->mainService->toArray($object->toArray());
+
+        //Gets related persons
+        if (null !== $object->getPersons()) {
+            $persons = array();
+            foreach($object->getPersons() as $personLink) {
+                $persons[] = $this->mainService->toArray($personLink->getPerson()->toArray());
+            }
+            $objectArray['persons'] = $persons;
+        }
+
+        return $objectArray;
     }
 }

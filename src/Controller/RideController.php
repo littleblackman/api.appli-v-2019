@@ -30,11 +30,11 @@ class RideController extends AbstractController
 
 //LIST
     /**
-     * Lists all the rides finished or coming
+     * Lists all the rides coming or finished
      *
      * @Route("/ride/list/{status}",
      *    name="ride_list",
-     *    requirements={"status": "^(finished|coming)$"},
+     *    requirements={"status": "^(coming|finished)$"},
      *    defaults={"status": "coming"},
      *    methods={"HEAD", "GET"})
      *
@@ -53,7 +53,7 @@ class RideController extends AbstractController
      * @SWG\Parameter(
      *     name="status",
      *     in="path",
-     *     description="finished|coming rides",
+     *     description="coming|finished rides",
      *     type="string",
      *     default="coming",
      * )
@@ -73,17 +73,22 @@ class RideController extends AbstractController
      * )
      * @SWG\Tag(name="Ride")
      */
-    public function listAll(Request $request, PaginatorInterface $paginator, $status)
+    public function listAllByStatus(Request $request, PaginatorInterface $paginator, $status)
     {
         $this->denyAccessUnlessGranted('rideList');
 
         $rides = $paginator->paginate(
-            $this->rideService->findAllInArray($status),
+            $this->rideService->findAllByStatus($status),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        return new JsonResponse($rides->getItems());
+        $ridesArray = array();
+        foreach ($rides->getItems() as $ride) {
+            $ridesArray[] = $this->rideService->toArray($ride);
+        };
+
+        return new JsonResponse($ridesArray);
     }
 
 //LIST BY DATE
@@ -91,17 +96,16 @@ class RideController extends AbstractController
      * Lists all the rides for a specific date
      *
      * @Route("/ride/list/{date}",
-     *    name="ride_list",
-     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2})|([0-9]{4}))$"},
+     *    name="ride_list_date",
+     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         @SWG\Property(property="personId", type="integer"),
-     *         @SWG\Property(property="firstname", type="string"),
-     *         @SWG\Property(property="lastname", type="string"),
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Ride::class))
      *     )
      * )
      * @SWG\Response(
@@ -111,7 +115,7 @@ class RideController extends AbstractController
      * @SWG\Parameter(
      *     name="date",
      *     in="path",
-     *     description="Date for the ride (YYYY-MM-DD | YYYY-MM | YYYY)",
+     *     description="Date for the ride (YYYY-MM-DD | YYYY-MM)",
      *     type="string",
      * )
      * @SWG\Parameter(
@@ -140,7 +144,12 @@ class RideController extends AbstractController
             $request->query->getInt('size', 50)
         );
 
-        return new JsonResponse($rides->getItems());
+        $ridesArray = array();
+        foreach ($rides->getItems() as $ride) {
+            $ridesArray[] = $this->rideService->toArray($ride);
+        };
+
+        return new JsonResponse($ridesArray);
     }
 
 //DISPLAY BY DATE
@@ -220,7 +229,7 @@ class RideController extends AbstractController
     {
         $this->denyAccessUnlessGranted('rideDisplay', $ride);
 
-        $rideArray = $this->rideService->filter($ride->toArray());
+        $rideArray = $this->rideService->toArray($ride);
 
         return new JsonResponse($rideArray);
     }

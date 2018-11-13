@@ -13,32 +13,30 @@ class ChildRepository extends EntityRepository
     /**
      * Returns all the children in an array
      */
-    public function findAllInArray()
+    public function findAll()
     {
         return $this->createQueryBuilder('c')
-            ->select('c.childId', 'c.firstname', 'c.lastname', 'c.birthdate')
             ->where('c.suppressed = 0')
             ->orderBy('c.lastname', 'ASC')
             ->addOrderBy('c.firstname', 'ASC')
             ->getQuery()
-            ->getArrayResult()
+            ->getResult()
         ;
     }
 
     /**
      * Returns all the children corresponding to the searched term
      */
-    public function findAllInSearch(string $term)
+    public function findAllSearch(string $term)
     {
         return $this->createQueryBuilder('c')
-            ->select('c.childId', 'c.firstname', 'c.lastname', 'c.birthdate')
             ->where('LOWER(c.firstname) LIKE :term OR LOWER(c.lastname) LIKE :term')
             ->andWhere('c.suppressed = 0')
             ->orderBy('c.lastname', 'ASC')
             ->addOrderBy('c.firstname', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
-            ->getArrayResult()
+            ->getResult()
         ;
     }
 

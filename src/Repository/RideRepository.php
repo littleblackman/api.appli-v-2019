@@ -24,14 +24,14 @@ class RideRepository extends EntityRepository
             ->setParameter('date', $date . '%')
             ->orderBy('r.rideId', 'ASC')
             ->getQuery()
-            ->getArrayResult()
+            ->getResult()
         ;
     }
 
     /**
-     * Returns all the rides in an array
+     * Returns all the rides by status
      */
-    public function findAllInArray(string $status)
+    public function findAllByStatus(string $status)
     {
         $operator = 'finished' === $status ? '<' : '>=';
         return $this->createQueryBuilder('r')
@@ -43,7 +43,7 @@ class RideRepository extends EntityRepository
             ->orderBy('r.date', 'ASC')
             ->setParameter('date', date('Y-m-d', time()))
             ->getQuery()
-            ->getArrayResult()
+            ->getResult()
         ;
     }
 
@@ -63,7 +63,7 @@ class RideRepository extends EntityRepository
             ->setParameter('person', $person)
             ->orderBy('r.rideId', 'ASC')
             ->getQuery()
-            ->getArrayResult()
+            ->getOneOrNullResult()
         ;
     }
 
@@ -73,11 +73,13 @@ class RideRepository extends EntityRepository
     public function findOneById($rideId)
     {
         return $this->createQueryBuilder('r')
-            ->addSelect('p', 'v')
+            ->addSelect('p', 'v', 'pi')
             ->leftJoin('r.person', 'p')
             ->leftJoin('r.vehicle', 'v')
+            ->leftJoin('r.pickups', 'pi')
             ->where('r.rideId = :rideId')
             ->andWhere('r.suppressed = 0')
+            ->andWhere('pi.suppressed = 0 OR pi.suppressed IS NULL')
             ->setParameter('rideId', $rideId)
             ->getQuery()
             ->getOneOrNullResult()

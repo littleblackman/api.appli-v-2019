@@ -5,7 +5,10 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use App\Entity\Person;
+use App\Entity\Pickup;
 use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
@@ -76,7 +79,7 @@ class Ride
     private $endPoint;
 
     /**
-     * @var \Person
+     * @var App\Entity\Person
      *
      * @ORM\OneToOne(targetEntity="Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
@@ -84,33 +87,42 @@ class Ride
     private $person;
 
     /**
-     * @var \Vehicle
+     * @var App\Entity\Vehicle
      *
      * @ORM\OneToOne(targetEntity="Vehicle")
      * @ORM\JoinColumn(name="vehicle_id", referencedColumnName="vehicle_id")
      */
     private $vehicle;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Pickup", mappedBy="ride")
+     */
     private $pickups;
+
+    public function __construct()
+    {
+        $this->pickups = new ArrayCollection();
+    }
 
     /**
      * Converts the entity in an array
      */
     public function toArray()
     {
-        $rideArray = get_object_vars($this);
+        $objectArray = get_object_vars($this);
 
-        //Gets related person
-        if (null !== $this->getPerson()) {
-            $rideArray['person'] = $this->getPerson()->toArray();
+        //Specific data
+        if (null !== $objectArray['date']) {
+            $objectArray['date'] = $objectArray['date']->format('Y-m-d');
+        }
+        if (null !== $objectArray['start']) {
+            $objectArray['start'] = $objectArray['start']->format('H:i');
+        }
+        if (null !== $objectArray['arrival']) {
+            $objectArray['arrival'] = $objectArray['arrival']->format('H:i');
         }
 
-        //Gets related vehicle
-        if (null !== $this->getVehicle()) {
-            $rideArray['vehicle'] = $this->getVehicle()->toArray();
-        }
-
-        return $rideArray;
+        return $objectArray;
     }
 
     public function getRideId(): ?int
@@ -212,5 +224,13 @@ class Ride
         $this->vehicle = $vehicle;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|RidePickupLink[]
+     */
+    public function getPickups(): Collection
+    {
+        return $this->pickups;
     }
 }

@@ -14,41 +14,29 @@ interface PersonServiceInterface
      * Creates the person
      * @return array
      */
-    public function create(Person $person, string $data);
+    public function create(Person $object, string $data);
 
     /**
      * Marks the person as deleted
      * @return array
      */
-    public function delete(Person $person);
-
-    /**
-     * Filters the array to return only data allowed to User's Role
-     * @return array
-     */
-    public function filter(array $personArray);
-
-    /**
-     * Returns the list of all persons in the array format
-     * @return array
-     */
-    public function findAllInArray();
-
-    /**
-     * Searches the term in the Child collection
-     * @return array
-     */
-    public function findAllInSearch(string $term);
+    public function delete(Person $object);
 
     /**
      * Checks if the entity has been well filled
      * @throw Exception
      */
-    public function isEntityFilled(Person $person);
+    public function isEntityFilled(Person $object);
 
     /**
      * Modifies the person
      * @return array
      */
-    public function modify(Person $person, string $data);
+    public function modify(Person $object, string $data);
+
+    /**
+     * Converts entity to array
+     * @return array
+     */
+    public function toArray(Person $object);
 }

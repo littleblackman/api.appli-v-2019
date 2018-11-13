@@ -20,85 +20,71 @@ class PersonService implements PersonServiceInterface
 {
     private $addressService;
     private $em;
-    private $formFactory;
-    private $security;
-    private $user;
+    private $mainService;
 
     public function __construct(
         AddressServiceInterface $addressService,
         EntityManagerInterface $em,
-        AppFormFactoryInterface $formFactory,
-        Security $security,
-        TokenStorageInterface $tokenStorage
+        MainServiceInterface $mainService
     )
     {
         $this->addressService = $addressService;
         $this->em = $em;
-        $this->formFactory = $formFactory;
-        $this->security = $security;
-        $this->user = $tokenStorage->getToken()->getUser();
+        $this->mainService = $mainService;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(Person $person, string $data)
+    public function create(Person $object, string $data)
     {
-        $data = json_decode($data, true);
-        $form = $this->formFactory->create('person-create', $person);
-        $form->submit($data);
+        //Submits data
+        $data = $this->mainService->submit($object, 'person-create', $data);
 
         //Checks if entity has been filled
-        $this->isEntityFilled($person);
+        $this->isEntityFilled($object);
 
-        //Adds data
-        $person
-            ->setCreatedAt(new \DateTime())
-            ->setCreatedBy($this->user->getId())
-            ->setSuppressed(false)
-        ;
-        $this->em->persist($person);
+        //Persists data
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
 
         //Adds links from user to person
         $userPersonLink = new UserPersonLink();
         $userPersonLink
             ->setUser($this->user)
-            ->setPerson($person)
+            ->setPerson($object)
         ;
         $this->em->persist($userPersonLink);
 
         //Persists in DB
         $this->em->flush();
-        $this->em->refresh($person);
+        $this->em->refresh($object);
 
         //Returns data
         return array(
             'status' => true,
             'message' => 'Personne ajoutée',
-            'person' => $this->filter($person->toArray()),
+            'person' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Person $person)
+    public function delete(Person $object)
     {
-        $person
-            ->setSuppressed(true)
-            ->setSuppressedAt(new \DateTime())
-            ->setSuppressedBy($this->user->getId())
-        ;
-        $this->em->persist($person);
+        //Persists data
+        $this->mainService->delete($object);
+        $this->mainService->persist($object);
 
         //Removes links from user to person
-        $userPersonLink = $this->em->getRepository('App:UserPersonLink')->findOneByPerson($person);
+        $userPersonLink = $this->em->getRepository('App:UserPersonLink')->findOneByPerson($object);
         if ($userPersonLink instanceof UserPersonLink) {
             $this->em->remove($userPersonLink);
         }
 
         //Removes links from person to child
-        $childPersonLinks = $this->em->getRepository('App:ChildPersonLink')->findByPerson($person);
+        $childPersonLinks = $this->em->getRepository('App:ChildPersonLink')->findByPerson($object);
         foreach ($childPersonLinks as $childPersonLink) {
             if ($childPersonLink instanceof ChildPersonLink) {
                 $this->em->remove($childPersonLink);
@@ -106,10 +92,10 @@ class PersonService implements PersonServiceInterface
         }
 
         //Removes links from person to address
-        $personAddressLinks = $this->em->getRepository('App:PersonAddressLink')->findByPerson($person);
-        foreach ($personAddressLinks as $personAddressLink) {
-            if ($personAddressLink instanceof PersonAddressLink) {
-                $this->em->remove($personAddressLink);
+        $objectAddressLinks = $this->em->getRepository('App:PersonAddressLink')->findByPerson($object);
+        foreach ($objectAddressLinks as $objectAddressLink) {
+            if ($objectAddressLink instanceof PersonAddressLink) {
+                $this->em->remove($objectAddressLink);
             }
         }
 
@@ -123,121 +109,89 @@ class PersonService implements PersonServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the list of all persons in the array format
+     * @return array
      */
-    public function filter(array $personArray)
-    {
-        //Global data
-        $globalData = array(
-            '__initializer__',
-            '__cloner__',
-            '__isInitialized__',
-        );
-
-        //User's role linked data
-        $specificData = array();
-        if (!$this->security->isGranted('ROLE_ADMIN')) {
-            $specificData = array_merge(
-                $specificData,
-                array(
-                    'createdAt',
-                    'createdBy',
-                    'updatedAt',
-                    'updatedBy',
-                    'suppressed',
-                    'suppressedAt',
-                    'suppressedBy',
-                )
-            );
-        }
-        if ($this->security->isGranted('ROLE_TRAINEE') || $this->security->isGranted('ROLE_COACH')) {
-            $specificData = array_merge(
-                $specificData,
-                array(
-                    'addresses',
-                )
-            );
-
-        }
-
-        //Deletes unwanted data
-        foreach (array_merge($globalData, $specificData) as $unsetData) {
-            unset($personArray[$unsetData]);
-        }
-
-        //Filters addresses
-        if (isset($personArray['addresses']) && is_array($personArray['addresses'])) {
-            $addresses = array();
-            foreach ($personArray['addresses'] as $key => $value) {
-                $addresses[] = $this->addressService->filter($value);
-            }
-            $personArray['addresses'] = $addresses;
-        }
-
-        return $personArray;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findAllInArray()
+    public function findAll()
     {
         return $this->em
             ->getRepository('App:Person')
-            ->findAllInArray()
+            ->findAll()
+        ;
+    }
+
+    /**
+     * Searches the term in the Child collection
+     * @return array
+     */
+    public function findAllSearch(string $term)
+    {
+        return $this->em
+            ->getRepository('App:Person')
+            ->findAllSearch($term)
         ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findAllInSearch(string $term)
+    public function isEntityFilled(Person $object)
     {
-        return $this->em
-            ->getRepository('App:Person')
-            ->findAllInSearch($term)
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEntityFilled(Person $person)
-    {
-        if (null === $person->getFirstname() ||
-            null === $person->getLastname()) {
-            throw new UnprocessableEntityHttpException('Missing data for Person -> ' . json_encode($person->toArray()));
+        if (null === $object->getFirstname() ||
+            null === $object->getLastname()) {
+            throw new UnprocessableEntityHttpException('Missing data for Person -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function modify(Person $person, string $data)
+    public function modify(Person $object, string $data)
     {
-        $data = json_decode($data, true);
-        $form = $this->formFactory->create('person-modify', $person);
-        $form->submit($data);
+        //Submits data
+        $data = $this->mainService->submit($object, 'person-modify', $data);
 
         //Checks if entity has been filled
-        $this->isEntityFilled($person);
+        $this->isEntityFilled($object);
 
-        //Adds data
-        $person
-            ->setUpdatedAt(new \DateTime())
-            ->setUpdatedBy($this->user->getId())
-        ;
-
-        //Persists in DB
-        $this->em->persist($person);
-        $this->em->flush();
-        $this->em->refresh($person);
+        //Persists data
+        $this->mainService->modify($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(
             'status' => true,
             'message' => 'Personne modifiée',
-            'person' => $this->filter($person->toArray()),
+            'person' => $this->toArray($object),
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(Person $object)
+    {
+        //Main data
+        $objectArray = $this->mainService->toArray($object->toArray());
+
+        //Gets related addresses
+        if (null !== $object->getAddresses()) {
+            $addresses = array();
+            foreach($object->getAddresses() as $addressLink) {
+                $addresses[] = $this->mainService->toArray($addressLink->getAddress()->toArray());
+            }
+            $objectArray['addresses'] = $addresses;
+        }
+
+        //Gets related children
+        if (null !== $object->getChildren()) {
+            $children = array();
+            foreach($object->getChildren() as $childLink) {
+                $children[] = $this->mainService->toArray($childLink->getChild()->toArray());
+            }
+            $objectArray['children'] = $children;
+        }
+
+        return $objectArray;
     }
 }

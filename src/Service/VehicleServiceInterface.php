@@ -14,19 +14,13 @@ interface VehicleServiceInterface
      * Creates the vehicle
      * @return array
      */
-    public function create(Vehicle $vehicle, string $data);
+    public function create(Vehicle $object, string $data);
 
     /**
      * Marks the vehicle as deleted
      * @return array
      */
-    public function delete(Vehicle $vehicle);
-
-    /**
-     * Filters the array to return only data allowed to User's Role
-     * @return array
-     */
-    public function filter(array $vehicleArray);
+    public function delete(Vehicle $object);
 
     /**
      * Returns all the vehicles
@@ -38,11 +32,17 @@ interface VehicleServiceInterface
      * Checks if the entity has been well filled
      * @throw Exception
      */
-    public function isEntityFilled(Vehicle $vehicle);
+    public function isEntityFilled(Vehicle $object);
 
     /**
      * Modifies the vehicle
      * @return array
      */
-    public function modify(Vehicle $vehicle, string $data);
+    public function modify(Vehicle $object, string $data);
+
+    /**
+     * Converts entity to array
+     * @return array
+     */
+    public function toArray(Vehicle $object);
 }

@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.9
+- Ajout des Pickups (13/11/2018)
+- Ajout de MainService et factorisation des méthodes (13/11/2018)
+
 v0.8
 - Ajout des Ride (12/11/2018)
 - Ajout des Vehicle (12/11/2018)

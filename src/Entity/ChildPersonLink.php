@@ -33,7 +33,7 @@ class ChildPersonLink
     private $relation;
 
     /**
-     * @var Child
+     * @var App\Entity\Child
      *
      * @ORM\ManyToOne(targetEntity="Child", inversedBy="persons")
      * @ORM\JoinColumns({
@@ -43,7 +43,7 @@ class ChildPersonLink
     private $child;
 
     /**
-     * @var Person
+     * @var App\Entity\Person
      *
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="children")
      * @ORM\JoinColumns({
@@ -92,6 +92,4 @@ class ChildPersonLink
 
         return $this;
     }
-
-
 }

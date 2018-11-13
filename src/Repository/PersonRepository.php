@@ -13,32 +13,30 @@ class PersonRepository extends EntityRepository
     /**
      * Returns all the persons in an array
      */
-    public function findAllInArray()
+    public function findAll()
     {
         return $this->createQueryBuilder('p')
-            ->select('p.personId', 'p.firstname', 'p.lastname')
             ->where('p.suppressed = 0')
             ->orderBy('p.lastname', 'ASC')
             ->addOrderBy('p.firstname', 'ASC')
             ->getQuery()
-            ->getArrayResult()
+            ->getResult()
         ;
     }
 
     /**
      * Returns all the persons corresponding to the searched term
      */
-    public function findAllInSearch(string $term)
+    public function findAllSearch(string $term)
     {
         return $this->createQueryBuilder('p')
-            ->select('p.personId', 'p.firstname', 'p.lastname')
             ->where('LOWER(p.firstname) LIKE :term OR LOWER(p.lastname) LIKE :term')
             ->andWhere('p.suppressed = 0')
             ->orderBy('p.lastname', 'ASC')
             ->addOrderBy('p.firstname', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
-            ->getArrayResult()
+            ->getResult()
         ;
     }
 

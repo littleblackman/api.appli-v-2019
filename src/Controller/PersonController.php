@@ -40,9 +40,8 @@ class PersonController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         @SWG\Property(property="personId", type="integer"),
-     *         @SWG\Property(property="firstname", type="string"),
-     *         @SWG\Property(property="lastname", type="string"),
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Person::class))
      *     )
      * )
      * @SWG\Response(
@@ -70,12 +69,17 @@ class PersonController extends AbstractController
         $this->denyAccessUnlessGranted('personList');
 
         $persons = $paginator->paginate(
-            $this->personService->findAllInArray(),
+            $this->personService->findAll(),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        return new JsonResponse($persons->getItems());
+        $personsArray = array();
+        foreach ($persons->getItems() as $person) {
+            $personsArray[] = $this->personService->toArray($person);
+        };
+
+        return new JsonResponse($personsArray);
     }
 
 //SEARCH
@@ -91,10 +95,8 @@ class PersonController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         @SWG\Property(property="childId", type="integer"),
-     *         @SWG\Property(property="firstname", type="string"),
-     *         @SWG\Property(property="lastname", type="string"),
-     *         @SWG\Property(property="birthdate", type="datetime"),
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Person::class))
      *     )
      * )
      * @SWG\Response(
@@ -133,12 +135,17 @@ class PersonController extends AbstractController
         $this->denyAccessUnlessGranted('personSearch');
 
         $persons = $paginator->paginate(
-            $this->personService->findAllInSearch($term),
+            $this->personService->findAllSearch($term),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        return new JsonResponse($persons->getItems());
+        $personsArray = array();
+        foreach ($persons->getItems() as $person) {
+            $personsArray[] = $this->personService->toArray($person);
+        };
+
+        return new JsonResponse($personsArray);
     }
 
 //DISPLAY
@@ -180,7 +187,7 @@ class PersonController extends AbstractController
     {
         $this->denyAccessUnlessGranted('personDisplay', $person);
 
-        $personArray = $this->personService->filter($person->toArray());
+        $personArray = $this->personService->toArray($person);
 
         return new JsonResponse($personArray);
     }

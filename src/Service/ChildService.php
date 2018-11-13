@@ -20,107 +20,93 @@ use App\Service\ChildServiceInterface;
 class ChildService implements ChildServiceInterface
 {
     private $em;
-    private $formFactory;
+    private $mainService;
     private $personService;
-    private $security;
-    private $user;
 
     public function __construct(
         EntityManagerInterface $em,
-        AppFormFactoryInterface $formFactory,
-        PersonServiceInterface $personService,
-        Security $security,
-        TokenStorageInterface $tokenStorage
+        MainServiceInterface $mainService,
+        PersonServiceInterface $personService
     )
     {
         $this->em = $em;
-        $this->formFactory = $formFactory;
+        $this->mainService = $mainService;
         $this->personService = $personService;
-        $this->security = $security;
-        $this->user = $tokenStorage->getToken()->getUser();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addLink(int $personId, string $relation, Child $child)
+    public function addLink(int $personId, string $relation, Child $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
         if ($person instanceof Person) {
-            $childPersonLink = new ChildPersonLink();
-            $childPersonLink
+            $objectPersonLink = new ChildPersonLink();
+            $objectPersonLink
                 ->setRelation(htmlspecialchars($relation))
-                ->setChild($child)
+                ->setChild($object)
                 ->setPerson($person)
             ;
-            $this->em->persist($childPersonLink);
+            $this->em->persist($objectPersonLink);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(Child $child, string $data)
+    public function create(Child $object, string $data)
     {
-        $data = json_decode($data, true);
-        $form = $this->formFactory->create('child-create', $child);
-        $form->submit($data);
+        //Submits data
+        $data = $this->mainService->submit($object, 'child-create', $data);
 
         //Checks if entity has been filled
-        $this->isEntityFilled($child);
+        $this->isEntityFilled($object);
 
-        //Adds data
-        $child
-            ->setCreatedAt(new \DateTime())
-            ->setCreatedBy($this->user->getId())
-            ->setSuppressed(false)
-        ;
-        $this->em->persist($child);
+        //Persists data
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
 
         //Adds links from person/s to child
         $links = $data['links'];
         if (null !== $links && is_array($links) && !empty($links)) {
             foreach ($links as $link) {
-                $this->addLink((int) $link['personId'], $link['relation'], $child);
+                $this->addLink((int) $link['personId'], $link['relation'], $object);
             }
-        }
 
-        //Persists in DB
-        $this->em->flush();
-        $this->em->refresh($child);
+            //Persists in DB
+            $this->em->flush();
+            $this->em->refresh($object);
+        }
 
         //Returns data
         return array(
             'status' => true,
             'message' => 'Enfant ajouté',
-            'child' => $this->filter($child->toArray()),
+            'child' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Child $child, string $data)
+    public function delete(Child $object, string $data)
     {
         $data = json_decode($data, true);
 
-        $child
-            ->setSuppressed(true)
-            ->setSuppressedAt(new \DateTime())
-            ->setSuppressedBy($this->user->getId())
-        ;
-        $this->em->persist($child);
+        //Persists data
+        $this->mainService->delete($object);
+        $this->mainService->persist($object);
 
         //Removes links from person/s to child
         $links = $data['links'];
         if (null !== $links && is_array($links) && !empty($links)) {
             foreach ($links as $link) {
-                $this->removeLink((int) $link['personId'], $child);
+                $this->removeLink((int) $link['personId'], $object);
             }
-        }
 
-        //Persists in DB
-        $this->em->flush();
+            //Persists in DB
+            $this->em->flush();
+        }
 
         return array(
             'status' => true,
@@ -129,115 +115,57 @@ class ChildService implements ChildServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the list of all children in the array format
      */
-    public function filter(array $childArray)
-    {
-        //Global data
-        $globalData = array(
-            '__initializer__',
-            '__cloner__',
-            '__isInitialized__',
-        );
-
-        //User's role linked data
-        $specificData = array();
-        if (!$this->security->isGranted('ROLE_ADMIN')) {
-            $specificData = array_merge(
-                $specificData,
-                array(
-                    'createdAt',
-                    'createdBy',
-                    'updatedAt',
-                    'updatedBy',
-                    'suppressed',
-                    'suppressedAt',
-                    'suppressedBy',
-                )
-            );
-        }
-
-        //Deletes unwanted data
-        foreach (array_merge($globalData, $specificData) as $unsetData) {
-            unset($childArray[$unsetData]);
-        }
-
-        //Filters persons
-        if (isset($childArray['persons']) && is_array($childArray['persons'])) {
-            $persons = array();
-            foreach ($childArray['persons'] as $key => $value) {
-                $persons[] = $this->personService->filter($value);
-            }
-            $childArray['persons'] = $persons;
-        }
-
-        //Filters siblings
-        if (isset($childArray['siblings']) && is_array($childArray['siblings'])) {
-            $siblings = array();
-            foreach ($childArray['siblings'] as $key => $value) {
-                $siblings[] = $this->filter($value);
-            }
-            $childArray['siblings'] = $siblings;
-        }
-
-        return $childArray;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findAllInArray()
+    public function findAll()
     {
         return $this->em
             ->getRepository('App:Child')
-            ->findAllInArray()
+            ->findAll()
+        ;
+    }
+
+    /**
+     * Searches the term in the Child collection
+     * @return array
+     */
+    public function findAllSearch(string $term)
+    {
+        return $this->em
+            ->getRepository('App:Child')
+            ->findAllSearch($term)
         ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findAllInSearch(string $term)
+    public function isEntityFilled(Child $object)
     {
-        return $this->em
-            ->getRepository('App:Child')
-            ->findAllInSearch($term)
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEntityFilled(Child $child)
-    {
-        if (null === $child->getFirstname() ||
-            null === $child->getLastname()) {
-            throw new UnprocessableEntityHttpException('Missing data for Child -> ' . json_encode($child->toArray()));
+        if (null === $object->getFirstname() ||
+            null === $object->getLastname()) {
+            throw new UnprocessableEntityHttpException('Missing data for Child -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function modify(Child $child, string $data)
+    public function modify(Child $object, string $data)
     {
-        $data = json_decode($data, true);
-        $form = $this->formFactory->create('child-modify', $child);
-        $form->submit($data);
+        //Submits data
+        $data = $this->mainService->submit($object, 'child-modify', $data);
 
         //Checks if entity has been filled
-        $this->isEntityFilled($child);
+        $this->isEntityFilled($object);
 
-        //Adds data
-        $child
-            ->setUpdatedAt(new \DateTime())
-            ->setUpdatedBy($this->user->getId())
-        ;
-        $this->em->persist($child);
+        //Persists data
+        $this->mainService->modify($object);
+        $this->mainService->persist($object);
 
         //Gets existing links to person
         $existingLinks = array();
-        $currentLinks = $child->getPersons()->toArray();
+        $currentLinks = $object->getPersons()->toArray();
         if (null !== $currentLinks && is_array($currentLinks) && !empty($currentLinks)) {
             foreach ($currentLinks as $currentLink) {
                 $existingLinks[$currentLink->getPerson()->getPersonId()] = $currentLink->getRelation();
@@ -257,7 +185,7 @@ class ChildService implements ChildServiceInterface
         $linksToAdd = array_diff($submittedLinks, $existingLinks);
         if (!empty($linksToAdd)) {
             foreach ($linksToAdd as $personId => $relation) {
-                $this->addLink($personId, $relation, $child);
+                $this->addLink($personId, $relation, $object);
             }
         }
 
@@ -265,31 +193,65 @@ class ChildService implements ChildServiceInterface
         $linksToRemove = array_diff($existingLinks, $submittedLinks);
         if (!empty($linksToRemove)) {
             foreach ($linksToRemove as $personId => $relation) {
-                $this->removeLink($personId, $child);
+                $this->removeLink($personId, $object);
             }
         }
 
         //Persists in DB
         $this->em->flush();
-        $this->em->refresh($child);
+        $this->em->refresh($object);
 
         //Returns data
         return array(
             'status' => true,
             'message' => 'Enfant modifié',
-            'child' => $this->filter($child->toArray()),
+            'child' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function removeLink(int $personId, Child $child)
+    public function removeLink(int $personId, Child $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
         if ($person instanceof Person) {
-            $childPersonLink = $this->em->getRepository('App:ChildPersonLink')->findOneBy(array('child' => $child, 'person' => $person));
-            $this->em->remove($childPersonLink);
+            $objectPersonLink = $this->em->getRepository('App:ChildPersonLink')->findOneBy(array('child' => $object, 'person' => $person));
+            $this->em->remove($objectPersonLink);
         }
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(Child $object)
+    {
+        //Main data
+        $objectArray = $this->mainService->toArray($object->toArray());
+
+        //Gets related persons
+        if (null !== $object->getPersons()) {
+            $persons = array();
+            foreach($object->getPersons() as $personLink) {
+                $personArray = $this->mainService->toArray($personLink->getPerson()->toArray());
+                $personArray['relation'] = $personLink->getRelation();
+                $persons[] = $personArray;
+            }
+            $objectArray['persons'] = $persons;
+        }
+
+        //Gets related siblings
+        if (null !== $object->getSiblings()) {
+            $siblings = array();
+            foreach($object->getSiblings() as $siblingLink) {
+                $siblingArray = $this->mainService->toArray($siblingLink->getSibling()->toArray());
+                $siblingArray['relation'] = $siblingLink->getRelation();
+                $siblings[] = $siblingArray;
+            }
+            $objectArray['siblings'] = $siblings;
+        }
+
+        return $objectArray;
     }
 }

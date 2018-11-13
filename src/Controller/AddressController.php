@@ -63,7 +63,7 @@ class AddressController extends AbstractController
     {
         $this->denyAccessUnlessGranted('addressDisplay', $address);
 
-        $addressArray = $this->addressService->filter($address->toArray());
+        $addressArray = $this->addressService->toArray($address);
 
         return new JsonResponse($addressArray);
     }

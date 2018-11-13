@@ -102,15 +102,6 @@ class Address
     {
         $addressArray = get_object_vars($this);
 
-        //Gets related persons
-        $persons = array();
-        foreach($this->getPersons()->toArray() as $personLink) {
-            $persons[] = array(
-                'personId' => $personLink->getPerson()->getPersonId(),
-            );
-        }
-        $addressArray['persons'] = $persons;
-
         return $addressArray;
     }
 
@@ -206,5 +197,28 @@ class Address
     public function getPersons()
     {
         return $this->persons;
+    }
+
+    public function addPerson(PersonAddressLink $person): self
+    {
+        if (!$this->persons->contains($person)) {
+            $this->persons[] = $person;
+            $person->setAddress($this);
+        }
+
+        return $this;
+    }
+
+    public function removePerson(PersonAddressLink $person): self
+    {
+        if ($this->persons->contains($person)) {
+            $this->persons->removeElement($person);
+            // set the owning side to null (unless already changed)
+            if ($person->getAddress() === $this) {
+                $person->setAddress(null);
+            }
+        }
+
+        return $this;
     }
 }

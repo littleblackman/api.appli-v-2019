@@ -4,13 +4,10 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Security;
+use App\Service\MainServiceInterface;
+use App\Service\PersonServiceInterface;
 use App\Entity\Person;
 use App\Entity\Ride;
-use App\Entity\UserPersonLink;
-use App\Form\AppFormFactoryInterface;
-use App\Service\PersonServiceInterface;
 
 /**
  * RideService class
@@ -18,76 +15,58 @@ use App\Service\PersonServiceInterface;
  */
 class RideService implements RideServiceInterface
 {
-    private $personService;
     private $em;
-    private $formFactory;
-    private $security;
-    private $user;
+    private $mainService;
+    private $personService;
 
     public function __construct(
-        PersonServiceInterface $personService,
         EntityManagerInterface $em,
-        AppFormFactoryInterface $formFactory,
-        Security $security,
-        TokenStorageInterface $tokenStorage
+        MainServiceInterface $mainService,
+        PersonServiceInterface $personService
     )
     {
-        $this->personService = $personService;
         $this->em = $em;
-        $this->formFactory = $formFactory;
-        $this->security = $security;
-        $this->user = $tokenStorage->getToken()->getUser();
+        $this->mainService = $mainService;
+        $this->personService = $personService;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(Ride $ride, string $data)
+    public function create(Ride $object, string $data)
     {
-        $data = json_decode($data, true);
-        $form = $this->formFactory->create('ride-create', $ride);
-        $form->submit($data);
+        //Submits data
+        $data = $this->mainService->submit($object, 'ride-create', $data);
 
         //Adds time's data (should be done from RideType but it returns null...)
-        $ride
+        $object
             ->setStart(\DateTime::createFromFormat('H:i:s', $data['start']))
             ->setArrival(\DateTime::createFromFormat('H:i:s', $data['arrival']))
             ;
 
         //Checks if entity has been filled
-        $this->isEntityFilled($ride);
+        $this->isEntityFilled($object);
 
-        //Adds data
-        $ride
-            ->setCreatedAt(new \DateTime())
-            ->setCreatedBy($this->user->getId())
-            ->setSuppressed(false)
-        ;
-        $this->em->persist($ride);
-
-        //Persists in DB
-        $this->em->flush();
-        $this->em->refresh($ride);
+        //Persists data
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(
             'status' => true,
             'message' => 'Trajet ajouté',
-            'ride' => $this->filter($ride->toArray()),
+            'ride' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Ride $ride)
+    public function delete(Ride $object)
     {
-        $ride
-            ->setSuppressed(true)
-            ->setSuppressedAt(new \DateTime())
-            ->setSuppressedBy($this->user->getId())
-        ;
-        $this->em->persist($ride);
+        //Persists data
+        $this->mainService->delete($object);
+        $this->mainService->persist($object);
 
         //Puts all pickups as "Non pris en charge"
 /*        $childPersonLinks = $this->em->getRepository('App:ChildPersonLink')->findByPerson($person);
@@ -97,9 +76,6 @@ class RideService implements RideServiceInterface
             }
         }*/
 
-        //Persists in DB
-        $this->em->flush();
-
         return array(
             'status' => true,
             'message' => 'Trajet supprimé',
@@ -107,49 +83,8 @@ class RideService implements RideServiceInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function filter(array $rideArray)
-    {
-        //Global data
-        $globalData = array(
-            '__initializer__',
-            '__cloner__',
-            '__isInitialized__',
-        );
-
-        //User's role linked data
-        $specificData = array();
-        if (!$this->security->isGranted('ROLE_ADMIN')) {
-            $specificData = array_merge(
-                $specificData,
-                array(
-                    'createdAt',
-                    'createdBy',
-                    'updatedAt',
-                    'updatedBy',
-                    'suppressed',
-                    'suppressedAt',
-                    'suppressedBy',
-                )
-            );
-        }
-
-        //Deletes unwanted data
-        foreach (array_merge($globalData, $specificData) as $unsetData) {
-            unset($rideArray[$unsetData]);
-        }
-
-        //Filters person
-        if (isset($rideArray['person']) && is_array($rideArray['person'])) {
-            $rideArray['person'] = $this->personService->filter($rideArray['person']);
-        }
-
-        return $rideArray;
-    }
-
-    /**
-     * {@inheritdoc}
+     * Returns the list of all rides by date
+     * @return array
      */
     public function findAllByDate(string $date)
     {
@@ -160,18 +95,20 @@ class RideService implements RideServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns all the rides by status
+     * @return array
      */
-    public function findAllInArray(string $status)
+    public function findAllByStatus(string $status)
     {
         return $this->em
             ->getRepository('App:Ride')
-            ->findAllInArray($status)
+            ->findAll($status)
         ;
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the ride linked to date and person
+     * @return array
      */
     public function findOneByDateByPersonId(string $date, Person $person)
     {
@@ -184,52 +121,77 @@ class RideService implements RideServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function isEntityFilled(Ride $ride)
+    public function isEntityFilled(Ride $object)
     {
-        if (null === $ride->getDate() ||
-            null === $ride->getName() ||
-            null === $ride->getStart() ||
-            null === $ride->getArrival() ||
-            null === $ride->getStartPoint() ||
-            null === $ride->getEndPoint()) {
-            throw new UnprocessableEntityHttpException('Missing data for Ride -> ' . json_encode($ride->toArray()));
+        if (null === $object->getDate() ||
+            null === $object->getName() ||
+            null === $object->getStart() ||
+            null === $object->getArrival() ||
+            null === $object->getStartPoint() ||
+            null === $object->getEndPoint()) {
+            throw new UnprocessableEntityHttpException('Missing data for Ride -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function modify(Ride $ride, string $data)
+    public function modify(Ride $object, string $data)
     {
-        $data = json_decode($data, true);
-        $form = $this->formFactory->create('ride-modify', $ride);
-        $form->submit($data);
+        //Submits data
+        $data = $this->mainService->submit($object, 'ride-modify', $data);
 
         //Adds time's data (should be done from RideType but it returns null...)
-        $ride
+        $object
             ->setStart(\DateTime::createFromFormat('H:i:s', $data['start']))
             ->setArrival(\DateTime::createFromFormat('H:i:s', $data['arrival']))
             ;
 
         //Checks if entity has been filled
-        $this->isEntityFilled($ride);
+        $this->isEntityFilled($object);
 
-        //Adds data
-        $ride
-            ->setUpdatedAt(new \DateTime())
-            ->setUpdatedBy($this->user->getId())
-        ;
-
-        //Persists in DB
-        $this->em->persist($ride);
-        $this->em->flush();
-        $this->em->refresh($ride);
+        //Persists data
+        $this->mainService->modify($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(
             'status' => true,
             'message' => 'Trajet modifié',
-            'ride' => $this->filter($ride->toArray()),
+            'ride' => $this->toArray($object),
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray(Ride $object)
+    {
+        //Main data
+        $objectArray = $this->mainService->toArray($object->toArray());
+
+        //Gets related person
+        if (null !== $object->getPerson()) {
+            $objectArray['person'] = $this->mainService->toArray($object->getPerson()->toArray());
+        }
+
+        //Gets related vehicle
+        if (null !== $object->getVehicle()) {
+            $objectArray['vehicle'] = $this->mainService->toArray($object->getVehicle()->toArray());
+        }
+
+        //Gets related pickups
+        if (null !== $object->getPickups()) {
+            $pickups = array();
+            $i = 0;
+            foreach($object->getPickups() as $pickup) {
+                $pickups[$i] = $this->mainService->toArray($pickup->toArray());
+                $pickups[$i]['child'] = $this->mainService->toArray($pickup->getChild()->toArray());
+                $i++;
+            }
+            $objectArray['pickups'] = $pickups;
+        }
+
+        return $objectArray;
     }
 }

@@ -40,11 +40,8 @@ class ChildController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         @SWG\Property(property="childId", type="integer"),
-     *         @SWG\Property(property="firstname", type="string"),
-     *         @SWG\Property(property="lastname", type="string"),
-     *         @SWG\Property(property="birthdate", type="datetime"),
-     *         @SWG\Property(property="photo", type="string"),
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Child::class))
      *     )
      * )
      * @SWG\Response(
@@ -72,12 +69,17 @@ class ChildController extends AbstractController
         $this->denyAccessUnlessGranted('childList');
 
         $children = $paginator->paginate(
-            $this->childService->findAllInArray(),
+            $this->childService->findAll(),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        return new JsonResponse($children->getItems());
+        $childrenArray = array();
+        foreach ($children->getItems() as $child) {
+            $childrenArray[] = $this->childService->toArray($child);
+        };
+
+        return new JsonResponse($childrenArray);
     }
 
 //SEARCH
@@ -93,11 +95,8 @@ class ChildController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         @SWG\Property(property="childId", type="integer"),
-     *         @SWG\Property(property="firstname", type="string"),
-     *         @SWG\Property(property="lastname", type="string"),
-     *         @SWG\Property(property="birthdate", type="datetime"),
-     *         @SWG\Property(property="photo", type="string"),
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Child::class))
      *     )
      * )
      * @SWG\Response(
@@ -136,12 +135,17 @@ class ChildController extends AbstractController
         $this->denyAccessUnlessGranted('childSearch');
 
         $children = $paginator->paginate(
-            $this->childService->findAllInSearch($term),
+            $this->childService->findAllSearch($term),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        return new JsonResponse($children->getItems());
+        $childrenArray = array();
+        foreach ($children->getItems() as $child) {
+            $childrenArray[] = $this->childService->toArray($child);
+        };
+
+        return new JsonResponse($childrenArray);
     }
 
 //DISPLAY
@@ -180,7 +184,7 @@ class ChildController extends AbstractController
     {
         $this->denyAccessUnlessGranted('childDisplay', $child);
 
-        $childArray = $this->childService->filter($child->toArray());
+        $childArray = $this->childService->toArray($child);
 
         return new JsonResponse($childArray);
     }

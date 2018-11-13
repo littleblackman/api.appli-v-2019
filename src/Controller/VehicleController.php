@@ -115,7 +115,7 @@ class VehicleController extends AbstractController
     {
         $this->denyAccessUnlessGranted('vehicleDisplay', $vehicle);
 
-        $vehicleArray = $this->vehicleService->filter($vehicle->toArray());
+        $vehicleArray = $this->vehicleService->toArray($vehicle);
 
         return new JsonResponse($vehicleArray);
     }

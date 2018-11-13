@@ -94,39 +94,14 @@ class Child
         $photo = is_file($photo) ? $photo : null;
         $this->setPhoto($photo);
 
-        $child = get_object_vars($this);
+        $objectArray = get_object_vars($this);
 
-        //Gets related persons
-        $persons = array();
-        if (null !== $this->getPersons()) {
-            foreach($this->getPersons()->toArray() as $personLink) {
-                $personArray = $personLink->getPerson()->toArray();
-                $personArray['relation'] = $personLink->getRelation();
-                $persons[] = $personArray;
-            }
+        //Specific data
+        if (null !== $objectArray['birthdate']) {
+            $objectArray['birthdate'] = $objectArray['birthdate']->format('Y-m-d');
         }
-        $child['persons'] = $persons;
 
-        //Gets related siblings
-        $siblings = array();
-        if (null !== $this->getSiblings()) {
-            foreach($this->getSiblings()->toArray() as $siblingLink) {
-                $siblingArray = $siblingLink->getSibling()->toArraySibling();
-                $siblingArray['relation'] = $siblingLink->getRelation();
-                $siblings[] = $siblingArray;
-            }
-        }
-        $child['siblings'] = $siblings;
-
-        return $child;
-    }
-
-    /**
-     * Converts the entity in an array without persons and siblings
-     */
-    public function toArraySibling()
-    {
-        return get_object_vars($this);
+        return $objectArray;
     }
 
     public function getChildId(): ?int
@@ -206,5 +181,51 @@ class Child
     public function getSiblings()
     {
         return $this->siblings;
+    }
+
+    public function addPerson(ChildPersonLink $person): self
+    {
+        if (!$this->persons->contains($person)) {
+            $this->persons[] = $person;
+            $person->setChild($this);
+        }
+
+        return $this;
+    }
+
+    public function removePerson(ChildPersonLink $person): self
+    {
+        if ($this->persons->contains($person)) {
+            $this->persons->removeElement($person);
+            // set the owning side to null (unless already changed)
+            if ($person->getChild() === $this) {
+                $person->setChild(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addSibling(ChildChildLink $sibling): self
+    {
+        if (!$this->siblings->contains($sibling)) {
+            $this->siblings[] = $sibling;
+            $sibling->setChild($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSibling(ChildChildLink $sibling): self
+    {
+        if ($this->siblings->contains($sibling)) {
+            $this->siblings->removeElement($sibling);
+            // set the owning side to null (unless already changed)
+            if ($sibling->getChild() === $this) {
+                $sibling->setChild(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -15,47 +15,29 @@ interface RideServiceInterface
      * Creates the ride
      * @return array
      */
-    public function create(Ride $ride, string $data);
+    public function create(Ride $object, string $data);
 
     /**
      * Marks the ride as deleted
      * @return array
      */
-    public function delete(Ride $ride);
-
-    /**
-     * Filters the array to return only data allowed to User's Role
-     * @return array
-     */
-    public function filter(array $rideArray);
-
-    /**
-     * Returns the list of all rides by date
-     * @return array
-     */
-    public function findAllByDate(string $date);
-
-    /**
-     * Returns all the rides
-     * @return array
-     */
-    public function findAllInArray(string $status);
-
-    /**
-     * Returns the ride linked to date and person
-     * @return array
-     */
-    public function findOneByDateByPersonId(string $date, Person $person);
+    public function delete(Ride $object);
 
     /**
      * Checks if the entity has been well filled
      * @throw Exception
      */
-    public function isEntityFilled(Ride $ride);
+    public function isEntityFilled(Ride $object);
 
     /**
      * Modifies the ride
      * @return array
      */
-    public function modify(Ride $ride, string $data);
+    public function modify(Ride $object, string $data);
+
+    /**
+     * Converts entity to array
+     * @return array
+     */
+    public function toArray(Ride $object);
 }

@@ -22,7 +22,7 @@ class Vehicle
     use SuppressionTrait;
 
     /**
-     * @var bool
+     * @var int
      *
      * @ORM\Column(name="vehicle_id", type="integer", nullable=false)
      * @ORM\Id
@@ -56,9 +56,7 @@ class Vehicle
      */
     public function toArray()
     {
-        $vehicleArray = get_object_vars($this);
-
-        return $vehicleArray;
+        return get_object_vars($this);
     }
 
     public function getVehicleId(): ?bool
