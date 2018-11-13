@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Child;
+use App\Entity\Ride;
 
 /**
  * PickupType FormType
@@ -43,6 +44,10 @@ class PickupType extends AbstractType
             ->add('child', EntityType::class, array(
                 'required' => true,
                 'class' => Child::class,
+                ))
+            ->add('ride', EntityType::class, array(
+                'required' => true,
+                'class' => Ride::class,
                 ))
         ;
     }
