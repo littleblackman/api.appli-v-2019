@@ -32,11 +32,14 @@ class PickupType extends AbstractType
                 'required' => true,
                 ))
             ->add('status', TextType::class, array(
-                'required' => true,
+                'required' => false,
                 ))
             ->add('statusChange', DateTimeType::class, array(
-                'required' => true,
+                'required' => false,
                 'widget' => 'single_text',
+                ))
+            ->add('places', IntegerType::class, array(
+                'required' => true,
                 ))
             ->add('comment', TextType::class, array(
                 'required' => true,

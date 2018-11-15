@@ -68,6 +68,13 @@ class Pickup
     private $statusChange;
 
     /**
+     * @var integer|null
+     *
+     * @ORM\Column(name="places", type="integer", nullable=true)
+     */
+    private $places;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="comment", type="string", length=32)
@@ -174,6 +181,18 @@ class Pickup
     public function setStatusChange(\DateTimeInterface $statusChange): self
     {
         $this->statusChange = $statusChange;
+
+        return $this;
+    }
+
+    public function getPlaces(): ?int
+    {
+        return $this->places;
+    }
+
+    public function setPlaces(?int $places): self
+    {
+        $this->places = $places;
 
         return $this;
     }

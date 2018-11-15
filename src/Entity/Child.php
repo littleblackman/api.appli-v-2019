@@ -64,6 +64,13 @@ class Child
 
     /**
      * @var string|null
+     *
+     * @ORM\Column(name="medical", type="string", nullable=true)
+     */
+    private $medical;
+
+    /**
+     * @var string|null
      */
     private $photo;
 
@@ -157,6 +164,18 @@ class Child
         }
 
         $this->birthdate = $birthdate;
+
+        return $this;
+    }
+
+    public function getMedical(): ?string
+    {
+        return $this->medical;
+    }
+
+    public function setMedical(?string $medical): self
+    {
+        $this->medical = $medical;
 
         return $this;
     }

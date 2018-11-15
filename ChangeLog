@@ -1,5 +1,12 @@
 ChangeLog
 
+v0.9.3
+- Ajout d'un champ "medical" pour Child (14/11/2018)
+- Ajout d'un champ "photo" not mapped pour Person (14/11/2018)
+- Ajout"places" sur Pickup (14/11/2018)
+- Correction nom de la route ride_display_date (14/11/2018)
+- Ajout d'un champp "sexe" not mapped pour Child (15/11/2018)
+
 v0.9.2
 - Ajout de l'attribut ride pour PickupType (13/11/2018)
 

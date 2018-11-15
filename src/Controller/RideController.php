@@ -157,7 +157,7 @@ class RideController extends AbstractController
      * Displays the ride for a specific date and the connected person
      *
      * @Route("/ride/display/{date}",
-     *    name="ride_list_date",
+     *    name="ride_display_date",
      *    requirements={"date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"},
      *    methods={"HEAD", "GET"})
      *
