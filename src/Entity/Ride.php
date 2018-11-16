@@ -116,10 +116,10 @@ class Ride
             $objectArray['date'] = $objectArray['date']->format('Y-m-d');
         }
         if (null !== $objectArray['start']) {
-            $objectArray['start'] = $objectArray['start']->format('H:i');
+            $objectArray['start'] = $objectArray['start']->format('H:i:s');
         }
         if (null !== $objectArray['arrival']) {
-            $objectArray['arrival'] = $objectArray['arrival']->format('H:i');
+            $objectArray['arrival'] = $objectArray['arrival']->format('H:i:s');
         }
 
         return $objectArray;

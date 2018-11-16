@@ -64,17 +64,19 @@ class RideService implements RideServiceInterface
      */
     public function delete(Ride $object)
     {
+        //Removes ride from pickups
+        foreach ($object->getPickups() as $pickup) {
+            $pickup
+                ->setRide(null)
+                ->setSortOrder(null)
+            ;
+            $this->mainService->modify($pickup);
+            $this->em->persist($pickup);
+        }
+
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
-
-        //Puts all pickups as "Non pris en charge"
-/*        $childPersonLinks = $this->em->getRepository('App:ChildPersonLink')->findByPerson($person);
-        foreach ($childPersonLinks as $childPersonLink) {
-            if ($childPersonLink instanceof ChildPersonLink) {
-                $this->em->remove($childPersonLink);
-            }
-        }*/
 
         return array(
             'status' => true,

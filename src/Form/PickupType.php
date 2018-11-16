@@ -22,7 +22,7 @@ class PickupType extends AbstractType
     {
         $builder
             ->add('start', DateTimeType::class, array(
-                'required' => true,
+                'required' => false,
                 'widget' => 'single_text',
                 ))
             ->add('address', TextType::class, array(
