@@ -22,34 +22,34 @@ class RideType extends AbstractType
     {
         $builder
             ->add('date', DateType::class, array(
-                'required' => true,
+                'required' => false,
                 'widget' => 'single_text',
                 ))
             ->add('name', TextType::class, array(
-                'required' => true,
+                'required' => false,
                 ))
             ->add('start', TimeType::class, array(
-                'required' => true,
+                'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 ))
             ->add('arrival', TimeType::class, array(
-                'required' => true,
+                'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 ))
             ->add('startPoint', TextType::class, array(
-                'required' => true,
+                'required' => false,
                 ))
             ->add('endPoint', TextType::class, array(
-                'required' => true,
+                'required' => false,
                 ))
             ->add('person', EntityType::class, array(
-                'required' => true,
+                'required' => false,
                 'class' => Person::class,
                 ))
             ->add('vehicle', EntityType::class, array(
-                'required' => true,
+                'required' => false,
                 'class' => Vehicle::class,
                 ))
         ;

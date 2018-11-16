@@ -47,6 +47,10 @@ class RideService implements RideServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
+dump($object);
+dump('here');die;
+
+
         //Persists data
         $this->mainService->create($object);
         $this->mainService->persist($object);
@@ -126,11 +130,7 @@ class RideService implements RideServiceInterface
     public function isEntityFilled(Ride $object)
     {
         if (null === $object->getDate() ||
-            null === $object->getName() ||
-            null === $object->getStart() ||
-            null === $object->getArrival() ||
-            null === $object->getStartPoint() ||
-            null === $object->getEndPoint()) {
+            null === $object->getName()) {
             throw new UnprocessableEntityHttpException('Missing data for Ride -> ' . json_encode($object->toArray()));
         }
     }

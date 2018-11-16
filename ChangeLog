@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.9.5
+- Suppression des required pour les RideType (16/11/2018)
+
 v0.9.4
 - Suppression du required de "start" pour les Pickups (16/11/2018)
 - Mise en place de la suppression des données du Ride pour les Pickups lors de la suppression d'un Ride (16/11/2018)
