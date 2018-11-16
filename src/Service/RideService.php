@@ -47,10 +47,6 @@ class RideService implements RideServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-dump($object);
-dump('here');die;
-
-
         //Persists data
         $this->mainService->create($object);
         $this->mainService->persist($object);
