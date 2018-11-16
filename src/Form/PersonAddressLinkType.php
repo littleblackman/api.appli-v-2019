@@ -18,13 +18,15 @@ class PersonAddressLinkType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('personId', EntityType::class, array(
-                'required' => true,
+            ->add('person', EntityType::class, array(
+                'required' => false,
                 'class' => Person::class,
+                'empty_data' => $options['data']->getPerson(),
                 ))
-            ->add('addressId', EntityType::class, array(
-                'required' => true,
+            ->add('address', EntityType::class, array(
+                'required' => false,
                 'class' => Address::class,
+                'empty_data' => $options['data']->getAddress(),
                 ))
         ;
     }

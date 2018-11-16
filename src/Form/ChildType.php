@@ -4,6 +4,7 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,22 +20,28 @@ class ChildType extends AbstractType
     {
         $builder
             ->add('firstname', TextType::class, array(
-                'required' => true,
+                'required' => false,
+                'empty_data' => $options['data']->getFirstname(),
                 ))
             ->add('lastname', TextType::class, array(
-                'required' => true,
+                'required' => false,
+                'empty_data' => $options['data']->getLastname(),
                 ))
             ->add('phone', TextType::class, array(
                 'required' => false,
+                'empty_data' => $options['data']->getPhone(),
                 ))
-            ->add('birthdate', TextType::class, array(
-                'required' => true,
+            ->add('birthdate', DateType::class, array(
+                'required' => false,
+                'widget' => 'single_text',
+                'empty_data' => $options['data']->getBirthdate(),
                 ))
             ->add('medical', TextType::class, array(
                 'required' => false,
+                'empty_data' => $options['data']->getMedical(),
                 ))
             ->add('links', CollectionType::class, array(
-                'required' => true,
+                'required' => false,
                 'entry_type' => ChildPersonLinkType::class,
                 'mapped' => false,
                 ))

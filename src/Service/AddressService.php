@@ -59,13 +59,16 @@ class AddressService implements AddressServiceInterface
         $this->mainService->persist($object);
 
         //Adds links from person/s to address
-        $links = $data['links'];
-        if (null !== $links && is_array($links) && !empty($links)) {
-            $this->addLink((int) $links['personId'], $object);
+        if (isset($data['links'])) {
+            $links = $data['links'];
 
-            //Persists in DB
-            $this->em->flush();
-            $this->em->refresh($object);
+            if (null !== $links && is_array($links) && !empty($links)) {
+                $this->addLink((int) $links['personId'], $object);
+
+                //Persists in DB
+                $this->em->flush();
+                $this->em->refresh($object);
+            }
         }
 
         //Returns data

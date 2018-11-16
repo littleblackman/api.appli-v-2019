@@ -18,12 +18,14 @@ class ChildPersonLinkType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('personId', EntityType::class, array(
-                'required' => true,
+            ->add('person', EntityType::class, array(
+                'required' => false,
                 'class' => Person::class,
+                'empty_data' => $options['data']->getPerson(),
                 ))
             ->add('relation', TextType::class, array(
-                'required' => true,
+                'required' => false,
+                'empty_data' => $options['data']->getRelation(),
                 ))
         ;
     }

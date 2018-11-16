@@ -31,18 +31,26 @@ class RideService implements RideServiceInterface
     }
 
     /**
+     * Adds time's data (should be done from RideType but it returns null...)
+     */
+    public function addTimeData(Ride $object, array $data)
+    {
+        if (isset($data['start'])) {
+            $object->setStart(\DateTime::createFromFormat('H:i:s', $data['start']));
+        }
+        if (isset($data['arrival'])) {
+            $object->setArrival(\DateTime::createFromFormat('H:i:s', $data['arrival']));
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create(Ride $object, string $data)
     {
         //Submits data
         $data = $this->mainService->submit($object, 'ride-create', $data);
-
-        //Adds time's data (should be done from RideType but it returns null...)
-        $object
-            ->setStart(\DateTime::createFromFormat('H:i:s', $data['start']))
-            ->setArrival(\DateTime::createFromFormat('H:i:s', $data['arrival']))
-            ;
+        $this->addTimeData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -138,12 +146,7 @@ class RideService implements RideServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'ride-modify', $data);
-
-        //Adds time's data (should be done from RideType but it returns null...)
-        $object
-            ->setStart(\DateTime::createFromFormat('H:i:s', $data['start']))
-            ->setArrival(\DateTime::createFromFormat('H:i:s', $data['arrival']))
-            ;
+        $this->addTimeData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);

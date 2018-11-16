@@ -67,15 +67,18 @@ class ChildService implements ChildServiceInterface
         $this->mainService->persist($object);
 
         //Adds links from person/s to child
-        $links = $data['links'];
-        if (null !== $links && is_array($links) && !empty($links)) {
-            foreach ($links as $link) {
-                $this->addLink((int) $link['personId'], $link['relation'], $object);
-            }
+        if (isset($data['links'])) {
+            $links = $data['links'];
 
-            //Persists in DB
-            $this->em->flush();
-            $this->em->refresh($object);
+            if (is_array($links) && !empty($links)) {
+                foreach ($links as $link) {
+                    $this->addLink((int) $link['personId'], $link['relation'], $object);
+                }
+
+                //Persists in DB
+                $this->em->flush();
+                $this->em->refresh($object);
+            }
         }
 
         //Returns data
@@ -163,37 +166,40 @@ class ChildService implements ChildServiceInterface
         $this->mainService->modify($object);
         $this->mainService->persist($object);
 
-        //Gets existing links to person
-        $existingLinks = array();
-        $currentLinks = $object->getPersons()->toArray();
-        if (null !== $currentLinks && is_array($currentLinks) && !empty($currentLinks)) {
-            foreach ($currentLinks as $currentLink) {
-                $existingLinks[$currentLink->getPerson()->getPersonId()] = $currentLink->getRelation();
-            }
-        }
+        if (isset($data['links'])) {
+            $links = $data['links'];
 
-        //Gets submitted links to person
-        $submittedLinks = array();
-        $links = $data['links'];
-        if (null !== $links && is_array($links) && !empty($links)) {
-            foreach ($links as $link) {
-                $submittedLinks[(int) $link['personId']] = $link['relation'];
+            //Gets submitted links to person
+            $submittedLinks = array();
+            if (is_array($links) && !empty($links)) {
+                foreach ($links as $link) {
+                    $submittedLinks[(int) $link['personId']] = $link['relation'];
+                }
             }
-        }
 
-        //Adds links from person/s to child
-        $linksToAdd = array_diff($submittedLinks, $existingLinks);
-        if (!empty($linksToAdd)) {
-            foreach ($linksToAdd as $personId => $relation) {
-                $this->addLink($personId, $relation, $object);
+            //Gets existing links to person
+            $existingLinks = array();
+            $currentLinks = $object->getPersons()->toArray();
+            if (null !== $currentLinks && is_array($currentLinks) && !empty($currentLinks)) {
+                foreach ($currentLinks as $currentLink) {
+                    $existingLinks[$currentLink->getPerson()->getPersonId()] = $currentLink->getRelation();
+                }
             }
-        }
 
-        //Removes links from person/s to child
-        $linksToRemove = array_diff($existingLinks, $submittedLinks);
-        if (!empty($linksToRemove)) {
-            foreach ($linksToRemove as $personId => $relation) {
-                $this->removeLink($personId, $object);
+            //Adds links from person/s to child
+            $linksToAdd = array_diff($submittedLinks, $existingLinks);
+            if (!empty($linksToAdd)) {
+                foreach ($linksToAdd as $personId => $relation) {
+                    $this->addLink($personId, $relation, $object);
+                }
+            }
+
+            //Removes links from person/s to child
+            $linksToRemove = array_diff($existingLinks, $submittedLinks);
+            if (!empty($linksToRemove)) {
+                foreach ($linksToRemove as $personId => $relation) {
+                    $this->removeLink($personId, $object);
+                }
             }
         }
 

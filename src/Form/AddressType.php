@@ -19,28 +19,35 @@ class AddressType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, array(
-                'required' => true,
+                'required' => false,
+                'empty_data' => $options['data']->getName(),
                 ))
             ->add('address', TextType::class, array(
-                'required' => true,
+                'required' => false,
+                'empty_data' => $options['data']->getAddress(),
                 ))
             ->add('address2', TextType::class, array(
                 'required' => false,
+                'empty_data' => $options['data']->getAddress2(),
                 ))
             ->add('postal', TextType::class, array(
-                'required' => true,
+                'required' => false,
+                'empty_data' => $options['data']->getPostal(),
                 ))
             ->add('town', TextType::class, array(
-                'required' => true,
+                'required' => false,
+                'empty_data' => $options['data']->getTown(),
                 ))
             ->add('country', TextType::class, array(
-                'required' => true,
+                'required' => false,
+                'empty_data' => $options['data']->getCountry(),
                 ))
             ->add('phone', TextType::class, array(
                 'required' => false,
+                'empty_data' => $options['data']->getPhone(),
                 ))
             ->add('links', CollectionType::class, array(
-                'required' => true,
+                'required' => false,
                 'entry_type' => PersonAddressLinkType::class,
                 'mapped' => false,
                 ))
