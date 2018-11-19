@@ -226,8 +226,9 @@ class Pickup
         return $this->ride;
     }
 
-    public function setRide(?Ride $ride): self
+    public function setRide($ride)
     {
+dump($ride);
         $this->ride = $ride;
 
         return $this;

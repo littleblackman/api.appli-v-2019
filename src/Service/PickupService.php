@@ -105,6 +105,11 @@ class PickupService implements PickupServiceInterface
         //Submits data
         $data = $this->mainService->submit($object, 'pickup-modify', $data);
 
+        //Suppress ride
+        if (array_key_exists('ride', $data) && null === $data['ride']) {
+            $object->setRide(null);
+        }
+
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 

@@ -23,6 +23,7 @@ class RideRepository extends EntityRepository
             ->andWhere('r.suppressed = 0')
             ->setParameter('date', $date . '%')
             ->orderBy('r.rideId', 'ASC')
+            ->addOrderBy('p.sortOrder', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -41,6 +42,7 @@ class RideRepository extends EntityRepository
             ->where('r.date ' . $operator . ' :date')
             ->andWhere('r.suppressed = 0')
             ->orderBy('r.date', 'ASC')
+            ->addOrderBy('p.sortOrder', 'ASC')
             ->setParameter('date', date('Y-m-d', time()))
             ->getQuery()
             ->getResult()
@@ -62,6 +64,7 @@ class RideRepository extends EntityRepository
             ->setParameter('date', $date)
             ->setParameter('person', $person)
             ->orderBy('r.rideId', 'ASC')
+            ->addOrderBy('p.sortOrder', 'ASC')
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -80,6 +83,7 @@ class RideRepository extends EntityRepository
             ->where('r.rideId = :rideId')
             ->andWhere('r.suppressed = 0')
             ->andWhere('pi.suppressed = 0 OR pi.suppressed IS NULL')
+            ->orderBy('p.sortOrder', 'ASC')
             ->setParameter('rideId', $rideId)
             ->getQuery()
             ->getOneOrNullResult()
