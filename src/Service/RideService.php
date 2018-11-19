@@ -112,7 +112,7 @@ class RideService implements RideServiceInterface
     {
         return $this->em
             ->getRepository('App:Ride')
-            ->findAll($status)
+            ->findAllByStatus($status)
         ;
     }
 

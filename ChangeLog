@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.10.2
+- Correction sortOrder des Pickups (19/11/2018)
+
 v0.10.1
 - Correction pour mettre Ride = null (19/11/2018)
 - Ajout orderBy pour Rides (19/11/2018)

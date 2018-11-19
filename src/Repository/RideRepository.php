@@ -23,7 +23,6 @@ class RideRepository extends EntityRepository
             ->andWhere('r.suppressed = 0')
             ->setParameter('date', $date . '%')
             ->orderBy('r.rideId', 'ASC')
-            ->addOrderBy('p.sortOrder', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -36,13 +35,14 @@ class RideRepository extends EntityRepository
     {
         $operator = 'finished' === $status ? '<' : '>=';
         return $this->createQueryBuilder('r')
-            ->addSelect('p', 'v')
+            ->addSelect('p', 'v', 'pi')
             ->leftJoin('r.person', 'p')
             ->leftJoin('r.vehicle', 'v')
+            ->leftJoin('r.pickups', 'pi')
             ->where('r.date ' . $operator . ' :date')
             ->andWhere('r.suppressed = 0')
             ->orderBy('r.date', 'ASC')
-            ->addOrderBy('p.sortOrder', 'ASC')
+            ->addOrderBy('pi.sortOrder', 'ASC')
             ->setParameter('date', date('Y-m-d', time()))
             ->getQuery()
             ->getResult()
@@ -55,7 +55,7 @@ class RideRepository extends EntityRepository
     public function findOneByDateByPersonId($date, $person)
     {
         return $this->createQueryBuilder('r')
-            ->addSelect('p', 'v')
+            ->addSelect('p', 'v', 'pi')
             ->leftJoin('r.person', 'p')
             ->leftJoin('r.vehicle', 'v')
             ->where('r.date = :date')
@@ -64,7 +64,7 @@ class RideRepository extends EntityRepository
             ->setParameter('date', $date)
             ->setParameter('person', $person)
             ->orderBy('r.rideId', 'ASC')
-            ->addOrderBy('p.sortOrder', 'ASC')
+            ->addOrderBy('pi.sortOrder', 'ASC')
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -83,7 +83,6 @@ class RideRepository extends EntityRepository
             ->where('r.rideId = :rideId')
             ->andWhere('r.suppressed = 0')
             ->andWhere('pi.suppressed = 0 OR pi.suppressed IS NULL')
-            ->orderBy('p.sortOrder', 'ASC')
             ->setParameter('rideId', $rideId)
             ->getQuery()
             ->getOneOrNullResult()
