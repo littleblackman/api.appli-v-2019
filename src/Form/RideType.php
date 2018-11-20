@@ -24,41 +24,33 @@ class RideType extends AbstractType
             ->add('date', DateType::class, array(
                 'required' => false,
                 'widget' => 'single_text',
-                'empty_data' => $options['data']->getDate(),
                 ))
             ->add('name', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getName(),
                 ))
             ->add('start', TimeType::class, array(
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
-                'empty_data' => $options['data']->getStart(),
                 ))
             ->add('arrival', TimeType::class, array(
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
-                'empty_data' => $options['data']->getArrival(),
                 ))
             ->add('startPoint', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getStartPoint(),
                 ))
             ->add('endPoint', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getEndPoint(),
                 ))
             ->add('person', EntityType::class, array(
                 'required' => false,
                 'class' => Person::class,
-                'empty_data' => $options['data']->getPerson(),
                 ))
             ->add('vehicle', EntityType::class, array(
                 'required' => false,
                 'class' => Vehicle::class,
-                'empty_data' => $options['data']->getVehicle(),
                 ))
         ;
     }

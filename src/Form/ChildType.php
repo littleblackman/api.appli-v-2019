@@ -21,24 +21,19 @@ class ChildType extends AbstractType
         $builder
             ->add('firstname', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getFirstname(),
                 ))
             ->add('lastname', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getLastname(),
                 ))
             ->add('phone', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getPhone(),
                 ))
             ->add('birthdate', DateType::class, array(
                 'required' => false,
                 'widget' => 'single_text',
-                'empty_data' => $options['data']->getBirthdate(),
                 ))
             ->add('medical', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getMedical(),
                 ))
             ->add('links', CollectionType::class, array(
                 'required' => false,

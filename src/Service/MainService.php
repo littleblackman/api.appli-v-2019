@@ -85,7 +85,17 @@ class MainService implements MainServiceInterface
     {
         $data = json_decode($data, true);
         $form = $this->formFactory->create($formName, $object);
-        $form->submit($data);
+        $form->submit($data, false);
+
+        //Sets fields to null
+        foreach ($data as $key => $value) {
+            if (null === $value) {
+                $method = 'set' . ucfirst($key);
+                if (method_exists($object, $method)) {
+                    $object->$method(null);
+                }
+            }
+        }
 
         return $data;
     }

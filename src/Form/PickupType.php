@@ -24,42 +24,33 @@ class PickupType extends AbstractType
             ->add('start', DateTimeType::class, array(
                 'required' => false,
                 'widget' => 'single_text',
-                'empty_data' => $options['data']->getStart(),
                 ))
             ->add('address', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getAddress(),
                 ))
             ->add('sortOrder', IntegerType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getSortOrder(),
                 ))
             ->add('status', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getStatus(),
                 ))
             ->add('statusChange', DateTimeType::class, array(
                 'required' => false,
                 'widget' => 'single_text',
-                'empty_data' => $options['data']->getStatusChange(),
                 ))
             ->add('places', IntegerType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getPlaces(),
                 ))
             ->add('comment', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getComment(),
                 ))
             ->add('child', EntityType::class, array(
                 'required' => false,
                 'class' => Child::class,
-                'empty_data' => $options['data']->getChild(),
                 ))
             ->add('ride', EntityType::class, array(
                 'required' => false,
                 'class' => Ride::class,
-                'empty_data' => $options['data']->getRide(),
                 ))
         ;
     }

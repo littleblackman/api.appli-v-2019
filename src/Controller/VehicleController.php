@@ -134,7 +134,7 @@ class VehicleController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="vehicle", @Model(type=Vehicle::class)),
+     *         @SWG\Property(property="vehicle", ref=@Model(type=Vehicle::class)),
      *     )
      * )
      * @SWG\Response(
@@ -176,7 +176,7 @@ class VehicleController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="vehicle", @Model(type=Vehicle::class)),
+     *         @SWG\Property(property="vehicle", ref=@Model(type=Vehicle::class)),
      *     )
      * )
      * @SWG\Response(

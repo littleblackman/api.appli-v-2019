@@ -248,7 +248,7 @@ class RideController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="ride", @Model(type=Ride::class)),
+     *         @SWG\Property(property="ride", ref=@Model(type=Ride::class)),
      *     )
      * )
      * @SWG\Response(
@@ -290,7 +290,7 @@ class RideController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="ride", @Model(type=Ride::class)),
+     *         @SWG\Property(property="ride", ref=@Model(type=Ride::class)),
      *     )
      * )
      * @SWG\Response(

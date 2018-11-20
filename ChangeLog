@@ -1,5 +1,11 @@
 ChangeLog
 
+v0.10.3
+- Ajout des photos de véhicule (20/11/2018)
+- Correction des ref=@Model (20/11/2018)
+- Suppression des "empty_data" (20/11/2018)
+- Si un champ est soumis avec la valeur null, alors il est nullifié (20/11/2018)
+
 v0.10.2
 - Correction sortOrder des Pickups (19/11/2018)
 

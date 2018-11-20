@@ -21,11 +21,9 @@ class ChildPersonLinkType extends AbstractType
             ->add('person', EntityType::class, array(
                 'required' => false,
                 'class' => Person::class,
-                'empty_data' => $options['data']->getPerson(),
                 ))
             ->add('relation', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getRelation(),
                 ))
         ;
     }

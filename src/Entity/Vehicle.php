@@ -52,11 +52,23 @@ class Vehicle
     private $combustible;
 
     /**
+     * @var string|null
+     */
+    private $photo;
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
     {
-        return get_object_vars($this);
+        //Adds photo
+        $photo = '/var/www/vhosts/appli-v.net/httpdocs/photos/' . $this->getVehicleId() . '.jpg';
+        $photo = is_file($photo) ? $photo : null;
+        $this->setPhoto($photo);
+
+        $objectArray = get_object_vars($this);
+
+        return $objectArray;
     }
 
     public function getVehicleId(): ?bool
@@ -96,6 +108,18 @@ class Vehicle
     public function setCombustible(?string $combustible): self
     {
         $this->combustible = $combustible;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

@@ -21,15 +21,12 @@ class VehicleType extends AbstractType
         $builder
             ->add('name', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getName(),
                 ))
             ->add('matriculation', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getMatriculation(),
                 ))
             ->add('combustible', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getCombustible(),
                 ))
         ;
     }

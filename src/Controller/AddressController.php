@@ -82,7 +82,7 @@ class AddressController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="address", @Model(type=Address::class)),
+     *         @SWG\Property(property="address", ref=@Model(type=Address::class)),
      *     )
      * )
      * @SWG\Response(
@@ -124,7 +124,7 @@ class AddressController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="address", @Model(type=Address::class)),
+     *         @SWG\Property(property="address", ref=@Model(type=Address::class)),
      *     )
      * )
      * @SWG\Response(

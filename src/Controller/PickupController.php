@@ -158,46 +158,6 @@ class PickupController extends AbstractController
         return new JsonResponse($pickupsArray);
     }
 
-//CREATE
-    /**
-     * Creates a Pickup
-     *
-     * @Route("/pickup/create",
-     *    name="pickup_create",
-     *    methods={"HEAD", "POST"})
-     *
-     * @SWG\Response(
-     *     response=200,
-     *     description="Success",
-     *     @SWG\Schema(
-     *         @SWG\Property(property="status", type="boolean"),
-     *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="pickup", @Model(type=Pickup::class)),
-     *     )
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="Access denied",
-     * )
-     * @SWG\Parameter(
-     *     name="data",
-     *     in="body",
-     *     description="Data for the Pickup",
-     *     required=true,
-     *     @Model(type=PickupType::class)
-     * )
-     * @SWG\Tag(name="Pickup")
-     */
-    public function create(Request $request)
-    {
-        $pickup = new Pickup();
-        $this->denyAccessUnlessGranted('pickupCreate', $pickup);
-
-        $createdData = $this->pickupService->create($pickup, $request->getContent());
-
-        return new JsonResponse($createdData);
-    }
-
 //DISPLAY
     /**
      * Displays pickup
@@ -242,6 +202,47 @@ class PickupController extends AbstractController
         return new JsonResponse($pickupArray);
     }
 
+
+//CREATE
+    /**
+     * Creates a Pickup
+     *
+     * @Route("/pickup/create",
+     *    name="pickup_create",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="pickup", ref=@Model(type=Pickup::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Pickup",
+     *     required=true,
+     *     @Model(type=PickupType::class)
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function create(Request $request)
+    {
+        $pickup = new Pickup();
+        $this->denyAccessUnlessGranted('pickupCreate', $pickup);
+
+        $createdData = $this->pickupService->create($pickup, $request->getContent());
+
+        return new JsonResponse($createdData);
+    }
+
 //MODIFY
     /**
      * Modifies pickup
@@ -258,7 +259,7 @@ class PickupController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="pickup", @Model(type=Pickup::class)),
+     *         @SWG\Property(property="pickup", ref=@Model(type=Pickup::class)),
      *     )
      * )
      * @SWG\Response(

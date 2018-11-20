@@ -32,7 +32,7 @@ class AppFormFactory implements AppFormFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(string $name, $subject)
+    public function create(string $name, $object)
     {
         switch ($name) {
             case 'address-create':
@@ -63,6 +63,6 @@ class AppFormFactory implements AppFormFactoryInterface
                 break;
         }
 
-        return $this->formFactory->create($form, $subject);
+        return $this->formFactory->create($form, $object);
     }
 }

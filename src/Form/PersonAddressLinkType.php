@@ -21,12 +21,10 @@ class PersonAddressLinkType extends AbstractType
             ->add('person', EntityType::class, array(
                 'required' => false,
                 'class' => Person::class,
-                'empty_data' => $options['data']->getPerson(),
                 ))
             ->add('address', EntityType::class, array(
                 'required' => false,
                 'class' => Address::class,
-                'empty_data' => $options['data']->getAddress(),
                 ))
         ;
     }

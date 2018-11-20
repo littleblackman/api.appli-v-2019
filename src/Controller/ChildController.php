@@ -203,7 +203,7 @@ class ChildController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="child", @Model(type=Child::class)),
+     *         @SWG\Property(property="child", ref=@Model(type=Child::class)),
      *     )
      * )
      * @SWG\Response(
@@ -245,7 +245,7 @@ class ChildController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="child", @Model(type=Child::class)),
+     *         @SWG\Property(property="child", ref=@Model(type=Child::class)),
      *     )
      * )
      * @SWG\Response(

@@ -207,7 +207,7 @@ class PersonController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="person", @Model(type=Person::class)),
+     *         @SWG\Property(property="person", ref=@Model(type=Person::class)),
      *     )
      * )
      * @SWG\Response(
@@ -249,7 +249,7 @@ class PersonController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="person", @Model(type=Person::class)),
+     *         @SWG\Property(property="person", ref=@Model(type=Person::class)),
      *     )
      * )
      * @SWG\Response(

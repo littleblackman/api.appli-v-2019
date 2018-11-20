@@ -228,7 +228,6 @@ class Pickup
 
     public function setRide($ride)
     {
-dump($ride);
         $this->ride = $ride;
 
         return $this;

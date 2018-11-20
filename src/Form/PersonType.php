@@ -19,11 +19,9 @@ class PersonType extends AbstractType
         $builder
             ->add('firstname', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getFirstname(),
                 ))
             ->add('lastname', TextType::class, array(
                 'required' => false,
-                'empty_data' => $options['data']->getLastname(),
                 ))
         ;
     }
