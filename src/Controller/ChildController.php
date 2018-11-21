@@ -132,7 +132,7 @@ class ChildController extends AbstractController
      */
     public function search(Request $request, PaginatorInterface $paginator, string $term)
     {
-        $this->denyAccessUnlessGranted('childSearch');
+        $this->denyAccessUnlessGranted('childList');
 
         $children = $paginator->paginate(
             $this->childService->findAllSearch($term),

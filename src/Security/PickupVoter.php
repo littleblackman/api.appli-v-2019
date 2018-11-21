@@ -25,7 +25,6 @@ class PickupVoter extends Voter
     public const PERSON_DISPLAY = 'pickupDisplay';
     public const PERSON_LIST = 'pickupList';
     public const PERSON_MODIFY = 'pickupModify';
-    public const PERSON_SEARCH = 'pickupSearch';
 
     private const ATTRIBUTES = array(
         self::PERSON_CREATE,
@@ -33,7 +32,6 @@ class PickupVoter extends Voter
         self::PERSON_DISPLAY,
         self::PERSON_LIST,
         self::PERSON_MODIFY,
-        self::PERSON_SEARCH,
     );
 
     public function __construct(Security $security)
@@ -73,9 +71,6 @@ class PickupVoter extends Voter
                 break;
             case self::PERSON_MODIFY:
                 return $this->canModify($token, $subject);
-                break;
-            case self::PERSON_SEARCH:
-                return $this->canSearch($token, $subject);
                 break;
         }
 

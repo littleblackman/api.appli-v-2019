@@ -7,9 +7,11 @@ use Symfony\Component\Form\FormFactoryInterface;
 use App\Form\AppFormFactoryInterface;
 use App\Form\AddressType;
 use App\Form\ChildType;
+use App\Form\ComponentType;
 use App\Form\PersonType;
 use App\Form\PhoneType;
 use App\Form\PickupType;
+use App\Form\ProductType;
 use App\Form\RideType;
 use App\Form\VehicleType;
 
@@ -44,6 +46,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'child-modify':
                 $form = ChildType::class;
                 break;
+            case 'component-create':
+            case 'component-modify':
+                $form = ComponentType::class;
+                break;
             case 'person-create':
             case 'person-modify':
                 $form = PersonType::class;
@@ -55,6 +61,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'pickup-create':
             case 'pickup-modify':
                 $form = PickupType::class;
+                break;
+            case 'product-create':
+            case 'product-modify':
+                $form = ProductType::class;
                 break;
             case 'ride-create':
             case 'ride-modify':

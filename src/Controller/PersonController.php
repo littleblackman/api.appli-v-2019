@@ -132,7 +132,7 @@ class PersonController extends AbstractController
      */
     public function search(Request $request, PaginatorInterface $paginator, string $term)
     {
-        $this->denyAccessUnlessGranted('personSearch');
+        $this->denyAccessUnlessGranted('personList');
 
         $persons = $paginator->paginate(
             $this->personService->findAllSearch($term),

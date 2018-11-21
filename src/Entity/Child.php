@@ -82,6 +82,7 @@ class Child
 
     /**
      * @ORM\OneToMany(targetEntity="ChildChildLink", mappedBy="child")
+     * @SWG\Property(ref=@Model(type=Child::class))
      */
     private $siblings;
 

@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.11
+- Suppression des droits d'accès "search" et remplacement par ceux de "list" (21/11/2018)
+- Ajout des Product + Component (22/11/2018)
+
 v0.10.4
 - Ajout de la table phone (21/11/2018)
 - Supression du champ phone sur table address (21/11/2018)

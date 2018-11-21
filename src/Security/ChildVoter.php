@@ -25,7 +25,6 @@ class ChildVoter extends Voter
     public const CHILD_DISPLAY = 'childDisplay';
     public const CHILD_LIST = 'childList';
     public const CHILD_MODIFY = 'childModify';
-    public const CHILD_SEARCH = 'childSearch';
 
     private const ATTRIBUTES = array(
         self::CHILD_CREATE,
@@ -33,7 +32,6 @@ class ChildVoter extends Voter
         self::CHILD_DISPLAY,
         self::CHILD_LIST,
         self::CHILD_MODIFY,
-        self::CHILD_SEARCH,
     );
 
     public function __construct(Security $security)
@@ -73,9 +71,6 @@ class ChildVoter extends Voter
                 break;
             case self::CHILD_MODIFY:
                 return $this->canModify($token, $subject);
-                break;
-            case self::CHILD_SEARCH:
-                return $this->canSearch($token, $subject);
                 break;
         }
 
@@ -204,29 +199,6 @@ class ChildVoter extends Voter
         }
 
         return $this->isLinked($token, $subject);
-    }
-
-    /**
-     * Checks if is allowed to search
-     */
-    private function canSearch($token, $subject)
-    {
-        //Checks roles allowed
-        $roles = array(
-            'ROLE_DRIVER',
-            'ROLE_ASSISTANT',
-            'ROLE_MANAGER',
-            'ROLE_LEADER',
-            'ROLE_ADMIN',
-        );
-
-        foreach ($roles as $role) {
-            if ($this->security->isGranted($role)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
