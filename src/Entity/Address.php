@@ -77,13 +77,6 @@ class Address
     private $country;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="phone", type="string", length=35, nullable=true)
-     */
-    private $phone;
-
-    /**
      * @ORM\OneToMany(targetEntity="PersonAddressLink", mappedBy="address")
      * @SWG\Property(ref=@Model(type=Person::class))
      */
@@ -178,18 +171,6 @@ class Address
     public function setCountry(?string $country): self
     {
         $this->country = $country;
-
-        return $this;
-    }
-
-    public function getPhone(): ?string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(?string $phone): self
-    {
-        $this->phone = $phone;
 
         return $this;
     }

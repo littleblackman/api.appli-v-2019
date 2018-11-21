@@ -62,13 +62,21 @@ class Person
     private $addresses;
 
     /**
+     * @ORM\OneToMany(targetEntity="PersonPhoneLink", mappedBy="person")
+     * @SWG\Property(ref=@Model(type=Phone::class))
+     */
+    private $phones;
+
+    /**
      * @ORM\OneToMany(targetEntity="ChildPersonLink", mappedBy="person")
+     * @SWG\Property(ref=@Model(type=Child::class))
      */
     private $children;
 
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
+        $this->phones = new ArrayCollection();
         $this->children = new ArrayCollection();
     }
 
@@ -133,11 +141,6 @@ class Person
         return $this->addresses;
     }
 
-    public function getChildren()
-    {
-        return $this->children;
-    }
-
     public function addAddress(PersonAddressLink $address): self
     {
         if (!$this->addresses->contains($address)) {
@@ -159,6 +162,39 @@ class Person
         }
 
         return $this;
+    }
+
+    public function getPhones()
+    {
+        return $this->phones;
+    }
+
+    public function addPhone(PersonPhoneLink $phone): self
+    {
+        if (!$this->phones->contains($phone)) {
+            $this->phones[] = $phone;
+            $phone->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhone(PersonPhoneLink $phone): self
+    {
+        if ($this->phones->contains($phone)) {
+            $this->phones->removeElement($phone);
+            // set the owning side to null (unless already changed)
+            if ($phone->getPerson() === $this) {
+                $phone->setPerson(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
     }
 
     public function addChild(ChildPersonLink $child): self

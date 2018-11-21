@@ -99,6 +99,14 @@ class PersonService implements PersonServiceInterface
             }
         }
 
+        //Removes links from person to phone
+        $objectPhoneLinks = $this->em->getRepository('App:PersonPhoneLink')->findByPerson($object);
+        foreach ($objectPhoneLinks as $objectPhoneLink) {
+            if ($objectPhoneLink instanceof PersonPhoneLink) {
+                $this->em->remove($objectPhoneLink);
+            }
+        }
+
         //Persists in DB
         $this->em->flush();
 
@@ -181,6 +189,15 @@ class PersonService implements PersonServiceInterface
                 $addresses[] = $this->mainService->toArray($addressLink->getAddress()->toArray());
             }
             $objectArray['addresses'] = $addresses;
+        }
+
+        //Gets related phones
+        if (null !== $object->getPhones()) {
+            $phones = array();
+            foreach($object->getPhones() as $addressLink) {
+                $phones[] = $this->mainService->toArray($addressLink->getPhone()->toArray());
+            }
+            $objectArray['phones'] = $phones;
         }
 
         //Gets related children

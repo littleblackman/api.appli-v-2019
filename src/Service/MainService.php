@@ -42,6 +42,8 @@ class MainService implements MainServiceInterface
             ->setCreatedAt(new \DateTime())
             ->setCreatedBy($this->user->getId())
             ->setSuppressed(false)
+            ->setUpdatedAt(new \DateTime())
+            ->setUpdatedBy($this->user->getId())
         ;
     }
 

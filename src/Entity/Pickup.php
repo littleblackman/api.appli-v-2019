@@ -82,6 +82,13 @@ class Pickup
     private $comment;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="validated", type="boolean")
+     */
+    private $validated;
+
+    /**
      * @var App\Entity\Child
      *
      * @ORM\OneToOne(targetEntity="Child")
@@ -205,6 +212,18 @@ class Pickup
     public function setComment(string $comment): self
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getValidated(): ?bool
+    {
+        return $this->validated;
+    }
+
+    public function setValidated(?bool $validated): self
+    {
+        $this->validated = $validated;
 
         return $this;
     }
