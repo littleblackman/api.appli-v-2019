@@ -33,6 +33,13 @@ class Pickup
     private $pickupId;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="kind", type="string", length=8, nullable=true)
+     */
+    private $kind;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="start", type="datetime")
@@ -130,6 +137,18 @@ class Pickup
     public function getPickupId(): ?int
     {
         return $this->pickupId;
+    }
+
+    public function getKind(): ?string
+    {
+        return $this->kind;
+    }
+
+    public function setKind(string $kind): self
+    {
+        $this->kind = $kind;
+
+        return $this;
     }
 
     public function getStart(): ?\DateTimeInterface

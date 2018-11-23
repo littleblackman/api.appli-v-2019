@@ -166,6 +166,7 @@ class ChildService implements ChildServiceInterface
         $this->mainService->modify($object);
         $this->mainService->persist($object);
 
+        //Modifies links
         if (isset($data['links'])) {
             $links = $data['links'];
 

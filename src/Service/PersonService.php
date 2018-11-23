@@ -129,7 +129,7 @@ class PersonService implements PersonServiceInterface
     }
 
     /**
-     * Searches the term in the Child collection
+     * Searches the term in the Person collection
      * @return array
      */
     public function findAllSearch(string $term)
@@ -137,6 +137,18 @@ class PersonService implements PersonServiceInterface
         return $this->em
             ->getRepository('App:Person')
             ->findAllSearch($term)
+        ;
+    }
+
+    /**
+     * Returns the list of all the drivers
+     * @return array
+     */
+    public function findDrivers()
+    {
+        return $this->em
+            ->getRepository('App:Person')
+            ->findDrivers()
         ;
     }
 

@@ -186,9 +186,9 @@ class RideController extends AbstractController
         $this->denyAccessUnlessGranted('rideDisplay');
 
         $person = $this->getUser()->getUserPersonLink()->getPerson();
-        $rides = $this->rideService->findOneByDateByPersonId($date, $person);
+        $ride = $this->rideService->findOneByDateByPersonId($date, $person);
 
-        return new JsonResponse($rides);
+        return new JsonResponse($this->rideService->toArray($ride));
     }
 
 //DISPLAY BY ID

@@ -58,6 +58,7 @@ class RideRepository extends EntityRepository
             ->addSelect('p', 'v', 'pi')
             ->leftJoin('r.person', 'p')
             ->leftJoin('r.vehicle', 'v')
+            ->leftJoin('r.pickups', 'pi')
             ->where('r.date = :date')
             ->andWhere('r.person = :person')
             ->andWhere('r.suppressed = 0')

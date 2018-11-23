@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.11.1
+- Correction `ride_display_date` (23/11/2018)
+- Ajout d'un champ `kind` sur Pickup (23/11/2018)
+- Ajout de la Route `person_list_drivers` (23/11/2018)
+
 v0.11
 - Suppression des droits d'accès "search" et remplacement par ceux de "list" (21/11/2018)
 - Ajout des Product + Component (22/11/2018)

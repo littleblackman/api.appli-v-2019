@@ -22,6 +22,9 @@ class PickupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('kind', TextType::class, array(
+                'required' => false,
+                ))
             ->add('start', DateTimeType::class, array(
                 'required' => false,
                 'widget' => 'single_text',

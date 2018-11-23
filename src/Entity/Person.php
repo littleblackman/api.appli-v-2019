@@ -12,6 +12,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use App\Entity\Address;
 use App\Entity\Child;
+use App\Entity\UserPersonLink;
 
 /**
  * Person
@@ -72,6 +73,11 @@ class Person
      * @SWG\Property(ref=@Model(type=Child::class))
      */
     private $children;
+
+    /**
+     * @ORM\OneToOne(targetEntity="UserPersonLink", mappedBy="person")
+     */
+    private $userPersonLink;
 
     public function __construct()
     {
@@ -216,6 +222,18 @@ class Person
                 $child->setPerson(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUserPersonLink(): ?UserPersonLink
+    {
+        return $this->userPersonLink;
+    }
+
+    public function setUserPersonLink(?UserPersonLink $userPersonLink): self
+    {
+        $this->userPersonLink = $userPersonLink;
 
         return $this;
     }

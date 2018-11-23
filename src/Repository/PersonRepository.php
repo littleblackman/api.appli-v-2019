@@ -63,4 +63,22 @@ class PersonRepository extends EntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    /**
+     * Returns the list of person linked to users with role = ROLE_DRIVER
+     */
+    public function findDrivers()
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.userPersonLink', 'ul')
+            ->leftJoin('ul.user', 'u')
+            ->where('u.roles LIKE :role')
+            ->andWhere('p.suppressed = 0')
+            ->orderBy('p.lastname', 'ASC')
+            ->addOrderBy('p.firstname', 'ASC')
+            ->setParameter('role', '%ROLE_DRIVER%')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
