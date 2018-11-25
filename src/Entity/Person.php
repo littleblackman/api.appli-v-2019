@@ -53,6 +53,8 @@ class Person
 
     /**
      * @var string|null
+     *
+     * @ORM\Column(name="photo", type="string", length=256, nullable=true)
      */
     private $photo;
 
@@ -91,11 +93,6 @@ class Person
      */
     public function toArray()
     {
-        //Adds photo
-        $photo = '/var/www/vhosts/appli-v.net/httpdocs/photos/' . $this->getPersonId() . '.jpg';
-        $photo = is_file($photo) ? $photo : null;
-        $this->setPhoto($photo);
-
         $objectArray = get_object_vars($this);
 
         return $objectArray;

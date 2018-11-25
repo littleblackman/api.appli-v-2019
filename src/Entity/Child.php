@@ -71,6 +71,8 @@ class Child
 
     /**
      * @var string|null
+     *
+     * @ORM\Column(name="photo", type="string", length=256, nullable=true)
      */
     private $photo;
 
@@ -97,11 +99,6 @@ class Child
      */
     public function toArray()
     {
-        //Adds photo
-        $photo = '/var/www/vhosts/appli-v.net/httpdocs/photos/' . $this->getChildId() . '.jpg';
-        $photo = is_file($photo) ? $photo : null;
-        $this->setPhoto($photo);
-
         $objectArray = get_object_vars($this);
 
         //Specific data

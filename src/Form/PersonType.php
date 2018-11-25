@@ -23,6 +23,9 @@ class PersonType extends AbstractType
             ->add('lastname', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('photo', TextType::class, array(
+                'required' => false,
+                ))
         ;
     }
 

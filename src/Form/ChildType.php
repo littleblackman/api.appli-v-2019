@@ -35,6 +35,9 @@ class ChildType extends AbstractType
             ->add('medical', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('photo', TextType::class, array(
+                'required' => false,
+                ))
             ->add('links', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ChildPersonLinkType::class,

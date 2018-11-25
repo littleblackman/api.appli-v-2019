@@ -28,6 +28,9 @@ class VehicleType extends AbstractType
             ->add('combustible', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('photo', TextType::class, array(
+                'required' => false,
+                ))
         ;
     }
 

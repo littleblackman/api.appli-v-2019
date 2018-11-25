@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.11.2
+- Ajout des champs photo en url sur child vehicle et person (25/11/2018)
+
 v0.11.1
 - Correction `ride_display_date` (23/11/2018)
 - Ajout d'un champ `kind` sur Pickup (23/11/2018)
