@@ -8,6 +8,8 @@ use App\Form\AppFormFactoryInterface;
 use App\Form\AddressType;
 use App\Form\ChildType;
 use App\Form\ComponentType;
+use App\Form\FoodType;
+use App\Form\MealType;
 use App\Form\PersonType;
 use App\Form\PhoneType;
 use App\Form\PickupType;
@@ -49,6 +51,14 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'component-create':
             case 'component-modify':
                 $form = ComponentType::class;
+                break;
+            case 'food-create':
+            case 'food-modify':
+                $form = FoodType::class;
+                break;
+            case 'meal-create':
+            case 'meal-modify':
+                $form = MealType::class;
                 break;
             case 'person-create':
             case 'person-modify':

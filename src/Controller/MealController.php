@@ -1,0 +1,270 @@
+<?php
+
+namespace App\Controller;
+
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
+use App\Service\MealServiceInterface;
+use App\Entity\Meal;
+use App\Form\MealType;
+
+/**
+ * MealController class
+ * @author Laurent Marquet <laurent.marquet@laposte.net>
+ */
+class MealController extends AbstractController
+{
+    private $mealService;
+
+    public function __construct(MealServiceInterface $mealService)
+    {
+        $this->mealService = $mealService;
+    }
+
+//LIST BY DATE
+    /**
+     * Lists all the meals for a specific date
+     *
+     * @Route("/meal/list/{date}",
+     *    name="meal_list_date",
+     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Meal::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the meal (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Meal")
+     */
+    public function listByDate(Request $request, PaginatorInterface $paginator, $date)
+    {
+        $this->denyAccessUnlessGranted('mealList');
+
+        $meals = $paginator->paginate(
+            $this->mealService->findAllByDate($date),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $mealsArray = array();
+        foreach ($meals->getItems() as $meal) {
+            $mealsArray[] = $this->mealService->toArray($meal);
+        };
+
+        return new JsonResponse($mealsArray);
+    }
+
+//DISPLAY
+    /**
+     * Displays the meal using its id
+     *
+     * @Route("/meal/display/{mealId}",
+     *    name="meal_list_id",
+     *    requirements={"date": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("meal", expr="repository.findOneById(mealId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Meal::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="mealId",
+     *     in="path",
+     *     description="Id for the meal",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Meal")
+     */
+    public function display(Meal $meal)
+    {
+        $this->denyAccessUnlessGranted('mealDisplay', $meal);
+
+        $mealArray = $this->mealService->toArray($meal);
+
+        return new JsonResponse($mealArray);
+    }
+
+//CREATE
+    /**
+     * Creates a Meal
+     *
+     * @Route("/meal/create",
+     *    name="meal_create",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="meal", ref=@Model(type=Meal::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Meal",
+     *     required=true,
+     *     @Model(type=MealType::class)
+     * )
+     * @SWG\Tag(name="Meal")
+     */
+    public function create(Request $request)
+    {
+        $meal = new Meal();
+        $this->denyAccessUnlessGranted('mealCreate', $meal);
+
+        $createdData = $this->mealService->create($meal, $request->getContent());
+
+        return new JsonResponse($createdData);
+    }
+
+//MODIFY
+    /**
+     * Modifies meal
+     *
+     * @Route("/meal/modify/{mealId}",
+     *    name="meal_modify",
+     *    requirements={"mealId": "^([0-9]+)"},
+     *    methods={"HEAD", "PUT"})
+     * @Entity("meal", expr="repository.findOneById(mealId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="meal", ref=@Model(type=Meal::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="mealId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the meal",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Meal",
+     *     required=true,
+     *     @Model(type=MealType::class)
+     * )
+     * @SWG\Tag(name="Meal")
+     */
+    public function modify(Request $request, Meal $meal)
+    {
+        $this->denyAccessUnlessGranted('mealModify', $meal);
+
+        $modifiedData = $this->mealService->modify($meal, $request->getContent());
+
+        return new JsonResponse($modifiedData);
+    }
+
+//DELETE
+    /**
+     * Deletes meal and moves all the pickups as "Non pris en charge"
+     *
+     * @Route("/meal/delete/{mealId}",
+     *    name="meal_delete",
+     *    requirements={"mealId": "^([0-9]+)"},
+     *    methods={"HEAD", "DELETE"})
+     * @Entity("meal", expr="repository.findOneById(mealId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="mealId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the meal",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Meal")
+     */
+    public function delete(Meal $meal)
+    {
+        $this->denyAccessUnlessGranted('mealDelete', $meal);
+
+        $suppressedData = $this->mealService->delete($meal);
+
+        return new JsonResponse($suppressedData);
+    }
+}

@@ -233,4 +233,27 @@ class Ride
     {
         return $this->pickups;
     }
+
+    public function addPickup(Pickup $pickup): self
+    {
+        if (!$this->pickups->contains($pickup)) {
+            $this->pickups[] = $pickup;
+            $pickup->setRide($this);
+        }
+
+        return $this;
+    }
+
+    public function removePickup(Pickup $pickup): self
+    {
+        if ($this->pickups->contains($pickup)) {
+            $this->pickups->removeElement($pickup);
+            // set the owning side to null (unless already changed)
+            if ($pickup->getRide() === $this) {
+                $pickup->setRide(null);
+            }
+        }
+
+        return $this;
+    }
 }

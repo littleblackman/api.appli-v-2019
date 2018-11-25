@@ -107,12 +107,10 @@ class Product
 
                 $priceTtc += $component->getPrice();
             }
-dump($vatArray);
             $this
                 ->setVatAmounts($vatArray)
                 ->setPriceTtc($priceTtc)
             ;
-dump($this);
         }
 
         $objectArray = get_object_vars($this);
