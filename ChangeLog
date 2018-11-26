@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.12.1
+- Ajout d'une route pour afficher Person depuis son User identifier (26/11/2018)
+
 v0.12
 - Ajout de Meal + Food files (25/11/2018)
 

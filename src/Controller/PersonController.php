@@ -202,9 +202,9 @@ class PersonController extends AbstractController
         return new JsonResponse($personsArray);
     }
 
-//DISPLAY
+//DISPLAY WITH ID
     /**
-     * Displays person
+     * Displays person using its id
      *
      * @Route("/person/display/{personId}",
      *    name="person_display",
@@ -246,6 +246,49 @@ class PersonController extends AbstractController
         return new JsonResponse($personArray);
     }
 
+//DISPLAY WITH USER'S IDENTIFIER
+    /**
+     * Displays person using its user's identifier
+     *
+     * @Route("/person/display/{identifier}",
+     *    name="person_display_identifier",
+     *    requirements={"identifier": "^([a-z0-9]{32})"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Person::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="identifier",
+     *     in="path",
+     *     required=true,
+     *     description="User's identifier of the person",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Person")
+     */
+    public function displayByIdentifier($identifier)
+    {
+        $person = $this->personService->findByUserIdentifier($identifier);
+        $this->denyAccessUnlessGranted('personDisplay', $person);
+
+        $personArray = $this->personService->toArray($person);
+
+        return new JsonResponse($personArray);
+    }
 
 //CREATE
     /**

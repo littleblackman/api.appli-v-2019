@@ -41,6 +41,22 @@ class PersonRepository extends EntityRepository
     }
 
     /**
+     * Returns the person using its user's identifier
+     */
+    public function findByUserIdentifier(string $identifier)
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.userPersonLink', 'ul')
+            ->leftJoin('ul.user', 'u')
+            ->where('u.identifier = :identifier')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('identifier', $identifier)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    /**
      * Returns the person if not suppressed
      */
     public function findOneById($personId)
