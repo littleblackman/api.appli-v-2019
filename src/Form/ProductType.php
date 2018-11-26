@@ -4,12 +4,14 @@ namespace App\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\ProductComponentLinkType;
+use App\Entity\Location;
 use App\Entity\Season;
 
 /**
@@ -50,6 +52,25 @@ class ProductType extends AbstractType
                 'required' => false,
                 ))
             ->add('exclusionTo', DateType::class, array(
+                'required' => false,
+                ))
+            ->add('location', EntityType::class, array(
+                'required' => false,
+                'class' => Location::class,
+                ))
+            ->add('transport', CheckboxType::class, array(
+                'required' => false,
+                ))
+            ->add('dayReference', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('daysAvailable', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('duration', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('expectedTimes', TextType::class, array(
                 'required' => false,
                 ))
             ->add('links', CollectionType::class, array(

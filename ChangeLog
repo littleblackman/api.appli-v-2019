@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.13.1
+- Ajout des champs manquants dans ProductType (26/11/2018)
+
 v0.13
 - Ajout de plusieurs champs sur Product (26/11/2018)
 - Ajout des champs "_en" sur Component (26/11/2018)
