@@ -4,16 +4,19 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Entity\Component;
-use App\Entity\Product;
-use App\Entity\ProductComponentLink;
-use App\Service\ComponentServiceInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
+use App\Entity\Location;
+use App\Entity\LocationPersonLink;
+use App\Entity\Person;
+use App\Form\AppFormFactoryInterface;
+use App\Service\LocationServiceInterface;
 
 /**
- * ComponentService class
+ * LocationService class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class ComponentService implements ComponentServiceInterface
+class LocationService implements LocationServiceInterface
 {
     private $em;
     private $mainService;
@@ -30,10 +33,10 @@ class ComponentService implements ComponentServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Component $object, string $data)
+    public function create(Location $object, string $data)
     {
         //Submits data
-        $data = $this->mainService->submit($object, 'component-create', $data);
+        $data = $this->mainService->submit($object, 'location-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -45,36 +48,34 @@ class ComponentService implements ComponentServiceInterface
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Composant ajouté',
-            'component' => $this->toArray($object),
+            'message' => 'Lieu ajouté',
+            'location' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Component $object, string $data)
+    public function delete(Location $object, string $data)
     {
-        $data = json_decode($data, true);
-
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
 
         return array(
             'status' => true,
-            'message' => 'Composant supprimé',
+            'message' => 'Lieu supprimé',
         );
     }
 
     /**
-     * Returns the list of all components in the array format
+     * Returns the list of all persons in the array format
      * @return array
      */
     public function findAll()
     {
         return $this->em
-            ->getRepository('App:Component')
+            ->getRepository('App:Location')
             ->findAll()
         ;
     }
@@ -82,23 +83,21 @@ class ComponentService implements ComponentServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function isEntityFilled(Component $object)
+    public function isEntityFilled(Location $object)
     {
-        if (null === $object->getNameFr() ||
-            null === $object->getDescriptionFr() ||
-            null === $object->getPrice() ||
-            null === $object->getVat()) {
-            throw new UnprocessableEntityHttpException('Missing data for Component -> ' . json_encode($object->toArray()));
+        if (null === $object->getName() ||
+            null === $object->getAddress()) {
+            throw new UnprocessableEntityHttpException('Missing data for Location -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function modify(Component $object, string $data)
+    public function modify(Location $object, string $data)
     {
         //Submits data
-        $data = $this->mainService->submit($object, 'component-modify', $data);
+        $data = $this->mainService->submit($object, 'location-modify', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -107,18 +106,22 @@ class ComponentService implements ComponentServiceInterface
         $this->mainService->modify($object);
         $this->mainService->persist($object);
 
+        //Persists in DB
+        $this->em->flush();
+        $this->em->refresh($object);
+
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Composant modifié',
-            'component' => $this->toArray($object),
+            'message' => 'Lieu modifié',
+            'location' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toArray(Component $object)
+    public function toArray(Location $object)
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());

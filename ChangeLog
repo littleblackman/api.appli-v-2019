@@ -1,5 +1,11 @@
 ChangeLog
 
+v0.13
+- Ajout de plusieurs champs sur Product (26/11/2018)
+- Ajout des champs "_en" sur Component (26/11/2018)
+- Ajout de `Season` (26/11/2018)
+- Ajout de `Location` (26/11/2018)
+
 v0.12.1
 - Ajout d'une route pour afficher Person depuis son User identifier (26/11/2018)
 

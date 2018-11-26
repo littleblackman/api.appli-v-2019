@@ -2,12 +2,15 @@
 
 namespace App\Form;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\ProductComponentLinkType;
+use App\Entity\Season;
 
 /**
  * ProductType FormType
@@ -18,10 +21,35 @@ class ProductType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, array(
+            ->add('family', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('description', TextType::class, array(
+            ->add('season', EntityType::class, array(
+                'required' => false,
+                'class' => Season::class,
+                ))
+            ->add('nameFr', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('nameEn', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('descriptionFr', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('descriptionEn', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('dateStart', DateType::class, array(
+                'required' => false,
+                ))
+            ->add('dateEnd', DateType::class, array(
+                'required' => false,
+                ))
+            ->add('exclusionFrom', DateType::class, array(
+                'required' => false,
+                ))
+            ->add('exclusionTo', DateType::class, array(
                 'required' => false,
                 ))
             ->add('links', CollectionType::class, array(

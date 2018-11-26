@@ -135,8 +135,8 @@ class ProductService implements ProductServiceInterface
      */
     public function isEntityFilled(Product $object)
     {
-        if (null === $object->getName() ||
-            null === $object->getDescription()) {
+        if (null === $object->getNameFr() ||
+            null === $object->getDescriptionFr()) {
             throw new UnprocessableEntityHttpException('Missing data for Product -> ' . json_encode($object->toArray()));
         }
     }
@@ -183,6 +183,16 @@ class ProductService implements ProductServiceInterface
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
+
+        //Gets related season
+        if (null !== $object->getSeason()) {
+            $objectArray['season'] = $this->mainService->toArray($object->getSeason()->toArray());
+        }
+
+        //Gets related location
+        if (null !== $object->getLocation()) {
+            $objectArray['location'] = $this->mainService->toArray($object->getLocation()->toArray());
+        }
 
         //Gets related components
         if (null !== $object->getComponents()) {

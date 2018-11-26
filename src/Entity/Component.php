@@ -37,16 +37,30 @@ class Component
     /**
      * @var string|null
      *
-     * @ORM\Column(name="name", type="string", length=128, nullable=true)
+     * @ORM\Column(name="name_fr", type="string", length=128, nullable=true)
      */
-    private $name;
+    private $nameFr;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="description", type="string", nullable=true)
+     * @ORM\Column(name="name_en", type="string", length=128, nullable=true)
      */
-    private $description;
+    private $nameEn;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description_fr", type="string", nullable=true)
+     */
+    private $descriptionFr;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description_en", type="string", nullable=true)
+     */
+    private $descriptionEn;
 
     /**
      * @var float|null
@@ -108,26 +122,50 @@ class Component
         return $this->componentId;
     }
 
-    public function getName(): ?string
+    public function getNameFr(): ?string
     {
-        return $this->name;
+        return $this->nameFr;
     }
 
-    public function setName(?string $name): self
+    public function setNameFr(?string $nameFr): self
     {
-        $this->name = $name;
+        $this->nameFr = $nameFr;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getNameEn(): ?string
     {
-        return $this->description;
+        return $this->nameEn;
     }
 
-    public function setDescription(?string $description): self
+    public function setNameEn(?string $nameEn): self
     {
-        $this->description = $description;
+        $this->nameEn = $nameEn;
+
+        return $this;
+    }
+
+    public function getDescriptionFr(): ?string
+    {
+        return $this->descriptionFr;
+    }
+
+    public function setDescriptionFr(?string $descriptionFr): self
+    {
+        $this->descriptionFr = $descriptionFr;
+
+        return $this;
+    }
+
+    public function getDescriptionEn(): ?string
+    {
+        return $this->descriptionEn;
+    }
+
+    public function setDescriptionEn(?string $descriptionEn): self
+    {
+        $this->descriptionEn = $descriptionEn;
 
         return $this;
     }

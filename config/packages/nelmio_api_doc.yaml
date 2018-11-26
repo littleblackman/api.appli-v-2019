@@ -6,7 +6,7 @@ nelmio_api_doc:
         info:
             title: Appli-V
             description: API used for Energy Academy
-            version: '0.12'
+            version: '0.13'
         securityDefinitions:
             Bearer:
                 type: apiKey

@@ -39,16 +39,125 @@ class Product
     /**
      * @var string|null
      *
-     * @ORM\Column(name="name", type="string", length=128, nullable=true)
+     * @ORM\Column(name="family", type="string", length=24, nullable=true)
      */
-    private $name;
+    private $family;
 
     /**
-     * @var string
+     * @var App\Entity\Season
      *
-     * @ORM\Column(name="description", type="string", nullable=true)
+     * @ORM\OneToOne(targetEntity="Season")
+     * @ORM\JoinColumn(name="season_id", referencedColumnName="season_id")
      */
-    private $description;
+    private $season;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="name_fr", type="string", length=128, nullable=true)
+     */
+    private $nameFr;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="name_en", type="string", length=128, nullable=true)
+     */
+    private $nameEn;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="description_fr", type="string", nullable=true)
+     */
+    private $descriptionFr;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="description_en", type="string", nullable=true)
+     */
+    private $descriptionEn;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="date_start", type="date")
+     */
+    private $dateStart;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="date_end", type="date")
+     */
+    private $dateEnd;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="exclusion_from", type="date")
+     */
+    private $exclusionFrom;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="exclusion_to", type="date")
+     */
+    private $exclusionTo;
+
+    /**
+     * @var App\Entity\Location
+     *
+     * @ORM\OneToOne(targetEntity="Location")
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="location_id")
+     */
+    private $location;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="transport", type="boolean")
+     */
+    private $transport;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="day_reference", length=8, type="string")
+     */
+    private $dayReference;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="days_available", length=48, type="string")
+     */
+//= explode de tableau
+    private $daysAvailable;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="duration", length=128, type="string")
+     */
+//= explode de tableau
+    private $duration;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="expected_times", length=128, type="string")
+     */
+//= explode de tableau : ['pickup' => '8:00', 'dropoff' => '17:00']
+    private $expectedTimes;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProductComponentLink", mappedBy="product")
+     * @SWG\Property(ref=@Model(type=Component::class))
+     */
+    private $components;
 
     /**
      * @var string[]|null
@@ -67,12 +176,6 @@ class Product
      * @SWG\Property(type="number")
      */
     private $priceTtc;
-
-    /**
-     * @ORM\OneToMany(targetEntity="ProductComponentLink", mappedBy="product")
-     * @SWG\Property(ref=@Model(type=Component::class))
-     */
-    private $components;
 
     public function __construct()
     {
@@ -96,7 +199,7 @@ class Product
                 $componentHtAmount = round($component->getPrice() - $componentVatAmount, 2, PHP_ROUND_HALF_UP);
                 $vatArray["$vatRate"][] = array(
                     'componentId' => $component->getComponentId(),
-                    'componentName' => $component->getName(),
+                    'componentName' => $component->getNameFr(),
                     'vatAmount' => $componentVatAmount,
                     'ht' => $componentHtAmount,
                     'price' => $component->getPrice(),
@@ -113,7 +216,22 @@ class Product
             ;
         }
 
+        //Converts to array
         $objectArray = get_object_vars($this);
+
+        //Specific data
+        if (null !== $objectArray['dateStart']) {
+            $objectArray['dateStart'] = $objectArray['dateStart']->format('Y-m-d');
+        }
+        if (null !== $objectArray['dateEnd']) {
+            $objectArray['dateEnd'] = $objectArray['dateEnd']->format('Y-m-d');
+        }
+        if (null !== $objectArray['exclusionFrom']) {
+            $objectArray['exclusionFrom'] = $objectArray['exclusionFrom']->format('Y-m-d');
+        }
+        if (null !== $objectArray['exclusionTo']) {
+            $objectArray['exclusionTo'] = $objectArray['exclusionTo']->format('Y-m-d');
+        }
 
         return $objectArray;
     }
@@ -123,26 +241,194 @@ class Product
         return $this->productId;
     }
 
-    public function getName(): ?string
+    public function getFamily(): ?string
     {
-        return $this->name;
+        return $this->family;
     }
 
-    public function setName(?string $name): self
+    public function setFamily(?string $family): self
     {
-        $this->name = $name;
+        $this->family = $family;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getNameFr(): ?string
     {
-        return $this->description;
+        return $this->nameFr;
     }
 
-    public function setDescription(string $description): self
+    public function setNameFr(?string $nameFr): self
     {
-        $this->description = $description;
+        $this->nameFr = $nameFr;
+
+        return $this;
+    }
+
+    public function getNameEn(): ?string
+    {
+        return $this->nameEn;
+    }
+
+    public function setNameEn(?string $nameEn): self
+    {
+        $this->nameEn = $nameEn;
+
+        return $this;
+    }
+
+    public function getDescriptionFr(): ?string
+    {
+        return $this->descriptionFr;
+    }
+
+    public function setDescriptionFr(?string $descriptionFr): self
+    {
+        $this->descriptionFr = $descriptionFr;
+
+        return $this;
+    }
+
+    public function getDescriptionEn(): ?string
+    {
+        return $this->descriptionEn;
+    }
+
+    public function setDescriptionEn(?string $descriptionEn): self
+    {
+        $this->descriptionEn = $descriptionEn;
+
+        return $this;
+    }
+
+    public function getDateStart(): ?\DateTimeInterface
+    {
+        return $this->dateStart;
+    }
+
+    public function setDateStart(\DateTimeInterface $dateStart): self
+    {
+        $this->dateStart = $dateStart;
+
+        return $this;
+    }
+
+    public function getDateEnd(): ?\DateTimeInterface
+    {
+        return $this->dateEnd;
+    }
+
+    public function setDateEnd(\DateTimeInterface $dateEnd): self
+    {
+        $this->dateEnd = $dateEnd;
+
+        return $this;
+    }
+
+    public function getExclusionFrom(): ?\DateTimeInterface
+    {
+        return $this->exclusionFrom;
+    }
+
+    public function setExclusionFrom(\DateTimeInterface $exclusionFrom): self
+    {
+        $this->exclusionFrom = $exclusionFrom;
+
+        return $this;
+    }
+
+    public function getExclusionTo(): ?\DateTimeInterface
+    {
+        return $this->exclusionTo;
+    }
+
+    public function setExclusionTo(\DateTimeInterface $exclusionTo): self
+    {
+        $this->exclusionTo = $exclusionTo;
+
+        return $this;
+    }
+
+    public function getSeason(): ?Season
+    {
+        return $this->season;
+    }
+
+    public function setSeason(?Season $season): self
+    {
+        $this->season = $season;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function getTransport(): ?bool
+    {
+        return $this->transport;
+    }
+
+    public function setTransport(bool $transport): self
+    {
+        $this->transport = $transport;
+
+        return $this;
+    }
+
+    public function getDayReference(): ?string
+    {
+        return $this->dayReference;
+    }
+
+    public function setDayReference(string $dayReference): self
+    {
+        $this->dayReference = $dayReference;
+
+        return $this;
+    }
+
+    public function getDaysAvailable(): ?string
+    {
+        return $this->daysAvailable;
+    }
+
+    public function setDaysAvailable(string $daysAvailable): self
+    {
+        $this->daysAvailable = $daysAvailable;
+
+        return $this;
+    }
+
+    public function getDuration(): ?string
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(string $duration): self
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function getExpectedTimes(): ?string
+    {
+        return $this->expectedTimes;
+    }
+
+    public function setExpectedTimes(string $expectedTimes): self
+    {
+        $this->expectedTimes = $expectedTimes;
 
         return $this;
     }

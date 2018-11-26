@@ -4,16 +4,19 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Entity\Component;
-use App\Entity\Product;
-use App\Entity\ProductComponentLink;
-use App\Service\ComponentServiceInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
+use App\Entity\Season;
+use App\Entity\SeasonPersonLink;
+use App\Entity\Person;
+use App\Form\AppFormFactoryInterface;
+use App\Service\SeasonServiceInterface;
 
 /**
- * ComponentService class
+ * SeasonService class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class ComponentService implements ComponentServiceInterface
+class SeasonService implements SeasonServiceInterface
 {
     private $em;
     private $mainService;
@@ -30,10 +33,11 @@ class ComponentService implements ComponentServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Component $object, string $data)
+    public function create(Season $object, string $data)
     {
         //Submits data
-        $data = $this->mainService->submit($object, 'component-create', $data);
+        $data = $this->mainService->submit($object, 'season-create', $data);
+        $object->setIsActive(true);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -45,17 +49,17 @@ class ComponentService implements ComponentServiceInterface
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Composant ajouté',
-            'component' => $this->toArray($object),
+            'message' => 'Saison ajoutée',
+            'season' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Component $object, string $data)
+    public function delete(Season $object, string $data)
     {
-        $data = json_decode($data, true);
+        $object->setIsActive(false);
 
         //Persists data
         $this->mainService->delete($object);
@@ -63,18 +67,18 @@ class ComponentService implements ComponentServiceInterface
 
         return array(
             'status' => true,
-            'message' => 'Composant supprimé',
+            'message' => 'Saison supprimée',
         );
     }
 
     /**
-     * Returns the list of all components in the array format
+     * Returns the list of all persons in the array format
      * @return array
      */
     public function findAll()
     {
         return $this->em
-            ->getRepository('App:Component')
+            ->getRepository('App:Season')
             ->findAll()
         ;
     }
@@ -82,23 +86,20 @@ class ComponentService implements ComponentServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function isEntityFilled(Component $object)
+    public function isEntityFilled(Season $object)
     {
-        if (null === $object->getNameFr() ||
-            null === $object->getDescriptionFr() ||
-            null === $object->getPrice() ||
-            null === $object->getVat()) {
-            throw new UnprocessableEntityHttpException('Missing data for Component -> ' . json_encode($object->toArray()));
+        if (null === $object->getName()) {
+            throw new UnprocessableEntityHttpException('Missing data for Season -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function modify(Component $object, string $data)
+    public function modify(Season $object, string $data)
     {
         //Submits data
-        $data = $this->mainService->submit($object, 'component-modify', $data);
+        $data = $this->mainService->submit($object, 'season-modify', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -107,18 +108,22 @@ class ComponentService implements ComponentServiceInterface
         $this->mainService->modify($object);
         $this->mainService->persist($object);
 
+        //Persists in DB
+        $this->em->flush();
+        $this->em->refresh($object);
+
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Composant modifié',
-            'component' => $this->toArray($object),
+            'message' => 'Saison modifiée',
+            'season' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toArray(Component $object)
+    public function toArray(Season $object)
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
