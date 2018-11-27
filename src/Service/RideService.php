@@ -117,14 +117,14 @@ class RideService implements RideServiceInterface
     }
 
     /**
-     * Returns the ride linked to date and person
+     * Returns the rides linked to date and person
      * @return array
      */
-    public function findOneByDateByPersonId(string $date, Person $person)
+    public function findAllByDateByPersonId(string $date, Person $person)
     {
         return $this->em
             ->getRepository('App:Ride')
-            ->findOneByDateByPersonId($date, $person)
+            ->findAllByDateByPersonId($date, $person)
         ;
     }
 

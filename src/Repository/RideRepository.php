@@ -50,9 +50,9 @@ class RideRepository extends EntityRepository
     }
 
     /**
-     * Returns the ride by date and person
+     * Returns the rides by date and person
      */
-    public function findOneByDateByPersonId($date, $person)
+    public function findAllByDateByPersonId($date, $person)
     {
         return $this->createQueryBuilder('r')
             ->addSelect('p', 'v', 'pi')
@@ -67,7 +67,7 @@ class RideRepository extends EntityRepository
             ->orderBy('r.rideId', 'ASC')
             ->addOrderBy('pi.sortOrder', 'ASC')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getArrayResult()
         ;
     }
 

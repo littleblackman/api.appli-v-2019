@@ -154,7 +154,7 @@ class RideController extends AbstractController
 
 //DISPLAY BY DATE
     /**
-     * Displays the ride for a specific date and the connected person
+     * Displays the rides for a specific date and the connected person
      *
      * @Route("/ride/display/{date}",
      *    name="ride_display_date",
@@ -186,13 +186,9 @@ class RideController extends AbstractController
         $this->denyAccessUnlessGranted('rideDisplay');
 
         $person = $this->getUser()->getUserPersonLink()->getPerson();
-        $ride = $this->rideService->findOneByDateByPersonId($date, $person);
+        $rides = $this->rideService->findAllByDateByPersonId($date, $person);
 
-        if (null === $ride) {
-            return new JsonResponse(array());
-        }
-
-        return new JsonResponse($this->rideService->toArray($ride));
+        return new JsonResponse($rides);
     }
 
 //DISPLAY BY ID
