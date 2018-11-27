@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.14
+- Ajout de l'entité `Driver` (27/11/2018)
+- Suppression de la Route `person_list_drivers` (27/11/2018)
+
 v0.13.3
 - Modification de `ride_display_date` pour renvoyer tous les rides et pas seulement un (27/11/2018)
 

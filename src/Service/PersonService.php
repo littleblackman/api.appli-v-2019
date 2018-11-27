@@ -153,18 +153,6 @@ class PersonService implements PersonServiceInterface
     }
 
     /**
-     * Returns the list of all the drivers
-     * @return array
-     */
-    public function findDrivers()
-    {
-        return $this->em
-            ->getRepository('App:Person')
-            ->findDrivers()
-        ;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Person $object)

@@ -82,60 +82,6 @@ class PersonController extends AbstractController
         return new JsonResponse($personsArray);
     }
 
-//LIST DRIVERS
-    /**
-     * Lists all the drivers
-     *
-     * @Route("/person/list/drivers",
-     *    name="person_list_drivers",
-     *    methods={"HEAD", "GET"})
-     *
-     * @SWG\Response(
-     *     response=200,
-     *     description="Success",
-     *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Person::class))
-     *     )
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="Access denied",
-     * )
-     * @SWG\Parameter(
-     *     name="page",
-     *     in="query",
-     *     description="Number of the page",
-     *     type="integer",
-     *     default="1",
-     * )
-     * @SWG\Parameter(
-     *     name="size",
-     *     in="query",
-     *     description="Number of records",
-     *     type="integer",
-     *     default="50",
-     * )
-     * @SWG\Tag(name="Person")
-     */
-    public function listDrivers(Request $request, PaginatorInterface $paginator)
-    {
-        $this->denyAccessUnlessGranted('personList');
-
-        $persons = $paginator->paginate(
-            $this->personService->findDrivers(),
-            $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
-        );
-
-        $personsArray = array();
-        foreach ($persons->getItems() as $person) {
-            $personsArray[] = $this->personService->toArray($person);
-        };
-
-        return new JsonResponse($personsArray);
-    }
-
 //SEARCH
     /**
      * Searches for %{term}% in firstname|lastname for Person
