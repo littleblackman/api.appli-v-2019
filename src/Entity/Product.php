@@ -132,25 +132,22 @@ class Product
     /**
      * @var string|null
      *
-     * @ORM\Column(name="days_available", length=48, type="string")
+     * @ORM\Column(name="days_available", length=256, type="string")
      */
-//= explode de tableau
     private $daysAvailable;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="duration", length=128, type="string")
+     * @ORM\Column(name="duration", length=256, type="string")
      */
-//= explode de tableau
     private $duration;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="expected_times", length=128, type="string")
+     * @ORM\Column(name="expected_times", length=256, type="string")
      */
-//= explode de tableau : ['pickup' => '8:00', 'dropoff' => '17:00']
     private $expectedTimes;
 
     /**
@@ -231,6 +228,14 @@ class Product
         }
         if (null !== $objectArray['exclusionTo']) {
             $objectArray['exclusionTo'] = $objectArray['exclusionTo']->format('Y-m-d');
+        }
+        $fieldsArray = array(
+            'daysAvailable',
+            'duration',
+            'expectedTimes',
+        );
+        foreach ($fieldsArray as $field) {
+            $objectArray[$field] = unserialize($objectArray[$field]);
         }
 
         return $objectArray;
@@ -423,12 +428,12 @@ class Product
 
     public function getExpectedTimes(): ?string
     {
-        return $this->expectedTimes;
+        return unserialize($this->expectedTimes);
     }
 
-    public function setExpectedTimes(string $expectedTimes): self
+    public function setExpectedTimes(array $expectedTimes): self
     {
-        $this->expectedTimes = $expectedTimes;
+        $this->expectedTimes = serialize($expectedTimes);
 
         return $this;
     }

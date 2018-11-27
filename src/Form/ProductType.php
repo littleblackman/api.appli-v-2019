@@ -5,6 +5,7 @@ namespace App\Form;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -64,14 +65,20 @@ class ProductType extends AbstractType
             ->add('dayReference', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('daysAvailable', TextType::class, array(
+            ->add('daysAvailable', CollectionType::class, array(
                 'required' => false,
+                'entry_type' => ChoiceType::class,
+                'mapped' => false,
                 ))
-            ->add('duration', TextType::class, array(
+            ->add('duration', CollectionType::class, array(
                 'required' => false,
+                'entry_type' => TextType::class,
+                'mapped' => false,
                 ))
-            ->add('expectedTimes', TextType::class, array(
+            ->add('expectedTimes', CollectionType::class, array(
                 'required' => false,
+                'entry_type' => TextType::class,
+                'mapped' => false,
                 ))
             ->add('links', CollectionType::class, array(
                 'required' => false,

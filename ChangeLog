@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.13.2
+- Renvoi d'un array vide pour `ride_display_date` s'il n'y a pas de ride pour l'utilisateur connecté et la date (27/11/2018)
+- Mise en place de la conversion des array soumis pour les champs des products (27/11/2018)
+
 v0.13.1
 - Ajout des champs manquants dans ProductType (26/11/2018)
 

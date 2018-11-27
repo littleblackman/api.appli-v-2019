@@ -148,6 +148,19 @@ class ProductService implements ProductServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'product-modify', $data);
+        $fieldsArray = array(
+            'daysAvailable',
+            'duration',
+            'expectedTimes',
+        );
+        foreach ($fieldsArray as $field) {
+            if (isset($data[$field]) && null !== $data[$field]) {
+                $method = 'set' . ucfirst($field);
+                if (method_exists($object, $method)) {
+                    $object->$method($data[$field]);
+                }
+            }
+        }
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
