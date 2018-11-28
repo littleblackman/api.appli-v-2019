@@ -9,3 +9,8 @@ apidoc
 Documentation
 config_bundles.yaml
 config/jwt
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###

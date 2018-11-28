@@ -31,6 +31,9 @@ class FoodType extends AbstractType
             ->add('isActive', CheckboxType::class, array(
                 'required' => false,
                 ))
+            ->add('photo', TextType::class, array(
+                'required' => false,
+                ))
         ;
     }
 

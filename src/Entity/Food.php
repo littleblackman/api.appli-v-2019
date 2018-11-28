@@ -63,6 +63,13 @@ class Food
     private $isActive;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="photo", type="string", length=256, nullable=true)
+     */
+    private $photo;
+
+    /**
      * @ORM\OneToMany(targetEntity="MealFoodLink", mappedBy="food")
      * @SWG\Property(ref=@Model(type=Meal::class))
      */
@@ -132,6 +139,18 @@ class Food
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }
