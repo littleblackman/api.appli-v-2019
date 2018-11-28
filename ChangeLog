@@ -2,6 +2,9 @@ ChangeLog
 
 inscription : child_id + date_session + product_id + invoice_id + time_start + time_end
 
+v0.14.2
+- Modification du renvoi de `ride_display_date` (28/11/2018)
+
 v0.14.1
 - Ajout du champ photo sur food (28/11/2018)
 

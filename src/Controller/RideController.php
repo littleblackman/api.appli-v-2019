@@ -188,7 +188,12 @@ class RideController extends AbstractController
         $person = $this->getUser()->getUserPersonLink()->getPerson();
         $rides = $this->rideService->findAllByDateByPersonId($date, $person);
 
-        return new JsonResponse($rides);
+        $ridesArray = array();
+        foreach ($rides as $ride) {
+            $ridesArray[] = $this->rideService->toArray($ride);
+        };
+
+        return new JsonResponse($ridesArray);
     }
 
 //DISPLAY BY ID

@@ -35,7 +35,7 @@
     },
     "require-dev": {
         "symfony/debug-pack": "^1.0",
-        "symfony/maker-bundle": "^1.7",
+        "symfony/maker-bundle": "^1.9",
         "symfony/profiler-pack": "^1.0",
         "symfony/test-pack": "^1.0",
         "symfony/var-dumper": "*"

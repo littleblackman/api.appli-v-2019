@@ -67,7 +67,7 @@ class RideRepository extends EntityRepository
             ->orderBy('r.rideId', 'ASC')
             ->addOrderBy('pi.sortOrder', 'ASC')
             ->getQuery()
-            ->getArrayResult()
+            ->getResult()
         ;
     }
 
