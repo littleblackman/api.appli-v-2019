@@ -51,7 +51,7 @@ class PersonService implements PersonServiceInterface
         //Adds links from user to person
         $userPersonLink = new UserPersonLink();
         $userPersonLink
-            ->setUser($this->user)
+            ->setUser($this->mainService->getUser())
             ->setPerson($object)
         ;
         $this->em->persist($userPersonLink);

@@ -60,6 +60,14 @@ class MainService implements MainServiceInterface
     }
 
     /**
+     * Returns the user
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function modify($object)

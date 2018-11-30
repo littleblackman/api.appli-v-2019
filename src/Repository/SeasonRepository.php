@@ -32,7 +32,6 @@ class SeasonRepository extends EntityRepository
     {
         return $this->createQueryBuilder('s')
             ->where('s.seasonId = :seasonId')
-            ->andWhere('s.isActive = 1')
             ->andWhere('s.suppressed = 0')
             ->setParameter('seasonId', $seasonId)
             ->getQuery()

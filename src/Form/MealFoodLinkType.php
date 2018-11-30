@@ -18,11 +18,11 @@ class MealFoodLinkType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('product', EntityType::class, array(
+            ->add('mealId', EntityType::class, array(
                 'required' => false,
                 'class' => Meal::class,
                 ))
-            ->add('component', EntityType::class, array(
+            ->add('foodId', EntityType::class, array(
                 'required' => false,
                 'class' => Food::class,
                 ))
@@ -33,7 +33,7 @@ class MealFoodLinkType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'App\Entity\MealFoodLink',
-            'intention' => 'MealFoodLinkFoem',
+            'intention' => 'MealFoodLinkForm',
         ));
     }
 }

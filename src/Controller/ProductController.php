@@ -14,7 +14,6 @@ use App\Service\ProductServiceInterface;
 use App\Entity\Product;
 use App\Entity\ProductProductLink;
 use App\Form\ProductType;
-use App\Form\ProductComponentLinkType;
 
 /**
  * ProductController class
@@ -247,13 +246,6 @@ class ProductController extends AbstractController
      *     description="Id for the product",
      *     required=true,
      *     type="integer",
-     * )
-     * @SWG\Parameter(
-     *     name="links",
-     *     in="body",
-     *     description="Data for the Product",
-     *     required=true,
-     *     @Model(type=ProductComponentLinkType::class)
      * )
      * @SWG\Tag(name="Product")
      */

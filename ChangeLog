@@ -1,5 +1,12 @@
 ChangeLog
 
+v0.14.4
+- Ajout de la possibilité d'insérer un lien entre Food et Meal (30/11/2018)
+- Correction lors de la suppresion des Product pour supprimer automatiquement les liens (30/11/2018)
+- Correction lors de l'ajout d'une Person (30/11/2018)
+- Mise en place des tests (30/11/2018)
+- Correction dues aux tests (30/11/2018)
+
 v0.14.3
 - Remplacement de `isActive` pas `status` sur Food et Season (30/11/2018)
 - Ajout du renvoi des Address + Phone pour les Persons lors de l'affichage des Child (30/11/2018)

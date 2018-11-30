@@ -37,7 +37,6 @@ class SeasonService implements SeasonServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'season-create', $data);
-        $object->setIsActive(true);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -59,8 +58,6 @@ class SeasonService implements SeasonServiceInterface
      */
     public function delete(Season $object, string $data)
     {
-        $object->setIsActive(false);
-
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);

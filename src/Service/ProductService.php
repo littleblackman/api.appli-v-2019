@@ -98,18 +98,15 @@ class ProductService implements ProductServiceInterface
         $this->mainService->persist($object);
 
         //Removes links from product to components
-        if (isset($data['links'])) {
-            $links = $data['links'];
-
-            if (null !== $links && is_array($links) && !empty($links)) {
-                foreach ($links as $link) {
-                    $this->removeLink((int) $link['componentId'], $object);
-                }
-
-                //Persists in DB
-                $this->em->flush();
-                $this->em->refresh($object);
+        $links = $object->getComponents();
+        if (null !== $links && !empty($links)) {
+            foreach ($links as $link) {
+                $this->em->remove($link);
             }
+
+            //Persists in DB
+            $this->em->flush();
+            $this->em->refresh($object);
         }
 
         return array(
@@ -175,18 +172,6 @@ class ProductService implements ProductServiceInterface
             'message' => 'Produit modifié',
             'product' => $this->toArray($object),
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function removeLink(int $componentId, Product $object)
-    {
-        $component = $this->em->getRepository('App:Component')->findOneById($componentId);
-        if ($component instanceof Component) {
-            $productComponentLink = $this->em->getRepository('App:ProductComponentLink')->findOneBy(array('product' => $object, 'component' => $component));
-            $this->em->remove($productComponentLink);
-        }
     }
 
     /**

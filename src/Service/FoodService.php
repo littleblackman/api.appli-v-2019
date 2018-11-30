@@ -33,7 +33,6 @@ class FoodService implements FoodServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'food-create', $data);
-        $object->setIsActive(true);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -55,8 +54,6 @@ class FoodService implements FoodServiceInterface
      */
     public function delete(Food $object)
     {
-        $object->setIsActive(false);
-
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);

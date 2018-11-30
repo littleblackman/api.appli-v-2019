@@ -41,12 +41,6 @@ interface ProductServiceInterface
     public function modify(Product $object, string $data);
 
     /**
-     * Removes the links from product to component
-     * @return array
-     */
-    public function removeLink(int $componentId, Product $object);
-
-    /**
      * Converts entity to array
      * @return array
      */

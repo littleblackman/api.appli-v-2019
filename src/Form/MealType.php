@@ -4,6 +4,7 @@ namespace App\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,6 +35,11 @@ class MealType extends AbstractType
                 ))
             ->add('freeName', TextType::class, array(
                 'required' => false,
+                ))
+            ->add('links', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => MealFoodLinkType::class,
+                'mapped' => false,
                 ))
         ;
     }

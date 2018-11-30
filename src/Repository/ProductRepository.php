@@ -17,8 +17,7 @@ class ProductRepository extends EntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.suppressed = 0')
-            ->orderBy('p.lastname', 'ASC')
-            ->addOrderBy('p.firstname', 'ASC')
+            ->orderBy('p.nameFr', 'ASC')
             ->getQuery()
             ->getResult()
         ;
