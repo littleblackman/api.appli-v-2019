@@ -56,11 +56,11 @@ class Food
     private $kind;
 
     /**
-     * @var boolean
+     * @var string
      *
-     * @ORM\Column(name="is_active", type="boolean")
+     * @ORM\Column(name="status", type="string", length=32)
      */
-    private $isActive;
+    private $status;
 
     /**
      * @var string|null
@@ -131,14 +131,14 @@ class Food
         return $this;
     }
 
-    public function getIsActive(): ?bool
+    public function getStatus(): ?string
     {
-        return $this->isActive;
+        return $this->status;
     }
 
-    public function setIsActive(bool $isActive): self
+    public function setStatus(string $status): self
     {
-        $this->isActive = $isActive;
+        $this->status = $status;
 
         return $this;
     }

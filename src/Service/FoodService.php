@@ -71,11 +71,11 @@ class FoodService implements FoodServiceInterface
      * Returns all the foods active
      * @return array
      */
-    public function findAllActive()
+    public function findAllByStatus($status)
     {
         return $this->em
             ->getRepository('App:Food')
-            ->findAllActive()
+            ->findAllByStatus($status)
         ;
     }
 

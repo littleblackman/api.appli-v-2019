@@ -28,12 +28,16 @@ class FoodController extends AbstractController
         $this->foodService = $foodService;
     }
 
-//LIST
+//LIST BY STATUS
     /**
-     * Lists all the foods available
+     * Lists all the foods by status
      *
-     * @Route("/food/list",
-     *    name="food_list",
+     * @Route("/food/list/{status}",
+     *    name="food_list_status",
+     *    requirements={
+     *        "status": "^(active|disabled|archived)$"
+     *    },
+     *    defaults={"status": "active"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -47,6 +51,13 @@ class FoodController extends AbstractController
      * @SWG\Response(
      *     response=403,
      *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="status",
+     *     in="path",
+     *     description="active|disabled|archived foods",
+     *     type="string",
+     *     default="null",
      * )
      * @SWG\Parameter(
      *     name="page",
@@ -64,12 +75,12 @@ class FoodController extends AbstractController
      * )
      * @SWG\Tag(name="Food")
      */
-    public function listAll(Request $request, PaginatorInterface $paginator)
+    public function listByStatus(Request $request, PaginatorInterface $paginator, $status)
     {
         $this->denyAccessUnlessGranted('foodList');
 
         $foods = $paginator->paginate(
-            $this->foodService->findAllActive(),
+            $this->foodService->findAllByStatus($status),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );

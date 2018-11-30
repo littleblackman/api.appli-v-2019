@@ -28,12 +28,16 @@ class SeasonController extends AbstractController
         $this->seasonService = $seasonService;
     }
 
-//LIST
+//LIST BY STATUS
     /**
-     * Lists all the seasons
+     * Lists all the seasons by status
      *
-     * @Route("/season/list",
-     *    name="season_list",
+     * @Route("/season/list/{status}",
+     *    name="season_list_status",
+     *    requirements={
+     *        "status": "^(active|disabled|archived)$"
+     *    },
+     *    defaults={"status": "active"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -47,6 +51,13 @@ class SeasonController extends AbstractController
      * @SWG\Response(
      *     response=403,
      *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="status",
+     *     in="path",
+     *     description="active|disabled|archived seasons",
+     *     type="string",
+     *     default="null",
      * )
      * @SWG\Parameter(
      *     name="page",
@@ -64,12 +75,12 @@ class SeasonController extends AbstractController
      * )
      * @SWG\Tag(name="Season")
      */
-    public function listAll(Request $request, PaginatorInterface $paginator)
+    public function listByStatus(Request $request, PaginatorInterface $paginator, $status)
     {
         $this->denyAccessUnlessGranted('seasonList');
 
         $seasons = $paginator->paginate(
-            $this->seasonService->findAll(),
+            $this->seasonService->findAllByStatus($status),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );

@@ -13,12 +13,13 @@ class SeasonRepository extends EntityRepository
     /**
      * Returns all the seasons in an array
      */
-    public function findAll()
+    public function findAllByStatus($status)
     {
         return $this->createQueryBuilder('s')
-            ->where('s.isActive = 1')
+            ->where('s.status = :status')
             ->andWhere('s.suppressed = 0')
             ->orderBy('s.name', 'ASC')
+            ->setParameter('status', $status)
             ->getQuery()
             ->getResult()
         ;

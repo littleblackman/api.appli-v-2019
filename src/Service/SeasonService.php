@@ -75,11 +75,11 @@ class SeasonService implements SeasonServiceInterface
      * Returns the list of all persons in the array format
      * @return array
      */
-    public function findAll()
+    public function findAllByStatus($status)
     {
         return $this->em
             ->getRepository('App:Season')
-            ->findAll()
+            ->findAllByStatus($status)
         ;
     }
 

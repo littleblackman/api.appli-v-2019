@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -28,7 +27,7 @@ class FoodType extends AbstractType
             ->add('kind', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('isActive', CheckboxType::class, array(
+            ->add('status', TextType::class, array(
                 'required' => false,
                 ))
             ->add('photo', TextType::class, array(

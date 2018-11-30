@@ -241,7 +241,7 @@ class ChildService implements ChildServiceInterface
         if (null !== $object->getPersons()) {
             $persons = array();
             foreach($object->getPersons() as $personLink) {
-                $personArray = $this->mainService->toArray($personLink->getPerson()->toArray());
+                $personArray = $this->personService->toArray($personLink->getPerson());
                 $personArray['relation'] = $personLink->getRelation();
                 $persons[] = $personArray;
             }
