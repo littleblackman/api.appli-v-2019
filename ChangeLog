@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.14.5
+- Ajout de la possibilité de FreeName pour Meal (03/12/2018)
+- Ajout du SortOrder des Pickups pour Ride (03/12/2018)
+
 v0.14.4
 - Ajout de la possibilité d'insérer un lien entre Food et Meal (30/11/2018)
 - Correction lors de la suppresion des Product pour supprimer automatiquement les liens (30/11/2018)

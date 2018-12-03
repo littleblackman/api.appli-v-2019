@@ -16,13 +16,15 @@ class RideRepository extends EntityRepository
     public function findAllByDate($date)
     {
         return $this->createQueryBuilder('r')
-            ->addSelect('p', 'v')
+            ->addSelect('p', 'v', 'pi')
             ->leftJoin('r.person', 'p')
             ->leftJoin('r.vehicle', 'v')
+            ->leftJoin('r.pickups', 'pi')
             ->where('r.date LIKE :date')
             ->andWhere('r.suppressed = 0')
             ->setParameter('date', $date . '%')
             ->orderBy('r.rideId', 'ASC')
+            ->addOrderBy('pi.sortOrder', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -85,6 +87,7 @@ class RideRepository extends EntityRepository
             ->andWhere('r.suppressed = 0')
             ->andWhere('pi.suppressed = 0 OR pi.suppressed IS NULL')
             ->setParameter('rideId', $rideId)
+            ->orderBy('pi.sortOrder', 'ASC')
             ->getQuery()
             ->getOneOrNullResult()
         ;

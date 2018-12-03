@@ -126,7 +126,7 @@ class MealService implements MealServiceInterface
     public function isEntityFilled(Meal $object)
     {
         if (null === $object->getDate() ||
-            (null === $object->getChild() && null === $object->getPerson())) {
+            (null === $object->getChild() && null === $object->getPerson() && null === $object->getFreeName())) {
             throw new UnprocessableEntityHttpException('Missing data for Meal -> ' . json_encode($object->toArray()));
         }
 
