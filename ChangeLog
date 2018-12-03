@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.14.6
+- Sort order par date + start pour les rides (03/12/2018)
+
 v0.14.5
 - Ajout de la possibilité de FreeName pour Meal (03/12/2018)
 - Ajout du SortOrder des Pickups pour Ride (03/12/2018)
