@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.14.7
+- Champ `validated` boolean -> varchar sur Pickup (03/12/2018)
+
 v0.14.6
 - Sort order par date + start pour les rides (03/12/2018)
 

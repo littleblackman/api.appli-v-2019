@@ -89,9 +89,9 @@ class Pickup
     private $comment;
 
     /**
-     * @var boolean
+     * @var string
      *
-     * @ORM\Column(name="validated", type="boolean")
+     * @ORM\Column(name="validated", type="string", length=16)
      */
     private $validated;
 
@@ -235,12 +235,12 @@ class Pickup
         return $this;
     }
 
-    public function getValidated(): ?bool
+    public function getValidated(): ?string
     {
         return $this->validated;
     }
 
-    public function setValidated(?bool $validated): self
+    public function setValidated(?string $validated): self
     {
         $this->validated = $validated;
 
