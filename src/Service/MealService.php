@@ -147,6 +147,26 @@ class MealService implements MealServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
+        //Modifies links from food to meal
+        if (isset($data['links'])) {
+            $links = $data['links'];
+
+            if (null !== $links && is_array($links) && !empty($links)) {
+                //Removes existing links
+                foreach ($object->getFoods() as $food) {
+                    $this->em->remove($food);
+                }
+
+                foreach ($links as $link) {
+                    $this->addLink((int) $link['foodId'], $object);
+                }
+
+                //Persists in DB
+                $this->em->flush();
+                $this->em->refresh($object);
+            }
+        }
+
         //Persists data
         $this->mainService->modify($object);
         $this->mainService->persist($object);

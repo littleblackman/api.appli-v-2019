@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0dddc10541ded5cc3d1cb203aa6ba660",
+    "content-hash": "90c7e19156e3ecebee90ea9d44971bfc",
     "packages": [
         {
             "name": "c975l/config-bundle",
@@ -120,16 +120,16 @@
         },
         {
             "name": "c975l/includelibrary-bundle",
-            "version": "v1.8.2",
+            "version": "v1.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/IncludeLibraryBundle.git",
-                "reference": "21fa3cde6f411bcef151413324d25e01d25b5600"
+                "reference": "6dda0a4afc966d55c27f3423a27405cec68c690a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/IncludeLibraryBundle/zipball/21fa3cde6f411bcef151413324d25e01d25b5600",
-                "reference": "21fa3cde6f411bcef151413324d25e01d25b5600",
+                "url": "https://api.github.com/repos/975L/IncludeLibraryBundle/zipball/6dda0a4afc966d55c27f3423a27405cec68c690a",
+                "reference": "6dda0a4afc966d55c27f3423a27405cec68c690a",
                 "shasum": ""
             },
             "require": {
@@ -164,7 +164,7 @@
                 "library",
                 "symfony"
             ],
-            "time": "2018-10-28T18:30:41+00:00"
+            "time": "2018-12-03T18:00:33+00:00"
         },
         {
             "name": "c975l/services-bundle",
