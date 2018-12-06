@@ -202,6 +202,42 @@ class PickupController extends AbstractController
         return new JsonResponse($pickupArray);
     }
 
+//SORT ORDER
+    /**
+     * Modifies sort order for Pickups
+     *
+     * @Route("/pickup/sort-order",
+     *    name="pickup_sort_order",
+     *    methods={"HEAD", "PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *     )
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Pickup",
+     *     required=true,
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(@SWG\Property(property="pickupId", type="integer")),
+     *         @SWG\Items(@SWG\Property(property="sortOrder", type="integer"))
+     *     )
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function sortOrder(Request $request)
+    {
+        $this->denyAccessUnlessGranted('pickupModify', null);
+
+        $sortOrderData = $this->pickupService->sortOrder($request->getContent());
+
+        return new JsonResponse($sortOrderData);
+    }
 
 //CREATE
     /**

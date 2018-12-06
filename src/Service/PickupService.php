@@ -126,6 +126,36 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
+     * Modifies the sort order for Pickups
+     */
+    public function sortOrder(string $data)
+    {
+        //Modifies sort order
+        $data = json_decode($data, true);
+        if (is_array($data) && !empty($data)) {
+            foreach ($data as $pickupId => $sortOrder) {
+                $pickup =  $this->em->getRepository('App:Pickup')->findOneById($pickupId);
+
+                if ($pickup instanceof Pickup) {
+                    $pickup->setSortOrder($sortOrder);
+                    $this->em->persist($pickup);
+                }
+            }
+            $this->em->flush();
+
+            //Returns data
+            return array(
+                'status' => true,
+            );
+        }
+
+        //Returns data
+        return array(
+            'status' => false,
+        );
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray(Pickup $object)

@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.14.9
+Ajout d'une Route pour modifier les sortOrder des pickups (06/12/2018)
+
 v0.14.8
 - Ajout de la modification des liens pour Meal (04/12/2018)
 
