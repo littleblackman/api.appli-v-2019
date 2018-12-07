@@ -210,4 +210,55 @@ class MealService implements MealServiceInterface
 
         return $objectArray;
     }
+
+
+    /**
+     * Returns the total of meal for a date
+     */
+    public function totalMealByDate($date)
+    {
+        $meals = $this->em
+            ->getRepository('App:Meal')
+            ->findAllByDate($date);
+        ;
+
+        $mealsArray = array(
+            'meals' => 0,
+            'child' => 0,
+            'person' => 0,
+            'freeName' => 0,
+            'food' => array(
+                'child' => array(),
+                'person' => array(),
+                'freeName' => array(),
+            ),
+        );
+
+        //Defines meal totals
+        foreach ($meals as $meal) {
+            $mealsArray['meals'] += 1;
+            $mealsArray['child'] += null !== $meal->getChild() ? 1 : 0;
+            $mealsArray['person'] += null !== $meal->getPerson() ? 1 : 0;
+            $mealsArray['freeName'] += null !== $meal->getFreeName() ? 1 : 0;
+
+            //Defines food totals
+            foreach ($meal->getFoods() as $food) {
+                $foodId = $food->getFood()->getFoodId();
+                $mealsArray['food'][$foodId] = isset($mealsArray['food'][$foodId]) ? $mealsArray['food'][$foodId] + 1 : 1;
+
+                //Child
+                if (null !== $meal->getChild()) {
+                    $mealsArray['food']['child'][$foodId] = isset($mealsArray['food']['child'][$foodId]) ? $mealsArray['food']['child'][$foodId] + 1 : 1;
+                //Person
+                } elseif (null !== $meal->getPerson()) {
+                    $mealsArray['food']['person'][$foodId] = isset($mealsArray['food']['person'][$foodId]) ? $mealsArray['food']['person'][$foodId] + 1 : 1;
+                //FreeName
+                } elseif (null !== $meal->getFreeName()) {
+                    $mealsArray['food']['freeName'][$foodId] = isset($mealsArray['food']['freeName'][$foodId]) ? $mealsArray['food']['freeName'][$foodId] + 1 : 1;
+                }
+            }
+        };
+
+        return $mealsArray;
+    }
 }

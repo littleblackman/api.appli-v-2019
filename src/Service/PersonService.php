@@ -153,6 +153,18 @@ class PersonService implements PersonServiceInterface
     }
 
     /**
+     * Finds one with its id
+     * @return array
+     */
+    public function findOneById(int $personId)
+    {
+        return $this->em
+            ->getRepository('App:Person')
+            ->findOneById($personId)
+        ;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Person $object)

@@ -89,6 +89,47 @@ class MealController extends AbstractController
         return new JsonResponse($mealsArray);
     }
 
+//TOTAL BY DATE
+    /**
+     * Calculates the totals for meals for a specific date
+     *
+     * @Route("/meal/total/{date}",
+     *    name="meal_total_date",
+     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(title="meals", type="integer"),
+     *         @SWG\Items(title="child", type="integer"),
+     *         @SWG\Items(title="person", type="integer"),
+     *         @SWG\Items(title="freeName", type="integer")
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the meal (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Meal")
+     */
+    public function totalByDate($date)
+    {
+        $this->denyAccessUnlessGranted('mealList');
+
+        $meals = $this->mealService->totalMealByDate($date);
+
+        return new JsonResponse($meals);
+    }
+
 //DISPLAY
     /**
      * Displays the meal using its id
