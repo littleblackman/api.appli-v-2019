@@ -204,10 +204,10 @@ class PickupController extends AbstractController
 
 //SORT ORDER
     /**
-     * Modifies sort order for Pickups
+     * Modifies the dispatch for Pickups
      *
-     * @Route("/pickup/sort-order",
-     *    name="pickup_sort_order",
+     * @Route("/pickup/dispatch",
+     *    name="pickup_dispatch",
      *    methods={"HEAD", "PUT"})
      *
      * @SWG\Response(
@@ -220,23 +220,26 @@ class PickupController extends AbstractController
      * @SWG\Parameter(
      *     name="data",
      *     in="body",
-     *     description="Data for the Pickup",
+     *     description="Data for the dispatch",
      *     required=true,
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(@SWG\Property(property="pickupId", type="integer")),
-     *         @SWG\Items(@SWG\Property(property="sortOrder", type="integer"))
+     *         @SWG\Items(
+     *              @SWG\Property(property="pickupId", type="integer"),
+     *              @SWG\Property(property="rideId", type="integer"),
+     *              @SWG\Property(property="sortOrder", type="integer"),
+     *              @SWG\Property(property="validated", type="string"))
      *     )
      * )
      * @SWG\Tag(name="Pickup")
      */
-    public function sortOrder(Request $request)
+    public function dispatch(Request $request)
     {
         $this->denyAccessUnlessGranted('pickupModify', null);
 
-        $sortOrderData = $this->pickupService->sortOrder($request->getContent());
+        $dispatchData = $this->pickupService->dispatch($request->getContent());
 
-        return new JsonResponse($sortOrderData);
+        return new JsonResponse($dispatchData);
     }
 
 //CREATE

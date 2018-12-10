@@ -103,10 +103,18 @@ class MealController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(title="meals", type="integer"),
-     *         @SWG\Items(title="child", type="integer"),
-     *         @SWG\Items(title="person", type="integer"),
-     *         @SWG\Items(title="freeName", type="integer")
+     *         @SWG\Items(
+     *              @SWG\Property(property="meals", type="integer"),
+     *              @SWG\Property(property="child", type="integer"),
+     *              @SWG\Property(property="person", type="integer"),
+     *              @SWG\Property(property="freeName", type="integer"),
+     *              @SWG\Property(property="food", type="array",
+     *                  @SWG\Items(
+     *                      @SWG\Property(property="child", type="integer"),
+     *                      @SWG\Property(property="person", type="integer"),
+     *                      @SWG\Property(property="freeName", type="integer"))
+     *             )
+     *         )
      *     )
      * )
      * @SWG\Response(

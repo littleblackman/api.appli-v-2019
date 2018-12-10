@@ -5,6 +5,7 @@ namespace App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Entity\Pickup;
+use App\Entity\Ride;
 use App\Service\PickupServiceInterface;
 
 /**
@@ -126,22 +127,29 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Modifies the sort order for Pickups
+     * Modifies the dispatch for Pickups
      */
-    public function sortOrder(string $data)
+    public function dispatch(string $data)
     {
-        //Modifies sort order
+        //Modifies dispatch and sort order
         $data = json_decode($data, true);
         if (is_array($data) && !empty($data)) {
-            foreach ($data as $pickupId => $sortOrder) {
-                $pickup =  $this->em->getRepository('App:Pickup')->findOneById($pickupId);
-
+            foreach ($data as $dispatch) {
+                $pickup =  $this->em->getRepository('App:Pickup')->findOneById($dispatch['pickupId']);
                 if ($pickup instanceof Pickup) {
-                    $pickup->setSortOrder($sortOrder);
+                    $ride = $this->em->getRepository('App:Ride')->findOneById($dispatch['rideId']);
+                    if ($ride instanceof Ride) {
+                        $pickup->setRide($ride);
+                    }
+
+                    $pickup
+                        ->setSortOrder($dispatch['sortOrder'])
+                        ->setValidated($dispatch['validated'])
+                        ;
                     $this->em->persist($pickup);
+                    $this->em->flush();
                 }
             }
-            $this->em->flush();
 
             //Returns data
             return array(

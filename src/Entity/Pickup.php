@@ -259,12 +259,12 @@ class Pickup
         return $this;
     }
 
-    public function getRide()
+    public function getRide(): ?Ride
     {
         return $this->ride;
     }
 
-    public function setRide($ride)
+    public function setRide(?Ride $ride)
     {
         $this->ride = $ride;
 

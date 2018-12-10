@@ -159,50 +159,6 @@ class RideController extends AbstractController
         return new JsonResponse($ridesArray);
     }
 
-//DISPLAY BY DATE
-    /**
-     * Displays the rides for a specific date and the connected person
-     *
-     * @Route("/ride/display/{date}",
-     *    name="ride_display_date",
-     *    requirements={"date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"},
-     *    methods={"HEAD", "GET"})
-     *
-     * @SWG\Response(
-     *     response=200,
-     *     description="Success",
-     *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Ride::class))
-     *     )
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="Access denied",
-     * )
-     * @SWG\Parameter(
-     *     name="date",
-     *     in="path",
-     *     description="Date for the ride (YYYY-MM-DD)",
-     *     type="string",
-     * )
-     * @SWG\Tag(name="Ride")
-     */
-    public function displayByDate($date)
-    {
-        $this->denyAccessUnlessGranted('rideDisplay');
-
-        $person = $this->getUser()->getUserPersonLink()->getPerson();
-        $rides = $this->rideService->findAllByDateByPersonId($date, $person);
-
-        $ridesArray = array();
-        foreach ($rides as $ride) {
-            $ridesArray[] = $this->rideService->toArray($ride);
-        };
-
-        return new JsonResponse($ridesArray);
-    }
-
 //DISPLAY BY DATE AND PERSONID
     /**
      * Displays the rides for a specific date and person

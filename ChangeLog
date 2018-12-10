@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.14.11
+- Modification de la Route pickup_sort_order pour pickup_dispatch (10/12/2018)
+- Suppression Route `ride_display_date` (10/12/2018)
+
 v0.14.10
 - Ajout d'une Route pour aficher le ride en fonction de la date et du personId pour supprimer `ride_display_date` ensuite (06/12/2018)
 - Mise à jour des bundles (07/12/2018)
