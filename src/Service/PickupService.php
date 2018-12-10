@@ -133,6 +133,7 @@ class PickupService implements PickupServiceInterface
     {
         //Modifies dispatch and sort order
         $data = json_decode($data, true);
+
         if (is_array($data) && !empty($data)) {
             foreach ($data as $dispatch) {
                 $pickup =  $this->em->getRepository('App:Pickup')->findOneById($dispatch['pickupId']);
@@ -140,6 +141,8 @@ class PickupService implements PickupServiceInterface
                     $ride = $this->em->getRepository('App:Ride')->findOneById($dispatch['rideId']);
                     if ($ride instanceof Ride) {
                         $pickup->setRide($ride);
+                    } elseif (null === $dispatch['rideId'] || 'null' === $dispatch['rideId']) {
+                        $pickup->setRide(null);
                     }
 
                     $pickup

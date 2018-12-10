@@ -1,7 +1,10 @@
 ChangeLog
 
+v0.14.11.1
+- Correction de la Route `pickup_dispatch` pour mettre eun ride à null (10/12/2018)
+
 v0.14.11
-- Modification de la Route pickup_sort_order pour pickup_dispatch (10/12/2018)
+- Modification de la Route pickup_sort_order pour `pickup_dispatch` (10/12/2018)
 - Suppression Route `ride_display_date` (10/12/2018)
 
 v0.14.10
