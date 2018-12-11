@@ -99,7 +99,7 @@ class MainService implements MainServiceInterface
 
         //Sets fields to null
         foreach ($data as $key => $value) {
-            if (null === $value) {
+            if (null === $value || 'null' === $value) {
                 $method = 'set' . ucfirst($key);
                 if (method_exists($object, $method)) {
                     $object->$method(null);

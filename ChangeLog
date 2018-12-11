@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.14.12
+- Ajout de la possibilité de modifier `start` dans pickup/dispatch (11/12/2018)
+
 v0.14.11.1
 - Correction de la Route `pickup_dispatch` pour mettre eun ride à null (10/12/2018)
 

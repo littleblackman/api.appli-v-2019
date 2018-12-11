@@ -202,7 +202,7 @@ class PickupController extends AbstractController
         return new JsonResponse($pickupArray);
     }
 
-//SORT ORDER
+//DISPATCH
     /**
      * Modifies the dispatch for Pickups
      *
@@ -228,7 +228,8 @@ class PickupController extends AbstractController
      *              @SWG\Property(property="pickupId", type="integer"),
      *              @SWG\Property(property="rideId", type="integer"),
      *              @SWG\Property(property="sortOrder", type="integer"),
-     *              @SWG\Property(property="validated", type="string"))
+     *              @SWG\Property(property="validated", type="string"),
+     *              @SWG\Property(property="start", type="string"))
      *     )
      * )
      * @SWG\Tag(name="Pickup")

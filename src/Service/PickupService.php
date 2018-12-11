@@ -107,7 +107,7 @@ class PickupService implements PickupServiceInterface
         $data = $this->mainService->submit($object, 'pickup-modify', $data);
 
         //Suppress ride
-        if (array_key_exists('ride', $data) && null === $data['ride']) {
+        if (array_key_exists('ride', $data) && (null === $data['ride'] || 'null' === $data['ride'])) {
             $object->setRide(null);
         }
 
@@ -138,6 +138,7 @@ class PickupService implements PickupServiceInterface
             foreach ($data as $dispatch) {
                 $pickup =  $this->em->getRepository('App:Pickup')->findOneById($dispatch['pickupId']);
                 if ($pickup instanceof Pickup) {
+                    //Modifies Ride
                     $ride = $this->em->getRepository('App:Ride')->findOneById($dispatch['rideId']);
                     if ($ride instanceof Ride) {
                         $pickup->setRide($ride);
@@ -145,12 +146,25 @@ class PickupService implements PickupServiceInterface
                         $pickup->setRide(null);
                     }
 
+                    //Modifies Start
+                    if (!empty($dispatch['start'] && '' !== $dispatch['start'])) {
+                        $start = \DateTime::createFromFormat('Y-m-d H:i:s', $dispatch['start']);
+                        if ($start instanceof \DateTime) {
+                            $pickup->setStart($start);
+                        }
+                    } elseif (null === $dispatch['start'] || 'null' === $dispatch['start']) {
+                        $pickup->setStart(null);
+                    }
+
+                    //Modifies other fields
                     $pickup
                         ->setSortOrder($dispatch['sortOrder'])
                         ->setValidated($dispatch['validated'])
-                        ;
-                    $this->em->persist($pickup);
-                    $this->em->flush();
+                    ;
+
+                    //Persists data
+                    $this->mainService->modify($pickup);
+                    $this->mainService->persist($pickup);
                 }
             }
 
