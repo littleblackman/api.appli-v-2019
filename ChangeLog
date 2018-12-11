@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.4.12.1
+- Ajout du scheme https pour la doc (11/12/2018)
+
 v0.14.12
 - Ajout de la possibilité de modifier `start` dans pickup/dispatch (11/12/2018)
 

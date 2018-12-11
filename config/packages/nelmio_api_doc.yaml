@@ -2,7 +2,8 @@ nelmio_api_doc:
     documentation:
         host: api.appli-v.net
 #        host: localhost
-        schemes: [http]
+        schemes: [https]
+#        schemes: [http]
         info:
             title: Appli-V
             description: API used for Energy Academy
