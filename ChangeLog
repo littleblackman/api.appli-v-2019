@@ -1,6 +1,9 @@
 ChangeLog
 
-v0.4.12.1
+v0.14.12.2
+- Correction du CORS (11/12/2018)
+
+v0.14.12.1
 - Ajout du scheme https pour la doc (11/12/2018)
 
 v0.14.12
