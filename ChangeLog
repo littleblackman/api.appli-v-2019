@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.15
+- Suppression des sessions (12/12/2018)
+
 v0.14.12.2
 - Correction du CORS (11/12/2018)
 

@@ -35,4 +35,5 @@ security:
             guard:
                 authenticators:
                     - c975L\UserBundle\Security\TokenAuthenticator
+            stateless: true
     access_control:
