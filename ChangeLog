@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.2
+- Ajout de la possibilité d'ajouter/modifier/supprimer des DriverZones (13/12/2018)
+
 v0.16.1
 - Correction d'un use class manquant (13/12/2018)
 

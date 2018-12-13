@@ -4,6 +4,7 @@ namespace App\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,6 +30,11 @@ class DriverType extends AbstractType
             ->add('vehicle', EntityType::class, array(
                 'required' => false,
                 'class' => Vehicle::class,
+                ))
+            ->add('links', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => DriverZoneType::class,
+                'mapped' => false,
                 ))
         ;
     }

@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Driver;
-use App\Entity\UserDriverLink;
+use App\Entity\DriverZone;
 use App\Form\AppFormFactoryInterface;
 use App\Service\DriverServiceInterface;
 
@@ -32,6 +32,22 @@ class DriverService implements DriverServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function addZone(Driver $object, string $postal, int $priority)
+    {
+        $driverZone = new DriverZone();
+        $driverZone
+            ->setDriver($object)
+            ->setPostal($postal)
+            ->setPriority($priority)
+        ;
+
+        $this->mainService->create($driverZone);
+        $this->mainService->persist($driverZone);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function create(Driver $object, string $data)
     {
         //Submits data
@@ -43,6 +59,17 @@ class DriverService implements DriverServiceInterface
         //Persists data
         $this->mainService->create($object);
         $this->mainService->persist($object);
+
+        //Adds links for DriverZones
+        if (isset($data['links'])) {
+            $links = $data['links'];
+
+            if (null !== $links && is_array($links) && !empty($links)) {
+                foreach ($links as $link) {
+                    $this->addZone($object, $link['postal'], $link['priority']);
+                }
+            }
+        }
 
         //Returns data
         return array(
@@ -57,6 +84,14 @@ class DriverService implements DriverServiceInterface
      */
     public function delete(Driver $object)
     {
+        //Removes links for zones
+        $links = $object->getDriverZones();
+        if (null !== $links && !empty($links)) {
+            foreach ($links as $link) {
+                $this->em->remove($link);
+            }
+        }
+
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
@@ -128,6 +163,23 @@ class DriverService implements DriverServiceInterface
         //Persists data
         $this->mainService->modify($object);
         $this->mainService->persist($object);
+
+        //Modifies links for driverZones
+        if (isset($data['links'])) {
+            $links = $data['links'];
+
+            if (null !== $links && is_array($links) && !empty($links)) {
+                //Removes existing zones
+                foreach ($object->getDriverZones() as $driverZone) {
+                    $this->em->remove($driverZone);
+                }
+
+                //Adds sublitted zones
+                foreach ($links as $link) {
+                    $this->addZone($object, $link['postal'], $link['priority']);
+                }
+            }
+        }
 
         //Returns data
         return array(
