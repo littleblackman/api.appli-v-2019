@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.4
+- Mise en place de la gestion des DriverPresence (13/12/2018)
+
 v0.16.3.2
 - Correction refresh après driver/modify (13/12/2018)
 

@@ -9,6 +9,7 @@ use App\Form\AddressType;
 use App\Form\ChildType;
 use App\Form\ComponentType;
 use App\Form\DriverType;
+use App\Form\DriverPresenceType;
 use App\Form\FoodType;
 use App\Form\LocationType;
 use App\Form\MealType;
@@ -58,6 +59,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'driver-create':
             case 'driver-modify':
                 $form = DriverType::class;
+                break;
+            case 'driver-presence-create':
+            case 'driver-presence-modify':
+                $form = DriverPresenceType::class;
                 break;
             case 'food-create':
             case 'food-modify':

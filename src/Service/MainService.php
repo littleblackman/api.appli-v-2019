@@ -93,7 +93,7 @@ class MainService implements MainServiceInterface
      */
     public function submit($object, $formName, $data)
     {
-        $data = json_decode($data, true);
+        $data = is_array($data) ? $data : json_decode($data, true);
         $form = $this->formFactory->create($formName, $object);
         $form->submit($data, false);
 
