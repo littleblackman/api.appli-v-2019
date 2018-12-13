@@ -11,6 +11,21 @@ use Doctrine\ORM\EntityRepository;
 class ComponentRepository extends EntityRepository
 {
     /**
+     * Returns all the components corresponding to the searched term
+     */
+    public function findAllSearch(string $term)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('LOWER(c.nameFr) LIKE :term')
+            ->andWhere('c.suppressed = 0')
+            ->orderBy('c.nameFr', 'ASC')
+            ->setParameter('term', '%' . strtolower($term) . '%')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns the component if not suppressed
      */
     public function findOneById($componentId)

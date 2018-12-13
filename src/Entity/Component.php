@@ -89,6 +89,13 @@ class Component
     private $priceHt;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="photo", type="string", length=256, nullable=true)
+     */
+    private $photo;
+
+    /**
      * @ORM\OneToMany(targetEntity="ProductComponentLink", mappedBy="component")
      * @SWG\Property(ref=@Model(type=Product::class))
      */
@@ -214,6 +221,18 @@ class Component
     public function setPriceHt($priceHt): self
     {
         $this->priceHt = $priceHt;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

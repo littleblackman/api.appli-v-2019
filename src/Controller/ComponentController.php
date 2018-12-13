@@ -83,6 +83,72 @@ class ComponentController extends AbstractController
         return new JsonResponse($componentsArray);
     }
 
+//SEARCH
+    /**
+     * Searches for %{term}% in name_fr for Component
+     *
+     * @Route("/component/search/{term}",
+     *    name="component_search",
+     *    requirements={"term": "^([a-zA-Z]+)"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Component::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="term",
+     *     in="path",
+     *     required=true,
+     *     description="Searched term",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Child")
+     */
+    public function search(Request $request, PaginatorInterface $paginator, string $term)
+    {
+        $this->denyAccessUnlessGranted('componentList');
+
+        $components = $paginator->paginate(
+            $this->componentService->findAllSearch($term),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $componentsArray = array();
+        foreach ($components->getItems() as $component) {
+            $componentsArray[] = $this->componentService->toArray($component);
+        };
+
+        return new JsonResponse($componentsArray);
+    }
+
 //DISPLAY
     /**
      * Displays component

@@ -24,6 +24,21 @@ class ProductRepository extends EntityRepository
     }
 
     /**
+     * Returns all the products corresponding to the searched term
+     */
+    public function findAllSearch(string $term)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('LOWER(p.nameFr) LIKE :term')
+            ->andWhere('p.suppressed = 0')
+            ->orderBy('p.nameFr', 'ASC')
+            ->setParameter('term', '%' . strtolower($term) . '%')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns the product if not suppressed
      */
     public function findOneById($productId)

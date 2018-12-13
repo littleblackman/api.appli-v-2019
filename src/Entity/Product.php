@@ -151,6 +151,13 @@ class Product
     private $expectedTimes;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="photo", type="string", length=256, nullable=true)
+     */
+    private $photo;
+
+    /**
      * @ORM\OneToMany(targetEntity="ProductComponentLink", mappedBy="product")
      * @SWG\Property(ref=@Model(type=Component::class))
      */
@@ -434,6 +441,18 @@ class Product
     public function setExpectedTimes(array $expectedTimes): self
     {
         $this->expectedTimes = serialize($expectedTimes);
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

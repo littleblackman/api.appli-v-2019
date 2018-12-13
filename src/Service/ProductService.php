@@ -128,6 +128,17 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
+     * Searches the term in the Product collection
+     * @return array
+     */
+    public function findAllSearch(string $term)
+    {
+        return $this->em
+            ->getRepository('App:Product')
+            ->findAllSearch($term)
+        ;
+    }
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Product $object)

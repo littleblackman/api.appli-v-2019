@@ -80,6 +80,18 @@ class ComponentService implements ComponentServiceInterface
     }
 
     /**
+     * Searches the term in the Component collection
+     * @return array
+     */
+    public function findAllSearch(string $term)
+    {
+        return $this->em
+            ->getRepository('App:Component')
+            ->findAllSearch($term)
+        ;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Component $object)

@@ -82,6 +82,72 @@ class ProductController extends AbstractController
         return new JsonResponse($productsArray);
     }
 
+//SEARCH
+    /**
+     * Searches for %{term}% in name_fr for Product
+     *
+     * @Route("/product/search/{term}",
+     *    name="product_search",
+     *    requirements={"term": "^([a-zA-Z]+)"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Product::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="term",
+     *     in="path",
+     *     required=true,
+     *     description="Searched term",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Child")
+     */
+    public function search(Request $request, PaginatorInterface $paginator, string $term)
+    {
+        $this->denyAccessUnlessGranted('productList');
+
+        $products = $paginator->paginate(
+            $this->productService->findAllSearch($term),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $productsArray = array();
+        foreach ($products->getItems() as $product) {
+            $productsArray[] = $this->productService->toArray($product);
+        };
+
+        return new JsonResponse($productsArray);
+    }
+
 //DISPLAY
     /**
      * Displays product
