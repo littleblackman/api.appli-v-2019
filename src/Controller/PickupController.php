@@ -13,6 +13,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use App\Service\PickupServiceInterface;
 use App\Entity\Pickup;
+use App\Entity\Ride;
 use App\Form\PickupType;
 
 /**
