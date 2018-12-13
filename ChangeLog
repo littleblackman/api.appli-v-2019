@@ -1,5 +1,11 @@
 ChangeLog
 
+v0.16.3.2
+- Correction refresh après driver/modify (13/12/2018)
+
+v0.16.3.1
+- Correction oubli photo pour ProdcutType et ComponentType (13/12/2018)
+
 v0.16.3
 - Ajout dune Route search pour Component (13/12/2018)
 - Ajout dune Route search pour Product (13/12/2018)

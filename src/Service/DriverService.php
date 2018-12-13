@@ -160,10 +160,6 @@ class DriverService implements DriverServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Persists data
-        $this->mainService->modify($object);
-        $this->mainService->persist($object);
-
         //Modifies links for driverZones
         if (isset($data['links'])) {
             $links = $data['links'];
@@ -180,6 +176,10 @@ class DriverService implements DriverServiceInterface
                 }
             }
         }
+
+        //Persists data
+        $this->mainService->modify($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(
