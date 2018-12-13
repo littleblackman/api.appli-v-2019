@@ -80,12 +80,36 @@ class DriverService implements DriverServiceInterface
     }
 
     /**
+     * Returns the list of all drivers present for the date
+     * @return array
+     */
+    public function findDriversByPresenceDate($date)
+    {
+        $driversPresence = $this->em
+            ->getRepository('App:DriverPresence')
+            ->findDriversByPresenceDate($date)
+        ;
+
+        $drivers = array();
+        foreach ($driversPresence as $driverPresence) {
+            $driver = $driverPresence->getDriver();
+            $person = $driver->getPerson();
+            $drivers[$person->getPersonId()]['name'] = $person->getFirstName() . ' ' . $person->getLastName();
+            $drivers[$person->getPersonId()]['vehicle'] = $driver->getVehicle()->getVehicleId();
+            foreach ($driver->getDriverZones() as $driverZone) {
+                $drivers[$person->getPersonId()][] = $driverZone->getPostal();
+            }
+        }
+
+        return $drivers;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Driver $object)
     {
-        if (null === $object->getPerson() ||
-            null === $object->getPostal()) {
+        if (null === $object->getPerson()) {
             throw new UnprocessableEntityHttpException('Missing data for Driver -> ' . json_encode($object->toArray()));
         }
     }
@@ -124,6 +148,20 @@ class DriverService implements DriverServiceInterface
         //Gets related person
         if (null !== $object->getPerson()) {
             $objectArray['person'] = $this->mainService->toArray($object->getPerson()->toArray());
+        }
+
+        //Gets related vehicle
+        if (null !== $object->getVehicle()) {
+            $objectArray['vehicle'] = $this->mainService->toArray($object->getVehicle()->toArray());
+        }
+
+        //Gets related driverZones
+        if (null !== $object->getDriverZones()) {
+            $driverZones = array();
+            foreach($object->getDriverZones() as $driverZone) {
+                $driverZones[] = $this->mainService->toArray($driverZone->toArray());
+            }
+            $objectArray['driverZones'] = $driverZones;
         }
 
         return $objectArray;

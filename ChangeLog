@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.16
+- Ajout des entités DriverZone et DriverPresence (12/12/2018)
+- Ajout d'une Route faire l'affectation de tous les Pickups pour une date donnée (12/12/2018)
+- Ajout d'une Route pour la désaffectation de tous les Pickups pour une date donnée (13/12/2018)
+
 v0.15
 - Suppression des sessions (12/12/2018)
 

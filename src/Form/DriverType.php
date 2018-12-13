@@ -5,10 +5,10 @@ namespace App\Form;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\Person;
+use App\Entity\Vehicle;
 
 /**
  * DriverType FormType
@@ -23,11 +23,12 @@ class DriverType extends AbstractType
                 'required' => false,
                 'class' => Person::class,
                 ))
-            ->add('postal', TextType::class, array(
-                'required' => false,
-                ))
             ->add('priority', IntegerType::class, array(
                 'required' => false,
+                ))
+            ->add('vehicle', EntityType::class, array(
+                'required' => false,
+                'class' => Vehicle::class,
                 ))
         ;
     }

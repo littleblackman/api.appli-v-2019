@@ -28,6 +28,9 @@ class PickupType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text',
                 ))
+            ->add('postal', TextType::class, array(
+                'required' => false,
+                ))
             ->add('address', TextType::class, array(
                 'required' => false,
                 ))

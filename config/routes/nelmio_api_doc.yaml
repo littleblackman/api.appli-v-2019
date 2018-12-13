@@ -1,5 +1,6 @@
 # Expose your documentation as JSON swagger compliant
 app.swagger:
+#Comment the line below to disable API documentation access
     path: /api/doc.json
     methods: GET
     defaults: { _controller: nelmio_api_doc.controller.swagger }
@@ -7,6 +8,7 @@ app.swagger:
 ## Requires the Asset component and the Twig bundle
 ## $ composer require twig asset
 app.swagger_ui:
+#Comment the line below to disable API documentation access
     path: /api/doc
     methods: GET
     defaults: { _controller: nelmio_api_doc.controller.swagger_ui }

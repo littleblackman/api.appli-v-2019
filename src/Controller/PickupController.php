@@ -36,7 +36,7 @@ class PickupController extends AbstractController
      *    name="pickup_list_status",
      *    requirements={
      *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$",
-     *        "status": "^(absent|supported|null)$"
+     *        "status": "^(automatic|absent|supported|null)$"
      *    },
      *    defaults={"status": "null"},
      *    methods={"HEAD", "GET"})
@@ -62,7 +62,7 @@ class PickupController extends AbstractController
      * @SWG\Parameter(
      *     name="status",
      *     in="path",
-     *     description="absent|supported|null pickups",
+     *     description="automatic|absent|supported|null pickups",
      *     type="string",
      *     default="null",
      * )
@@ -158,6 +158,137 @@ class PickupController extends AbstractController
         return new JsonResponse($pickupsArray);
     }
 
+//AFFECT
+    /**
+     * Affects all the Pickups to the rides and drivers
+     *
+     * @Route("/pickup/affect/{date}/{force}",
+     *    name="pickup_affect",
+     *    requirements={
+     *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
+     *        "force": "^(true|false)$",
+     *    },
+     *    defaults={"force": false},
+     *    methods={"HEAD", "PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Ride::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the pickups (YYYY-MM-DD)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="force",
+     *     in="path",
+     *     description="To force the rewrite of pickups (true|false(default))",
+     *     type="boolean",
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function affect($date, bool $force)
+    {
+        $this->denyAccessUnlessGranted('pickupModify', null);
+
+        $this->pickupService->affect($date, $force);
+
+        return $this->redirectToRoute('ride_list_date', array('date' => $date));
+    }
+
+//UNAFFECT
+    /**
+     * Unaffects all the Pickups to the rides and drivers
+     *
+     * @Route("/pickup/unaffect/{date}",
+     *    name="pickup_unaffect",
+     *    requirements={"date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"},
+     *    methods={"HEAD", "PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Ride::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the pickups (YYYY-MM-DD)",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function unaffect($date)
+    {
+        $this->denyAccessUnlessGranted('pickupModify', null);
+
+        $this->pickupService->unaffect($date);
+
+        return $this->redirectToRoute('ride_list_date', array('date' => $date));
+    }
+
+//DISPATCH
+    /**
+     * Modifies the dispatch for Pickups
+     *
+     * @Route("/pickup/dispatch",
+     *    name="pickup_dispatch",
+     *    methods={"HEAD", "PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the dispatch",
+     *     required=true,
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(
+     *              @SWG\Property(property="pickupId", type="integer"),
+     *              @SWG\Property(property="rideId", type="integer"),
+     *              @SWG\Property(property="sortOrder", type="integer"),
+     *              @SWG\Property(property="validated", type="string"),
+     *              @SWG\Property(property="start", type="string"))
+     *     )
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function dispatch(Request $request)
+    {
+        $this->denyAccessUnlessGranted('pickupModify', null);
+
+        $dispatchData = $this->pickupService->dispatch($request->getContent());
+
+        return new JsonResponse($dispatchData);
+    }
+
 //DISPLAY
     /**
      * Displays pickup
@@ -200,47 +331,6 @@ class PickupController extends AbstractController
         $pickupArray = $this->pickupService->toArray($pickup);
 
         return new JsonResponse($pickupArray);
-    }
-
-//DISPATCH
-    /**
-     * Modifies the dispatch for Pickups
-     *
-     * @Route("/pickup/dispatch",
-     *    name="pickup_dispatch",
-     *    methods={"HEAD", "PUT"})
-     *
-     * @SWG\Response(
-     *     response=200,
-     *     description="Success",
-     *     @SWG\Schema(
-     *         @SWG\Property(property="status", type="boolean"),
-     *     )
-     * )
-     * @SWG\Parameter(
-     *     name="data",
-     *     in="body",
-     *     description="Data for the dispatch",
-     *     required=true,
-     *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(
-     *              @SWG\Property(property="pickupId", type="integer"),
-     *              @SWG\Property(property="rideId", type="integer"),
-     *              @SWG\Property(property="sortOrder", type="integer"),
-     *              @SWG\Property(property="validated", type="string"),
-     *              @SWG\Property(property="start", type="string"))
-     *     )
-     * )
-     * @SWG\Tag(name="Pickup")
-     */
-    public function dispatch(Request $request)
-    {
-        $this->denyAccessUnlessGranted('pickupModify', null);
-
-        $dispatchData = $this->pickupService->dispatch($request->getContent());
-
-        return new JsonResponse($dispatchData);
     }
 
 //CREATE

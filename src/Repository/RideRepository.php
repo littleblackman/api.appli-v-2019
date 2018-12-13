@@ -77,6 +77,26 @@ class RideRepository extends EntityRepository
     }
 
     /**
+     * Returns the ride by date and person
+     */
+    public function findOneByDateByPersonId($date, $personId)
+    {
+        return $this->createQueryBuilder('r')
+            ->addSelect('p', 'v', 'pi')
+            ->leftJoin('r.person', 'p')
+            ->leftJoin('r.vehicle', 'v')
+            ->leftJoin('r.pickups', 'pi')
+            ->where('r.date = :date')
+            ->andWhere('r.person = :person')
+            ->andWhere('r.suppressed = 0')
+            ->setParameter('date', $date)
+            ->setParameter('person', $personId)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    /**
      * Returns the ride if not suppressed
      */
     public function findOneById($rideId)

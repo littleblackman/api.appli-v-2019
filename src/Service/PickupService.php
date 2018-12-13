@@ -6,7 +6,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Entity\Pickup;
 use App\Entity\Ride;
+use App\Service\DriverServiceInterface;
 use App\Service\PickupServiceInterface;
+use App\Service\RideServiceInterface;
 
 /**
  * PickupService class
@@ -15,15 +17,92 @@ use App\Service\PickupServiceInterface;
 class PickupService implements PickupServiceInterface
 {
     private $em;
+    private $driverService;
     private $mainService;
+    private $rideService;
+
+    const RIDE_FULL = 8;
 
     public function __construct(
         EntityManagerInterface $em,
-        MainServiceInterface $mainService
+        DriverServiceInterface $driverService,
+        MainServiceInterface $mainService,
+        RideServiceInterface $rideService
     )
     {
         $this->em = $em;
+        $this->driverService = $driverService;
         $this->mainService = $mainService;
+        $this->rideService = $rideService;
+    }
+
+    /**
+     * Affects all the pickups to rides and drivers for a specific date
+     */
+    public function affect($date, $force)
+    {
+        $pickups = $force ? $this->findAllByDate($date) : $this->findAllUnaffected($date);
+        if (!empty($pickups)) {
+            $drivers = $this->driverService->findDriversByPresenceDate($date);
+
+            //Creates missing Rides
+            $this->rideService->createMissingByDate($date, $drivers);
+
+            //Affects Pickup to Ride
+            $updateRides = false;
+            foreach ($pickups as $pickup) {
+                foreach ($drivers as $key => $driver) {
+                    $driverZone = array_search($pickup->getPostal(), $driver);
+                    if (is_int($driverZone)) {
+                        //Gets Ride related to driver
+                        $ride = $this->rideService->findOneByDateByPersonId($date, $key);
+
+                        //Updates Pickup if the Ride is not full
+                        $counterPickups = $ride->getPickups()->count();
+                        if ($counterPickups < self::RIDE_FULL) {
+                            $updateRides = true;
+                            $kind = $pickup->getStart() < \DateTime::createFromFormat('H:i:s', '12:00:00') ? 'DropIn' : 'DropOff';
+                            $pickup
+                                ->setKind($kind)
+                                ->setRide($ride)
+                                ->setSortOrder($counterPickups + 1)
+                                ->setStatus('automatic')
+                                ->setStatusChange(new \DateTime())
+                            ;
+                            $this->mainService->modify($pickup);
+                            $this->mainService->persist($pickup);
+                            $this->em->refresh($ride);
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //Updates Rides
+            if ($updateRides) {
+                $rides = $this->rideService->findAllByDate($date);
+                foreach ($rides as $ride) {
+                    $firstPickup = $ride->getPickups()->first();
+                    if ($firstPickup instanceof Pickup) {
+                        $ride
+                            ->setStartPoint($firstPickup->getAddress())
+                            ->setStart($firstPickup->getStart())
+                        ;
+                    }
+                    $lastPickup = $ride->getPickups()->last();
+                    if ($lastPickup instanceof Pickup) {
+                        $ride
+                            ->setEndPoint($lastPickup->getAddress())
+                            ->setArrival($lastPickup->getStart())
+                        ;
+                    }
+
+                    $this->mainService->modify($ride);
+                    $this->mainService->persist($ride);
+                }
+            }
+        }
     }
 
     /**
@@ -61,68 +140,6 @@ class PickupService implements PickupServiceInterface
         return array(
             'status' => true,
             'message' => 'Pickup supprimé',
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findAllByStatus(string $date, string $status)
-    {
-        return $this->em
-            ->getRepository('App:Pickup')
-            ->findAllByStatus($date, $status)
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findAllUnaffected(string $date)
-    {
-        return $this->em
-            ->getRepository('App:Pickup')
-            ->findAllUnaffected($date)
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEntityFilled(Pickup $object)
-    {
-        if (null === $object->getStart() ||
-            null === $object->getAddress() ||
-            null === $object->getChild()) {
-            throw new UnprocessableEntityHttpException('Missing data for Pickup -> ' . json_encode($object->toArray()));
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function modify(Pickup $object, string $data)
-    {
-        //Submits data
-        $data = $this->mainService->submit($object, 'pickup-modify', $data);
-
-        //Suppress ride
-        if (array_key_exists('ride', $data) && (null === $data['ride'] || 'null' === $data['ride'])) {
-            $object->setRide(null);
-        }
-
-        //Checks if entity has been filled
-        $this->isEntityFilled($object);
-
-        //Persists data
-        $this->mainService->modify($object);
-        $this->mainService->persist($object);
-
-        //Returns data
-        return array(
-            'status' => true,
-            'message' => 'Pickup modifié',
-            'pickup' => $this->toArray($object),
         );
     }
 
@@ -181,6 +198,79 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
+     * Gets all the Pickups by date
+     */
+    public function findAllByDate(string $date)
+    {
+        return $this->em
+            ->getRepository('App:Pickup')
+            ->findAllByDate($date)
+        ;
+    }
+
+    /**
+     * Gets all the Pickups by status
+     */
+    public function findAllByStatus(string $date, string $status)
+    {
+        return $this->em
+            ->getRepository('App:Pickup')
+            ->findAllByStatus($date, $status)
+        ;
+    }
+
+    /**
+     *Gets all the Pickups unaffected
+     */
+    public function findAllUnaffected(string $date)
+    {
+        return $this->em
+            ->getRepository('App:Pickup')
+            ->findAllUnaffected($date)
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEntityFilled(Pickup $object)
+    {
+        if (null === $object->getStart() ||
+            null === $object->getAddress() ||
+            null === $object->getChild()) {
+            throw new UnprocessableEntityHttpException('Missing data for Pickup -> ' . json_encode($object->toArray()));
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function modify(Pickup $object, string $data)
+    {
+        //Submits data
+        $data = $this->mainService->submit($object, 'pickup-modify', $data);
+
+        //Suppress ride
+        if (array_key_exists('ride', $data) && (null === $data['ride'] || 'null' === $data['ride'])) {
+            $object->setRide(null);
+        }
+
+        //Checks if entity has been filled
+        $this->isEntityFilled($object);
+
+        //Persists data
+        $this->mainService->modify($object);
+        $this->mainService->persist($object);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Pickup modifié',
+            'pickup' => $this->toArray($object),
+        );
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray(Pickup $object)
@@ -199,5 +289,33 @@ class PickupService implements PickupServiceInterface
         }
 
         return $objectArray;
+    }
+
+    /**
+     * Unaffects all the pickups to rides and drivers for a specific date
+     */
+    public function unaffect($date)
+    {
+        $pickups = $this->findAllByDate($date);
+        if (!empty($pickups)) {
+            $counter = 0;
+            foreach ($pickups as $pickup) {
+                $pickup
+                    ->setKind(null)
+                    ->setRide(null)
+                    ->setSortOrder(null)
+                    ->setStatus(null)
+                    ->setStatusChange(new \DateTime())
+                ;
+                $this->mainService->modify($pickup);
+
+                $counter++;
+                if (20 === $counter) {
+                    $this->em->flush();
+                }
+            }
+
+            $this->em->flush();
+        }
     }
 }

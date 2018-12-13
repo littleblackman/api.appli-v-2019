@@ -49,6 +49,13 @@ class Pickup
     /**
      * @var string|null
      *
+     * @ORM\Column(name="postal", type="string", length=10, nullable=true)
+     */
+    private $postal;
+
+    /**
+     * @var string|null
+     *
      * @ORM\Column(name="address", type="string", length=256, nullable=true)
      */
     private $address;
@@ -139,12 +146,12 @@ class Pickup
         return $this->pickupId;
     }
 
-    public function getKind(): ?string
+    public function getKind()
     {
         return $this->kind;
     }
 
-    public function setKind(string $kind): self
+    public function setKind($kind): self
     {
         $this->kind = $kind;
 
@@ -159,6 +166,18 @@ class Pickup
     public function setStart(\DateTimeInterface $start): self
     {
         $this->start = $start;
+
+        return $this;
+    }
+
+    public function getPostal(): ?string
+    {
+        return $this->postal;
+    }
+
+    public function setPostal(?string $postal): self
+    {
+        $this->postal = $postal;
 
         return $this;
     }
@@ -187,12 +206,12 @@ class Pickup
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus()
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus($status): self
     {
         $this->status = $status;
 

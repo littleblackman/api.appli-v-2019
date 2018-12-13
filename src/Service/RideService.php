@@ -129,6 +129,54 @@ class RideService implements RideServiceInterface
     }
 
     /**
+     * Returns the ride linked to date and person
+     * @return array
+     */
+    public function findOneByDateByPersonId(string $date, $personId)
+    {
+        return $this->em
+            ->getRepository('App:Ride')
+            ->findOneByDateByPersonId($date, $personId)
+        ;
+    }
+
+    /**
+     * Creates missing rides by date
+     * @return array
+     */
+    public function createMissingByDate($date, $drivers)
+    {
+        //Gets the Rides
+        $rides = $this->findAllByDate($date);
+        $existingRides = array();
+        if (is_array($rides)) {
+            foreach ($rides as $ride) {
+                $existingRides[$ride->getPerson()->getPersonId()] = $ride->getPerson()->getPersonId();
+            }
+        }
+
+        //Creates missing rides
+        $missingRides = array_diff_key($drivers, $existingRides);
+        foreach ($missingRides as $key => $missingRide) {
+            $person = $this->em->getRepository('App:Person')->findOneById($key);
+            $vehicle = $this->em->getRepository('App:Vehicle')->findOneById($missingRide['vehicle']);
+
+            $ride = new Ride();
+            $ride
+                ->setDate(\DateTime::createFromFormat('Y-m-d', $date))
+                ->setName($missingRide['name'])
+                ->setPerson($person)
+                ->setVehicle($vehicle)
+            ;
+            $this->mainService->create($ride);
+            $this->em->persist($ride);
+
+            $rides[] = $ride;
+        }
+        $this->em->flush();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Ride $object)

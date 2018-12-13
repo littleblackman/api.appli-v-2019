@@ -154,24 +154,24 @@ class Ride
         return $this;
     }
 
-    public function getStart(): ?\DateTimeInterface
+    public function getStart()
     {
         return $this->start;
     }
 
-    public function setStart(\DateTimeInterface $start): self
+    public function setStart($start): self
     {
         $this->start = $start;
 
         return $this;
     }
 
-    public function getArrival(): ?\DateTimeInterface
+    public function getArrival()
     {
         return $this->arrival;
     }
 
-    public function setArrival(\DateTimeInterface $arrival): self
+    public function setArrival($arrival): self
     {
         $this->arrival = $arrival;
 

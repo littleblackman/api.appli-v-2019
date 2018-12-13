@@ -11,16 +11,15 @@ use Doctrine\ORM\EntityRepository;
 class PickupRepository extends EntityRepository
 {
     /**
-     * Returns all the pickups that are not affected to a ride
+     * Returns all the pickups by date
      */
-    public function findAllUnaffected($date)
+    public function findAllByDate($date)
     {
         return $this->createQueryBuilder('p')
             ->where('p.start LIKE :date')
-            ->andWhere('p.ride IS NULL')
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
-            ->orderBy('p.child', 'ASC')
+            ->orderBy('p.start', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -48,6 +47,22 @@ class PickupRepository extends EntityRepository
         }
 
         return $qb
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Returns all the pickups that are not affected to a ride
+     */
+    public function findAllUnaffected($date)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.start LIKE :date')
+            ->andWhere('p.ride IS NULL')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->orderBy('p.start', 'ASC')
             ->getQuery()
             ->getResult()
         ;

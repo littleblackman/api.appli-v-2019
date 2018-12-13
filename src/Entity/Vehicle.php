@@ -68,7 +68,7 @@ class Vehicle
         return $objectArray;
     }
 
-    public function getVehicleId(): ?bool
+    public function getVehicleId(): ?int
     {
         return $this->vehicleId;
     }
