@@ -14,6 +14,7 @@ use Swagger\Annotations as SWG;
 use App\Service\DriverServiceInterface;
 use App\Entity\Driver;
 use App\Form\DriverType;
+use App\Form\DriverPriorityType;
 
 /**
  * DriverController class
@@ -80,6 +81,42 @@ class DriverController extends AbstractController
         };
 
         return new JsonResponse($driversArray);
+    }
+
+//PRIORITY
+    /**
+     * Modifies priorities for Drivers
+     *
+     * @Route("/driver/priority",
+     *    name="driver_priority",
+     *    methods={"HEAD", "PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *     )
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Driver",
+     *     required=true,
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=DriverPriorityType::class))
+     *     )
+     * )
+     * @SWG\Tag(name="Driver")
+     */
+    public function priority(Request $request)
+    {
+        $this->denyAccessUnlessGranted('driverModify', null);
+
+        $sortOrderData = $this->driverService->priority($request->getContent());
+
+        return new JsonResponse($sortOrderData);
     }
 
 //DISPLAY

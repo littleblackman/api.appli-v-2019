@@ -190,6 +190,36 @@ class DriverService implements DriverServiceInterface
     }
 
     /**
+     * Modifies the priorities for Drivers
+     */
+    public function priority(string $data)
+    {
+        //Modifies priorities
+        $data = json_decode($data, true);
+        if (is_array($data) && !empty($data)) {
+            foreach ($data as $driverPriority) {
+                $driver = $this->em->getRepository('App:Driver')->findOneById($driverPriority['driver']);
+
+                if ($driver instanceof Driver) {
+                    $driver->setPriority($driverPriority['priority']);
+                    $this->mainService->modify($driver);
+                    $this->mainService->persist($driver);
+                }
+            }
+
+            //Returns data
+            return array(
+                'status' => true,
+            );
+        }
+
+        //Returns data
+        return array(
+            'status' => false,
+        );
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray(Driver $object)
