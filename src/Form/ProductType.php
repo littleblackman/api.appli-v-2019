@@ -80,6 +80,9 @@ class ProductType extends AbstractType
                 'entry_type' => TextType::class,
                 'mapped' => false,
                 ))
+            ->add('photo', TextType::class, array(
+                'required' => false,
+                ))
             ->add('links', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ProductComponentLinkType::class,

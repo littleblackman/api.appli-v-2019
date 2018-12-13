@@ -38,6 +38,9 @@ class ComponentType extends AbstractType
                 'required' => false,
                 'scale' => 2,
                 ))
+            ->add('photo', TextType::class, array(
+                'required' => false,
+                ))
         ;
     }
 
