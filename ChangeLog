@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.5.1
+- Correction findAll pour Component (14/12/2018)
+
 v0.16.5
 - Ajout d'une Route pour modifier les priority des drivers (13/12/2018)
 

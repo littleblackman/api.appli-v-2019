@@ -11,6 +11,19 @@ use Doctrine\ORM\EntityRepository;
 class ComponentRepository extends EntityRepository
 {
     /**
+     * Returns all the products in an array
+     */
+    public function findAll()
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.suppressed = 0')
+            ->orderBy('c.nameFr', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns all the components corresponding to the searched term
      */
     public function findAllSearch(string $term)
