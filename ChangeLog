@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.5.2
+- Correction sur l'affectation des Pickups (14/12/2018)
+
 v0.16.5.1
 - Correction findAll pour Component (14/12/2018)
 

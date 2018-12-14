@@ -61,9 +61,7 @@ class PickupService implements PickupServiceInterface
                         $counterPickups = $ride->getPickups()->count();
                         if ($counterPickups < self::RIDE_FULL) {
                             $updateRides = true;
-                            $kind = $pickup->getStart() < \DateTime::createFromFormat('H:i:s', '12:00:00') ? 'DropIn' : 'DropOff';
                             $pickup
-                                ->setKind($kind)
                                 ->setRide($ride)
                                 ->setSortOrder($counterPickups + 1)
                                 ->setStatus('automatic')
@@ -301,7 +299,6 @@ class PickupService implements PickupServiceInterface
             $counter = 0;
             foreach ($pickups as $pickup) {
                 $pickup
-                    ->setKind(null)
                     ->setRide(null)
                     ->setSortOrder(null)
                     ->setStatus(null)

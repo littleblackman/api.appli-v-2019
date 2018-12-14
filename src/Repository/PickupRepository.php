@@ -63,6 +63,7 @@ class PickupRepository extends EntityRepository
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
             ->orderBy('p.start', 'ASC')
+            ->addOrderBy('p.postal', 'ASC')
             ->getQuery()
             ->getResult()
         ;
