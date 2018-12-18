@@ -116,11 +116,11 @@ class DriverPresenceService implements DriverPresenceServiceInterface
      * Returns the list of presence by driver
      * @return array
      */
-    public function findByDriver($driverId)
+    public function findByDriver($driverId, $date)
     {
         return $this->em
             ->getRepository('App:DriverPresence')
-            ->findByDriver($driverId)
+            ->findByDriver($driverId, $date)
         ;
     }
 

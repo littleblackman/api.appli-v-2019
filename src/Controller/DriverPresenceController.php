@@ -50,6 +50,12 @@ class DriverPresenceController extends AbstractController
      *     description="Access denied",
      * )
      * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the driver presence (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
      *     name="page",
      *     in="query",
      *     description="Number of the page",
@@ -85,11 +91,15 @@ class DriverPresenceController extends AbstractController
 
 //DISPLAY
     /**
-     * Displays driverPresence using driverId
+     * Displays driverPresence using driverId and date (optional)
      *
-     * @Route("/driver/presence/display/{driverId}",
+     * @Route("/driver/presence/display/{driverId}/{date}",
      *    name="driver_presence_display",
-     *    requirements={"driverId": "^([0-9]+)"},
+     *    requirements={
+     *        "driverId": "^([0-9]+)",
+     *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"
+     *    },
+     *    defaults={"date": null},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -115,14 +125,21 @@ class DriverPresenceController extends AbstractController
      *     description="Id of the driver",
      *     type="integer",
      * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the driver presence (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     *     default="null",
+     * )
      * @SWG\Tag(name="DriverPresence")
      */
-    public function display($driverId)
+    public function display($driverId, $date)
     {
         $this->denyAccessUnlessGranted('driverPresenceDisplay', null);
 
         $driverPresencesArray = array();
-        foreach ($this->driverPresenceService->findByDriver($driverId) as $driverPresence) {
+        foreach ($this->driverPresenceService->findByDriver($driverId, $date) as $driverPresence) {
             $driverPresencesArray[] = $this->driverPresenceService->toArray($driverPresence);
         };
 

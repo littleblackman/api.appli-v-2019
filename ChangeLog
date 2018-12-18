@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.16.6
+- Ajout d'un paramètre `date` pour les DriverPresence (18/12/2018)
+- Correction lors de l'ajout d'une DriverPresence (18/12/2018)
+
 v0.16.5.2
 - Correction sur l'affectation des Pickups (14/12/2018)
 

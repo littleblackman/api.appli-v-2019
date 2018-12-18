@@ -15,8 +15,8 @@ class DriverPresenceRepository extends EntityRepository
      */
     public function findByData($data)
     {
-        $startCondition = isset($data['start']) ? 'pr.start = :start' : '1 == 1';
-        $endCondition = isset($data['end']) ? 'pr.end = :end' : '1 == 1';
+        $startCondition = isset($data['start']) ? 'pr.start = :start' : '1 = 1';
+        $endCondition = isset($data['end']) ? 'pr.end = :end' : '1 = 1';
 
         $qb = $this->createQueryBuilder('pr')
             ->addSelect('d, z')
@@ -25,12 +25,12 @@ class DriverPresenceRepository extends EntityRepository
             ->leftJoin('d.driverZones', 'z')
             ->where('pr.suppressed = 0')
             ->andWhere('pr.driver = :driverId')
-            ->andWhere('pr.date = :date')
+            ->andWhere('pr.date LIKE :date')
             ->andWhere($startCondition)
             ->andWhere($endCondition)
             ->orderBy('z.priority', 'ASC')
             ->setParameter('driverId', $data['driver'])
-            ->setParameter('date', $data['date'])
+            ->setParameter('date', $data['date'] . '%')
         ;
 
         if (isset($data['start'])) {
@@ -49,16 +49,28 @@ class DriverPresenceRepository extends EntityRepository
     /**
      * Returns all the presence by driver
      */
-    public function findByDriver($driverId)
+    public function findByDriver($driverId, $date)
     {
-        return $this->createQueryBuilder('pr')
+        $dateCriteria = null !== $date ? 'pr.date LIKE :date' : ' 1 = 1';
+
+        $qb = $this->createQueryBuilder('pr')
             ->addSelect('d, z')
             ->leftJoin('pr.driver', 'd')
             ->leftJoin('d.person', 'p')
             ->leftJoin('d.driverZones', 'z')
             ->where('pr.driver = :driverId')
-            ->orderBy('z.priority', 'ASC')
+            ->andWhere($dateCriteria)
+            ->orderBy('pr.date', 'ASC')
+            ->addOrderBy('pr.start', 'ASC')
+            ->addOrderBy('z.priority', 'ASC')
             ->setParameter('driverId', $driverId)
+        ;
+
+        if (null !== $date) {
+            $qb->setParameter('date', $date . '%');
+        }
+
+        return $qb
             ->getQuery()
             ->getResult()
         ;

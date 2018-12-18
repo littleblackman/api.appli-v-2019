@@ -19,7 +19,8 @@ class PickupRepository extends EntityRepository
             ->where('p.start LIKE :date')
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
-            ->orderBy('p.start', 'ASC')
+            ->orderBy('p.postal', 'ASC')
+            ->addOrderBy('p.start', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -62,8 +63,8 @@ class PickupRepository extends EntityRepository
             ->andWhere('p.ride IS NULL')
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
-            ->orderBy('p.start', 'ASC')
-            ->addOrderBy('p.postal', 'ASC')
+            ->orderBy('p.postal', 'ASC')
+            ->addOrderBy('p.start', 'ASC')
             ->getQuery()
             ->getResult()
         ;
