@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
-use App\Entity\Person;
+use App\Entity\Driver;
 use App\Entity\Pickup;
 use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\UpdateTrait;
@@ -79,12 +79,12 @@ class Ride
     private $endPoint;
 
     /**
-     * @var App\Entity\Person
+     * @var App\Entity\Driver
      *
-     * @ORM\OneToOne(targetEntity="Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
+     * @ORM\OneToOne(targetEntity="Driver")
+     * @ORM\JoinColumn(name="driver_id", referencedColumnName="driver_id")
      */
-    private $person;
+    private $driver;
 
     /**
      * @var App\Entity\Vehicle
@@ -202,14 +202,14 @@ class Ride
         return $this;
     }
 
-    public function getPerson(): ?Person
+    public function getDriver(): ?Driver
     {
-        return $this->person;
+        return $this->driver;
     }
 
-    public function setPerson(?Person $person): self
+    public function setDriver(?Driver $driver): self
     {
-        $this->person = $person;
+        $this->driver = $driver;
 
         return $this;
     }

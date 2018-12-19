@@ -115,33 +115,6 @@ class DriverService implements DriverServiceInterface
     }
 
     /**
-     * Returns the list of all drivers present for the date
-     * @return array
-     */
-    public function findDriversByPresenceDate($date)
-    {
-        $driversPresence = $this->em
-            ->getRepository('App:DriverPresence')
-            ->findDriversByPresenceDate($date)
-        ;
-
-        $drivers = array();
-        foreach ($driversPresence as $driverPresence) {
-            $driver = $driverPresence->getDriver();
-            $person = $driver->getPerson();
-            $drivers[$person->getPersonId()]['name'] = $person->getFirstName() . ' ' . $person->getLastName();
-            $drivers[$person->getPersonId()]['vehicle'] = $driver->getVehicle()->getVehicleId();
-            $drivers[$person->getPersonId()]['start'] = $driverPresence->getStart();
-            $drivers[$person->getPersonId()]['end'] = $driverPresence->getEnd();
-            foreach ($driver->getDriverZones() as $driverZone) {
-                $drivers[$person->getPersonId()][] = $driverZone->getPostal();
-            }
-        }
-
-        return $drivers;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Driver $object)

@@ -142,6 +142,18 @@ class DriverPresenceService implements DriverPresenceServiceInterface
     }
 
     /**
+     * Returns the list of all drivers present for the date
+     * @return array
+     */
+    public function findDriversByPresenceDate($date)
+    {
+        return $this->em
+            ->getRepository('App:DriverPresence')
+            ->findDriversByPresenceDate($date)
+        ;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(DriverPresence $object)

@@ -9,7 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Entity\Person;
+use App\Entity\Driver;
 use App\Entity\Vehicle;
 
 /**
@@ -44,9 +44,9 @@ class RideType extends AbstractType
             ->add('endPoint', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('person', EntityType::class, array(
+            ->add('driver', EntityType::class, array(
                 'required' => false,
-                'class' => Person::class,
+                'class' => Driver::class,
                 ))
             ->add('vehicle', EntityType::class, array(
                 'required' => false,

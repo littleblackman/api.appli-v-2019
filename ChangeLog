@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.8
+- Changement du lien de Ride -> Person pour Ride -> Driver (19/12/2018)
+
 v0.16.7
 - Ajout d'un champ `photo` pour Location (19/12/2018)
 - Ajout d'une méthode pour supprimer les DriverPresence par id (19/12/2018)

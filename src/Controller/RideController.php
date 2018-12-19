@@ -11,9 +11,9 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
-use App\Service\PersonServiceInterface;
+use App\Service\DriverServiceInterface;
 use App\Service\RideServiceInterface;
-use App\Entity\Person;
+use App\Entity\Driver;
 use App\Entity\Ride;
 use App\Form\RideType;
 
@@ -23,15 +23,15 @@ use App\Form\RideType;
  */
 class RideController extends AbstractController
 {
-    private $personService;
+    private $driverService;
     private $rideService;
 
     public function __construct(
-        PersonServiceInterface $personService,
+        DriverServiceInterface $driverService,
         RideServiceInterface $rideService
     )
     {
-        $this->personService = $personService;
+        $this->driverService = $driverService;
         $this->rideService = $rideService;
     }
 
@@ -159,14 +159,14 @@ class RideController extends AbstractController
         return new JsonResponse($ridesArray);
     }
 
-//DISPLAY BY DATE AND PERSONID
+//DISPLAY BY DATE AND DRIVERID
     /**
-     * Displays the rides for a specific date and person
+     * Displays the rides for a specific date and driver
      *
-     * @Route("/ride/display/{date}/{personId}",
-     *    name="ride_display_date_person",
+     * @Route("/ride/display/{date}/{driverId}",
+     *    name="ride_display_date_driver",
      *    requirements={"date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"},
-     *    requirements={"personId": "^([0-9]+)$"},
+     *    requirements={"driverId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -188,22 +188,22 @@ class RideController extends AbstractController
      *     type="string",
      * )
      * @SWG\Parameter(
-     *     name="personId",
+     *     name="driverId",
      *     in="path",
-     *     description="Id for the Person",
+     *     description="Id for the Driver",
      *     type="string",
      * )
      * @SWG\Tag(name="Ride")
      */
-    public function displayByDateAndPerson($date, $personId)
+    public function displayByDateAndDriver($date, $driverId)
     {
 
         $this->denyAccessUnlessGranted('rideDisplay');
 
         $ridesArray = array();
-        $person = $this->personService->findOneById($personId);
-        if ($person instanceof Person) {
-            $rides = $this->rideService->findAllByDateByPersonId($date, $person);
+        $driver = $this->driverService->findOneById($driverId);
+        if ($driver instanceof Driver) {
+            $rides = $this->rideService->findAllByDateByDriverId($date, $driver);
             foreach ($rides as $ride) {
                 $ridesArray[] = $this->rideService->toArray($ride);
             };

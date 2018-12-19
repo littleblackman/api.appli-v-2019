@@ -5,7 +5,7 @@ namespace App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Service\MainServiceInterface;
-use App\Service\PersonServiceInterface;
+use App\Service\DriverServiceInterface;
 use App\Entity\Person;
 use App\Entity\Ride;
 
@@ -17,17 +17,17 @@ class RideService implements RideServiceInterface
 {
     private $em;
     private $mainService;
-    private $personService;
+    private $driverService;
 
     public function __construct(
         EntityManagerInterface $em,
         MainServiceInterface $mainService,
-        PersonServiceInterface $personService
+        DriverServiceInterface $driverService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
-        $this->personService = $personService;
+        $this->driverService = $driverService;
     }
 
     /**
@@ -129,51 +129,15 @@ class RideService implements RideServiceInterface
     }
 
     /**
-     * Returns the ride linked to date and person
+     * Returns the ride linked to date and driver
      * @return array
      */
-    public function findOneByDateByPersonId(string $date, $personId)
+    public function findAllByDateByDriverId(string $date, $driverId)
     {
         return $this->em
             ->getRepository('App:Ride')
-            ->findOneByDateByPersonId($date, $personId)
+            ->findAllByDateByDriverId($date, $driverId)
         ;
-    }
-
-    /**
-     * Creates missing rides by date
-     * @return array
-     */
-    public function createMissingByDate($date, $drivers)
-    {
-        //Gets the Rides
-        $rides = $this->findAllByDate($date);
-        $existingRides = array();
-        if (is_array($rides)) {
-            foreach ($rides as $ride) {
-                $existingRides[$ride->getPerson()->getPersonId()] = $ride->getPerson()->getPersonId();
-            }
-        }
-
-        //Creates missing rides
-        $missingRides = array_diff_key($drivers, $existingRides);
-        foreach ($missingRides as $key => $missingRide) {
-            $person = $this->em->getRepository('App:Person')->findOneById($key);
-            $vehicle = $this->em->getRepository('App:Vehicle')->findOneById($missingRide['vehicle']);
-
-            $ride = new Ride();
-            $ride
-                ->setDate(\DateTime::createFromFormat('Y-m-d', $date))
-                ->setName($missingRide['name'])
-                ->setPerson($person)
-                ->setVehicle($vehicle)
-            ;
-            $this->mainService->create($ride);
-            $this->em->persist($ride);
-
-            $rides[] = $ride;
-        }
-        $this->em->flush();
     }
 
     /**
@@ -219,9 +183,9 @@ class RideService implements RideServiceInterface
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
 
-        //Gets related person
-        if (null !== $object->getPerson()) {
-            $objectArray['person'] = $this->mainService->toArray($object->getPerson()->toArray());
+        //Gets related driver
+        if (null !== $object->getDriver()) {
+            $objectArray['driver'] = $this->driverService->toArray($object->getDriver());
         }
 
         //Gets related vehicle
