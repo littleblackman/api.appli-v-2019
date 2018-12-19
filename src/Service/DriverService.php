@@ -131,6 +131,8 @@ class DriverService implements DriverServiceInterface
             $person = $driver->getPerson();
             $drivers[$person->getPersonId()]['name'] = $person->getFirstName() . ' ' . $person->getLastName();
             $drivers[$person->getPersonId()]['vehicle'] = $driver->getVehicle()->getVehicleId();
+            $drivers[$person->getPersonId()]['start'] = $driverPresence->getStart();
+            $drivers[$person->getPersonId()]['end'] = $driverPresence->getEnd();
             foreach ($driver->getDriverZones() as $driverZone) {
                 $drivers[$person->getPersonId()][] = $driverZone->getPostal();
             }

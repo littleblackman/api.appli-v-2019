@@ -23,6 +23,9 @@ class LocationType extends AbstractType
             ->add('address', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('photo', TextType::class, array(
+                'required' => false,
+                ))
         ;
     }
 

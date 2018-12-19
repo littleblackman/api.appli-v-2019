@@ -187,12 +187,56 @@ class DriverPresenceController extends AbstractController
         return new JsonResponse($createdData);
     }
 
-//DELETE
+//DELETE BY ID
+    /**
+     * Deletes driverPresence using its id
+     *
+     * @Route("/driver/presence/delete/{driverPresenceId}",
+     *    name="driver_presence_delete",
+     *    requirements={"driverPresenceId": "^([0-9]+)"},
+     *    methods={"HEAD", "DELETE"})
+     * @Entity("component", expr="repository.findOneById(driverPresenceId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="driverPresenceId",
+     *     in="path",
+     *     description="Id for the DriverPresence",
+     *     required=true,
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="DriverPresence")
+     */
+    public function delete(Request $request, DriverPresence $driverPresence)
+    {
+        $this->denyAccessUnlessGranted('driverPresenceDelete', $driverPresence);
+
+        $suppressedData = $this->driverPresenceService->delete($driverPresence, $request->getContent());
+
+        return new JsonResponse($suppressedData);
+    }
+
+//DELETE BY ARRAY OF IDS
     /**
      * Deletes driverPresence
      *
      * @Route("/driver/presence/delete",
-     *    name="driver_presence_delete",
+     *    name="driver_presence_delete_by_array",
      *    methods={"HEAD", "DELETE"})
      *
      * @SWG\Response(
@@ -219,11 +263,11 @@ class DriverPresenceController extends AbstractController
      * )
      * @SWG\Tag(name="DriverPresence")
      */
-    public function delete(Request $request)
+    public function deleteByArray(Request $request)
     {
         $this->denyAccessUnlessGranted('driverPresenceDelete', null);
 
-        $suppressedData = $this->driverPresenceService->delete($request->getContent());
+        $suppressedData = $this->driverPresenceService->deleteByArray($request->getContent());
 
         return new JsonResponse($suppressedData);
     }

@@ -47,6 +47,13 @@ class Location
     private $address;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="photo", type="string", length=256, nullable=true)
+     */
+    private $photo;
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
@@ -81,6 +88,18 @@ class Location
     public function setAddress(string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto($photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

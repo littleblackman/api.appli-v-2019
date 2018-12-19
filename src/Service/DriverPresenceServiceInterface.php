@@ -20,7 +20,7 @@ interface DriverPresenceServiceInterface
      * Marks the driverPresence as deleted
      * @return array
      */
-    public function delete(string $data);
+    public function delete(DriverPresence $object, string $data);
 
     /**
      * Checks if the entity has been well filled

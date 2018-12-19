@@ -81,7 +81,24 @@ class DriverPresenceService implements DriverPresenceServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(string $data)
+    public function delete(DriverPresence $object, string $data)
+    {
+        $data = json_decode($data, true);
+
+        //Persists data
+        $this->mainService->delete($object);
+        $this->mainService->persist($object);
+
+        return array(
+            'status' => true,
+            'message' => 'DriverPresence supprimée',
+        );
+    }
+
+    /**
+     * Deletes DriverPresence by array of ids
+     */
+    public function deleteByArray(string $data)
     {
         $data = json_decode($data, true);
         if (is_array($data)) {

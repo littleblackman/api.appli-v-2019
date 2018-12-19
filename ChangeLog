@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.16.7
+- Ajout d'un champ `photo` pour Location (19/12/2018)
+- Ajout d'une méthode pour supprimer les DriverPresence par id (19/12/2018)
+
 v0.16.6
 - Ajout d'un paramètre `date` pour les DriverPresence (18/12/2018)
 - Correction lors de l'ajout d'une DriverPresence (18/12/2018)
