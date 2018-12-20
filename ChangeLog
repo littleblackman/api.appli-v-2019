@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.12.1
+- Correction de l'affichage des DriverPresence si non marquées comme supprimées (20/12/2018)
+
 v0.16.12
 - Ajout d'un champ addressId pour Driver (20/12/2018)
 
