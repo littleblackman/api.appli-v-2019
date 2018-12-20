@@ -4,62 +4,59 @@ namespace App\Tests\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use App\Entity\Ride;
+use App\Entity\Week;
 use App\Tests\TestTrait;
 
-class RideControllerTest extends WebTestCase
+class WeekControllerTest extends WebTestCase
 {
     use TestTrait;
 
     /**
-     * Tests creation Ride
+     * Tests creation Week
      */
     public function testCreate()
     {
         $this->clientAuthenticated->request(
             'POST',
-            '/ride/create',
+            '/week/create',
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2018-11-20", "name": "Name", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
+            '{"season": "1", "kind": "stage", "name": "Nom semaine", "dateStart": "2018-11-20"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
 
-        $this->assertArrayHasKey('rideId', $content['ride']);
+        $this->assertArrayHasKey('weekId', $content['week']);
 
-        self::$objectId = $content['ride']['rideId'];
+        self::$objectId = $content['week']['weekId'];
     }
 
     /**
-     * Tests display Ride
+     * Tests display Week
      */
     public function testDisplay()
     {
-        $this->clientAuthenticated->request('GET', '/ride/display/' . self::$objectId);
-
-        $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $this->clientAuthenticated->request('GET', '/week/display/' . self::$objectId);
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests modify Ride
+     * Tests modify Week
      */
     public function testModify()
     {
         //Tests with full data array
         $this->clientAuthenticated->request(
             'PUT',
-            '/ride/modify/' . self::$objectId,
+            '/week/modify/' . self::$objectId,
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2018-11-20", "name": "Name modifié", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
+            '{"season": "1", "kind": "ecole", "name": "Nom semaine modifié", "dateStart": "2018-11-21"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -68,11 +65,11 @@ class RideControllerTest extends WebTestCase
         //Tests with partial data array
         $this->clientAuthenticated->request(
             'PUT',
-            '/ride/modify/' . self::$objectId,
+            '/week/modify/' . self::$objectId,
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"name": "Name modifié 2"}'
+            '{"kind": "stage"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -80,45 +77,38 @@ class RideControllerTest extends WebTestCase
     }
 
     /**
-     * Tests list of Ride
+     * Tests list of Week
      */
     public function testList()
     {
-        $this->clientAuthenticated->request('GET', '/ride/list');
-
-        $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
-
-        //Tests with status coming
-        $this->clientAuthenticated->request('GET', '/ride/list/coming');
-
-        $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
-
-        //Tests with status finished
-        $this->clientAuthenticated->request('GET', '/ride/list/finished');
-
-        $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
-
-        //Tests with date
-        $this->clientAuthenticated->request('GET', '/ride/list/2018-11-20');
+        $this->clientAuthenticated->request('GET', '/week/list');
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests delete Ride AND physically deletes it
+     * Tests search of Child
+     */
+    public function testSearch()
+    {
+        $this->clientAuthenticated->request('GET', '/child/search/name');
+
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
+     * Tests delete Week AND physically deletes it
      */
     public function testDelete()
     {
-        $this->clientAuthenticated->request('DELETE', '/ride/delete/' . self::$objectId);
+        $this->clientAuthenticated->request('DELETE', '/week/delete/' . self::$objectId);
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Deletes physically the entity created by test
-        $this->deleteEntity('Ride', 'rideId', self::$objectId);
+        $this->deleteEntity('Week', 'weekId', self::$objectId);
     }
 }

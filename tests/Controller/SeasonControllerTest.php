@@ -22,7 +22,7 @@ class SeasonControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"name": "Name", "status": "active"}'
+            '{"name": "Name", "status": "active", "dateStart": "2018-11-20", "dateEnd": "2018-11-21"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class SeasonControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"name": "Name modified", "status": "active"}'
+            '{"name": "Name modified", "status": "active", "dateStart": "2018-11-21", "dateEnd": "2018-11-22"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.16.13
+- Ajout des tests pour DriverPrsence, Family et Week (20/12/2018)
+- Corrections dues aux tests (20/12/2018)
+
 v0.16.12.1
 - Correction de l'affichage des DriverPresence si non marquées comme supprimées (20/12/2018)
 

@@ -165,8 +165,10 @@ class RideController extends AbstractController
      *
      * @Route("/ride/display/{date}/{driverId}",
      *    name="ride_display_date_driver",
-     *    requirements={"date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"},
-     *    requirements={"driverId": "^([0-9]+)$"},
+     *    requirements={
+     *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
+     *        "driverId": "^([0-9]+)$"
+     *    },
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -218,7 +220,7 @@ class RideController extends AbstractController
      *
      * @Route("/ride/display/{rideId}",
      *    name="ride_list_id",
-     *    requirements={"date": "^([0-9]+)$"},
+     *    requirements={"rideId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("ride", expr="repository.findOneById(rideId)")
      *

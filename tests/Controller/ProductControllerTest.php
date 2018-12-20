@@ -22,7 +22,7 @@ class ProductControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"family": "Family", "season": "1", "nameFr": "name Fr", "nameEn": "Name En", "descriptionFr": "Description Fr", "descriptionEn": "Description En", "dateStart": "2018-11-20", "dateEnd": "2018-11-21", "exclusionFrom": "2018-11-20", "exclusionTo": "2018-11-20", "location": "1", "transport": true, "dayReference": "Day ref"}'
+            '{"family": "1", "season": "1", "nameFr": "name Fr", "nameEn": "Name En", "descriptionFr": "Description Fr", "descriptionEn": "Description En", "dateStart": "2018-11-20", "dateEnd": "2018-11-21", "exclusionFrom": "2018-11-20", "exclusionTo": "2018-11-20", "location": "1", "transport": true, "dayReference": "Day ref"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class ProductControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"family": "Family modifiée", "season": "1", "nameFr": "name Fr", "nameEn": "Name En", "descriptionFr": "Description Fr", "descriptionEn": "Description En", "dateStart": "2018-11-20", "dateEnd": "2018-11-21", "exclusionFrom": "2018-11-20", "exclusionTo": "2018-11-20", "location": "1", "transport": true, "dayReference": "Day ref"}'
+            '{"family": "1", "season": "1", "nameFr": "name Fr", "nameEn": "Name En", "descriptionFr": "Description Fr", "descriptionEn": "Description En", "dateStart": "2018-11-20", "dateEnd": "2018-11-21", "exclusionFrom": "2018-11-20", "exclusionTo": "2018-11-20", "location": "1", "transport": true, "dayReference": "Day ref"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

@@ -4,72 +4,59 @@ namespace App\Tests\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use App\Entity\Person;
+use App\Entity\Family;
 use App\Tests\TestTrait;
 
-class PersonControllerTest extends WebTestCase
+class FamilyControllerTest extends WebTestCase
 {
     use TestTrait;
 
     /**
-     * Tests creation Person
+     * Tests creation Family
      */
     public function testCreate()
     {
         $this->clientAuthenticated->request(
             'POST',
-            '/person/create',
+            '/family/create',
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"firstname": "Firstname", "lastname": "Lastname", "photo": "/url/photo"}'
+            '{"name": "Famille"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
 
-        $this->assertArrayHasKey('personId', $content['person']);
+        $this->assertArrayHasKey('familyId', $content['family']);
 
-        self::$objectId = $content['person']['personId'];
+        self::$objectId = $content['family']['familyId'];
     }
 
     /**
-     * Tests display Person
+     * Tests display Family
      */
     public function testDisplay()
     {
-        $this->clientAuthenticated->request('GET', '/person/display/' . self::$objectId);
+        $this->clientAuthenticated->request('GET', '/family/display/' . self::$objectId);
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests modify Person
+     * Tests modify Family
      */
     public function testModify()
     {
         //Tests with full data array
         $this->clientAuthenticated->request(
             'PUT',
-            '/person/modify/' . self::$objectId,
+            '/family/modify/' . self::$objectId,
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"firstname": "Firstname modifié", "lastname": "Lastname", "photo": "/url/photo"}'
-        );
-
-        $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
-
-        //Tests with partial data array
-        $this->clientAuthenticated->request(
-            'PUT',
-            '/person/modify/' . self::$objectId,
-            array(),
-            array(),
-            array('CONTENT_TYPE' => 'application/json'),
-            '{"firstname": "Firstname modifié 2"}'
+            '{"name": "Famille modifiée"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -77,38 +64,38 @@ class PersonControllerTest extends WebTestCase
     }
 
     /**
-     * Tests list of Person
+     * Tests list of Family
      */
     public function testList()
     {
-        $this->clientAuthenticated->request('GET', '/person/list');
+        $this->clientAuthenticated->request('GET', '/family/list');
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests search of Person
+     * Tests search of Child
      */
     public function testSearch()
     {
-        $this->clientAuthenticated->request('GET', '/person/search/name');
+        $this->clientAuthenticated->request('GET', '/family/search/amil');
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests delete Person AND physically deletes it
+     * Tests delete Family AND physically deletes it
      */
     public function testDelete()
     {
-        $this->clientAuthenticated->request('DELETE', '/person/delete/' . self::$objectId);
+        $this->clientAuthenticated->request('DELETE', '/family/delete/' . self::$objectId);
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Deletes physically the entity created by test
-        $this->deleteEntity('Person', 'personId', self::$objectId);
+        $this->deleteEntity('Family', 'familyId', self::$objectId);
     }
 }
