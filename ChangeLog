@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.16.13.1
+- Correction de `driver_presence_list_date` (20/12/2018)
+- Correction de `ride_display_date_driver` (20/12/2018)
+
 v0.16.13
 - Ajout des tests pour DriverPrsence, Family et Week (20/12/2018)
 - Corrections dues aux tests (20/12/2018)

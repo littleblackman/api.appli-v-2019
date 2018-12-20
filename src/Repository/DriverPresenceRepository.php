@@ -47,6 +47,27 @@ class DriverPresenceRepository extends EntityRepository
     }
 
     /**
+     * Returns all the presence by date
+     */
+    public function findAllByDate($date)
+    {
+        return $this->createQueryBuilder('pr')
+            ->addSelect('d, z')
+            ->leftJoin('pr.driver', 'd')
+            ->leftJoin('d.person', 'p')
+            ->leftJoin('d.driverZones', 'z')
+            ->where('pr.suppressed = 0')
+            ->andWhere('pr.date LIKE :date')
+            ->orderBy('pr.date', 'ASC')
+            ->addOrderBy('pr.start', 'ASC')
+            ->addOrderBy('z.priority', 'ASC')
+            ->setParameter('date', $date . '%')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns all the presence by driver
      */
     public function findByDriver($driverId, $date)

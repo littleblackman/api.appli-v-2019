@@ -160,11 +160,11 @@ class RideService implements RideServiceInterface
      * Returns the ride linked to date and driver
      * @return array
      */
-    public function findAllByDateByDriverId(string $date, $driverId)
+    public function findAllByDateByDriver(string $date, $driver)
     {
         return $this->em
             ->getRepository('App:Ride')
-            ->findAllByDateByDriverId($date, $driverId)
+            ->findAllByDateByDriver($date, $driver)
         ;
     }
 

@@ -71,12 +71,12 @@ class DriverPresenceController extends AbstractController
      * )
      * @SWG\Tag(name="DriverPresence")
      */
-    public function listAll(Request $request, PaginatorInterface $paginator)
+    public function listAll(Request $request, PaginatorInterface $paginator, $date)
     {
         $this->denyAccessUnlessGranted('driverPresenceList');
 
         $driverPresences = $paginator->paginate(
-            $this->driverPresenceService->findAll(),
+            $this->driverPresenceService->findAllByDate($date),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );

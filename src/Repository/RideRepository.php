@@ -60,7 +60,7 @@ class RideRepository extends EntityRepository
     /**
      * Returns the rides by date and driver
      */
-    public function findAllByDateByDriverId($date, $driver)
+    public function findAllByDateByDriver($date, $driver)
     {
         return $this->createQueryBuilder('r')
             ->addSelect('d', 'p', 'v', 'pi', 'z')
@@ -70,10 +70,10 @@ class RideRepository extends EntityRepository
             ->leftJoin('r.vehicle', 'v')
             ->leftJoin('r.pickups', 'pi')
             ->where('r.date = :date')
-            ->andWhere('r.person = :person')
+            ->andWhere('r.driver = :driver')
             ->andWhere('r.suppressed = 0')
             ->setParameter('date', $date)
-            ->setParameter('driver', $driver)
+            ->setParameter('driver', $driver->getDriverId())
             ->orderBy('r.date', 'ASC')
             ->addOrderBy('r.start', 'ASC')
             ->addOrderBy('pi.sortOrder', 'ASC')
@@ -95,7 +95,7 @@ class RideRepository extends EntityRepository
             ->leftJoin('r.vehicle', 'v')
             ->leftJoin('r.pickups', 'pi')
             ->where('r.date = :date')
-            ->andWhere('r.person = :person')
+            ->andWhere('d.person = :person')
             ->andWhere('r.suppressed = 0')
             ->setParameter('date', $date)
             ->setParameter('driver', $driverId)

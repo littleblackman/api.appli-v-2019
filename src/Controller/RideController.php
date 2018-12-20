@@ -205,7 +205,7 @@ class RideController extends AbstractController
         $ridesArray = array();
         $driver = $this->driverService->findOneById($driverId);
         if ($driver instanceof Driver) {
-            $rides = $this->rideService->findAllByDateByDriverId($date, $driver);
+            $rides = $this->rideService->findAllByDateByDriver($date, $driver);
             foreach ($rides as $ride) {
                 $ridesArray[] = $this->rideService->toArray($ride);
             };

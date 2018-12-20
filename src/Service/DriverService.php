@@ -102,6 +102,18 @@ class DriverService implements DriverServiceInterface
     }
 
     /**
+     * Returns the Druver based on its id
+     * @return Driver
+     */
+    public function findOneById($driverId)
+    {
+        return $this->em
+            ->getRepository('App:Driver')
+            ->findOneById($driverId)
+        ;
+    }
+
+    /**
      * Returns the list of all drivers in the array format
      * @return array
      */
