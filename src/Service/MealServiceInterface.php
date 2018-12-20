@@ -11,12 +11,6 @@ use App\Entity\Meal;
 interface MealServiceInterface
 {
     /**
-     * Adds the links from food to meal
-     * @return array
-     */
-    public function addLink(int $foodId, Meal $object);
-
-    /**
      * Creates the ride
      * @return array
      */

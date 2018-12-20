@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\ProductComponentLinkType;
 use App\Entity\Location;
+use App\Entity\Family;
 use App\Entity\Season;
 
 /**
@@ -24,8 +25,9 @@ class ProductType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('family', TextType::class, array(
+            ->add('family', EntityType::class, array(
                 'required' => false,
+                'class' => Family::class,
                 ))
             ->add('season', EntityType::class, array(
                 'required' => false,

@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.16.10
+- Ajout de l'entité `Family` (20/12/2018)
+- Suppression de méthodes dans les interfaces pour qu'elles soient toutes cohérentes (les interfaces) (20/12/2018)
+- Suppression du use TokenStorageInterface non utilisé (20/12/2018)
+
 v0.16.9
 - Ajout de l'entité Week et lien avec seasons (20/12/2018)
 - Corrections DateTime et DateType (20/12/2018)

@@ -4,7 +4,6 @@ namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Entity\Component;
 use App\Entity\Product;
@@ -192,6 +191,11 @@ class ProductService implements ProductServiceInterface
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
+
+        //Gets related family
+        if (null !== $object->getFamily()) {
+            $objectArray['family'] = $this->mainService->toArray($object->getFamily()->toArray());
+        }
 
         //Gets related season
         if (null !== $object->getSeason()) {

@@ -5,8 +5,6 @@ namespace App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Entity\Week;
-use App\Entity\Product;
-use App\Entity\ProductWeekLink;
 use App\Service\WeekServiceInterface;
 
 /**

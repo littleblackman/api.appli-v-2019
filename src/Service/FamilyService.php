@@ -5,37 +5,39 @@ namespace App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Security\Core\Security;
-use App\Entity\Season;
-use App\Entity\SeasonPersonLink;
-use App\Entity\Person;
+use App\Entity\Family;
 use App\Form\AppFormFactoryInterface;
-use App\Service\SeasonServiceInterface;
+use App\Service\ProductServiceInterface;
+use App\Service\FamilyServiceInterface;
 
 /**
- * SeasonService class
+ * FamilyService class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class SeasonService implements SeasonServiceInterface
+class FamilyService implements FamilyServiceInterface
 {
     private $em;
     private $mainService;
+    private $productService;
 
     public function __construct(
         EntityManagerInterface $em,
-        MainServiceInterface $mainService
+        MainServiceInterface $mainService,
+        ProductServiceInterface $productService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
+        $this->productService = $productService;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(Season $object, string $data)
+    public function create(Family $object, string $data)
     {
         //Submits data
-        $data = $this->mainService->submit($object, 'season-create', $data);
+        $data = $this->mainService->submit($object, 'family-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -47,15 +49,15 @@ class SeasonService implements SeasonServiceInterface
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Saison ajoutée',
-            'season' => $this->toArray($object),
+            'message' => 'Famille ajoutée',
+            'family' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Season $object, string $data)
+    public function delete(Family $object)
     {
         //Persists data
         $this->mainService->delete($object);
@@ -63,39 +65,50 @@ class SeasonService implements SeasonServiceInterface
 
         return array(
             'status' => true,
-            'message' => 'Saison supprimée',
+            'message' => 'Famille supprimée',
         );
     }
 
     /**
-     * Returns the list of all persons in the array format
+     * Returns the list of all families in the array format
      * @return array
      */
-    public function findAllByStatus($status)
+    public function findAll()
     {
         return $this->em
-            ->getRepository('App:Season')
-            ->findAllByStatus($status)
+            ->getRepository('App:Family')
+            ->findAll()
         ;
     }
 
     /**
+     * Searches the term in the Family collection
+     * @return array
+     */
+    public function findAllSearch(string $term)
+    {
+        return $this->em
+            ->getRepository('App:Family')
+            ->findAllSearch($term)
+        ;
+    }
+    /**
      * {@inheritdoc}
      */
-    public function isEntityFilled(Season $object)
+    public function isEntityFilled(Family $object)
     {
         if (null === $object->getName()) {
-            throw new UnprocessableEntityHttpException('Missing data for Season -> ' . json_encode($object->toArray()));
+            throw new UnprocessableEntityHttpException('Missing data for Family -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function modify(Season $object, string $data)
+    public function modify(Family $object, string $data)
     {
         //Submits data
-        $data = $this->mainService->submit($object, 'season-modify', $data);
+        $data = $this->mainService->submit($object, 'family-modify', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -104,33 +117,29 @@ class SeasonService implements SeasonServiceInterface
         $this->mainService->modify($object);
         $this->mainService->persist($object);
 
-        //Persists in DB
-        $this->em->flush();
-        $this->em->refresh($object);
-
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Saison modifiée',
-            'season' => $this->toArray($object),
+            'message' => 'Famille modifiée',
+            'family' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toArray(Season $object)
+    public function toArray(Family $object)
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
 
-        //Gets related weeks
-        if (null !== $object->getWeeks()) {
-            $weeks = array();
-            foreach($object->getWeeks() as $week) {
-                $weeks[] = $this->mainService->toArray($week->toArray());
+        //Gets related products
+        if (null !== $object->getProducts()) {
+            $products = array();
+            foreach($object->getProducts() as $product) {
+                $products[] = $this->productService->toArray($product);
             }
-            $objectArray['weeks'] = $weeks;
+            $objectArray['products'] = $products;
         }
 
         return $objectArray;

@@ -37,9 +37,12 @@ class Product
     private $productId;
 
     /**
-     * @var string|null
+     * @var App\Entity\Family
      *
-     * @ORM\Column(name="family", type="string", length=24, nullable=true)
+     * @ORM\ManyToOne(targetEntity="Family", inversedBy="products")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="family_id", referencedColumnName="family_id")
+     * })
      */
     private $family;
 
@@ -253,12 +256,12 @@ class Product
         return $this->productId;
     }
 
-    public function getFamily(): ?string
+    public function getFamily(): ?Family
     {
         return $this->family;
     }
 
-    public function setFamily(?string $family): self
+    public function setFamily(?Family $family): self
     {
         $this->family = $family;
 

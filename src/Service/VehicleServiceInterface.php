@@ -23,12 +23,6 @@ interface VehicleServiceInterface
     public function delete(Vehicle $object);
 
     /**
-     * Returns all the vehicles
-     * @return array
-     */
-    public function findAllInArray();
-
-    /**
      * Checks if the entity has been well filled
      * @throw Exception
      */

@@ -11,12 +11,6 @@ use App\Entity\Product;
 interface ProductServiceInterface
 {
     /**
-     * Adds the links from product to component
-     * @return array
-     */
-    public function addLink(int $componentId, Product $object);
-
-    /**
      * Creates the product
      * @return array
      */

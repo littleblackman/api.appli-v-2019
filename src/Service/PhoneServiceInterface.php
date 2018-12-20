@@ -11,12 +11,6 @@ use App\Entity\Phone;
 interface PhoneServiceInterface
 {
     /**
-     * Adds the links from person to phone
-     * @return array
-     */
-    public function addLink(int $personId, Phone $object);
-
-    /**
      * Creates the phone
      * @return array
      */
@@ -39,12 +33,6 @@ interface PhoneServiceInterface
      * @return array
      */
     public function modify(Phone $object, string $data);
-
-    /**
-     * Removes the links from person to phone
-     * @return array
-     */
-    public function removeLink(int $personId, Phone $object);
 
     /**
      * Converts entity to array
