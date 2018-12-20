@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\Address;
 use App\Entity\Person;
 use App\Entity\Vehicle;
 
@@ -30,6 +31,10 @@ class DriverType extends AbstractType
             ->add('vehicle', EntityType::class, array(
                 'required' => false,
                 'class' => Vehicle::class,
+                ))
+            ->add('address', EntityType::class, array(
+                'required' => false,
+                'class' => Address::class,
                 ))
             ->add('links', CollectionType::class, array(
                 'required' => false,

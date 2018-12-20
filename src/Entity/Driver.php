@@ -59,6 +59,14 @@ class Driver
     private $vehicle;
 
     /**
+     * @var App\Entity\Address
+     *
+     * @ORM\OneToOne(targetEntity="Address")
+     * @ORM\JoinColumn(name="address_id", referencedColumnName="address_id")
+     */
+    private $address;
+
+    /**
      * @ORM\OneToMany(targetEntity="DriverZone", mappedBy="driver")
      */
     private $driverZones;
@@ -118,6 +126,18 @@ class Driver
     public function setVehicle(?Vehicle $vehicle): self
     {
         $this->vehicle = $vehicle;
+
+        return $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }

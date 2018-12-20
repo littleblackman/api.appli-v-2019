@@ -68,13 +68,15 @@ class DriverPresenceService implements DriverPresenceServiceInterface
                     $this->mainService->persist($object);
                 }
             }
+
+            //Returns data
+            return array(
+                'status' => true,
+                'message' => 'DriverPresence ajoutées',
+            );
         }
 
-        //Returns data
-        return array(
-            'status' => true,
-            'message' => 'DriverPresence ajoutées',
-        );
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
     }
 
     /**
@@ -108,12 +110,14 @@ class DriverPresenceService implements DriverPresenceServiceInterface
                 $this->mainService->delete($object);
                 $this->mainService->persist($object);
             }
+
+            return array(
+                'status' => true,
+                'message' => 'DriverPresence supprimées',
+            );
         }
 
-        return array(
-            'status' => true,
-            'message' => 'DriverPresence supprimées',
-        );
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
     }
 
     /**

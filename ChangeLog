@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.12
+- Ajout d'un champ addressId pour Driver (20/12/2018)
+
 v0.16.11
 - Ajout de la route `ride_create_multiple` pour prendre un array de données et créer plusieurs rides (20/12/2018)
 

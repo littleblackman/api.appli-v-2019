@@ -211,6 +211,11 @@ class DriverService implements DriverServiceInterface
             $objectArray['vehicle'] = $this->mainService->toArray($object->getVehicle()->toArray());
         }
 
+        //Gets related address
+        if (null !== $object->getAddress()) {
+            $objectArray['address'] = $this->mainService->toArray($object->getAddress()->toArray());
+        }
+
         //Gets related driverZones
         if (null !== $object->getDriverZones()) {
             $driverZones = array();
