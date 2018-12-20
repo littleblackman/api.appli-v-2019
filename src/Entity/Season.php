@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
+use App\Entity\Week;
 
 /**
  * Season
@@ -47,11 +50,44 @@ class Season
     private $status;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="date_start", type="date")
+     */
+    private $dateStart;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="date_end", type="date")
+     */
+    private $dateEnd;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Week", mappedBy="season")
+     * @SWG\Property(ref=@Model(type=Week::class))
+     */
+    private $weeks;
+
+    public function __construct()
+    {
+        $this->weeks = new ArrayCollection();
+    }
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
     {
         $objectArray = get_object_vars($this);
+
+        //Specific data
+        if (null !== $objectArray['dateStart']) {
+            $objectArray['dateStart'] = $objectArray['dateStart']->format('Y-m-d');
+        }
+        if (null !== $objectArray['dateEnd']) {
+            $objectArray['dateEnd'] = $objectArray['dateEnd']->format('Y-m-d');
+        }
 
         return $objectArray;
     }
@@ -81,6 +117,58 @@ class Season
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getDateStart(): ?\DateTimeInterface
+    {
+        return $this->dateStart;
+    }
+
+    public function setDateStart(\DateTimeInterface $dateStart): self
+    {
+        $this->dateStart = $dateStart;
+
+        return $this;
+    }
+
+    public function getDateEnd(): ?\DateTimeInterface
+    {
+        return $this->dateEnd;
+    }
+
+    public function setDateEnd(\DateTimeInterface $dateEnd): self
+    {
+        $this->dateEnd = $dateEnd;
+
+        return $this;
+    }
+
+    public function getWeeks()
+    {
+        return $this->weeks;
+    }
+
+    public function addWeek(Week $week): self
+    {
+        if (!$this->weeks->contains($week)) {
+            $this->weeks[] = $week;
+            $week->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWeek(Week $week): self
+    {
+        if ($this->weeks->contains($week)) {
+            $this->weeks->removeElement($week);
+            // set the owning side to null (unless already changed)
+            if ($week->getWeek() === $this) {
+                $week->setWeek(null);
+            }
+        }
 
         return $this;
     }

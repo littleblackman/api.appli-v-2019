@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityRepository;
 class ComponentRepository extends EntityRepository
 {
     /**
-     * Returns all the products in an array
+     * Returns all the components
      */
     public function findAll()
     {

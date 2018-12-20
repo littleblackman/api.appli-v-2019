@@ -80,28 +80,28 @@ class Product
     private $descriptionEn;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @ORM\Column(name="date_start", type="date")
      */
     private $dateStart;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @ORM\Column(name="date_end", type="date")
      */
     private $dateEnd;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @ORM\Column(name="exclusion_from", type="date")
      */
     private $exclusionFrom;
 
     /**
-     * @var DateTime|null
+     * @var \DateTime|null
      *
      * @ORM\Column(name="exclusion_to", type="date")
      */

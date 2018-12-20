@@ -20,6 +20,7 @@ use App\Form\ProductType;
 use App\Form\RideType;
 use App\Form\SeasonType;
 use App\Form\VehicleType;
+use App\Form\WeekType;
 
 /**
  * AppFormFactory class
@@ -103,6 +104,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'vehicle-create':
             case 'vehicle-modify':
                 $form = VehicleType::class;
+                break;
+            case 'week-create':
+            case 'week-modify':
+                $form = WeekType::class;
                 break;
             default:
                 break;

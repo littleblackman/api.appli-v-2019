@@ -75,6 +75,9 @@ class Driver
     {
         $objectArray = get_object_vars($this);
 
+        //Specific data
+        $objectArray['totalZones'] = $this->getDriverZones()->count();
+
         return $objectArray;
     }
 
@@ -107,7 +110,7 @@ class Driver
         return $this;
     }
 
-     public function getVehicle(): ?Vehicle
+    public function getVehicle(): ?Vehicle
     {
         return $this->vehicle;
     }

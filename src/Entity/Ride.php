@@ -37,7 +37,7 @@ class Ride
     private $rideId;
 
     /**
-     * @var DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="date", type="date")
      */
@@ -51,14 +51,14 @@ class Ride
     private $name;
 
     /**
-     * @var DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="start", type="time")
      */
     private $start;
 
     /**
-     * @var DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="arrival", type="time")
      */

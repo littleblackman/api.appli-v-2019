@@ -41,21 +41,21 @@ class DriverPresence
     private $driver;
 
     /**
-     * @var DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="date", type="date")
      */
     private $date;
 
     /**
-     * @var DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="start", type="time")
      */
     private $start;
 
     /**
-     * @var DateTime
+     * @var \DateTime|null
      *
      * @ORM\Column(name="end", type="time")
      */

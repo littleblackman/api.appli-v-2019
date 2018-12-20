@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.16.9
+- Ajout de l'entité Week et lien avec seasons (20/12/2018)
+- Corrections DateTime et DateType (20/12/2018)
+- Ajout de `totalZones` pour Driver (20/12/2018)
+
 v0.16.8
 - Changement du lien de Ride -> Person pour Ride -> Driver (19/12/2018)
 

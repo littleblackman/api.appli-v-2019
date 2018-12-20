@@ -45,15 +45,19 @@ class ProductType extends AbstractType
                 ))
             ->add('dateStart', DateType::class, array(
                 'required' => false,
+                'widget' => 'single_text',
                 ))
             ->add('dateEnd', DateType::class, array(
                 'required' => false,
+                'widget' => 'single_text',
                 ))
             ->add('exclusionFrom', DateType::class, array(
                 'required' => false,
+                'widget' => 'single_text',
                 ))
             ->add('exclusionTo', DateType::class, array(
                 'required' => false,
+                'widget' => 'single_text',
                 ))
             ->add('location', EntityType::class, array(
                 'required' => false,
