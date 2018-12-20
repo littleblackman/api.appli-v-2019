@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.11
+- Ajout de la route `ride_create_multiple` pour prendre un array de données et créer plusieurs rides (20/12/2018)
+
 v0.16.10
 - Ajout de l'entité `Family` (20/12/2018)
 - Suppression de méthodes dans les interfaces pour qu'elles soient toutes cohérentes (les interfaces) (20/12/2018)

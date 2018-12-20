@@ -70,6 +70,34 @@ class RideService implements RideServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function createMultiple(string $data)
+    {
+        $data = is_array($data) ? $data : json_decode($data, true);
+
+        foreach ($data as $rideData) {
+            //Submits data
+            $object = new Ride();
+            $this->mainService->submit($object, 'ride-create', $rideData);
+            $this->addTimeData($object, $rideData);
+
+            //Checks if entity has been filled
+            $this->isEntityFilled($object);
+
+            //Persists data
+            $this->mainService->create($object);
+            $this->mainService->persist($object);
+        }
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Trajets ajoutés',
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function delete(Ride $object)
     {
         //Removes ride from pickups

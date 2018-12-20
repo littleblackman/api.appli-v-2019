@@ -295,6 +295,47 @@ class RideController extends AbstractController
         return new JsonResponse($createdData);
     }
 
+//CREATE MULTIPLE
+    /**
+     * Creates multiples Rides
+     *
+     * @Route("/ride/create-multiple",
+     *    name="ride_create_multiple",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Rides",
+     *     required=true,
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=RideType::class))
+     *     )
+     * )
+     * @SWG\Tag(name="Ride")
+     */
+    public function createMultiple(Request $request)
+    {
+        $this->denyAccessUnlessGranted('rideCreate', null);
+
+        $createdData = $this->rideService->createMultiple($request->getContent());
+
+        return new JsonResponse($createdData);
+    }
+
 //MODIFY
     /**
      * Modifies ride
