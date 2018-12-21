@@ -114,6 +114,18 @@ class DriverService implements DriverServiceInterface
     }
 
     /**
+     * Returns the maxmium number of DriverZones
+     * @return int
+     */
+    public function getMaxDriverZones()
+    {
+        return $this->em
+            ->getRepository('App:Driver')
+            ->getMaxDriverZones()
+        ;
+    }
+
+    /**
      * Returns the list of all drivers in the array format
      * @return array
      */

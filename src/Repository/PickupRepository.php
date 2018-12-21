@@ -54,6 +54,46 @@ class PickupRepository extends EntityRepository
     }
 
     /**
+     * Counts all the pickups for a date by postal
+     */
+    public function countAllByDate($date)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.postal, COUNT(p.postal) as countPostal')
+            ->where('p.start LIKE :date')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->groupBy('p.postal')
+            ->distinct()
+            ->setParameter('date', $date . '%')
+            ->orderBy('countPostal', 'DESC')
+            ->addOrderBy('p.postal', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Counts all the pickups that are not affected to a ride by postal
+     */
+    public function countAllUnaffected($date)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.postal, COUNT(p.postal) as countPostal')
+            ->where('p.start LIKE :date')
+            ->andWhere('p.ride IS NULL')
+            ->andWhere('p.suppressed = 0')
+            ->groupBy('p.postal')
+            ->distinct()
+            ->setParameter('date', $date . '%')
+            ->orderBy('countPostal', 'DESC')
+            ->addOrderBy('p.postal', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns all the pickups that are not affected to a ride
      */
     public function findAllUnaffected($date)

@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Entity\Pickup;
 use App\Entity\Ride;
 use App\Service\DriverServiceInterface;
+use App\Service\DriverPresenceServiceInterface;
 use App\Service\PickupServiceInterface;
 use App\Service\RideServiceInterface;
 
@@ -37,68 +38,75 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Affects all the pickups to rides and drivers for a specific date
+     * Affects all the Pickups to Rides for a specific date
      */
     public function affect($date, $force)
     {
-        $pickups = $force ? $this->findAllByDate($date) : $this->findAllUnaffected($date);
+        //Defines Pickups to use
+        if ($force) {
+            $pickupsSortOrder = $this->em->getRepository('App:Pickup')->countAllByDate($date);
+            $pickups = $this->findAllByDate($date);
+        } else {
+            $pickupsSortOrder = $this->em->getRepository('App:Pickup')->countAllUnaffected($date);
+            $pickups = $this->findAllUnaffected($date);
+        }
+
         if (!empty($pickups)) {
-            $drivers = $this->driverService->findDriversByPresenceDate($date);
-
-            //Creates missing Rides
-            $this->rideService->createMissingByDate($date, $drivers);
-
-            //Affects Pickup to Ride
-            $updateRides = false;
-            foreach ($pickups as $pickup) {
-                foreach ($drivers as $key => $driver) {
-                    $driverZone = array_search($pickup->getPostal(), $driver);
-                    if (is_int($driverZone)) {
-                        //Gets Ride related to driver
-                        $ride = $this->rideService->findOneByDateByPersonId($date, $key);
-
-                        //Updates Pickup if the Ride is not full
-                        $counterPickups = $ride->getPickups()->count();
-                        if ($counterPickups < self::RIDE_FULL) {
-                            $updateRides = true;
-                            $pickup
-                                ->setRide($ride)
-                                ->setSortOrder($counterPickups + 1)
-                                ->setStatus('automatic')
-                                ->setStatusChange(new \DateTime())
-                            ;
-                            $this->mainService->modify($pickup);
-                            $this->mainService->persist($pickup);
-                            $this->em->refresh($ride);
-
-                            break;
-                        }
+            //Sorts Pickup by greater number of postal code
+            $pickupsSorted = array();
+            foreach ($pickupsSortOrder as $pickupSortOrder) {
+                foreach ($pickups as $pickup) {
+                    if ($pickupSortOrder['postal'] === $pickup->getPostal()) {
+                        $pickupsSorted[$pickupSortOrder['postal']][] = $pickup;
                     }
                 }
             }
+            unset($pickups);
+            unset($pickupsSortOrder);
 
-            //Updates Rides
-            if ($updateRides) {
-                $rides = $this->rideService->findAllByDate($date);
-                foreach ($rides as $ride) {
-                    $firstPickup = $ride->getPickups()->first();
-                    if ($firstPickup instanceof Pickup) {
-                        $ride
-                            ->setStartPoint($firstPickup->getAddress())
-                            ->setStart($firstPickup->getStart())
-                        ;
+            //Affects Pickups in the order of postal code and makes as many passes as maxDriverZones
+            $rides = $this->rideService->findAllByDate($date);
+            $maxDriverZones = 5;
+            for ($priority = 0; $priority <= $maxDriverZones; $priority++) {
+                foreach ($pickupsSorted as $pickups) {
+                    foreach ($pickups as $pickup) {
+                        $this->affectRide($rides, $pickup, $priority);
                     }
-                    $lastPickup = $ride->getPickups()->last();
-                    if ($lastPickup instanceof Pickup) {
-                        $ride
-                            ->setEndPoint($lastPickup->getAddress())
-                            ->setArrival($lastPickup->getStart())
-                        ;
-                    }
-
-                    $this->mainService->modify($ride);
-                    $this->mainService->persist($ride);
                 }
+            }
+        }
+    }
+
+    /**
+     * Affects the Ride to the Pickup
+     */
+    public function affectRide($rides, $pickup, $priority)
+    {
+        //Filters Rides to keep only those that are NOT full
+        $rides = array_filter($rides, function($i) {
+            return self::RIDE_FULL > $i->getPickups()->count();
+        });
+
+        foreach ($rides as $ride) {
+            /**
+             * Updates Pickup if Ride is
+             * - linked to its postal code using Driver > DriverZones + Priority
+             * - corresponding to its time slot
+             */
+            if (isset($ride->getDriver()->getDriverZones()[$priority]) &&
+                $pickup->getPostal() === $ride->getDriver()->getDriverZones()[$priority]->getPostal() &&
+                $pickup->getStart() >= $ride->getStart()) {
+                $pickup
+                    ->setRide($ride)
+                    ->setSortOrder($ride->getPickups()->count() + 1)
+                    ->setStatus('automatic')
+                    ->setStatusChange(new \DateTime())
+                ;
+                $this->mainService->modify($pickup);
+                $this->mainService->persist($pickup);
+                $this->em->refresh($ride);
+
+                break;
             }
         }
     }

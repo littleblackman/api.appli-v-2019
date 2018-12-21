@@ -176,8 +176,7 @@ class PickupController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Ride::class))
+     *         @SWG\Property(property="status", type="boolean"),
      *     )
      * )
      * @SWG\Response(
@@ -204,7 +203,7 @@ class PickupController extends AbstractController
 
         $this->pickupService->affect($date, $force);
 
-        return $this->redirectToRoute('ride_list_date', array('date' => $date));
+        return new JsonResponse(array('status' => true));
     }
 
 //UNAFFECT
@@ -220,8 +219,7 @@ class PickupController extends AbstractController
      *     response=200,
      *     description="Success",
      *     @SWG\Schema(
-     *         type="array",
-     *         @SWG\Items(ref=@Model(type=Ride::class))
+     *         @SWG\Property(property="status", type="boolean"),
      *     )
      * )
      * @SWG\Response(
@@ -242,7 +240,7 @@ class PickupController extends AbstractController
 
         $this->pickupService->unaffect($date);
 
-        return $this->redirectToRoute('ride_list_date', array('date' => $date));
+        return new JsonResponse(array('status' => true));
     }
 
 //DISPATCH
