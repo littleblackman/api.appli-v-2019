@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Person;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Person;
 
 /**
  * PersonVoter class
@@ -21,9 +21,13 @@ class PersonVoter extends Voter
     private $security;
 
     public const PERSON_CREATE = 'personCreate';
+
     public const PERSON_DELETE = 'personDelete';
+
     public const PERSON_DISPLAY = 'personDisplay';
+
     public const PERSON_LIST = 'personList';
+
     public const PERSON_MODIFY = 'personModify';
 
     private const ATTRIBUTES = array(
@@ -74,9 +78,8 @@ class PersonVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
-
 
     /**
      * Checks if is allowed to create

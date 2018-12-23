@@ -2,12 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Component;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Entity\Component;
-use App\Entity\Product;
-use App\Entity\ProductComponentLink;
-use App\Service\ComponentServiceInterface;
 
 /**
  * ComponentService class
@@ -16,6 +13,7 @@ use App\Service\ComponentServiceInterface;
 class ComponentService implements ComponentServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(

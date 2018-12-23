@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
-use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
+use App\Entity\Traits\UpdateTrait;
+use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Pickup
@@ -40,7 +40,7 @@ class Pickup
     private $kind;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="start", type="datetime")
      */
@@ -75,7 +75,7 @@ class Pickup
     private $status;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="status_change", type="datetime")
      */
@@ -158,12 +158,12 @@ class Pickup
         return $this;
     }
 
-    public function getStart(): ?\DateTimeInterface
+    public function getStart(): ?DateTimeInterface
     {
         return $this->start;
     }
 
-    public function setStart(\DateTimeInterface $start): self
+    public function setStart(DateTimeInterface $start): self
     {
         $this->start = $start;
 
@@ -218,12 +218,12 @@ class Pickup
         return $this;
     }
 
-    public function getStatusChange(): ?\DateTimeInterface
+    public function getStatusChange(): ?DateTimeInterface
     {
         return $this->statusChange;
     }
 
-    public function setStatusChange(\DateTimeInterface $statusChange): self
+    public function setStatusChange(DateTimeInterface $statusChange): self
     {
         $this->statusChange = $statusChange;
 

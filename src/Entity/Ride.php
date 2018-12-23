@@ -2,16 +2,13 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\CreationTrait;
+use App\Entity\Traits\SuppressionTrait;
+use App\Entity\Traits\UpdateTrait;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Entity\Driver;
-use App\Entity\Pickup;
-use App\Entity\Traits\CreationTrait;
-use App\Entity\Traits\UpdateTrait;
-use App\Entity\Traits\SuppressionTrait;
 
 /**
  * Ride
@@ -37,7 +34,7 @@ class Ride
     private $rideId;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="date", type="date")
      */
@@ -51,14 +48,14 @@ class Ride
     private $name;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="start", type="time")
      */
     private $start;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="arrival", type="time")
      */
@@ -130,12 +127,12 @@ class Ride
         return $this->rideId;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
 
@@ -227,7 +224,7 @@ class Ride
     }
 
     /**
-     * @return Collection|RidePickupLink[]
+     * @return Collection|Pickup[]
      */
     public function getPickups(): Collection
     {

@@ -2,13 +2,10 @@
 
 namespace App\Service;
 
+use App\Entity\DriverPresence;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Security;
-use App\Entity\DriverPresence;
-use App\Form\AppFormFactoryInterface;
-use App\Service\DriverServiceInterface;
-use App\Service\DriverPresenceServiceInterface;
 
 /**
  * DriverPresenceService class
@@ -17,7 +14,9 @@ use App\Service\DriverPresenceServiceInterface;
 class DriverPresenceService implements DriverPresenceServiceInterface
 {
     private $em;
+
     private $driverService;
+
     private $mainService;
 
     public function __construct(
@@ -37,10 +36,10 @@ class DriverPresenceService implements DriverPresenceServiceInterface
     public function addTimeData(DriverPresence $object, array $data)
     {
         if (isset($data['start'])) {
-            $object->setStart(\DateTime::createFromFormat('H:i:s', $data['start']));
+            $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
         }
         if (isset($data['end'])) {
-            $object->setEnd(\DateTime::createFromFormat('H:i:s', $data['end']));
+            $object->setEnd(DateTime::createFromFormat('H:i:s', $data['end']));
         }
     }
 

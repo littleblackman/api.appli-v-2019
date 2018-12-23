@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Meal;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Meal;
 
 /**
  * MealVoter class
@@ -21,9 +21,13 @@ class MealVoter extends Voter
     private $security;
 
     public const MEAL_CREATE = 'mealCreate';
+
     public const MEAL_DELETE = 'mealDelete';
+
     public const MEAL_DISPLAY = 'mealDisplay';
+
     public const MEAL_LIST = 'mealList';
+
     public const MEAL_MODIFY = 'mealModify';
 
     private const ATTRIBUTES = array(
@@ -74,7 +78,7 @@ class MealVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
 
     /**

@@ -1,8 +1,8 @@
 <?php
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use c975L\UserBundle\Entity\UserLightAbstract;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="user", indexes={@ORM\Index(name="un_email", columns={"name", "email"})})

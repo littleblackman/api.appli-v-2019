@@ -2,19 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Pickup;
+use App\Entity\Ride;
+use App\Form\PickupType;
+use App\Service\PickupServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\PickupServiceInterface;
-use App\Entity\Pickup;
-use App\Entity\Ride;
-use App\Form\PickupType;
 
 /**
  * PickupController class
@@ -30,6 +29,7 @@ class PickupController extends AbstractController
     }
 
 //LIST BY STATUS AND DATE
+
     /**
      * Lists all the pickups by date and status
      *
@@ -100,6 +100,7 @@ class PickupController extends AbstractController
     }
 
 //LIST NOT AFFECTED
+
     /**
      * Lists all the pickups by date not affected to a ride
      *
@@ -160,6 +161,7 @@ class PickupController extends AbstractController
     }
 
 //AFFECT
+
     /**
      * Affects all the Pickups to the rides and drivers
      *
@@ -207,6 +209,7 @@ class PickupController extends AbstractController
     }
 
 //UNAFFECT
+
     /**
      * Unaffects all the Pickups to the rides and drivers
      *
@@ -244,6 +247,7 @@ class PickupController extends AbstractController
     }
 
 //DISPATCH
+
     /**
      * Modifies the dispatch for Pickups
      *
@@ -289,6 +293,7 @@ class PickupController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays pickup
      *
@@ -333,6 +338,7 @@ class PickupController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates a Pickup
      *
@@ -373,6 +379,7 @@ class PickupController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies pickup
      *
@@ -425,6 +432,7 @@ class PickupController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes pickup
      *

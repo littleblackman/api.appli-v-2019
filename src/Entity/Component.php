@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
-use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
+use App\Entity\Traits\UpdateTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 
@@ -100,7 +99,6 @@ class Component
      * @SWG\Property(ref=@Model(type=Product::class))
      */
     private $products;
-
 
     public function __construct()
     {

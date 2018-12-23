@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\CreationTrait;
-use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
+use App\Entity\Traits\UpdateTrait;
+use DateInterval;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Week
@@ -47,14 +46,14 @@ class Week
     private $name;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="date_start", type="date")
      */
     private $dateStart;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      */
     private $dateEnd;
 
@@ -78,7 +77,7 @@ class Week
         //Specific data
         if (null !== $objectArray['dateStart']) {
             $objectArray['dateStart'] = $objectArray['dateStart']->format('Y-m-d');
-            $objectArray['dateEnd'] = $this->getDateStart()->add(new \DateInterval('P7D'))->format('Y-m-d');
+            $objectArray['dateEnd'] = $this->getDateStart()->add(new DateInterval('P7D'))->format('Y-m-d');
         }
 
         return $objectArray;
@@ -113,12 +112,12 @@ class Week
         return $this;
     }
 
-    public function getDateStart(): ?\DateTimeInterface
+    public function getDateStart(): ?DateTimeInterface
     {
         return $this->dateStart;
     }
 
-    public function setDateStart(\DateTimeInterface $dateStart): self
+    public function setDateStart(DateTimeInterface $dateStart): self
     {
         $this->dateStart = $dateStart;
 

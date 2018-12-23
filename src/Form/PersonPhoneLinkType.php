@@ -2,12 +2,12 @@
 
 namespace App\Form;
 
-use Symfony\Component\Form\AbstractType;
+use App\Entity\Person;
+use App\Entity\Phone;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Entity\Phone;
-use App\Entity\Person;
 
 /**
  * PersonPhoneLinkType FormType

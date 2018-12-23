@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
-use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
+use App\Entity\Traits\UpdateTrait;
+use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 
@@ -56,7 +56,7 @@ class Child
     private $phone;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="birthdate", type="date", nullable=true)
      */
@@ -150,15 +150,15 @@ class Child
         return $this;
     }
 
-    public function getBirthdate(): ?\DateTimeInterface
+    public function getBirthdate(): ?DateTimeInterface
     {
         return $this->birthdate;
     }
 
     public function setBirthdate($birthdate)
     {
-        if (!$birthdate instanceof \DateTime) {
-            $birthdate = new \DateTime($birthdate);
+        if (!$birthdate instanceof DateTime) {
+            $birthdate = new DateTime($birthdate);
         }
 
         $this->birthdate = $birthdate;

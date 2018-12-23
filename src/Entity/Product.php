@@ -2,16 +2,14 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
-use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
+use App\Entity\Traits\UpdateTrait;
+use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
-use App\Entity\Component;
-use App\Entity\Child;
 
 /**
  * Product
@@ -83,28 +81,28 @@ class Product
     private $descriptionEn;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="date_start", type="date")
      */
     private $dateStart;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="date_end", type="date")
      */
     private $dateEnd;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="exclusion_from", type="date")
      */
     private $exclusionFrom;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="exclusion_to", type="date")
      */
@@ -316,48 +314,48 @@ class Product
         return $this;
     }
 
-    public function getDateStart(): ?\DateTimeInterface
+    public function getDateStart(): ?DateTimeInterface
     {
         return $this->dateStart;
     }
 
-    public function setDateStart(\DateTimeInterface $dateStart): self
+    public function setDateStart(DateTimeInterface $dateStart): self
     {
         $this->dateStart = $dateStart;
 
         return $this;
     }
 
-    public function getDateEnd(): ?\DateTimeInterface
+    public function getDateEnd(): ?DateTimeInterface
     {
         return $this->dateEnd;
     }
 
-    public function setDateEnd(\DateTimeInterface $dateEnd): self
+    public function setDateEnd(DateTimeInterface $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
 
         return $this;
     }
 
-    public function getExclusionFrom(): ?\DateTimeInterface
+    public function getExclusionFrom(): ?DateTimeInterface
     {
         return $this->exclusionFrom;
     }
 
-    public function setExclusionFrom(\DateTimeInterface $exclusionFrom): self
+    public function setExclusionFrom(DateTimeInterface $exclusionFrom): self
     {
         $this->exclusionFrom = $exclusionFrom;
 
         return $this;
     }
 
-    public function getExclusionTo(): ?\DateTimeInterface
+    public function getExclusionTo(): ?DateTimeInterface
     {
         return $this->exclusionTo;
     }
 
-    public function setExclusionTo(\DateTimeInterface $exclusionTo): self
+    public function setExclusionTo(DateTimeInterface $exclusionTo): self
     {
         $this->exclusionTo = $exclusionTo;
 

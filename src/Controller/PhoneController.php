@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Phone;
+use App\Form\PersonPhoneLinkType;
+use App\Form\PhoneType;
+use App\Service\PhoneServiceInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\PhoneServiceInterface;
-use App\Entity\Phone;
-use App\Entity\PersonPhoneLink;
-use App\Form\PhoneType;
-use App\Form\PersonPhoneLinkType;
 
 /**
  * PhoneController class
@@ -29,6 +28,7 @@ class PhoneController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays phone
      *
@@ -69,6 +69,7 @@ class PhoneController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates phone
      *
@@ -109,6 +110,7 @@ class PhoneController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies phone
      *
@@ -161,6 +163,7 @@ class PhoneController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes phone
      *

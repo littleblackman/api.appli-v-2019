@@ -2,6 +2,7 @@
 
 namespace App\Entity\Traits;
 
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -43,12 +44,12 @@ trait SuppressionTrait
         return $this;
     }
 
-    public function getSuppressedAt(): ?\DateTimeInterface
+    public function getSuppressedAt(): ?DateTimeInterface
     {
         return $this->suppressedAt;
     }
 
-    public function setSuppressedAt(?\DateTimeInterface $suppressedAt): self
+    public function setSuppressedAt(?DateTimeInterface $suppressedAt): self
     {
         $this->suppressedAt = $suppressedAt;
 

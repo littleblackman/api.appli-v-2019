@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Week;
+use App\Form\WeekType;
+use App\Service\WeekServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\WeekServiceInterface;
-use App\Entity\Week;
-use App\Entity\ProductWeekLink;
-use App\Form\WeekType;
 
 /**
  * WeekController class
@@ -29,6 +28,7 @@ class WeekController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the weeks
      *
@@ -83,6 +83,7 @@ class WeekController extends AbstractController
     }
 
 //SEARCH
+
     /**
      * Searches for %{term}% in name for Week
      *
@@ -149,6 +150,7 @@ class WeekController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays week
      *
@@ -189,6 +191,7 @@ class WeekController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates week
      *
@@ -229,6 +232,7 @@ class WeekController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies week
      *
@@ -281,6 +285,7 @@ class WeekController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes week
      *

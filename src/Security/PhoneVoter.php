@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Phone;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Phone;
 
 /**
  * PhoneVoter class
@@ -21,8 +21,11 @@ class PhoneVoter extends Voter
     private $security;
 
     public const PHONE_CREATE = 'phoneCreate';
+
     public const PHONE_DELETE = 'phoneDelete';
+
     public const PHONE_DISPLAY = 'phoneDisplay';
+
     public const PHONE_MODIFY = 'phoneModify';
 
     private const ATTRIBUTES = array(
@@ -69,9 +72,8 @@ class PhoneVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
-
 
     /**
      * Checks if is allowed to create

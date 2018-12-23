@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.15
+- Ajout de rector (23/12/2018)
+
 v0.16.14
 - Suppression de l'auto-création des Rides lors de l'auto-affectation des Pickups puisqu'ils sont créés manuellement (18/12/2018)
 - Changement de la méthode d'affectation des pickups pour qu'elle se fasse en plusieurs passes par nombre d'inscrits (postal) et zones des chauffeurs (18/12/2018)

@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Location;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Location;
 
 /**
  * LocationVoter class
@@ -21,9 +21,13 @@ class LocationVoter extends Voter
     private $security;
 
     public const LOCATION_CREATE = 'locationCreate';
+
     public const LOCATION_DELETE = 'locationDelete';
+
     public const LOCATION_DISPLAY = 'locationDisplay';
+
     public const LOCATION_LIST = 'locationList';
+
     public const LOCATION_MODIFY = 'locationModify';
 
     private const ATTRIBUTES = array(
@@ -74,7 +78,7 @@ class LocationVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
 
     /**

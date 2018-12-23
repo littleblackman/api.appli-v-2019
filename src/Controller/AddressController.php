@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Address;
+use App\Form\AddressType;
+use App\Form\PersonAddressLinkType;
+use App\Service\AddressServiceInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\AddressServiceInterface;
-use App\Entity\Address;
-use App\Entity\PersonAddressLink;
-use App\Form\AddressType;
-use App\Form\PersonAddressLinkType;
 
 /**
  * AddressController class
@@ -29,6 +28,7 @@ class AddressController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays address
      *
@@ -69,6 +69,7 @@ class AddressController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates address
      *
@@ -109,6 +110,7 @@ class AddressController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies address
      *
@@ -161,6 +163,7 @@ class AddressController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes address
      *

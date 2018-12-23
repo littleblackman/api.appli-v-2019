@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Child;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Child;
 
 /**
  * ChildVoter class
@@ -21,9 +21,13 @@ class ChildVoter extends Voter
     private $security;
 
     public const CHILD_CREATE = 'childCreate';
+
     public const CHILD_DELETE = 'childDelete';
+
     public const CHILD_DISPLAY = 'childDisplay';
+
     public const CHILD_LIST = 'childList';
+
     public const CHILD_MODIFY = 'childModify';
 
     private const ATTRIBUTES = array(
@@ -74,7 +78,7 @@ class ChildVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
 
     /**

@@ -2,19 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Driver;
+use App\Form\DriverPriorityType;
+use App\Form\DriverType;
+use App\Service\DriverServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\DriverServiceInterface;
-use App\Entity\Driver;
-use App\Form\DriverType;
-use App\Form\DriverPriorityType;
 
 /**
  * DriverController class
@@ -30,6 +29,7 @@ class DriverController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the drivers
      *
@@ -84,6 +84,7 @@ class DriverController extends AbstractController
     }
 
 //PRIORITY
+
     /**
      * Modifies priorities for Drivers
      *
@@ -120,6 +121,7 @@ class DriverController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays driver using its id
      *
@@ -164,6 +166,7 @@ class DriverController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates a Driver
      *
@@ -204,6 +207,7 @@ class DriverController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies driver
      *
@@ -256,6 +260,7 @@ class DriverController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes driver
      *

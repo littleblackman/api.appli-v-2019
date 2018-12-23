@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
 
 /**
  * HomeController class
@@ -15,6 +14,7 @@ use Swagger\Annotations as SWG;
 class HomeController extends AbstractController
 {
 //HOME
+
     /**
      * Home of the API
      * @return JsonResponse (true)

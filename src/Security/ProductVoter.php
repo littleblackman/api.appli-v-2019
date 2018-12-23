@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Product;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Product;
 
 /**
  * ProductVoter class
@@ -21,9 +21,13 @@ class ProductVoter extends Voter
     private $security;
 
     public const PRODUCT_CREATE = 'productCreate';
+
     public const PRODUCT_DELETE = 'productDelete';
+
     public const PRODUCT_DISPLAY = 'productDisplay';
+
     public const PRODUCT_LIST = 'productList';
+
     public const PRODUCT_MODIFY = 'productModify';
 
     private const ATTRIBUTES = array(
@@ -74,9 +78,8 @@ class ProductVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
-
 
     /**
      * Checks if is allowed to create

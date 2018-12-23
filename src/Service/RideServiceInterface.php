@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\Person;
 use App\Entity\Ride;
 
 /**

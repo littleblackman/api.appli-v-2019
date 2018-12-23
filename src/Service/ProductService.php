@@ -2,15 +2,11 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Security;
 use App\Entity\Component;
 use App\Entity\Product;
 use App\Entity\ProductComponentLink;
-use App\Form\AppFormFactoryInterface;
-use App\Service\ComponentServiceInterface;
-use App\Service\ProductServiceInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * ProductService class
@@ -19,7 +15,9 @@ use App\Service\ProductServiceInterface;
 class ProductService implements ProductServiceInterface
 {
     private $componentService;
+
     private $em;
+
     private $mainService;
 
     public function __construct(
@@ -137,6 +135,7 @@ class ProductService implements ProductServiceInterface
             ->findAllSearch($term)
         ;
     }
+
     /**
      * {@inheritdoc}
      */

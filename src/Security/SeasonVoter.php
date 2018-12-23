@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Season;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Season;
 
 /**
  * SeasonVoter class
@@ -21,9 +21,13 @@ class SeasonVoter extends Voter
     private $security;
 
     public const SEASON_CREATE = 'seasonCreate';
+
     public const SEASON_DELETE = 'seasonDelete';
+
     public const SEASON_DISPLAY = 'seasonDisplay';
+
     public const SEASON_LIST = 'seasonList';
+
     public const SEASON_MODIFY = 'seasonModify';
 
     private const ATTRIBUTES = array(
@@ -74,7 +78,7 @@ class SeasonVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
 
     /**

@@ -2,13 +2,10 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Security;
 use App\Entity\Driver;
 use App\Entity\DriverZone;
-use App\Form\AppFormFactoryInterface;
-use App\Service\DriverServiceInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * DriverService class
@@ -17,6 +14,7 @@ use App\Service\DriverServiceInterface;
 class DriverService implements DriverServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(

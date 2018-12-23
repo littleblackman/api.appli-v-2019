@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\DriverPresence;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\DriverPresence;
 
 /**
  * DriverPresenceVoter class
@@ -21,9 +21,13 @@ class DriverPresenceVoter extends Voter
     private $security;
 
     public const DRIVER_PRESENCE_CREATE = 'driverPresenceCreate';
+
     public const DRIVER_PRESENCE_DELETE = 'driverPresenceDelete';
+
     public const DRIVER_PRESENCE_DISPLAY = 'driverPresenceDisplay';
+
     public const DRIVER_PRESENCE_LIST = 'driverPresenceList';
+
     public const DRIVER_PRESENCE_MODIFY = 'driverPresenceModify';
 
     private const ATTRIBUTES = array(
@@ -74,9 +78,8 @@ class DriverPresenceVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
-
 
     /**
      * Checks if is allowed to create

@@ -2,15 +2,14 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use App\Entity\Traits\CreationTrait;
-use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
+use App\Entity\Traits\UpdateTrait;
+use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
-use App\Entity\Week;
 
 /**
  * Season
@@ -50,14 +49,14 @@ class Season
     private $status;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="date_start", type="date")
      */
     private $dateStart;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="date_end", type="date")
      */
@@ -121,24 +120,24 @@ class Season
         return $this;
     }
 
-    public function getDateStart(): ?\DateTimeInterface
+    public function getDateStart(): ?DateTimeInterface
     {
         return $this->dateStart;
     }
 
-    public function setDateStart(\DateTimeInterface $dateStart): self
+    public function setDateStart(DateTimeInterface $dateStart): self
     {
         $this->dateStart = $dateStart;
 
         return $this;
     }
 
-    public function getDateEnd(): ?\DateTimeInterface
+    public function getDateEnd(): ?DateTimeInterface
     {
         return $this->dateEnd;
     }
 
-    public function setDateEnd(\DateTimeInterface $dateEnd): self
+    public function setDateEnd(DateTimeInterface $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
 

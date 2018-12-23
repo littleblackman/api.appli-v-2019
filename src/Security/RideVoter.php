@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Ride;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Ride;
 
 /**
  * RideVoter class
@@ -21,9 +21,13 @@ class RideVoter extends Voter
     private $security;
 
     public const RIDE_CREATE = 'rideCreate';
+
     public const RIDE_DELETE = 'rideDelete';
+
     public const RIDE_DISPLAY = 'rideDisplay';
+
     public const RIDE_LIST = 'rideList';
+
     public const RIDE_MODIFY = 'rideModify';
 
     private const ATTRIBUTES = array(
@@ -74,7 +78,7 @@ class RideVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
 
     /**

@@ -2,12 +2,11 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Entity\Phone;
 use App\Entity\Person;
 use App\Entity\PersonPhoneLink;
-use App\Service\PhoneServiceInterface;
+use App\Entity\Phone;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * PhoneService class
@@ -16,6 +15,7 @@ use App\Service\PhoneServiceInterface;
 class PhoneService implements PhoneServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(

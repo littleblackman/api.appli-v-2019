@@ -2,12 +2,11 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Service\MainServiceInterface;
 use App\Entity\Food;
 use App\Entity\Meal;
 use App\Entity\MealFoodLink;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * MealService class
@@ -16,6 +15,7 @@ use App\Entity\MealFoodLink;
 class MealService implements MealServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(
@@ -210,7 +210,6 @@ class MealService implements MealServiceInterface
 
         return $objectArray;
     }
-
 
     /**
      * Returns the total of meal for a date

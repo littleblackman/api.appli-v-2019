@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\CreationTrait;
-use App\Entity\Traits\UpdateTrait;
 use App\Entity\Traits\SuppressionTrait;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
+use App\Entity\Traits\UpdateTrait;
+use DateTimeInterface;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * DriverPresence
@@ -41,21 +40,21 @@ class DriverPresence
     private $driver;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="date", type="date")
      */
     private $date;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="start", type="time")
      */
     private $start;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="end", type="time")
      */
@@ -87,36 +86,36 @@ class DriverPresence
         return $this->driverPresenceId;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getStart(): ?\DateTimeInterface
+    public function getStart(): ?DateTimeInterface
     {
         return $this->start;
     }
 
-    public function setStart(\DateTimeInterface $start): self
+    public function setStart(DateTimeInterface $start): self
     {
         $this->start = $start;
 
         return $this;
     }
 
-    public function getEnd(): ?\DateTimeInterface
+    public function getEnd(): ?DateTimeInterface
     {
         return $this->end;
     }
 
-    public function setEnd(\DateTimeInterface $end): self
+    public function setEnd(DateTimeInterface $end): self
     {
         $this->end = $end;
 

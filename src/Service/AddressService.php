@@ -2,12 +2,11 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Entity\Address;
 use App\Entity\Person;
 use App\Entity\PersonAddressLink;
-use App\Service\AddressServiceInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * AddressService class
@@ -16,6 +15,7 @@ use App\Service\AddressServiceInterface;
 class AddressService implements AddressServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(

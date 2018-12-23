@@ -2,11 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Food;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Service\MainServiceInterface;
-use App\Entity\Person;
-use App\Entity\Food;
 
 /**
  * FoodService class
@@ -15,6 +13,7 @@ use App\Entity\Food;
 class FoodService implements FoodServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(

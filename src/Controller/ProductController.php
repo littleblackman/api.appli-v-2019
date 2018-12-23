@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
+use App\Form\ProductType;
+use App\Service\ProductServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\ProductServiceInterface;
-use App\Entity\Product;
-use App\Entity\ProductProductLink;
-use App\Form\ProductType;
 
 /**
  * ProductController class
@@ -29,6 +28,7 @@ class ProductController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the products
      *
@@ -83,6 +83,7 @@ class ProductController extends AbstractController
     }
 
 //SEARCH
+
     /**
      * Searches for %{term}% in name_fr for Product
      *
@@ -149,6 +150,7 @@ class ProductController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays product
      *
@@ -189,6 +191,7 @@ class ProductController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates product
      *
@@ -229,6 +232,7 @@ class ProductController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies product
      *
@@ -281,6 +285,7 @@ class ProductController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes product
      *

@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Address;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Address;
 
 /**
  * AddressVoter class
@@ -21,8 +21,11 @@ class AddressVoter extends Voter
     private $security;
 
     public const ADDRESS_CREATE = 'addressCreate';
+
     public const ADDRESS_DELETE = 'addressDelete';
+
     public const ADDRESS_DISPLAY = 'addressDisplay';
+
     public const ADDRESS_MODIFY = 'addressModify';
 
     private const ATTRIBUTES = array(
@@ -69,9 +72,8 @@ class AddressVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
-
 
     /**
      * Checks if is allowed to create

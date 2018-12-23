@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Child;
+use App\Form\ChildType;
+use App\Service\ChildServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\ChildServiceInterface;
-use App\Form\ChildType;
-use App\Entity\Child;
 
 /**
  * ChildController class
@@ -29,6 +28,7 @@ class ChildController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the children
      *
@@ -83,6 +83,7 @@ class ChildController extends AbstractController
     }
 
 //SEARCH
+
     /**
      * Searches for %{term}% in firstname|lastname for Child
      *
@@ -149,6 +150,7 @@ class ChildController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays child
      *
@@ -190,6 +192,7 @@ class ChildController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates a child
      *
@@ -230,6 +233,7 @@ class ChildController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies child
      *
@@ -282,6 +286,7 @@ class ChildController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes child
      *

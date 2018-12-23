@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Pickup;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Pickup;
 
 /**
  * PickupVoter class
@@ -21,9 +21,13 @@ class PickupVoter extends Voter
     private $security;
 
     public const PERSON_CREATE = 'pickupCreate';
+
     public const PERSON_DELETE = 'pickupDelete';
+
     public const PERSON_DISPLAY = 'pickupDisplay';
+
     public const PERSON_LIST = 'pickupList';
+
     public const PERSON_MODIFY = 'pickupModify';
 
     private const ATTRIBUTES = array(
@@ -74,9 +78,8 @@ class PickupVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
-
 
     /**
      * Checks if is allowed to create

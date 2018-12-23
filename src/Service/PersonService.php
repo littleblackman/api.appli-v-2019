@@ -2,14 +2,10 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Security;
 use App\Entity\Person;
 use App\Entity\UserPersonLink;
-use App\Form\AppFormFactoryInterface;
-use App\Service\AddressServiceInterface;
-use App\Service\PersonServiceInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * PersonService class
@@ -18,7 +14,9 @@ use App\Service\PersonServiceInterface;
 class PersonService implements PersonServiceInterface
 {
     private $addressService;
+
     private $em;
+
     private $mainService;
 
     public function __construct(

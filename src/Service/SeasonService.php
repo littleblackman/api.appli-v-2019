@@ -2,14 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Season;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Security;
-use App\Entity\Season;
-use App\Entity\SeasonPersonLink;
-use App\Entity\Person;
-use App\Form\AppFormFactoryInterface;
-use App\Service\SeasonServiceInterface;
 
 /**
  * SeasonService class
@@ -18,6 +13,7 @@ use App\Service\SeasonServiceInterface;
 class SeasonService implements SeasonServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(

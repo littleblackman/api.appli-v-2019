@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\DriverPresence;
+use App\Form\DriverPresenceType;
+use App\Service\DriverPresenceServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\DriverPresenceServiceInterface;
-use App\Entity\DriverPresence;
-use App\Form\DriverPresenceType;
 
 /**
  * DriverPresenceController class
@@ -29,6 +28,7 @@ class DriverPresenceController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the driver presences by date
      *
@@ -90,6 +90,7 @@ class DriverPresenceController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays driverPresence using driverId and date (optional)
      *
@@ -147,6 +148,7 @@ class DriverPresenceController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates a DriverPresence
      *
@@ -188,6 +190,7 @@ class DriverPresenceController extends AbstractController
     }
 
 //DELETE BY ID
+
     /**
      * Deletes driverPresence using its id
      *
@@ -232,6 +235,7 @@ class DriverPresenceController extends AbstractController
     }
 
 //DELETE BY ARRAY OF IDS
+
     /**
      * Deletes driverPresence
      *

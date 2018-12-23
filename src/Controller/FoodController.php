@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Food;
+use App\Form\FoodType;
+use App\Service\FoodServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\FoodServiceInterface;
-use App\Entity\Food;
-use App\Form\FoodType;
 
 /**
  * FoodController class
@@ -29,6 +28,7 @@ class FoodController extends AbstractController
     }
 
 //LIST BY STATUS
+
     /**
      * Lists all the foods by status
      *
@@ -94,6 +94,7 @@ class FoodController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays the food using its id
      *
@@ -136,6 +137,7 @@ class FoodController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates a Food
      *
@@ -176,6 +178,7 @@ class FoodController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies food
      *
@@ -228,6 +231,7 @@ class FoodController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes food
      *

@@ -2,12 +2,11 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Service\MainServiceInterface;
-use App\Service\DriverServiceInterface;
 use App\Entity\Person;
 use App\Entity\Ride;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * RideService class
@@ -16,7 +15,9 @@ use App\Entity\Ride;
 class RideService implements RideServiceInterface
 {
     private $em;
+
     private $mainService;
+
     private $driverService;
 
     public function __construct(
@@ -36,10 +37,10 @@ class RideService implements RideServiceInterface
     public function addTimeData(Ride $object, array $data)
     {
         if (isset($data['start'])) {
-            $object->setStart(\DateTime::createFromFormat('H:i:s', $data['start']));
+            $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
         }
         if (isset($data['arrival'])) {
-            $object->setArrival(\DateTime::createFromFormat('H:i:s', $data['arrival']));
+            $object->setArrival(DateTime::createFromFormat('H:i:s', $data['arrival']));
         }
     }
 

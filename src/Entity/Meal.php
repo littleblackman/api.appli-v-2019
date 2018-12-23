@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\CreationTrait;
+use App\Entity\Traits\SuppressionTrait;
+use App\Entity\Traits\UpdateTrait;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\Traits\CreationTrait;
-use App\Entity\Traits\UpdateTrait;
-use App\Entity\Traits\SuppressionTrait;
+use Doctrine\ORM\Mapping as ORM;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 
@@ -35,14 +36,14 @@ class Meal
     private $mealId;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      *
      * @ORM\Column(name="date", type="date", nullable=true)
      */
     private $date;
 
     /**
-     * @var \Child
+     * @var Child
      *
      * @ORM\ManyToOne(targetEntity="Child")
      * @ORM\JoinColumns({
@@ -52,7 +53,7 @@ class Meal
     private $child;
 
     /**
-     * @var \Person
+     * @var Person
      *
      * @ORM\ManyToOne(targetEntity="Person")
      * @ORM\JoinColumns({
@@ -99,12 +100,12 @@ class Meal
         return $this->mealId;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(?\DateTimeInterface $date): self
+    public function setDate(?DateTimeInterface $date): self
     {
         $this->date = $date;
 

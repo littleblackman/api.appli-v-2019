@@ -2,9 +2,6 @@
 
 namespace App\Entity;
 
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Entity\Driver;
 
 /**
  * DriverPriority
@@ -22,7 +19,6 @@ class DriverPriority
      * @var integer
      */
     private $priority;
-
 
     public function getDriver(): ?Driver
     {

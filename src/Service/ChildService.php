@@ -2,15 +2,11 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Security;
 use App\Entity\Child;
 use App\Entity\ChildPersonLink;
 use App\Entity\Person;
-use App\Form\AppFormFactoryInterface;
-use App\Service\PersonServiceInterface;
-use App\Service\ChildServiceInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * ChildService class
@@ -19,7 +15,9 @@ use App\Service\ChildServiceInterface;
 class ChildService implements ChildServiceInterface
 {
     private $em;
+
     private $mainService;
+
     private $personService;
 
     public function __construct(
@@ -226,7 +224,6 @@ class ChildService implements ChildServiceInterface
             $this->em->remove($objectPersonLink);
         }
     }
-
 
     /**
      * {@inheritdoc}

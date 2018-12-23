@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Vehicle;
+use App\Form\VehicleType;
+use App\Service\VehicleServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\VehicleServiceInterface;
-use App\Entity\Vehicle;
-use App\Form\VehicleType;
 
 /**
  * VehicleController class
@@ -29,6 +28,7 @@ class VehicleController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the vehicles
      *
@@ -78,6 +78,7 @@ class VehicleController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays the vehicle using its id
      *
@@ -121,6 +122,7 @@ class VehicleController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates a Vehicle
      *
@@ -161,6 +163,7 @@ class VehicleController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies vehicle
      *
@@ -213,6 +216,7 @@ class VehicleController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes vehicle and moves all the pickups as "Non pris en charge"
      *

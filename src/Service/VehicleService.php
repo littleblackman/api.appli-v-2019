@@ -2,11 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Vehicle;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Service\MainServiceInterface;
-use App\Entity\Vehicle;
-use App\Entity\UserPersonLink;
 
 /**
  * VehicleService class
@@ -15,6 +13,7 @@ use App\Entity\UserPersonLink;
 class VehicleService implements VehicleServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(

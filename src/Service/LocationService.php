@@ -2,14 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Location;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Security;
-use App\Entity\Location;
-use App\Entity\LocationPersonLink;
-use App\Entity\Person;
-use App\Form\AppFormFactoryInterface;
-use App\Service\LocationServiceInterface;
 
 /**
  * LocationService class
@@ -18,6 +13,7 @@ use App\Service\LocationServiceInterface;
 class LocationService implements LocationServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(

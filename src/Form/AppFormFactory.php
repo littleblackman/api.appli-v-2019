@@ -2,26 +2,7 @@
 
 namespace App\Form;
 
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
-use App\Form\AppFormFactoryInterface;
-use App\Form\AddressType;
-use App\Form\ChildType;
-use App\Form\ComponentType;
-use App\Form\DriverType;
-use App\Form\DriverPresenceType;
-use App\Form\FamilyType;
-use App\Form\FoodType;
-use App\Form\LocationType;
-use App\Form\MealType;
-use App\Form\PersonType;
-use App\Form\PhoneType;
-use App\Form\PickupType;
-use App\Form\ProductType;
-use App\Form\RideType;
-use App\Form\SeasonType;
-use App\Form\VehicleType;
-use App\Form\WeekType;
 
 /**
  * AppFormFactory class

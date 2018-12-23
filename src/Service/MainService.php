@@ -2,12 +2,11 @@
 
 namespace App\Service;
 
+use App\Form\AppFormFactoryInterface;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
-use App\Form\AppFormFactoryInterface;
-use App\Service\MainServiceInterface;
 
 /**
  * MainService class
@@ -16,8 +15,11 @@ use App\Service\MainServiceInterface;
 class MainService implements MainServiceInterface
 {
     private $em;
+
     private $formFactory;
+
     private $security;
+
     private $user;
 
     public function __construct(
@@ -39,10 +41,10 @@ class MainService implements MainServiceInterface
     public function create($object)
     {
         $object
-            ->setCreatedAt(new \DateTime())
+            ->setCreatedAt(new DateTime())
             ->setCreatedBy($this->user->getId())
             ->setSuppressed(false)
-            ->setUpdatedAt(new \DateTime())
+            ->setUpdatedAt(new DateTime())
             ->setUpdatedBy($this->user->getId())
         ;
     }
@@ -54,7 +56,7 @@ class MainService implements MainServiceInterface
     {
         $object
             ->setSuppressed(true)
-            ->setSuppressedAt(new \DateTime())
+            ->setSuppressedAt(new DateTime())
             ->setSuppressedBy($this->user->getId())
         ;
     }
@@ -73,7 +75,7 @@ class MainService implements MainServiceInterface
     public function modify($object)
     {
         $object
-            ->setUpdatedAt(new \DateTime())
+            ->setUpdatedAt(new DateTime())
             ->setUpdatedBy($this->user->getId())
         ;
     }

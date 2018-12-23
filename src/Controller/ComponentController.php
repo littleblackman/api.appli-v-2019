@@ -2,19 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Component;
+use App\Form\ComponentType;
+use App\Form\ProductComponentLinkType;
+use App\Service\ComponentServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\ComponentServiceInterface;
-use App\Entity\Component;
-use App\Entity\ProductComponentLink;
-use App\Form\ComponentType;
-use App\Form\ProductComponentLinkType;
 
 /**
  * ComponentController class
@@ -30,6 +29,7 @@ class ComponentController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the components
      *
@@ -84,6 +84,7 @@ class ComponentController extends AbstractController
     }
 
 //SEARCH
+
     /**
      * Searches for %{term}% in name_fr for Component
      *
@@ -150,6 +151,7 @@ class ComponentController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays component
      *
@@ -190,6 +192,7 @@ class ComponentController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates component
      *
@@ -230,6 +233,7 @@ class ComponentController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies component
      *
@@ -282,6 +286,7 @@ class ComponentController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes component
      *

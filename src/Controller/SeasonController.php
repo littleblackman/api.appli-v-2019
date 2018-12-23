@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Season;
+use App\Form\SeasonType;
+use App\Service\SeasonServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\SeasonServiceInterface;
-use App\Form\SeasonType;
-use App\Entity\Season;
 
 /**
  * SeasonController class
@@ -29,6 +28,7 @@ class SeasonController extends AbstractController
     }
 
 //LIST BY STATUS
+
     /**
      * Lists all the seasons by status
      *
@@ -94,6 +94,7 @@ class SeasonController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays season
      *
@@ -135,6 +136,7 @@ class SeasonController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates a season
      *
@@ -175,6 +177,7 @@ class SeasonController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies season
      *
@@ -227,6 +230,7 @@ class SeasonController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes season
      *

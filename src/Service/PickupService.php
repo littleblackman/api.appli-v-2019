@@ -2,14 +2,11 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Entity\Pickup;
 use App\Entity\Ride;
-use App\Service\DriverServiceInterface;
-use App\Service\DriverPresenceServiceInterface;
-use App\Service\PickupServiceInterface;
-use App\Service\RideServiceInterface;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * PickupService class
@@ -18,8 +15,11 @@ use App\Service\RideServiceInterface;
 class PickupService implements PickupServiceInterface
 {
     private $em;
+
     private $driverService;
+
     private $mainService;
+
     private $rideService;
 
     const RIDE_FULL = 8;
@@ -100,7 +100,7 @@ class PickupService implements PickupServiceInterface
                     ->setRide($ride)
                     ->setSortOrder($ride->getPickups()->count() + 1)
                     ->setStatus('automatic')
-                    ->setStatusChange(new \DateTime())
+                    ->setStatusChange(new DateTime())
                 ;
                 $this->mainService->modify($pickup);
                 $this->mainService->persist($pickup);
@@ -171,8 +171,8 @@ class PickupService implements PickupServiceInterface
 
                     //Modifies Start
                     if (!empty($dispatch['start'] && '' !== $dispatch['start'])) {
-                        $start = \DateTime::createFromFormat('Y-m-d H:i:s', $dispatch['start']);
-                        if ($start instanceof \DateTime) {
+                        $start = DateTime::createFromFormat('Y-m-d H:i:s', $dispatch['start']);
+                        if ($start instanceof DateTime) {
                             $pickup->setStart($start);
                         }
                     } elseif (null === $dispatch['start'] || 'null' === $dispatch['start']) {
@@ -310,7 +310,7 @@ class PickupService implements PickupServiceInterface
                     ->setRide(null)
                     ->setSortOrder(null)
                     ->setStatus(null)
-                    ->setStatusChange(new \DateTime())
+                    ->setStatusChange(new DateTime())
                 ;
                 $this->mainService->modify($pickup);
 

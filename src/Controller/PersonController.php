@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Person;
+use App\Form\PersonType;
+use App\Service\PersonServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\PersonServiceInterface;
-use App\Entity\Person;
-use App\Form\PersonType;
 
 /**
  * PersonController class
@@ -29,6 +28,7 @@ class PersonController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the persons
      *
@@ -83,6 +83,7 @@ class PersonController extends AbstractController
     }
 
 //SEARCH
+
     /**
      * Searches for %{term}% in firstname|lastname for Person
      *
@@ -149,6 +150,7 @@ class PersonController extends AbstractController
     }
 
 //DISPLAY WITH ID
+
     /**
      * Displays person using its id
      *
@@ -193,6 +195,7 @@ class PersonController extends AbstractController
     }
 
 //DISPLAY WITH USER'S IDENTIFIER
+
     /**
      * Displays person using its user's identifier
      *
@@ -237,6 +240,7 @@ class PersonController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates a Person
      *
@@ -277,6 +281,7 @@ class PersonController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies person
      *
@@ -329,6 +334,7 @@ class PersonController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes person
      *

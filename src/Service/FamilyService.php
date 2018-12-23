@@ -2,13 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Family;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Security\Core\Security;
-use App\Entity\Family;
-use App\Form\AppFormFactoryInterface;
-use App\Service\ProductServiceInterface;
-use App\Service\FamilyServiceInterface;
 
 /**
  * FamilyService class
@@ -17,7 +13,9 @@ use App\Service\FamilyServiceInterface;
 class FamilyService implements FamilyServiceInterface
 {
     private $em;
+
     private $mainService;
+
     private $productService;
 
     public function __construct(
@@ -92,6 +90,7 @@ class FamilyService implements FamilyServiceInterface
             ->findAllSearch($term)
         ;
     }
+
     /**
      * {@inheritdoc}
      */

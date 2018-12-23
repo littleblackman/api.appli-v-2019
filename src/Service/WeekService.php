@@ -2,10 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Week;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Entity\Week;
-use App\Service\WeekServiceInterface;
 
 /**
  * WeekService class
@@ -14,6 +13,7 @@ use App\Service\WeekServiceInterface;
 class WeekService implements WeekServiceInterface
 {
     private $em;
+
     private $mainService;
 
     public function __construct(

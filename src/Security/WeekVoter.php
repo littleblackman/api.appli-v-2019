@@ -2,11 +2,11 @@
 
 namespace App\Security;
 
+use App\Entity\Week;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use c975L\ConfigBundle\Service\ConfigServiceInterface;
-use App\Entity\Week;
 
 /**
  * WeekVoter class
@@ -21,9 +21,13 @@ class WeekVoter extends Voter
     private $security;
 
     public const WEEK_CREATE = 'weekCreate';
+
     public const WEEK_DELETE = 'weekDelete';
+
     public const WEEK_DISPLAY = 'weekDisplay';
+
     public const WEEK_LIST = 'weekList';
+
     public const WEEK_MODIFY = 'weekModify';
 
     private const ATTRIBUTES = array(
@@ -74,9 +78,8 @@ class WeekVoter extends Voter
                 break;
         }
 
-        throw new \LogicException('Invalid attribute: ' . $attribute);
+        throw new LogicException('Invalid attribute: ' . $attribute);
     }
-
 
     /**
      * Checks if is allowed to create

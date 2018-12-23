@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Family;
+use App\Form\FamilyType;
+use App\Service\FamilyServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\FamilyServiceInterface;
-use App\Entity\Family;
-use App\Entity\FamilyFamilyLink;
-use App\Form\FamilyType;
 
 /**
  * FamilyController class
@@ -29,6 +28,7 @@ class FamilyController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the families
      *
@@ -83,6 +83,7 @@ class FamilyController extends AbstractController
     }
 
 //SEARCH
+
     /**
      * Searches for %{term}% in name_fr for Family
      *
@@ -149,6 +150,7 @@ class FamilyController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays family
      *
@@ -189,6 +191,7 @@ class FamilyController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates family
      *
@@ -229,6 +232,7 @@ class FamilyController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies family
      *
@@ -281,6 +285,7 @@ class FamilyController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes family
      *

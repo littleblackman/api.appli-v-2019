@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Location;
+use App\Form\LocationType;
+use App\Service\LocationServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
-use App\Service\LocationServiceInterface;
-use App\Form\LocationType;
-use App\Entity\Location;
 
 /**
  * LocationController class
@@ -29,6 +28,7 @@ class LocationController extends AbstractController
     }
 
 //LIST
+
     /**
      * Lists all the locations
      *
@@ -83,6 +83,7 @@ class LocationController extends AbstractController
     }
 
 //DISPLAY
+
     /**
      * Displays location
      *
@@ -124,6 +125,7 @@ class LocationController extends AbstractController
     }
 
 //CREATE
+
     /**
      * Creates a location
      *
@@ -164,6 +166,7 @@ class LocationController extends AbstractController
     }
 
 //MODIFY
+
     /**
      * Modifies location
      *
@@ -216,6 +219,7 @@ class LocationController extends AbstractController
     }
 
 //DELETE
+
     /**
      * Deletes location
      *

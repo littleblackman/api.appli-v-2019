@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Child;
-use App\Entity\Person;
 
 /**
  * ChildPersonLink
