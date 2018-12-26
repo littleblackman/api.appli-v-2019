@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\SuppressionTrait;
 use App\Entity\Traits\UpdateTrait;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

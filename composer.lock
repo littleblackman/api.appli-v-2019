@@ -8,24 +8,30 @@
     "packages": [
         {
             "name": "c975l/config-bundle",
-            "version": "v2.2.4",
+            "version": "v2.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/ConfigBundle.git",
-                "reference": "d8093e50a26953e52758fb36b9c9b2d85db793bb"
+                "reference": "79e8ecaf944e48a3f8f1b1ca3f078107cb72b4b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/ConfigBundle/zipball/d8093e50a26953e52758fb36b9c9b2d85db793bb",
-                "reference": "d8093e50a26953e52758fb36b9c9b2d85db793bb",
+                "url": "https://api.github.com/repos/975L/ConfigBundle/zipball/79e8ecaf944e48a3f8f1b1ca3f078107cb72b4b8",
+                "reference": "79e8ecaf944e48a3f8f1b1ca3f078107cb72b4b8",
                 "shasum": ""
             },
             "require": {
                 "c975l/includelibrary-bundle": "^1",
                 "c975l/services-bundle": "^1",
                 "c975l/toolbar-bundle": "^1",
-                "php": ">=5.5.9",
-                "symfony/yaml": "^4"
+                "php": "^7",
+                "symfony/form": "*",
+                "symfony/yaml": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.3@dev",
+                "rector/rector": "^0.3",
+                "symplify/easy-coding-standard": "^5.2"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -56,37 +62,40 @@
                 "config",
                 "symfony"
             ],
-            "time": "2018-10-31T21:30:13+00:00"
+            "time": "2018-12-25T15:20:20+00:00"
         },
         {
             "name": "c975l/email-bundle",
-            "version": "v2.1",
+            "version": "v2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/EmailBundle.git",
-                "reference": "087d9c1a9b0821b0b96c03d4ebd755fe035b9017"
+                "reference": "a217f09138ca7aa13c8011c2499577eec9c976d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/EmailBundle/zipball/087d9c1a9b0821b0b96c03d4ebd755fe035b9017",
-                "reference": "087d9c1a9b0821b0b96c03d4ebd755fe035b9017",
+                "url": "https://api.github.com/repos/975L/EmailBundle/zipball/a217f09138ca7aa13c8011c2499577eec9c976d7",
+                "reference": "a217f09138ca7aa13c8011c2499577eec9c976d7",
                 "shasum": ""
             },
             "require": {
-                "c975l/config-bundle": "^2",
-                "c975l/includelibrary-bundle": "^1",
-                "c975l/services-bundle": "^1",
-                "c975l/toolbar-bundle": "^1",
+                "c975l/config-bundle": "*",
+                "c975l/includelibrary-bundle": "*",
+                "c975l/services-bundle": "*",
+                "c975l/toolbar-bundle": "*",
                 "doctrine/doctrine-bundle": "^1",
                 "doctrine/doctrine-cache-bundle": "^1",
                 "doctrine/orm": "^2",
                 "knplabs/knp-paginator-bundle": "^2",
-                "php": ">=5.5.9",
+                "php": "^7",
+                "symfony/form": "*",
+                "symfony/security": "*",
                 "symfony/swiftmailer-bundle": "^3"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.13@dev",
-                "phpunit/phpunit": "^7.4@dev"
+                "phpunit/phpunit": "^7.3@dev",
+                "rector/rector": "^0.3",
+                "symplify/easy-coding-standard": "^5.2"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -116,24 +125,30 @@
                 "bundle",
                 "symfony"
             ],
-            "time": "2018-09-02T14:55:02+00:00"
+            "time": "2018-12-25T15:22:27+00:00"
         },
         {
             "name": "c975l/includelibrary-bundle",
-            "version": "v1.9",
+            "version": "v1.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/IncludeLibraryBundle.git",
-                "reference": "c450386fdfc4077089e82dcfd92832a54cfd982e"
+                "reference": "1b438411eebe4d20933ea0f58ca23243c1edbef4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/IncludeLibraryBundle/zipball/c450386fdfc4077089e82dcfd92832a54cfd982e",
-                "reference": "c450386fdfc4077089e82dcfd92832a54cfd982e",
+                "url": "https://api.github.com/repos/975L/IncludeLibraryBundle/zipball/1b438411eebe4d20933ea0f58ca23243c1edbef4",
+                "reference": "1b438411eebe4d20933ea0f58ca23243c1edbef4",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "php": "^7",
+                "twig/extensions": "^1.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.3@dev",
+                "rector/rector": "^0.3",
+                "symplify/easy-coding-standard": "^5.2"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -164,25 +179,35 @@
                 "library",
                 "symfony"
             ],
-            "time": "2018-12-14T10:44:30+00:00"
+            "time": "2018-12-25T14:38:10+00:00"
         },
         {
             "name": "c975l/services-bundle",
-            "version": "v1.1.2",
+            "version": "v1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/ServicesBundle.git",
-                "reference": "28ab285004376a2de9d6f3d59b419aa958468f13"
+                "reference": "28f7b447842ef75cbc6cd72f730c59d803e1cd9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/ServicesBundle/zipball/28ab285004376a2de9d6f3d59b419aa958468f13",
-                "reference": "28ab285004376a2de9d6f3d59b419aa958468f13",
+                "url": "https://api.github.com/repos/975L/ServicesBundle/zipball/28f7b447842ef75cbc6cd72f730c59d803e1cd9f",
+                "reference": "28f7b447842ef75cbc6cd72f730c59d803e1cd9f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9",
+                "cocur/slugify": "^3.1",
+                "doctrine/orm": "^2.6",
+                "knplabs/knp-snappy": "^1.1",
+                "php": "^7",
+                "symfony/routing": "*",
+                "symfony/security": "*",
+                "symfony/translation": "*",
                 "twig/extensions": "^1"
+            },
+            "require-dev": {
+                "rector/rector": "^0.3.30",
+                "symplify/easy-coding-standard": "^5.2"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -212,24 +237,31 @@
                 "bundle",
                 "symfony"
             ],
-            "time": "2018-09-02T11:19:31+00:00"
+            "time": "2018-12-25T15:27:57+00:00"
         },
         {
             "name": "c975l/toolbar-bundle",
-            "version": "v1.8.10",
+            "version": "v1.8.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/ToolbarBundle.git",
-                "reference": "f085f3c9922aa31a1b7c45e8debb6be1b4996656"
+                "reference": "d7516a68a7f0e1b75e14d7d2c00bd646df70bda3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/ToolbarBundle/zipball/f085f3c9922aa31a1b7c45e8debb6be1b4996656",
-                "reference": "f085f3c9922aa31a1b7c45e8debb6be1b4996656",
+                "url": "https://api.github.com/repos/975L/ToolbarBundle/zipball/d7516a68a7f0e1b75e14d7d2c00bd646df70bda3",
+                "reference": "d7516a68a7f0e1b75e14d7d2c00bd646df70bda3",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "php": "^7",
+                "symfony/security": "*",
+                "twig/extensions": "^1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.3@dev",
+                "rector/rector": "^0.3.30",
+                "symplify/easy-coding-standard": "^5.2"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -259,20 +291,20 @@
                 "bundle",
                 "symfony"
             ],
-            "time": "2018-10-29T14:37:05+00:00"
+            "time": "2018-12-25T15:30:52+00:00"
         },
         {
             "name": "c975l/user-bundle",
-            "version": "v2.2.5",
+            "version": "v2.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/UserBundle.git",
-                "reference": "3205b4f0564f90fbc9e51a486b976be54196bb20"
+                "reference": "292b99dda1997e685f1d3f97100f6fa98a47e58e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/UserBundle/zipball/3205b4f0564f90fbc9e51a486b976be54196bb20",
-                "reference": "3205b4f0564f90fbc9e51a486b976be54196bb20",
+                "url": "https://api.github.com/repos/975L/UserBundle/zipball/292b99dda1997e685f1d3f97100f6fa98a47e58e",
+                "reference": "292b99dda1997e685f1d3f97100f6fa98a47e58e",
                 "shasum": ""
             },
             "require": {
@@ -281,11 +313,19 @@
                 "c975l/includelibrary-bundle": "^1",
                 "c975l/services-bundle": "^1",
                 "c975l/toolbar-bundle": "^1",
+                "lcobucci/jwt": "^3",
                 "misd/phone-number-bundle": "^1",
-                "php": ">=5.5.9"
+                "php": "^7",
+                "symfony/form": "*",
+                "symfony/security": "*",
+                "symfony/serializer": "*",
+                "symfony/translation": "*",
+                "symfony/validator": "*"
             },
             "require-dev": {
-                "phpunit/phpunit": "^7.3@dev"
+                "phpunit/phpunit": "^7.3@dev",
+                "rector/rector": "^0.3",
+                "symplify/easy-coding-standard": "^5.2"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -316,7 +356,72 @@
                 "symfony",
                 "user"
             ],
-            "time": "2018-11-26T11:00:45+00:00"
+            "time": "2018-12-25T15:31:46+00:00"
+        },
+        {
+            "name": "cocur/slugify",
+            "version": "v3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cocur/slugify.git",
+                "reference": "b2ccf7b735f4f3df3979aef2e1ebf8e19ca772f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cocur/slugify/zipball/b2ccf7b735f4f3df3979aef2e1ebf8e19ca772f7",
+                "reference": "b2ccf7b735f4f3df3979aef2e1ebf8e19ca772f7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "laravel/framework": "~5.1",
+                "latte/latte": "~2.2",
+                "league/container": "^2.2.0",
+                "mikey179/vfsstream": "~1.6",
+                "mockery/mockery": "~0.9",
+                "nette/di": "~2.2",
+                "phpunit/phpunit": "~4.8|~5.2",
+                "pimple/pimple": "~1.1",
+                "plumphp/plum": "~0.1",
+                "silex/silex": "~1.3",
+                "symfony/config": "~2.4|~3.0",
+                "symfony/dependency-injection": "~2.4|~3.0",
+                "symfony/http-kernel": "~2.4|~3.0",
+                "twig/twig": "~1.26|~2.0",
+                "zendframework/zend-modulemanager": "~2.2",
+                "zendframework/zend-servicemanager": "~2.2",
+                "zendframework/zend-view": "~2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cocur\\Slugify\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivo Bathke",
+                    "email": "ivo.bathke@gmail.com"
+                },
+                {
+                    "name": "Florian Eckerstorfer",
+                    "email": "florian@eckerstorfer.co",
+                    "homepage": "https://florian.ec"
+                }
+            ],
+            "description": "Converts a string into a slug.",
+            "keywords": [
+                "slug",
+                "slugify"
+            ],
+            "time": "2018-01-22T09:00:48+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -1936,6 +2041,72 @@
                 "symfony"
             ],
             "time": "2018-05-16T12:15:58+00:00"
+        },
+        {
+            "name": "knplabs/knp-snappy",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KnpLabs/snappy.git",
+                "reference": "ea037298d3c613454da77ecb9588cf0397d695e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KnpLabs/snappy/zipball/ea037298d3c613454da77ecb9588cf0397d695e1",
+                "reference": "ea037298d3c613454da77ecb9588cf0397d695e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "psr/log": "^1.0",
+                "symfony/process": "~3.4||~4.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~7.4"
+            },
+            "suggest": {
+                "h4cc/wkhtmltoimage-amd64": "Provides wkhtmltoimage-amd64 binary for Linux-compatible machines, use version `~0.12` as dependency",
+                "h4cc/wkhtmltoimage-i386": "Provides wkhtmltoimage-i386 binary for Linux-compatible machines, use version `~0.12` as dependency",
+                "h4cc/wkhtmltopdf-amd64": "Provides wkhtmltopdf-amd64 binary for Linux-compatible machines, use version `~0.12` as dependency",
+                "h4cc/wkhtmltopdf-i386": "Provides wkhtmltopdf-i386 binary for Linux-compatible machines, use version `~0.12` as dependency",
+                "wemersonjanuario/wkhtmltopdf-windows": "Provides wkhtmltopdf executable for Windows, use version `~0.12` as dependency"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Knp\\Snappy\\": "src/Knp/Snappy"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "KnpLabs Team",
+                    "homepage": "http://knplabs.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://github.com/KnpLabs/snappy/contributors"
+                }
+            ],
+            "description": "PHP5 library allowing thumbnail, snapshot or PDF generation from a url or a html page. Wrapper for wkhtmltopdf/wkhtmltoimage.",
+            "homepage": "http://github.com/KnpLabs/snappy",
+            "keywords": [
+                "knp",
+                "knplabs",
+                "pdf",
+                "snapshot",
+                "thumbnail",
+                "wkhtmltopdf"
+            ],
+            "time": "2018-12-14T14:59:37+00:00"
         },
         {
             "name": "lcobucci/jwt",
@@ -4524,6 +4695,55 @@
             "time": "2018-09-21T13:07:52+00:00"
         },
         {
+            "name": "symfony/process",
+            "version": "v4.1.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/process.git",
+                "reference": "471f6e24172366a97365baaae588ddaafbba9b20"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/process/zipball/471f6e24172366a97365baaae588ddaafbba9b20",
+                "reference": "471f6e24172366a97365baaae588ddaafbba9b20",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Process\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Process Component",
+            "homepage": "https://symfony.com",
+            "time": "2018-11-20T16:14:00+00:00"
+        },
+        {
             "name": "symfony/property-access",
             "version": "v4.1.9",
             "source": {
@@ -4902,6 +5122,86 @@
             "description": "Symfony SecurityBundle",
             "homepage": "https://symfony.com",
             "time": "2018-11-11T19:51:29+00:00"
+        },
+        {
+            "name": "symfony/serializer",
+            "version": "v4.1.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/serializer.git",
+                "reference": "3cd321eb0bb01c4541babf0a9393d96a70010eed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/serializer/zipball/3cd321eb0bb01c4541babf0a9393d96a70010eed",
+                "reference": "3cd321eb0bb01c4541babf0a9393d96a70010eed",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1.3",
+                "symfony/polyfill-ctype": "~1.8"
+            },
+            "conflict": {
+                "phpdocumentor/type-resolver": "<0.2.1",
+                "symfony/dependency-injection": "<3.4",
+                "symfony/property-access": "<3.4",
+                "symfony/property-info": "<3.4",
+                "symfony/yaml": "<3.4"
+            },
+            "require-dev": {
+                "doctrine/annotations": "~1.0",
+                "doctrine/cache": "~1.0",
+                "phpdocumentor/reflection-docblock": "^3.0|^4.0",
+                "symfony/cache": "~3.4|~4.0",
+                "symfony/config": "~3.4|~4.0",
+                "symfony/dependency-injection": "~3.4|~4.0",
+                "symfony/http-foundation": "~3.4|~4.0",
+                "symfony/property-access": "~3.4|~4.0",
+                "symfony/property-info": "~3.4|~4.0",
+                "symfony/validator": "~3.4|~4.0",
+                "symfony/yaml": "~3.4|~4.0"
+            },
+            "suggest": {
+                "doctrine/annotations": "For using the annotation mapping. You will also need doctrine/cache.",
+                "doctrine/cache": "For using the default cached annotation reader and metadata cache.",
+                "psr/cache-implementation": "For using the metadata cache.",
+                "symfony/config": "For using the XML mapping loader.",
+                "symfony/http-foundation": "To use the DataUriNormalizer.",
+                "symfony/property-access": "For using the ObjectNormalizer.",
+                "symfony/property-info": "To deserialize relations.",
+                "symfony/yaml": "For using the default YAML mapping loader."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Serializer\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Serializer Component",
+            "homepage": "https://symfony.com",
+            "time": "2018-12-02T13:22:14+00:00"
         },
         {
             "name": "symfony/swiftmailer-bundle",
@@ -5523,20 +5823,21 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "1.3.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "0df1908962e7a3071564e857d86874dad1ef204a"
+                "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/0df1908962e7a3071564e857d86874dad1ef204a",
-                "reference": "0df1908962e7a3071564e857d86874dad1ef204a",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/83e253c8e0be5b0257b881e1827274667c5c17a9",
+                "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.3.3 || ^7.0"
+                "php": "^5.3.3 || ^7.0",
+                "symfony/polyfill-ctype": "^1.8"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.6",
@@ -5569,7 +5870,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2018-01-29T19:49:41+00:00"
+            "time": "2018-12-25T11:19:39+00:00"
         },
         {
             "name": "zendframework/zend-code",
@@ -7594,55 +7895,6 @@
                 "shim"
             ],
             "time": "2018-09-21T13:07:52+00:00"
-        },
-        {
-            "name": "symfony/process",
-            "version": "v4.1.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/process.git",
-                "reference": "471f6e24172366a97365baaae588ddaafbba9b20"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/471f6e24172366a97365baaae588ddaafbba9b20",
-                "reference": "471f6e24172366a97365baaae588ddaafbba9b20",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Process\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Process Component",
-            "homepage": "https://symfony.com",
-            "time": "2018-11-20T16:14:00+00:00"
         },
         {
             "name": "symfony/profiler-pack",

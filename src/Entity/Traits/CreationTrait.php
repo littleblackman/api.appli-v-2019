@@ -2,6 +2,7 @@
 
 namespace App\Entity\Traits;
 
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait CreationTrait
 {
     /**
-     * @var datetime
+     * @var DateTime|null
      *
      * @ORM\Column(name="created_at", type="datetime")
      */

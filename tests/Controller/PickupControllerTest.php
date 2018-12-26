@@ -22,7 +22,7 @@ class PickupControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"kind": "Kind", "start": "2018-11-20T08:00:00Z", "address": "Address", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20T08:00:01Z", "places": 1, "comment": "Comment", "validated": true, "child": "1", "ride": "1"}'
+            '{"kind": "Kind", "start": "2018-11-20T08:00:00Z", "postal": "75016", "address": "Address", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20T08:00:01Z", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class PickupControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"kind": "Kind", "start": "2018-11-20T08:00:00Z", "address": "Address modifiée", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20T08:00:01Z", "places": 1, "comment": "Comment", "validated": true, "child": "1", "ride": "1"}'
+            '{"kind": "Kind", "start": "2018-11-20T08:00:00Z", "postal": "75016", "address": "Address modifiée", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20T08:00:01Z", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

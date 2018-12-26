@@ -2,6 +2,7 @@
 
 namespace App\Entity\Traits;
 
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,7 +20,7 @@ trait SuppressionTrait
     private $suppressed;
 
     /**
-     * @var datetime
+     * @var DateTime|null
      *
      * @ORM\Column(name="suppressed_at", type="datetime")
      */

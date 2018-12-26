@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Season;
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -16,13 +18,17 @@ class SeasonService implements SeasonServiceInterface
 
     private $mainService;
 
+    private $weekService;
+
     public function __construct(
         EntityManagerInterface $em,
-        MainServiceInterface $mainService
+        MainServiceInterface $mainService,
+        WeekServiceInterface $weekService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
+        $this->weekService = $weekService;
     }
 
     /**
@@ -36,9 +42,34 @@ class SeasonService implements SeasonServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Persists data
-        $this->mainService->create($object);
-        $this->mainService->persist($object);
+        //Checks DateStart
+        $dateStart = $this->mainService->checkDateStartIsMonday($object);
+
+        //Persists data if season NOT exists with same DateStart
+        $season = $this->em->getRepository('App:Season')->findOneByDateStart($dateStart);
+        if (null === $season) {
+            $this->mainService->create($object);
+            $this->mainService->persist($object);
+        } else {
+            $object = $season;
+        }
+
+        //Create related weeks
+        $dateEnd = $object->getDateEnd();
+        $interval = $dateStart->diff($dateEnd);
+        $weeks = (int) ceil((int) $interval->format('%a') / 7);
+        for ($i = 1; $i <= $weeks; $i++) {
+            $data = array(
+                'season' => $object->getSeasonId(),
+                'kind' => 'ecole',
+                'name' => 'Semaine ' . $i,
+                'dateStart' => $dateStart->format('Y-m-d'),
+            );
+            $data = json_encode($data);
+            $this->weekService->create($data);
+            $dateStart->add(new DateInterval('P7D'));
+        }
+        $this->em->refresh($object);
 
         //Returns data
         return array(
@@ -95,6 +126,9 @@ class SeasonService implements SeasonServiceInterface
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
+
+        //Checks DateStart
+        $dateStart = $this->mainService->checkDateStartIsMonday($object);
 
         //Persists data
         $this->mainService->modify($object);

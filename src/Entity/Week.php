@@ -6,6 +6,8 @@ use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\SuppressionTrait;
 use App\Entity\Traits\UpdateTrait;
 use DateInterval;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -51,11 +53,6 @@ class Week
      * @ORM\Column(name="date_start", type="date")
      */
     private $dateStart;
-
-    /**
-     * @var DateTime|null
-     */
-    private $dateEnd;
 
     /**
      * @var App\Entity\Person

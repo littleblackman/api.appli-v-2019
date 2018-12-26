@@ -22,7 +22,7 @@ class WeekControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"season": "1", "kind": "stage", "name": "Nom semaine", "dateStart": "2018-11-20"}'
+            '{"season": "1", "kind": "stage", "name": "Nom semaine", "dateStart": "1999-01-20"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class WeekControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"season": "1", "kind": "ecole", "name": "Nom semaine modifié", "dateStart": "2018-11-21"}'
+            '{"season": "1", "kind": "ecole", "name": "Nom semaine modifié", "dateStart": "1999-01-20"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

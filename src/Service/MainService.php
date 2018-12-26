@@ -36,6 +36,21 @@ class MainService implements MainServiceInterface
     }
 
     /**
+     * Checks if DateStart is a monday and changes to next monday if not
+     * @return DateTime
+     */
+    public function checkDateStartIsMonday($object)
+    {
+        $dateStart = $object->getDateStart();
+        if (1 !== (int) $dateStart->format('N')) {
+            $dateStart = new DateTime($dateStart->format('Y-m-d') . ' next Monday');
+            $object->setDateStart($dateStart);
+        }
+
+        return $dateStart;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create($object)

@@ -46,8 +46,8 @@ trait TestTrait
     public function assertJsonResponse($response, int $statusCode = 200)
     {
         $this->assertEquals(
-            $statusCode, $response->getStatusCode(),
-            $response->getContent()
+            $statusCode,
+            $response->getStatusCode()
         );
 
         $this->assertTrue(
@@ -55,7 +55,7 @@ trait TestTrait
             $response->headers
         );
 
-        $content = json_decode($response->getContent(), true, 5);
+        $content = json_decode($response->getContent(), true, 10);
 
         return $content;
     }

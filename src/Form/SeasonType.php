@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,11 +30,6 @@ class SeasonType extends AbstractType
             ->add('dateEnd', DateType::class, array(
                 'required' => false,
                 'widget' => 'single_text',
-                ))
-            ->add('links', CollectionType::class, array(
-                'required' => false,
-                'entry_type' => WeekType::class,
-                'mapped' => false,
                 ))
         ;
     }

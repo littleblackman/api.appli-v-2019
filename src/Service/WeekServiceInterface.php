@@ -14,7 +14,7 @@ interface WeekServiceInterface
      * Creates the week
      * @return array
      */
-    public function create(Week $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the week as deleted

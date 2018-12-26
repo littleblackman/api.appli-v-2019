@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Week;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -28,17 +29,24 @@ class WeekService implements WeekServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Week $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Week();
         $data = $this->mainService->submit($object, 'week-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Persists data
-        $this->mainService->create($object);
-        $this->mainService->persist($object);
+        //Checks DateStart
+        $dateStart = $this->mainService->checkDateStartIsMonday($object);
+
+        //Persists data if week NOT exists with same DateStart
+        $week = $this->em->getRepository('App:Week')->findOneByDateStart($dateStart);
+        if (null === $week) {
+            $this->mainService->create($object);
+            $this->mainService->persist($object);
+        }
 
         //Returns data
         return array(
@@ -111,6 +119,9 @@ class WeekService implements WeekServiceInterface
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
+
+        //Checks DateStart
+        $dateStart = $this->mainService->checkDateStartIsMonday($object);
 
         //Persists data
         $this->mainService->modify($object);
