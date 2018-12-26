@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Driver;
 use App\Entity\Person;
 use App\Form\PersonType;
 use App\Service\PersonServiceInterface;
