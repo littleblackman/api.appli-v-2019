@@ -99,8 +99,14 @@ class PickupControllerTest extends WebTestCase
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
-        //Tests with date and status
-        $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/unaffected');
+        //Tests with date for unaffected dropin
+        $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/unaffected/dropin');
+
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests with date for unaffected dropoff
+        $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/unaffected/dropoff');
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);

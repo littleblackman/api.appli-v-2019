@@ -35,6 +35,13 @@ class Ride
     private $rideId;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="kind", type="string", length=8, nullable=true)
+     */
+    private $kind;
+
+    /**
      * @var DateTime|null
      *
      * @ORM\Column(name="date", type="date")
@@ -126,6 +133,18 @@ class Ride
     public function getRideId(): ?int
     {
         return $this->rideId;
+    }
+
+    public function getKind()
+    {
+        return $this->kind;
+    }
+
+    public function setKind($kind): self
+    {
+        $this->kind = $kind;
+
+        return $this;
     }
 
     public function getDate(): ?DateTimeInterface

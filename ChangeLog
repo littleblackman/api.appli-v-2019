@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.16.17
+- Correction de l'auto affect des Pickups pour prendre en compte DropIn et DropOff (26/12/2018)
+- Ajout du champ `kind` pour les Ride (26/12/2018)
+
 v0.16.16
 - Création des `Week` lors de la création de `Season` (26/12/2018)
 

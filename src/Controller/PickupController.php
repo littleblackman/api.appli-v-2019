@@ -104,9 +104,12 @@ class PickupController extends AbstractController
     /**
      * Lists all the pickups by date not affected to a ride
      *
-     * @Route("/pickup/list/{date}/unaffected",
+     * @Route("/pickup/list/{date}/unaffected/{kind}",
      *    name="pickup_list_unaffected",
-     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
+     *    requirements={
+     *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$",
+     *        "kind": "^(dropin|dropoff)$"
+     *    },
      *    defaults={"status": "null"},
      *    methods={"HEAD", "GET"})
      *
@@ -129,6 +132,12 @@ class PickupController extends AbstractController
      *     type="string",
      * )
      * @SWG\Parameter(
+     *     name="kind",
+     *     in="path",
+     *     description="Kind of Pickup (dropin|dropoff)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
      *     name="page",
      *     in="query",
      *     description="Number of the page",
@@ -142,12 +151,12 @@ class PickupController extends AbstractController
      * )
      * @SWG\Tag(name="Pickup")
      */
-    public function listUnaffected(Request $request, PaginatorInterface $paginator, $date)
+    public function listUnaffected(Request $request, PaginatorInterface $paginator, $date, $kind)
     {
         $this->denyAccessUnlessGranted('pickupList');
 
         $pickups = $paginator->paginate(
-            $this->pickupService->findAllUnaffected($date),
+            $this->pickupService->findAllUnaffected($date, $kind),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
@@ -165,11 +174,12 @@ class PickupController extends AbstractController
     /**
      * Affects all the Pickups to the rides and drivers
      *
-     * @Route("/pickup/affect/{date}/{force}",
+     * @Route("/pickup/affect/{date}/{kind}/{force}",
      *    name="pickup_affect",
      *    requirements={
      *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
-     *        "force": "^(true|false)$",
+     *        "kind": "^(dropin|dropoff)$",
+     *        "force": "^(true|false)$"
      *    },
      *    defaults={"force": false},
      *    methods={"HEAD", "PUT"})
@@ -192,6 +202,12 @@ class PickupController extends AbstractController
      *     type="string",
      * )
      * @SWG\Parameter(
+     *     name="kind",
+     *     in="path",
+     *     description="Kind of Pickup (dropin|dropoff)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
      *     name="force",
      *     in="path",
      *     description="To force the rewrite of pickups (true|false(default))",
@@ -199,11 +215,11 @@ class PickupController extends AbstractController
      * )
      * @SWG\Tag(name="Pickup")
      */
-    public function affect($date, bool $force)
+    public function affect($date, $kind, bool $force)
     {
         $this->denyAccessUnlessGranted('pickupModify', null);
 
-        $this->pickupService->affect($date, $force);
+        $this->pickupService->affect($date, $kind, $force);
 
         return new JsonResponse(array('status' => true));
     }
@@ -213,9 +229,12 @@ class PickupController extends AbstractController
     /**
      * Unaffects all the Pickups to the rides and drivers
      *
-     * @Route("/pickup/unaffect/{date}",
+     * @Route("/pickup/unaffect/{date}/{kind}",
      *    name="pickup_unaffect",
-     *    requirements={"date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"},
+     *    requirements={
+     *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
+     *        "kind": "^(dropin|dropoff)$"
+     *    },
      *    methods={"HEAD", "PUT"})
      *
      * @SWG\Response(
@@ -235,13 +254,19 @@ class PickupController extends AbstractController
      *     description="Date for the pickups (YYYY-MM-DD)",
      *     type="string",
      * )
+     * @SWG\Parameter(
+     *     name="kind",
+     *     in="path",
+     *     description="Kind of Pickup (dropin|dropoff)",
+     *     type="string",
+     * )
      * @SWG\Tag(name="Pickup")
      */
-    public function unaffect($date)
+    public function unaffect($date, $kind)
     {
         $this->denyAccessUnlessGranted('pickupModify', null);
 
-        $this->pickupService->unaffect($date);
+        $this->pickupService->unaffect($date, $kind);
 
         return new JsonResponse(array('status' => true));
     }

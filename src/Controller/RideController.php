@@ -202,7 +202,6 @@ class RideController extends AbstractController
      */
     public function displayByDateAndDriver($date, $driverId)
     {
-
         $this->denyAccessUnlessGranted('rideDisplay');
 
         $ridesArray = array();

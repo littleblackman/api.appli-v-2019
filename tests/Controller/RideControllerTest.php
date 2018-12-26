@@ -22,7 +22,7 @@ class RideControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2018-11-20", "name": "Name", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
+            '{"kind": "dropin", "date": "2018-11-20", "name": "Name", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -59,7 +59,7 @@ class RideControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2018-11-20", "name": "Name modifié", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
+            '{"kind": "dropin", "date": "2018-11-20", "name": "Name modifié", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

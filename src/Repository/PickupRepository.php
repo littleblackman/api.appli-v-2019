@@ -13,12 +13,14 @@ class PickupRepository extends EntityRepository
     /**
      * Returns all the pickups by date
      */
-    public function findAllByDate($date)
+    public function findAllByDate($date, $kind)
     {
         return $this->createQueryBuilder('p')
             ->where('p.start LIKE :date')
+            ->andWhere('p.kind = :kind')
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
+            ->setParameter('kind', $kind)
             ->orderBy('p.postal', 'ASC')
             ->addOrderBy('p.start', 'ASC')
             ->getQuery()
@@ -56,13 +58,15 @@ class PickupRepository extends EntityRepository
     /**
      * Counts all the pickups for a date by postal
      */
-    public function countAllByDate($date)
+    public function countAllByDate($date, $kind)
     {
         return $this->createQueryBuilder('p')
             ->select('p.postal, COUNT(p.postal) as countPostal')
             ->where('p.start LIKE :date')
+            ->andWhere('p.kind = :kind')
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
+            ->setParameter('kind', $kind)
             ->groupBy('p.postal')
             ->distinct()
             ->setParameter('date', $date . '%')
@@ -76,16 +80,18 @@ class PickupRepository extends EntityRepository
     /**
      * Counts all the pickups that are not affected to a ride by postal
      */
-    public function countAllUnaffected($date)
+    public function countAllUnaffected($date, $kind)
     {
         return $this->createQueryBuilder('p')
             ->select('p.postal, COUNT(p.postal) as countPostal')
             ->where('p.start LIKE :date')
+            ->andWhere('p.kind = :kind')
             ->andWhere('p.ride IS NULL')
             ->andWhere('p.suppressed = 0')
             ->groupBy('p.postal')
             ->distinct()
             ->setParameter('date', $date . '%')
+            ->setParameter('kind', $kind)
             ->orderBy('countPostal', 'DESC')
             ->addOrderBy('p.postal', 'ASC')
             ->getQuery()
@@ -96,13 +102,15 @@ class PickupRepository extends EntityRepository
     /**
      * Returns all the pickups that are not affected to a ride
      */
-    public function findAllUnaffected($date)
+    public function findAllUnaffected($date, $kind)
     {
         return $this->createQueryBuilder('p')
             ->where('p.start LIKE :date')
+            ->andWhere('p.kind = :kind')
             ->andWhere('p.ride IS NULL')
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
+            ->setParameter('kind', $kind)
             ->orderBy('p.postal', 'ASC')
             ->addOrderBy('p.start', 'ASC')
             ->getQuery()

@@ -134,6 +134,18 @@ class RideService implements RideServiceInterface
     }
 
     /**
+     * Returns the list of all rides by date and kind
+     * @return array
+     */
+    public function findAllByDateAndKind(string $date, string $kind)
+    {
+        return $this->em
+            ->getRepository('App:Ride')
+            ->findAllByDateAndKind($date, $kind)
+        ;
+    }
+
+    /**
      * Returns all the rides by status
      * @return array
      */

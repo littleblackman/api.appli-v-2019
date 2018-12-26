@@ -28,7 +28,6 @@ security:
                 path: /
                 secure: true
             anonymous: true
-            logout_on_user_change: true
             logout:
                 path: user_signout
                 handlers: [c975L\UserBundle\Listener\LogoutListener]

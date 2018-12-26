@@ -24,6 +24,8 @@ class PickupService implements PickupServiceInterface
 
     const RIDE_FULL = 8;
 
+    const MAX_DRIVER_ZONES = 5;
+
     public function __construct(
         EntityManagerInterface $em,
         DriverServiceInterface $driverService,
@@ -40,15 +42,15 @@ class PickupService implements PickupServiceInterface
     /**
      * Affects all the Pickups to Rides for a specific date
      */
-    public function affect($date, $force)
+    public function affect($date, $kind, $force)
     {
         //Defines Pickups to use
         if ($force) {
-            $pickupsSortOrder = $this->em->getRepository('App:Pickup')->countAllByDate($date);
-            $pickups = $this->findAllByDate($date);
+            $pickupsSortOrder = $this->em->getRepository('App:Pickup')->countAllByDate($date, $kind);
+            $pickups = $this->findAllByDate($date, $kind);
         } else {
-            $pickupsSortOrder = $this->em->getRepository('App:Pickup')->countAllUnaffected($date);
-            $pickups = $this->findAllUnaffected($date);
+            $pickupsSortOrder = $this->em->getRepository('App:Pickup')->countAllUnaffected($date, $kind);
+            $pickups = $this->findAllUnaffected($date, $kind);
         }
 
         if (!empty($pickups)) {
@@ -65,12 +67,13 @@ class PickupService implements PickupServiceInterface
             unset($pickupsSortOrder);
 
             //Affects Pickups in the order of postal code and makes as many passes as maxDriverZones
-            $rides = $this->rideService->findAllByDate($date);
-            $maxDriverZones = 5;
-            for ($priority = 0; $priority <= $maxDriverZones; $priority++) {
-                foreach ($pickupsSorted as $pickups) {
-                    foreach ($pickups as $pickup) {
-                        $this->affectRide($rides, $pickup, $priority);
+            $rides = $this->rideService->findAllByDateAndKind($date, $kind);
+            if (null !== $rides) {
+                for ($priority = 0; $priority <= SELF::MAX_DRIVER_ZONES; $priority++) {
+                    foreach ($pickupsSorted as $pickups) {
+                        foreach ($pickups as $pickup) {
+                            $this->affectRide($rides, $pickup, $priority);
+                        }
                     }
                 }
             }
@@ -206,11 +209,11 @@ class PickupService implements PickupServiceInterface
     /**
      * Gets all the Pickups by date
      */
-    public function findAllByDate(string $date)
+    public function findAllByDate(string $date, string $kind)
     {
         return $this->em
             ->getRepository('App:Pickup')
-            ->findAllByDate($date)
+            ->findAllByDate($date, $kind)
         ;
     }
 
@@ -228,11 +231,11 @@ class PickupService implements PickupServiceInterface
     /**
      *Gets all the Pickups unaffected
      */
-    public function findAllUnaffected(string $date)
+    public function findAllUnaffected(string $date, string $kind)
     {
         return $this->em
             ->getRepository('App:Pickup')
-            ->findAllUnaffected($date)
+            ->findAllUnaffected($date, $kind)
         ;
     }
 
@@ -300,9 +303,9 @@ class PickupService implements PickupServiceInterface
     /**
      * Unaffects all the pickups to rides and drivers for a specific date
      */
-    public function unaffect($date)
+    public function unaffect($date, $kind)
     {
-        $pickups = $this->findAllByDate($date);
+        $pickups = $this->findAllByDate($date, $kind);
         if (!empty($pickups)) {
             $counter = 0;
             foreach ($pickups as $pickup) {

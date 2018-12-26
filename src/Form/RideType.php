@@ -21,6 +21,9 @@ class RideType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('kind', TextType::class, array(
+                'required' => false,
+                ))
             ->add('date', DateType::class, array(
                 'required' => false,
                 'widget' => 'single_text',

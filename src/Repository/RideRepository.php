@@ -34,6 +34,31 @@ class RideRepository extends EntityRepository
     }
 
     /**
+     * Returns all the rides by date and kind
+     */
+    public function findAllByDateAndKind($date, $kind)
+    {
+        return $this->createQueryBuilder('r')
+            ->addSelect('d', 'p', 'v', 'pi', 'z')
+            ->leftJoin('r.driver', 'd')
+            ->leftJoin('d.person', 'p')
+            ->leftJoin('d.driverZones', 'z')
+            ->leftJoin('r.vehicle', 'v')
+            ->leftJoin('r.pickups', 'pi')
+            ->where('r.date LIKE :date')
+            ->andWhere('r.kind = :kind')
+            ->andWhere('r.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('kind', $kind)
+            ->orderBy('r.date', 'ASC')
+            ->addOrderBy('r.start', 'ASC')
+            ->addOrderBy('pi.sortOrder', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns all the rides by status
      */
     public function findAllByStatus(string $status)
