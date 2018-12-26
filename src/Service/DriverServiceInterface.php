@@ -14,7 +14,7 @@ interface DriverServiceInterface
      * Creates the driver
      * @return array
      */
-    public function create(Driver $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the driver as deleted

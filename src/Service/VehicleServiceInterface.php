@@ -14,7 +14,7 @@ interface VehicleServiceInterface
      * Creates the vehicle
      * @return array
      */
-    public function create(Vehicle $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the vehicle as deleted

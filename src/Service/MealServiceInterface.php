@@ -14,7 +14,7 @@ interface MealServiceInterface
      * Creates the ride
      * @return array
      */
-    public function create(Meal $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the ride as deleted

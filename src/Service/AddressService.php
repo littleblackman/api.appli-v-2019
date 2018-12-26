@@ -46,9 +46,10 @@ class AddressService implements AddressServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Address $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Address();
         $data = $this->mainService->submit($object, 'address-create', $data);
 
         //Checks if entity has been filled

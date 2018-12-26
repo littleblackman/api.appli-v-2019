@@ -154,10 +154,9 @@ class VehicleController extends AbstractController
      */
     public function create(Request $request)
     {
-        $vehicle = new Vehicle();
-        $this->denyAccessUnlessGranted('vehicleCreate', $vehicle);
+        $this->denyAccessUnlessGranted('vehicleCreate', null);
 
-        $createdData = $this->vehicleService->create($vehicle, $request->getContent());
+        $createdData = $this->vehicleService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

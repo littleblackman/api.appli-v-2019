@@ -395,10 +395,9 @@ class PickupController extends AbstractController
      */
     public function create(Request $request)
     {
-        $pickup = new Pickup();
-        $this->denyAccessUnlessGranted('pickupCreate', $pickup);
+        $this->denyAccessUnlessGranted('pickupCreate', null);
 
-        $createdData = $this->pickupService->create($pickup, $request->getContent());
+        $createdData = $this->pickupService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

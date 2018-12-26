@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Entity\Season;
 use DateInterval;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -34,9 +33,10 @@ class SeasonService implements SeasonServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Season $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Season();
         $data = $this->mainService->submit($object, 'season-create', $data);
 
         //Checks if entity has been filled

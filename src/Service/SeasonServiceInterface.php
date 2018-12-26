@@ -14,7 +14,7 @@ interface SeasonServiceInterface
      * Creates the season
      * @return array
      */
-    public function create(Season $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the season as deleted

@@ -216,10 +216,9 @@ class MealController extends AbstractController
      */
     public function create(Request $request)
     {
-        $meal = new Meal();
-        $this->denyAccessUnlessGranted('mealCreate', $meal);
+        $this->denyAccessUnlessGranted('mealCreate', null);
 
-        $createdData = $this->mealService->create($meal, $request->getContent());
+        $createdData = $this->mealService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

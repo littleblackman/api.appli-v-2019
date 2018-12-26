@@ -32,9 +32,10 @@ class FamilyService implements FamilyServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Family $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Family();
         $data = $this->mainService->submit($object, 'family-create', $data);
 
         //Checks if entity has been filled

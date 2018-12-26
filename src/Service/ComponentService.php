@@ -28,9 +28,10 @@ class ComponentService implements ComponentServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Component $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Component();
         $data = $this->mainService->submit($object, 'component-create', $data);
 
         //Checks if entity has been filled

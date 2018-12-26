@@ -14,7 +14,7 @@ interface ProductServiceInterface
      * Creates the product
      * @return array
      */
-    public function create(Product $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the product as deleted

@@ -14,7 +14,7 @@ interface FamilyServiceInterface
      * Creates the family
      * @return array
      */
-    public function create(Family $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the family as deleted

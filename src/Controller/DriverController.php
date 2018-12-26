@@ -198,10 +198,9 @@ class DriverController extends AbstractController
      */
     public function create(Request $request)
     {
-        $driver = new Driver();
-        $this->denyAccessUnlessGranted('driverCreate', $driver);
+        $this->denyAccessUnlessGranted('driverCreate', null);
 
-        $createdData = $this->driverService->create($driver, $request->getContent());
+        $createdData = $this->driverService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

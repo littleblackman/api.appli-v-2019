@@ -28,9 +28,10 @@ class LocationService implements LocationServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Location $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Location();
         $data = $this->mainService->submit($object, 'location-create', $data);
 
         //Checks if entity has been filled

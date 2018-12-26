@@ -37,9 +37,10 @@ class PersonService implements PersonServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Person $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Person();
         $data = $this->mainService->submit($object, 'person-create', $data);
 
         //Checks if entity has been filled
@@ -50,9 +51,11 @@ class PersonService implements PersonServiceInterface
         $this->mainService->persist($object);
 
         //Adds links from user to person
+        $user = isset($data['user']) ? $this->em->getRepository('App:User')->findOneById($data['user']) : null;
+        $user = null !== $user ? $user : $this->mainService->getUser();//Covers the possibilty that no user is found
         $userPersonLink = new UserPersonLink();
         $userPersonLink
-            ->setUser($this->mainService->getUser())
+            ->setUser($user)
             ->setPerson($object)
         ;
         $this->em->persist($userPersonLink);

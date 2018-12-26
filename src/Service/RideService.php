@@ -47,9 +47,10 @@ class RideService implements RideServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Ride $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Ride();
         $data = $this->mainService->submit($object, 'ride-create', $data);
         $this->addTimeData($object, $data);
 

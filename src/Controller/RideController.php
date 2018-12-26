@@ -293,10 +293,9 @@ class RideController extends AbstractController
      */
     public function create(Request $request)
     {
-        $ride = new Ride();
-        $this->denyAccessUnlessGranted('rideCreate', $ride);
+        $this->denyAccessUnlessGranted('rideCreate', null);
 
-        $createdData = $this->rideService->create($ride, $request->getContent());
+        $createdData = $this->rideService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

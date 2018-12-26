@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Driver;
 use App\Entity\Person;
 use App\Form\PersonType;
 use App\Service\PersonServiceInterface;
@@ -273,10 +272,9 @@ class PersonController extends AbstractController
      */
     public function create(Request $request)
     {
-        $person = new Person();
-        $this->denyAccessUnlessGranted('personCreate', $person);
+        $this->denyAccessUnlessGranted('personCreate', null);
 
-        $createdData = $this->personService->create($person, $request->getContent());
+        $createdData = $this->personService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

@@ -117,9 +117,10 @@ class PickupService implements PickupServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Pickup $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Pickup();
         $data = $this->mainService->submit($object, 'pickup-create', $data);
 
         //Checks if entity has been filled

@@ -14,7 +14,7 @@ interface PickupServiceInterface
      * Creates the pickup
      * @return array
      */
-    public function create(Pickup $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the pickup as deleted

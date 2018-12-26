@@ -14,7 +14,7 @@ interface PhoneServiceInterface
      * Creates the phone
      * @return array
      */
-    public function create(Phone $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the phone as deleted

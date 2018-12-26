@@ -51,9 +51,10 @@ class ChildService implements ChildServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Child $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Child();
         $data = $this->mainService->submit($object, 'child-create', $data);
 
         //Checks if entity has been filled

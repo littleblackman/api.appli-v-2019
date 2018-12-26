@@ -14,7 +14,7 @@ interface ChildServiceInterface
      * Creates the child
      * @return array
      */
-    public function create(Child $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the child as deleted

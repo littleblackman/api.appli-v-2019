@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.16.19
+- Déplacement de la création des entités dans le service correspondant (26/12/2018)
+- Modification de la Route person_create pour pouvoir prendre un user défini (26/12/2018)
+
 v0.16.18
 - Ajout du Driver pour person/display (26/12/2018)
 

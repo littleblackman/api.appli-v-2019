@@ -28,9 +28,10 @@ class FoodService implements FoodServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Food $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Food();
         $data = $this->mainService->submit($object, 'food-create', $data);
 
         //Checks if entity has been filled

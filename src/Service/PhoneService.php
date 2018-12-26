@@ -46,9 +46,10 @@ class PhoneService implements PhoneServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Phone $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Phone();
         $data = $this->mainService->submit($object, 'phone-create', $data);
 
         //Checks if entity has been filled

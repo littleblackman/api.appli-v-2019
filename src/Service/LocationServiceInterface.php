@@ -14,7 +14,7 @@ interface LocationServiceInterface
      * Creates the location
      * @return array
      */
-    public function create(Location $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the location as deleted

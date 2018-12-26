@@ -224,10 +224,9 @@ class ComponentController extends AbstractController
      */
     public function create(Request $request)
     {
-        $component = new Component();
-        $this->denyAccessUnlessGranted('componentCreate', $component);
+        $this->denyAccessUnlessGranted('componentCreate', null);
 
-        $createdData = $this->componentService->create($component, $request->getContent());
+        $createdData = $this->componentService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

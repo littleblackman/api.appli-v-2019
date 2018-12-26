@@ -169,10 +169,9 @@ class FoodController extends AbstractController
      */
     public function create(Request $request)
     {
-        $food = new Food();
-        $this->denyAccessUnlessGranted('foodCreate', $food);
+        $this->denyAccessUnlessGranted('foodCreate', null);
 
-        $createdData = $this->foodService->create($food, $request->getContent());
+        $createdData = $this->foodService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

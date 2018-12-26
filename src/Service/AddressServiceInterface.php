@@ -14,7 +14,7 @@ interface AddressServiceInterface
      * Creates the address
      * @return array
      */
-    public function create(Address $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the address as deleted

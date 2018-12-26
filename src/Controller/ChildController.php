@@ -224,10 +224,9 @@ class ChildController extends AbstractController
      */
     public function create(Request $request)
     {
-        $child = new Child();
-        $this->denyAccessUnlessGranted('childCreate', $child);
+        $this->denyAccessUnlessGranted('childCreate', null);
 
-        $createdData = $this->childService->create($child, $request->getContent());
+        $createdData = $this->childService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

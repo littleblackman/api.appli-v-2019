@@ -14,7 +14,7 @@ interface ComponentServiceInterface
      * Creates the component
      * @return array
      */
-    public function create(Component $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the component as deleted

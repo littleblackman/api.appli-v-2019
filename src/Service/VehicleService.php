@@ -28,9 +28,10 @@ class VehicleService implements VehicleServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Vehicle $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Vehicle();
         $data = $this->mainService->submit($object, 'vehicle-create', $data);
 
         //Checks if entity has been filled

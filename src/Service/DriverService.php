@@ -45,9 +45,10 @@ class DriverService implements DriverServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Driver $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Driver();
         $data = $this->mainService->submit($object, 'driver-create', $data);
 
         //Checks if entity has been filled

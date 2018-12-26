@@ -101,10 +101,9 @@ class AddressController extends AbstractController
      */
     public function create(Request $request)
     {
-        $address = new Address();
-        $this->denyAccessUnlessGranted('addressCreate', $address);
+        $this->denyAccessUnlessGranted('addressCreate', null);
 
-        $createdData = $this->addressService->create($address, $request->getContent());
+        $createdData = $this->addressService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }

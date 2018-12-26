@@ -50,9 +50,10 @@ class ProductService implements ProductServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Product $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Product();
         $data = $this->mainService->submit($object, 'product-create', $data);
 
         //Checks if entity has been filled

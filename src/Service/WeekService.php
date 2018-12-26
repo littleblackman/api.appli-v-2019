@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Week;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 

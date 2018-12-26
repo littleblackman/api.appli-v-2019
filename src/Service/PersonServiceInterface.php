@@ -14,7 +14,7 @@ interface PersonServiceInterface
      * Creates the person
      * @return array
      */
-    public function create(Person $object, string $data);
+    public function create(string $data);
 
     /**
      * Marks the person as deleted

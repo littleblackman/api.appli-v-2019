@@ -46,9 +46,10 @@ class MealService implements MealServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(Meal $object, string $data)
+    public function create(string $data)
     {
         //Submits data
+        $object = new Meal();
         $data = $this->mainService->submit($object, 'meal-create', $data);
 
         //Checks if entity has been filled
