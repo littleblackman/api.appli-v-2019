@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.16.20
+- Correction des méthodes `findOneByDateStart` pour `Week` et `Season` (27/12/2018)
+- Mise à jour des bundles (27/12/2018)
+
 v0.16.19
 - Déplacement de la création des entités dans le service correspondant (26/12/2018)
 - Modification de la Route person_create pour pouvoir prendre un user défini (26/12/2018)

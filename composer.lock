@@ -295,16 +295,16 @@
         },
         {
             "name": "c975l/user-bundle",
-            "version": "v2.2.9.1",
+            "version": "v2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/UserBundle.git",
-                "reference": "2fe33306c3121c8c99ca5471af349cd46cf43a40"
+                "reference": "0055ba5cccc7083f0fbf9de3493b7a21b3f74a4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/UserBundle/zipball/2fe33306c3121c8c99ca5471af349cd46cf43a40",
-                "reference": "2fe33306c3121c8c99ca5471af349cd46cf43a40",
+                "url": "https://api.github.com/repos/975L/UserBundle/zipball/0055ba5cccc7083f0fbf9de3493b7a21b3f74a4b",
+                "reference": "0055ba5cccc7083f0fbf9de3493b7a21b3f74a4b",
                 "shasum": ""
             },
             "require": {
@@ -313,6 +313,7 @@
                 "c975l/includelibrary-bundle": "^1",
                 "c975l/services-bundle": "^1",
                 "c975l/toolbar-bundle": "^1",
+                "knplabs/knp-paginator-bundle": "^2",
                 "lcobucci/jwt": "^3",
                 "misd/phone-number-bundle": "^1",
                 "php": "^7",
@@ -356,7 +357,7 @@
                 "symfony",
                 "user"
             ],
-            "time": "2018-12-26T17:32:24+00:00"
+            "time": "2018-12-27T09:10:42+00:00"
         },
         {
             "name": "cocur/slugify",

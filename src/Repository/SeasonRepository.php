@@ -38,4 +38,18 @@ class SeasonRepository extends EntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    /**
+     * Returns the season found by dateStart if not suppressed
+     */
+    public function findOneByDateStart($dateStart)
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.dateStart = :dateStart')
+            ->andWhere('s.suppressed = 0')
+            ->setParameter('dateStart', $dateStart)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

@@ -51,4 +51,18 @@ class WeekRepository extends EntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    /**
+     * Returns the week found by dateStart if not suppressed
+     */
+    public function findOneByDateStart($dateStart)
+    {
+        return $this->createQueryBuilder('w')
+            ->where('w.dateStart = :dateStart')
+            ->andWhere('w.suppressed = 0')
+            ->setParameter('dateStart', $dateStart)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }
