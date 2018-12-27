@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.20.1
+- Correction affect Pickup pour prendre en compte le jour du Ride ET son heure (27/12/2018)
+
 v0.16.20
 - Correction des méthodes `findOneByDateStart` pour `Week` et `Season` (27/12/2018)
 - Mise à jour des bundles (27/12/2018)
