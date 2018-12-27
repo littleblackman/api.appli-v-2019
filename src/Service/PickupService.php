@@ -96,7 +96,7 @@ class PickupService implements PickupServiceInterface
              * - linked to its postal code using Driver > DriverZones + Priority
              * - corresponding to its time slot
              */
-            $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d') . $ride->getStart()->format('H:i:s'));
+            $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getStart()->format('H:i:s'));
             if (isset($ride->getDriver()->getDriverZones()[$priority]) &&
                 $pickup->getPostal() === $ride->getDriver()->getDriverZones()[$priority]->getPostal() &&
                 $pickup->getStart() >= $rideDateStart) {
