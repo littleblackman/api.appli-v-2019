@@ -73,6 +73,12 @@ class Person
     private $children;
 
     /**
+     * @var string|null
+     * Not mapped
+     */
+    private $identifier;
+
+    /**
      * @ORM\OneToOne(targetEntity="UserPersonLink", mappedBy="person")
      */
     private $userPersonLink;
@@ -215,6 +221,18 @@ class Person
                 $child->setPerson(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIdentifier(): ?string
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier($identifier): self
+    {
+        $this->identifier = $identifier;
 
         return $this;
     }
