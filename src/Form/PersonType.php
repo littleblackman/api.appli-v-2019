@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,9 +26,8 @@ class PersonType extends AbstractType
             ->add('photo', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('user', EntityType::class, array(
+            ->add('identifier', TextType::class, array(
                 'required' => false,
-                'class' => User::class,
                 ))
         ;
     }

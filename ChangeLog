@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.20.3
+- Correction du lien Person/User pour passer par l'identifier du user puisque l'id n'est pas donné (27/12/2018)
+
 v0.16.20.2
 - Ajout espace pour calcul RideDateStart (27/12/2018)
 

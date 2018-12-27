@@ -51,7 +51,7 @@ class PersonService implements PersonServiceInterface
         $this->mainService->persist($object);
 
         //Adds links from user to person
-        $user = isset($data['user']) ? $this->em->getRepository('App:User')->findOneById($data['user']) : null;
+        $user = isset($data['identifier']) ? $this->em->getRepository('App:User')->findOneByIdentifier($data['identifier']) : null;
         $user = null !== $user ? $user : $this->mainService->getUser();//Covers the possibilty that no user is found
         $userPersonLink = new UserPersonLink();
         $userPersonLink
