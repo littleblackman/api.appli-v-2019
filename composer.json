@@ -14,6 +14,7 @@
         "sensiolabs/security-checker": "^5.0",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "*",
+        "symfony/cache": "4.1.*",
         "symfony/console": "*",
         "symfony/dotenv": "*",
         "symfony/expression-language": "*",
