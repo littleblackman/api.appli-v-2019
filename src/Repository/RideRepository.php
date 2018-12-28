@@ -51,6 +51,7 @@ class RideRepository extends EntityRepository
             ->setParameter('date', $date . '%')
             ->setParameter('kind', $kind)
             ->orderBy('r.date', 'ASC')
+            ->addOrderBy('d.priority', 'ASC')
             ->addOrderBy('r.start', 'ASC')
             ->addOrderBy('pi.sortOrder', 'ASC')
             ->getQuery()

@@ -101,7 +101,7 @@ class DriverService implements DriverServiceInterface
     }
 
     /**
-     * Returns the Druver based on its id
+     * Returns the Driver based on its id
      * @return Driver
      */
     public function findOneById($driverId)
@@ -119,7 +119,7 @@ class DriverService implements DriverServiceInterface
     public function getMaxDriverZones()
     {
         return $this->em
-            ->getRepository('App:Driver')
+            ->getRepository('App:DriverZone')
             ->getMaxDriverZones()
         ;
     }

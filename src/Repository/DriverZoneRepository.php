@@ -10,4 +10,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class DriverZoneRepository extends EntityRepository
 {
+    /**
+     * Returns the maxmium number of DriverZones
+     * @return int
+     */
+    public function getMaxDriverZones()
+    {
+        return (int) $this->createQueryBuilder('z')
+            ->select('COUNT(DISTINCT z.postal) AS MaxZones')
+            ->groupBy('z.driver')
+            ->where('z.suppressed = 0')
+            ->orderBy('MaxZones', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
 }
