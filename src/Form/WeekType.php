@@ -26,6 +26,9 @@ class WeekType extends AbstractType
             ->add('kind', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('code', TextType::class, array(
+                'required' => false,
+                ))
             ->add('name', TextType::class, array(
                 'required' => false,
                 ))

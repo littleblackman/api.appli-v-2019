@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.21.1
+- Ajout du code manquant pour l'attribut code (31/12/2018)
+
 v0.16.21
 - Ajout d'un attribut code sur `Week` (31/12/2018)
 
