@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.21
+- Ajout d'un attribut code sur `Week` (31/12/2018)
+
 v0.16.20.6
 - Correction de l'ordre de priorités des DRivers qui n'était pas pris en compte (28/12/2018)
 

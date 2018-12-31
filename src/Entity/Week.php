@@ -43,6 +43,13 @@ class Week
     /**
      * @var string|null
      *
+     * @ORM\Column(name="code", type="string", length=8, nullable=true)
+     */
+    private $code;
+
+    /**
+     * @var string|null
+     *
      * @ORM\Column(name="name", type="string", length=32, nullable=true)
      */
     private $name;
@@ -129,6 +136,18 @@ class Week
     public function setSeason(?Season $season): self
     {
         $this->season = $season;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }
