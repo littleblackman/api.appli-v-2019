@@ -62,7 +62,8 @@ class SeasonService implements SeasonServiceInterface
             $data = array(
                 'season' => $object->getSeasonId(),
                 'kind' => 'ecole',
-                'name' => 'Semaine ' . $i,
+                'name' => 'École ' . $i,
+                'code' => 'S' . $i,
                 'dateStart' => $dateStart->format('Y-m-d'),
             );
             $data = json_encode($data);
