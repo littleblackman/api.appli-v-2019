@@ -38,6 +38,27 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
+     * Adds teh gps coordinates + postal to Pickup
+     */
+    public function addCoordinates(Pickup $pickup)
+    {
+        //Gets data from API
+        $urlApi = 'https://api-adresse.data.gouv.fr/search/?q=';
+        $address = strtolower(str_replace(array('   ', '  ', ' ', '+-+', ',', '++'), '+', $pickup->getAddress()));
+        $coordinatesJson = json_decode(file_get_contents($urlApi . $address), true, 10);
+        $longitude = $coordinatesJson['features'][0]['geometry']['coordinates'][0] ?? null;
+        $latitude = $coordinatesJson['features'][0]['geometry']['coordinates'][1] ?? null;
+        $postal = $coordinatesJson['features'][0]['properties']['postcode'] ?? $pickup->getPostal();
+
+        //Updates Pickup
+        $pickup
+            ->setLatitude($latitude)
+            ->setLongitude($longitude)
+            ->setPostal($postal)
+        ;
+    }
+
+    /**
      * Affects all the Pickups to Rides for a specific date
      */
     public function affect($date, $kind, $force)
@@ -56,9 +77,21 @@ class PickupService implements PickupServiceInterface
             $pickupsSorted = array();
             foreach ($pickupsSortOrder as $pickupSortOrder) {
                 foreach ($pickups as $pickup) {
+                    //Updates address with geocoding
+                    if (null === $pickup->getLatitude() ||
+                        null === $pickup->getLongitude() ||
+                        null === $pickup->getPostal() ||
+                        5 > strlen($pickup->getPostal())
+                    ) {
+                        $this->addCoordinates($pickup);
+                        $this->mainService->modify($pickup);
+                        $this->mainService->persist($pickup);
+                    }
+                    //Adds Pickup to its corresponding group of postal code
                     if ($pickupSortOrder['postal'] === $pickup->getPostal()) {
-                        $pickupsSorted[$pickupSortOrder['postal']][md5($pickup->getAddress())]['pickups'][] = $pickup;
-                        $pickupsSorted[$pickupSortOrder['postal']][md5($pickup->getAddress())]['start'] = $pickup->getStart();
+                        $md5 = md5($pickup->getLongitude() . $pickup->getLatitude());
+                        $pickupsSorted[$pickupSortOrder['postal']][$md5]['pickups'][] = $pickup;
+                        $pickupsSorted[$pickupSortOrder['postal']][$md5]['start'] = $pickup->getStart();
                     }
                 }
             }
@@ -67,7 +100,7 @@ class PickupService implements PickupServiceInterface
 
             //Affects Pickups in the order of postal code and makes as many passes as maxDriverZones
             $rides = $this->rideService->findAllByDateAndKind($date, $kind);
-            $maxDriverZones = $this->driverService->getMaxDriverZones();
+            $maxDriverZones = $this->driverService->getMaxDriverZones() - 1;
             if (null !== $rides) {
                 for ($priority = 0; $priority <= $maxDriverZones; $priority++) {
                     foreach ($pickupsSorted as $postal => $pickupsByPostal) {
@@ -90,6 +123,11 @@ class PickupService implements PickupServiceInterface
             return self::RIDE_FULL > $i->getPickups()->count();
         });
 
+        //Filters Pickups to keep only those that are NOT affected
+        $pickups['pickups'] = array_filter($pickups['pickups'], function($i) {
+            return null === $i->getRide();
+        });
+
         foreach ($rides as $ride) {
             /**
              * Updates Pickup if
@@ -100,7 +138,7 @@ class PickupService implements PickupServiceInterface
             $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getStart()->format('H:i:s'));
             if (isset($ride->getDriver()->getDriverZones()[$priority]) &&
                 $postal === (int) $ride->getDriver()->getDriverZones()[$priority]->getPostal() &&
-                count($pickups) + $ride->getPickups()->count() <= self::RIDE_FULL &&
+                (count($pickups['pickups']) + $ride->getPickups()->count()) <= self::RIDE_FULL &&
                 $pickups['start'] >= $rideDateStart) {
                 foreach ($pickups['pickups'] as $pickup) {
                     $pickup
@@ -152,6 +190,9 @@ class PickupService implements PickupServiceInterface
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
+
+        //Adds coordinates
+        $this->addCoordinates($pickup);
 
         //Persists data
         $this->mainService->create($object);
@@ -294,6 +335,9 @@ class PickupService implements PickupServiceInterface
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
+
+        //Adds coordinates
+        $this->addCoordinates($pickup);
 
         //Persists data
         $this->mainService->modify($object);

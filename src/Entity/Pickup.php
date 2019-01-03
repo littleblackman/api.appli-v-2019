@@ -62,6 +62,20 @@ class Pickup
     private $address;
 
     /**
+     * @var decimal|null
+     *
+     * @ORM\Column(name="latitude", type="decimal", nullable=true)
+     */
+    private $latitude;
+
+    /**
+     * @var decimal|null
+     *
+     * @ORM\Column(name="longitude", type="decimal", nullable=true)
+     */
+    private $longitude;
+
+    /**
      * @var integer|null
      *
      * @ORM\Column(name="sort_order", type="integer", nullable=true)
@@ -191,6 +205,30 @@ class Pickup
     public function setAddress(?string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude($latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude($longitude): self
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }
