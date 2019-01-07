@@ -1,6 +1,9 @@
 <?php
 namespace App\Entity;
 
+use App\Entity\Traits\CreationTrait;
+use App\Entity\Traits\SuppressionTrait;
+use App\Entity\Traits\UpdateTrait;
 use c975L\UserBundle\Entity\UserLightAbstract;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,6 +15,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User extends UserLightAbstract
 {
+    use CreationTrait;
+    use UpdateTrait;
+    use SuppressionTrait;
+
     /**
      * @ORM\OneToOne(targetEntity="UserPersonLink", mappedBy="user")
      */

@@ -75,9 +75,15 @@ class Person
 
     /**
      * @var string|null
-     * Not mapped
+     * Not mapped (for documentation), added from PersonService->toArray()
      */
     private $identifier;
+
+    /**
+     * @var string|null
+     * Not mapped (for documentation), added from PersonService->toArray()
+     */
+    private $email;
 
     /**
      * @ORM\OneToOne(targetEntity="UserPersonLink", mappedBy="person")
@@ -234,6 +240,18 @@ class Person
     public function setIdentifier($identifier): self
     {
         $this->identifier = $identifier;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email): self
+    {
+        $this->email = $email;
 
         return $this;
     }

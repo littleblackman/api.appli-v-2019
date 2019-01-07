@@ -107,10 +107,11 @@ class PickupService implements PickupServiceInterface
              * - Pickup Start is within Ride's time slot
              */
             $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getStart()->format('H:i:s'));
+            $rideDateArrival = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getArrival()->format('H:i:s'));
             if (isset($ride->getDriver()->getDriverZones()[$priority]) &&
                 $postal === (int) $ride->getDriver()->getDriverZones()[$priority]->getPostal() &&
                 (count($pickups['pickups']) + $ride->getPickups()->count()) <= self::RIDE_FULL &&
-                $pickups['start'] >= $rideDateStart) {
+                $pickups['start'] >= $rideDateStart && $pickups['start'] <= $rideDateArrival) {
                 foreach ($pickups['pickups'] as $pickup) {
                     $pickup
                         ->setRide($ride)

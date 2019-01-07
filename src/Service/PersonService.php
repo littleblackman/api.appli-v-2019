@@ -210,6 +210,14 @@ class PersonService implements PersonServiceInterface
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
 
+        //Gets User's data
+        if (null !== $object->getUserPersonLink() && null !== $object->getUserPersonLink()->getUser()) {
+            $user = $object->getUserPersonLink()->getUser();
+            $objectArray['email'] = $user->getEmail();
+            $objectArray['identifier'] = $user->getIdentifier();
+            unset($objectArray['userPersonLink']);
+        }
+
         //Gets Driver if is one
         $driver = $this->em->getRepository('App:Driver')->findOneByPerson($object->getPersonId());
         $objectArray['driver'] = null !== $driver ? $this->driverService->toArray($driver) : null;
