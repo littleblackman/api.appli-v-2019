@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.23.1
+- Correction du UserBundle (07/01/2019)
+
 v0.16.23
 - Ajout du geocoding pour Address (04/01/2019)
 - Modification du geocoding pour Pickup  (04/01/2019)
