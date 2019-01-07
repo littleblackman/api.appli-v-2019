@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.16.22.1
+- Correction DecimalType (07/01/2019)
+
 v0.16.22
 - Correction de l'affectation des Pickups (03/01/2019)
 - Ajout du geocoding des adresses des Pickups (04/01/2019)
