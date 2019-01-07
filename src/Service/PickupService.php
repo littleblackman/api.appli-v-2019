@@ -38,27 +38,6 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Adds teh gps coordinates + postal to Pickup
-     */
-    public function addCoordinates(Pickup $pickup)
-    {
-        //Gets data from API
-        $urlApi = 'https://api-adresse.data.gouv.fr/search/?q=';
-        $address = strtolower(str_replace(array('   ', '  ', ' ', '+-+', ',', '++'), '+', $pickup->getAddress()));
-        $coordinatesJson = json_decode(file_get_contents($urlApi . $address), true, 10);
-        $longitude = $coordinatesJson['features'][0]['geometry']['coordinates'][0] ?? null;
-        $latitude = $coordinatesJson['features'][0]['geometry']['coordinates'][1] ?? null;
-        $postal = $coordinatesJson['features'][0]['properties']['postcode'] ?? $pickup->getPostal();
-
-        //Updates Pickup
-        $pickup
-            ->setLatitude($latitude)
-            ->setLongitude($longitude)
-            ->setPostal($postal)
-        ;
-    }
-
-    /**
      * Affects all the Pickups to Rides for a specific date
      */
     public function affect($date, $kind, $force)
@@ -77,16 +56,8 @@ class PickupService implements PickupServiceInterface
             $pickupsSorted = array();
             foreach ($pickupsSortOrder as $pickupSortOrder) {
                 foreach ($pickups as $pickup) {
-                    //Updates address with geocoding
-                    if (null === $pickup->getLatitude() ||
-                        null === $pickup->getLongitude() ||
-                        null === $pickup->getPostal() ||
-                        5 > strlen($pickup->getPostal())
-                    ) {
-                        $this->addCoordinates($pickup);
-                        $this->mainService->modify($pickup);
-                        $this->mainService->persist($pickup);
-                    }
+                    //Checks address with geocoding
+                    $this->checkCoordinates($pickup);
                     //Adds Pickup to its corresponding group of postal code
                     if ($pickupSortOrder['postal'] === $pickup->getPostal()) {
                         $md5 = md5($pickup->getLongitude() . $pickup->getLatitude());
@@ -158,6 +129,21 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
+     * Checks gps coordinates
+     */
+    public function checkCoordinates($object, $force = false)
+    {
+        if ($force ||
+            null === $object->getLatitude() ||
+            null === $object->getLongitude() ||
+            null === $object->getPostal() ||
+            5 != strlen($object->getPostal())
+        ) {
+            $this->mainService->addCoordinates($object);
+        }
+    }
+
+    /**
      * Gets all the Pickups by date
      */
     public function countAllByDate(string $date, string $kind)
@@ -191,8 +177,8 @@ class PickupService implements PickupServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Adds coordinates
-        $this->addCoordinates($pickup);
+        //Checks coordinates
+        $this->checkCoordinates($object);
 
         //Persists data
         $this->mainService->create($object);
@@ -309,6 +295,27 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
+     * Geocodes all the Pickups
+     */
+    public function geocode()
+    {
+        $counterRecords = 0;
+        $pickups = $this->em
+            ->getRepository('App:Pickup')
+            ->findGeocode()
+        ;
+        foreach ($pickups as $pickup) {
+            if ($this->mainService->addCoordinates($pickup)) {
+                $this->mainService->modify($pickup);
+                $this->mainService->persist($pickup);
+                $counterRecords++;
+            }
+        }
+
+        return $counterRecords;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Pickup $object)
@@ -328,7 +335,7 @@ class PickupService implements PickupServiceInterface
         //Submits data
         $data = $this->mainService->submit($object, 'pickup-modify', $data);
 
-        //Suppress ride
+        //Suppress ride if set to null
         if (array_key_exists('ride', $data) && (null === $data['ride'] || 'null' === $data['ride'])) {
             $object->setRide(null);
         }
@@ -336,8 +343,10 @@ class PickupService implements PickupServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Adds coordinates
-        $this->addCoordinates($pickup);
+        //Checks coordinates
+        if (isset($data['address'])) {
+            $this->checkCoordinates($object, true);
+        }
 
         //Persists data
         $this->mainService->modify($object);

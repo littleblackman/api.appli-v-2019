@@ -11,6 +11,25 @@ use Doctrine\ORM\EntityRepository;
 class AddressRepository extends EntityRepository
 {
     /**
+     * Returns the addresses to geocode
+     */
+    public function findGeocode()
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.suppressed = 0')
+            ->andWhere('a.address IS NOT NULL')
+            ->andWhere('a.address != :empty')
+            ->andWhere('a.town IS NOT NULL')
+            ->andWhere('a.town != :empty')
+            ->andWhere('a.latitude IS NULL OR a.longitude IS NULL')
+            ->setParameter('empty', '')
+            ->orderBy('a.addressId', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns the address if not suppressed
      */
     public function findOneById($addressId)

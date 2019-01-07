@@ -212,4 +212,37 @@ class AddressController extends AbstractController
 
         return new JsonResponse($suppressedData);
     }
+
+//GEOCODING
+
+    /**
+     * Geocodes all the Address
+     *
+     * @Route("/address/geocode",
+     *    name="address_geocode",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="counter", type="integer"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Tag(name="Address")
+     */
+    public function geocode()
+    {
+        set_time_limit(600);
+
+        $this->denyAccessUnlessGranted('addressGeocode', null);
+
+        $counterRecords = $this->addressService->geocode();
+
+        return new JsonResponse(array('Number of records treated' => $counterRecords));
+    }
 }

@@ -36,6 +36,40 @@ class MainService implements MainServiceInterface
     }
 
     /**
+     * Adds the gps coordinates + postal to object
+     */
+    public function addCoordinates($object)
+    {
+        //Gets data from API
+        $address = strtolower(str_replace(array('   ', '  ', ' ', '+-+', ',', '++'), '+', $object->getAddressGeocoding()));
+        $url = 'https://api-adresse.data.gouv.fr/search/?autocomplete=0&type=street&limit=1&q=' . $address;
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        $result = curl_exec($curl);
+        curl_close($curl);
+        $coordinatesJson = json_decode($result, true, 10);
+        $latitude = $coordinatesJson['features'][0]['geometry']['coordinates'][1] ?? null;
+        $longitude = $coordinatesJson['features'][0]['geometry']['coordinates'][0] ?? null;
+
+        //Updates object
+        if (null !== $latitude) {
+            $object
+                ->setLatitude($latitude)
+                ->setLongitude($longitude)
+            ;
+            if (null === $object->getPostal() || 5 != strlen($object->getPostal())) {
+                $object->setPostal($coordinatesJson['features'][0]['properties']['postcode'] ?? $object->getPostal());
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Checks if DateStart is a monday and changes to next monday if not
      * @return DateTime
      */

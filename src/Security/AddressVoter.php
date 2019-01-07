@@ -26,12 +26,15 @@ class AddressVoter extends Voter
 
     public const ADDRESS_DISPLAY = 'addressDisplay';
 
+    public const ADDRESS_GEOCODE = 'addressGeocode';
+
     public const ADDRESS_MODIFY = 'addressModify';
 
     private const ATTRIBUTES = array(
         self::ADDRESS_CREATE,
         self::ADDRESS_DELETE,
         self::ADDRESS_DISPLAY,
+        self::ADDRESS_GEOCODE,
         self::ADDRESS_MODIFY,
     );
 
@@ -66,6 +69,9 @@ class AddressVoter extends Voter
                 break;
             case self::ADDRESS_DISPLAY:
                 return $this->canDisplay($token, $subject);
+                break;
+            case self::ADDRESS_GEOCODE:
+                return $this->isAdmin($token);
                 break;
             case self::ADDRESS_MODIFY:
                 return $this->canModify($token, $subject);
@@ -172,6 +178,25 @@ class AddressVoter extends Voter
         }
 
         return $this->isLinked($token, $subject);
+    }
+
+    /**
+     * Checks if user is admin
+     */
+    private function isAdmin($token)
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

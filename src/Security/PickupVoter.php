@@ -20,22 +20,25 @@ class PickupVoter extends Voter
      */
     private $security;
 
-    public const PERSON_CREATE = 'pickupCreate';
+    public const PICKUP_CREATE = 'pickupCreate';
 
-    public const PERSON_DELETE = 'pickupDelete';
+    public const PICKUP_DELETE = 'pickupDelete';
 
-    public const PERSON_DISPLAY = 'pickupDisplay';
+    public const PICKUP_DISPLAY = 'pickupDisplay';
 
-    public const PERSON_LIST = 'pickupList';
+    public const PICKUP_GEOCODE = 'pickupGeocode';
 
-    public const PERSON_MODIFY = 'pickupModify';
+    public const PICKUP_LIST = 'pickupList';
+
+    public const PICKUP_MODIFY = 'pickupModify';
 
     private const ATTRIBUTES = array(
-        self::PERSON_CREATE,
-        self::PERSON_DELETE,
-        self::PERSON_DISPLAY,
-        self::PERSON_LIST,
-        self::PERSON_MODIFY,
+        self::PICKUP_CREATE,
+        self::PICKUP_DELETE,
+        self::PICKUP_DISPLAY,
+        self::PICKUP_GEOCODE,
+        self::PICKUP_LIST,
+        self::PICKUP_MODIFY,
     );
 
     public function __construct(Security $security)
@@ -61,19 +64,22 @@ class PickupVoter extends Voter
 
         //Defines access rights
         switch ($attribute) {
-            case self::PERSON_CREATE:
+            case self::PICKUP_CREATE:
                 return $this->canCreate($token, $subject);
                 break;
-            case self::PERSON_DELETE:
+            case self::PICKUP_DELETE:
                 return $this->canDelete($token, $subject);
                 break;
-            case self::PERSON_DISPLAY:
+            case self::PICKUP_DISPLAY:
                 return $this->canDisplay($token, $subject);
                 break;
-            case self::PERSON_LIST:
+            case self::PICKUP_GEOCODE:
+                return $this->isAdmin($token);
+                break;
+            case self::PICKUP_LIST:
                 return $this->canList($token, $subject);
                 break;
-            case self::PERSON_MODIFY:
+            case self::PICKUP_MODIFY:
                 return $this->canModify($token, $subject);
                 break;
         }
@@ -180,6 +186,25 @@ class PickupVoter extends Voter
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
             'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if user is admin
+     */
+    private function isAdmin($token)
+    {
+        //Checks roles allowed
+        $roles = array(
             'ROLE_ADMIN',
         );
 

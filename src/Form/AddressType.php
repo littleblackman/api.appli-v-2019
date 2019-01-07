@@ -4,6 +4,7 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,6 +35,14 @@ class AddressType extends AbstractType
                 ))
             ->add('country', TextType::class, array(
                 'required' => false,
+                ))
+            ->add('latitude', NumberType::class, array(
+                'required' => false,
+                'scale' => 8,
+                ))
+            ->add('longitude', NumberType::class, array(
+                'required' => false,
+                'scale' => 8,
                 ))
             ->add('links', CollectionType::class, array(
                 'required' => false,

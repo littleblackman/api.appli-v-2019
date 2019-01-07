@@ -197,6 +197,12 @@ class Pickup
         return $this;
     }
 
+    public function getAddressGeocoding(): ?string
+    {
+        return $this->address;
+
+    }
+
     public function getAddress(): ?string
     {
         return $this->address;

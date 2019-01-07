@@ -77,6 +77,20 @@ class Address
     private $country;
 
     /**
+     * @var decimal|null
+     *
+     * @ORM\Column(name="latitude", type="decimal", nullable=true)
+     */
+    private $latitude;
+
+    /**
+     * @var decimal|null
+     *
+     * @ORM\Column(name="longitude", type="decimal", nullable=true)
+     */
+    private $longitude;
+
+    /**
      * @ORM\OneToMany(targetEntity="PersonAddressLink", mappedBy="address")
      * @SWG\Property(ref=@Model(type=Person::class))
      */
@@ -112,6 +126,12 @@ class Address
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getAddressGeocoding(): ?string
+    {
+        return $this->address . ' ' . $this->address2 . ' ' . $this->postal . ' ' . $this->town;
+
     }
 
     public function getAddress(): ?string
@@ -170,6 +190,30 @@ class Address
     public function setCountry(?string $country): self
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude($latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude($longitude): self
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }

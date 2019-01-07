@@ -123,6 +123,23 @@ class PickupRepository extends EntityRepository
     }
 
     /**
+     * Returns the pickups to geocode
+     */
+    public function findGeocode()
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.suppressed = 0')
+            ->andWhere('p.address IS NOT NULL')
+            ->andWhere('p.address != :empty')
+            ->andWhere('p.latitude IS NULL OR p.longitude IS NULL')
+            ->setParameter('empty', '')
+            ->orderBy('p.pickupId', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns the pickup if not suppressed
      */
     public function findOneById($pickupId)

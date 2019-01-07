@@ -55,6 +55,9 @@ class AddressService implements AddressServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
+        //Checks coordinates
+        $this->mainService->addCoordinates($object);
+
         //Persists data
         $this->mainService->create($object);
         $this->mainService->persist($object);
@@ -107,6 +110,27 @@ class AddressService implements AddressServiceInterface
     }
 
     /**
+     * Geocodes all the Addresses
+     */
+    public function geocode()
+    {
+        $counterRecords = 0;
+        $addresses = $this->em
+            ->getRepository('App:Address')
+            ->findGeocode()
+        ;
+        foreach ($addresses as $address) {
+            if ($this->mainService->addCoordinates($address)) {
+                $this->mainService->modify($address);
+                $this->mainService->persist($address);
+                $counterRecords++;
+            }
+        }
+
+        return $counterRecords;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Address $object)
@@ -129,6 +153,9 @@ class AddressService implements AddressServiceInterface
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
+
+        //Checks coordinates
+        $this->mainService->addCoordinates($object);
 
         //Persists data
         $this->mainService->modify($object);
