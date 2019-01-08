@@ -1,7 +1,7 @@
 nelmio_cors:
     defaults:
         origin_regex: true
-        allow_origin: ['%env(CORS_ALLOW_ORIGIN)%', 'https://dev.kipdev.io', 'https://appli-v.net']
+        allow_origin: ['%env(CORS_ALLOW_ORIGIN)%', 'http://localhost', 'https://dev.kipdev.io', 'https://appli-v.net']
         allow_methods: ['GET', 'OPTIONS', 'POST', 'DELETE', 'PUT']
         allow_headers: ['Content-Type', 'Authorization']
         max_age: 3600

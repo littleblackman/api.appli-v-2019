@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.17.1
+- Ajout de loclahost dans `nelmio_cors.yaml` pour centraliser les accès (08/01/2019)
+
 v0.17
 - Ajout d'une contrainte UNIQUE sur personId de Driver (08/01/2019)
 - Corrections indiquées par phpstan (08/01/2019)
