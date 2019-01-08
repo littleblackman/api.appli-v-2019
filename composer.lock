@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3bf790b4df86e4cd0c2b32e1b774b051",
+    "content-hash": "ecd9f510fa5b7e4bd1e8ae87650abea9",
     "packages": [
         {
             "name": "c975l/config-bundle",

@@ -16,7 +16,7 @@
         "symfony/asset": "*",
         "symfony/cache": "4.1.*",
         "symfony/console": "*",
-        "symfony/dotenv": "*",
+        "symfony/dotenv": "4.1.*",
         "symfony/expression-language": "*",
         "symfony/flex": "^1.1",
         "symfony/form": "*",
