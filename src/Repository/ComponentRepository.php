@@ -19,7 +19,6 @@ class ComponentRepository extends EntityRepository
             ->where('c.suppressed = 0')
             ->orderBy('c.nameFr', 'ASC')
             ->getQuery()
-            ->getResult()
         ;
     }
 
@@ -34,7 +33,6 @@ class ComponentRepository extends EntityRepository
             ->orderBy('c.nameFr', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
-            ->getResult()
         ;
     }
 

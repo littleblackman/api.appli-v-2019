@@ -24,7 +24,7 @@ class ProductComponentLink
     private $productComponentLinkId;
 
     /**
-     * @var App\Entity\Component
+     * @var Component
      *
      * @ORM\ManyToOne(targetEntity="Component", inversedBy="products")
      * @ORM\JoinColumns({
@@ -34,7 +34,7 @@ class ProductComponentLink
     private $component;
 
     /**
-     * @var App\Entity\Product
+     * @var Product
      *
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="components")
      * @ORM\JoinColumns({

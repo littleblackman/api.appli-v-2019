@@ -31,7 +31,7 @@ class ChildPersonLink
     private $relation;
 
     /**
-     * @var App\Entity\Child
+     * @var Child
      *
      * @ORM\ManyToOne(targetEntity="Child", inversedBy="persons")
      * @ORM\JoinColumns({
@@ -41,7 +41,7 @@ class ChildPersonLink
     private $child;
 
     /**
-     * @var App\Entity\Person
+     * @var Person
      *
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="children")
      * @ORM\JoinColumns({
@@ -60,7 +60,7 @@ class ChildPersonLink
         return $this->relation;
     }
 
-    public function setRelation(string $relation): self
+    public function setRelation(?string $relation): self
     {
         $this->relation = $relation;
 

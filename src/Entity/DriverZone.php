@@ -31,7 +31,7 @@ class DriverZone
     private $driverZoneId;
 
     /**
-     * @var App\Entity\Driver
+     * @var Driver
      *
      * @ORM\OneToOne(targetEntity="Driver")
      * @ORM\JoinColumn(name="driver_id", referencedColumnName="driver_id")

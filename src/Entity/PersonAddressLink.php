@@ -24,7 +24,7 @@ class PersonAddressLink
     private $personAddressLinkId;
 
     /**
-     * @var App\Entity\Address
+     * @var Address
      *
      * @ORM\ManyToOne(targetEntity="Address", inversedBy="persons")
      * @ORM\JoinColumns({
@@ -34,7 +34,7 @@ class PersonAddressLink
     private $address;
 
     /**
-     * @var App\Entity\Person
+     * @var Person
      *
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="addresses")
      * @ORM\JoinColumns({

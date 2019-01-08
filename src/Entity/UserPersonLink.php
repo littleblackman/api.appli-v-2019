@@ -24,7 +24,7 @@ class UserPersonLink
     private $userPersonLinkId;
 
     /**
-     * @var App\Entity\Person
+     * @var Person
      *
      * @ORM\OneToOne(targetEntity="Person")
      * @ORM\JoinColumns({
@@ -34,7 +34,7 @@ class UserPersonLink
     private $person;
 
     /**
-     * @var App\Entity\User
+     * @var User
      *
      * @ORM\OneToOne(targetEntity="User", inversedBy="userPersonLink")
      * @ORM\JoinColumns({

@@ -19,7 +19,6 @@ class LocationRepository extends EntityRepository
             ->where('l.suppressed = 0')
             ->orderBy('l.name', 'ASC')
             ->getQuery()
-            ->getResult()
         ;
     }
 

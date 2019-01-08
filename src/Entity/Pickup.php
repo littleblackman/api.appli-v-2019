@@ -7,7 +7,6 @@ use App\Entity\Traits\SuppressionTrait;
 use App\Entity\Traits\UpdateTrait;
 use DateTime;
 use DateTimeInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -62,16 +61,16 @@ class Pickup
     private $address;
 
     /**
-     * @var decimal|null
+     * @var float|null
      *
-     * @ORM\Column(name="latitude", type="decimal", nullable=true)
+     * @ORM\Column(name="latitude", type="float", nullable=true)
      */
     private $latitude;
 
     /**
-     * @var decimal|null
+     * @var float|null
      *
-     * @ORM\Column(name="longitude", type="decimal", nullable=true)
+     * @ORM\Column(name="longitude", type="float", nullable=true)
      */
     private $longitude;
 
@@ -118,7 +117,7 @@ class Pickup
     private $validated;
 
     /**
-     * @var App\Entity\Child
+     * @var Child
      *
      * @ORM\OneToOne(targetEntity="Child")
      * @ORM\JoinColumn(name="child_id", referencedColumnName="child_id")
@@ -126,17 +125,12 @@ class Pickup
     private $child;
 
     /**
-     * @var App\Entity\Ride
+     * @var Ride
      *
      * @ORM\ManyToOne(targetEntity="Ride")
      * @ORM\JoinColumn(name="ride_id", referencedColumnName="ride_id")
      */
     private $ride;
-
-    public function __construct()
-    {
-        $this->rides = new ArrayCollection();
-    }
 
     /**
      * Converts the entity in an array
@@ -161,12 +155,12 @@ class Pickup
         return $this->pickupId;
     }
 
-    public function getKind()
+    public function getKind(): ?string
     {
         return $this->kind;
     }
 
-    public function setKind($kind): self
+    public function setKind(?string $kind): self
     {
         $this->kind = $kind;
 
@@ -178,7 +172,7 @@ class Pickup
         return $this->start;
     }
 
-    public function setStart(DateTimeInterface $start): self
+    public function setStart(?DateTimeInterface $start): self
     {
         $this->start = $start;
 
@@ -215,24 +209,24 @@ class Pickup
         return $this;
     }
 
-    public function getLatitude()
+    public function getLatitude(): ?float
     {
         return $this->latitude;
     }
 
-    public function setLatitude($latitude): self
+    public function setLatitude(?float $latitude): self
     {
         $this->latitude = $latitude;
 
         return $this;
     }
 
-    public function getLongitude()
+    public function getLongitude(): ?float
     {
         return $this->longitude;
     }
 
-    public function setLongitude($longitude): self
+    public function setLongitude(?float $longitude): self
     {
         $this->longitude = $longitude;
 
@@ -251,12 +245,12 @@ class Pickup
         return $this;
     }
 
-    public function getStatus()
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus($status): self
+    public function setStatus(?string $status): self
     {
         $this->status = $status;
 
@@ -268,7 +262,7 @@ class Pickup
         return $this->statusChange;
     }
 
-    public function setStatusChange(DateTimeInterface $statusChange): self
+    public function setStatusChange(?DateTimeInterface $statusChange): self
     {
         $this->statusChange = $statusChange;
 
@@ -292,7 +286,7 @@ class Pickup
         return $this->comment;
     }
 
-    public function setComment(string $comment): self
+    public function setComment(?string $comment): self
     {
         $this->comment = $comment;
 
@@ -323,12 +317,12 @@ class Pickup
         return $this;
     }
 
-    public function getRide()
+    public function getRide(): ?Ride
     {
         return $this->ride;
     }
 
-    public function setRide($ride): self
+    public function setRide(?Ride $ride): self
     {
         $this->ride = $ride;
 

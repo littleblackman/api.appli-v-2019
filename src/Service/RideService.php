@@ -74,7 +74,7 @@ class RideService implements RideServiceInterface
      */
     public function createMultiple(string $data)
     {
-        $data = is_array($data) ? $data : json_decode($data, true);
+        $data = json_decode($data, true);
 
         foreach ($data as $rideData) {
             //Submits data

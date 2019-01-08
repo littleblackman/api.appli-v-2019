@@ -62,19 +62,19 @@ class ProductVoter extends Voter
         //Defines access rights
         switch ($attribute) {
             case self::PRODUCT_CREATE:
-                return $this->canCreate($token, $subject);
+                return $this->canCreate();
                 break;
             case self::PRODUCT_DELETE:
-                return $this->canDelete($token, $subject);
+                return $this->canDelete();
                 break;
             case self::PRODUCT_DISPLAY:
-                return $this->canDisplay($token, $subject);
+                return $this->canDisplay();
                 break;
             case self::PRODUCT_LIST:
-                return $this->canList($token, $subject);
+                return $this->canList();
                 break;
             case self::PRODUCT_MODIFY:
-                return $this->canModify($token, $subject);
+                return $this->canModify();
                 break;
         }
 
@@ -84,7 +84,7 @@ class ProductVoter extends Voter
     /**
      * Checks if is allowed to create
      */
-    private function canCreate($token, $subject)
+    private function canCreate()
     {
         //Checks roles allowed
         $roles = array(
@@ -105,7 +105,7 @@ class ProductVoter extends Voter
     /**
      * Checks if is allowed to delete
      */
-    private function canDelete($token, $subject)
+    private function canDelete()
     {
         //Checks roles allowed
         $roles = array(
@@ -126,7 +126,7 @@ class ProductVoter extends Voter
     /**
      * Checks if is allowed to display
      */
-    private function canDisplay($token, $subject)
+    private function canDisplay()
     {
         //Checks roles allowed
         $roles = array(
@@ -147,7 +147,7 @@ class ProductVoter extends Voter
     /**
      * Checks if is allowed to list
      */
-    private function canList($token, $subject)
+    private function canList()
     {
         //Checks roles allowed
         $roles = array(
@@ -168,7 +168,7 @@ class ProductVoter extends Voter
     /**
      * Checks if is allowed to modify
      */
-    private function canModify($token, $subject)
+    private function canModify()
     {
         //Checks roles allowed
         $roles = array(

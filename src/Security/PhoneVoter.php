@@ -59,7 +59,7 @@ class PhoneVoter extends Voter
         //Defines access rights
         switch ($attribute) {
             case self::PHONE_CREATE:
-                return $this->canCreate($token, $subject);
+                return $this->canCreate();
                 break;
             case self::PHONE_DELETE:
                 return $this->canDelete($token, $subject);
@@ -78,7 +78,7 @@ class PhoneVoter extends Voter
     /**
      * Checks if is allowed to create
      */
-    private function canCreate($token, $subject)
+    private function canCreate()
     {
         //Checks roles allowed
         $roles = array(

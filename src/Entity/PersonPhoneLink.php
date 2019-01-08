@@ -24,7 +24,7 @@ class PersonPhoneLink
     private $personPhoneLinkId;
 
     /**
-     * @var App\Entity\Phone
+     * @var Phone
      *
      * @ORM\ManyToOne(targetEntity="Phone", inversedBy="persons")
      * @ORM\JoinColumns({
@@ -34,7 +34,7 @@ class PersonPhoneLink
     private $phone;
 
     /**
-     * @var App\Entity\Person
+     * @var Person
      *
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="phones")
      * @ORM\JoinColumns({

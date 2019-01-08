@@ -62,7 +62,7 @@ class Week
     private $dateStart;
 
     /**
-     * @var App\Entity\Person
+     * @var Person
      *
      * @ORM\ManyToOne(targetEntity="Season", inversedBy="weeks")
      * @ORM\JoinColumns({
@@ -121,7 +121,7 @@ class Week
         return $this->dateStart;
     }
 
-    public function setDateStart(DateTimeInterface $dateStart): self
+    public function setDateStart(?DateTimeInterface $dateStart): self
     {
         $this->dateStart = $dateStart;
 

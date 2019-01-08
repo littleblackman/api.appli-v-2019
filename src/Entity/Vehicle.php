@@ -78,7 +78,7 @@ class Vehicle
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -90,7 +90,7 @@ class Vehicle
         return $this->matriculation;
     }
 
-    public function setMatriculation(string $matriculation): self
+    public function setMatriculation(?string $matriculation): self
     {
         $this->matriculation = $matriculation;
 
@@ -114,7 +114,7 @@ class Vehicle
         return $this->photo;
     }
 
-    public function setPhoto($photo): self
+    public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
 

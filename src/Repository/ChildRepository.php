@@ -20,7 +20,6 @@ class ChildRepository extends EntityRepository
             ->orderBy('c.lastname', 'ASC')
             ->addOrderBy('c.firstname', 'ASC')
             ->getQuery()
-            ->getResult()
         ;
     }
 
@@ -36,7 +35,6 @@ class ChildRepository extends EntityRepository
             ->addOrderBy('c.firstname', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
-            ->getResult()
         ;
     }
 

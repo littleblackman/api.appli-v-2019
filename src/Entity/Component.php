@@ -176,48 +176,48 @@ class Component
         return $this;
     }
 
-    public function getPrice()
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice($price): self
+    public function setPrice(?float $price): self
     {
         $this->price = $price;
 
         return $this;
     }
 
-    public function getVat()
+    public function getVat(): ?float
     {
         return $this->vat;
     }
 
-    public function setVat($vat): self
+    public function setVat(?float$vat): self
     {
         $this->vat = $vat;
 
         return $this;
     }
 
-    public function getVatAmount()
+    public function getVatAmount(): ?float
     {
         return $this->vatAmount;
     }
 
-    public function setVatAmount($vatAmount): self
+    public function setVatAmount(?float$vatAmount): self
     {
         $this->vatAmount = $vatAmount;
 
         return $this;
     }
 
-    public function getPriceHt()
+    public function getPriceHt(): ?float
     {
         return $this->priceHt;
     }
 
-    public function setPriceHt($priceHt): self
+    public function setPriceHt(?float$priceHt): self
     {
         $this->priceHt = $priceHt;
 
@@ -229,7 +229,7 @@ class Component
         return $this->photo;
     }
 
-    public function setPhoto($photo): self
+    public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
 

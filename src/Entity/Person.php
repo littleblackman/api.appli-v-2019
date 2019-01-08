@@ -129,7 +129,7 @@ class Person
         return $this->lastname;
     }
 
-    public function setLastname(string $lastname): self
+    public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
 
@@ -141,7 +141,7 @@ class Person
         return $this->photo;
     }
 
-    public function setPhoto($photo): self
+    public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
 
@@ -237,7 +237,7 @@ class Person
         return $this->identifier;
     }
 
-    public function setIdentifier($identifier): self
+    public function setIdentifier(?string $identifier): self
     {
         $this->identifier = $identifier;
 
@@ -249,7 +249,7 @@ class Person
         return $this->email;
     }
 
-    public function setEmail($email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 

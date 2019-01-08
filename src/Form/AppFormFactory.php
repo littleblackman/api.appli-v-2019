@@ -96,9 +96,14 @@ class AppFormFactory implements AppFormFactoryInterface
                 $form = WeekType::class;
                 break;
             default:
+                $form = null;
                 break;
         }
 
-        return $this->formFactory->create($form, $object);
+        if (null !== $form) {
+            return $this->formFactory->create($form, $object);
+        }
+
+        return false;
     }
 }

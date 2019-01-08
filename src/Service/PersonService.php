@@ -3,6 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Person;
+use App\Entity\ChildPersonLink;
+use App\Entity\PersonAddressLink;
+use App\Entity\PersonPhoneLink;
 use App\Entity\UserPersonLink;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;

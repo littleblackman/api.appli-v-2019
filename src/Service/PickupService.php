@@ -22,8 +22,6 @@ class PickupService implements PickupServiceInterface
 
     private $rideService;
 
-    const RIDE_FULL = 8;
-
     public function __construct(
         EntityManagerInterface $em,
         DriverServiceInterface $driverService,
@@ -61,8 +59,14 @@ class PickupService implements PickupServiceInterface
                     //Adds Pickup to its corresponding group of postal code
                     if ($pickupSortOrder['postal'] === $pickup->getPostal()) {
                         $md5 = md5($pickup->getLongitude() . $pickup->getLatitude());
+
+                        $places = 0 === (int) $pickup->getPlaces() ? 1 : (int) $pickup->getPlaces();
+                        $places = isset($pickupsSorted[$pickupSortOrder['postal']][$md5]['places']) ? $pickupsSorted[$pickupSortOrder['postal']][$md5]['places'] + $places : $places;
+                        $start = isset($pickupsSorted[$pickupSortOrder['postal']][$md5]['start']) ? $pickupsSorted[$pickupSortOrder['postal']][$md5]['start'] : $pickup->getStart();
+
+                        $pickupsSorted[$pickupSortOrder['postal']][$md5]['places'] = $places;
+                        $pickupsSorted[$pickupSortOrder['postal']][$md5]['start'] = $start;
                         $pickupsSorted[$pickupSortOrder['postal']][$md5]['pickups'][] = $pickup;
-                        $pickupsSorted[$pickupSortOrder['postal']][$md5]['start'] = $pickup->getStart();
                     }
                 }
             }
@@ -90,8 +94,10 @@ class PickupService implements PickupServiceInterface
     public function affectRide($rides, $pickups, $postal, $priority)
     {
         //Filters Rides to keep only those that are NOT full
+        $defaultPlaces = 8;
         $rides = array_filter($rides, function($i) {
-            return self::RIDE_FULL > $i->getPickups()->count();
+            $ridePlaces = 0 === (int) $i->getPlaces() ? $defaultPlaces : (int) $i->getPlaces();
+            return (int) $ridePlaces > $i->getOccupiedPlaces();
         });
 
         //Filters Pickups to keep only those that are NOT affected
@@ -103,14 +109,15 @@ class PickupService implements PickupServiceInterface
             /**
              * Updates Pickup if
              * - Ride is linked to Pickup's postal code using Driver + DriverPriority + DriverZonesPriorities
-             * - Ride not full AND can contain all the Pickups for the same address
-             * - Pickup Start is within Ride's time slot
+             * - Ride is not full AND can contain all the Pickups (including places) for the same address
+             * - Pickup Start is within Ride's time slot (between start and arrival)
              */
             $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getStart()->format('H:i:s'));
             $rideDateArrival = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getArrival()->format('H:i:s'));
+            $ridePlaces = 0 === (int) $ride->getPlaces() ? $defaultPlaces : (int) $ride->getPlaces();
             if (isset($ride->getDriver()->getDriverZones()[$priority]) &&
                 $postal === (int) $ride->getDriver()->getDriverZones()[$priority]->getPostal() &&
-                (count($pickups['pickups']) + $ride->getPickups()->count()) <= self::RIDE_FULL &&
+                $pickups['places'] + $ride->getOccupiedPlaces() <= $ridePlaces &&
                 $pickups['start'] >= $rideDateStart && $pickups['start'] <= $rideDateArrival) {
                 foreach ($pickups['pickups'] as $pickup) {
                     $pickup

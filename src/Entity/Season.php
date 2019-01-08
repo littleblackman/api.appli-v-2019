@@ -103,7 +103,7 @@ class Season
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -115,7 +115,7 @@ class Season
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(?string $status): self
     {
         $this->status = $status;
 
@@ -127,7 +127,7 @@ class Season
         return $this->dateStart;
     }
 
-    public function setDateStart(DateTimeInterface $dateStart): self
+    public function setDateStart(?DateTimeInterface $dateStart): self
     {
         $this->dateStart = $dateStart;
 
@@ -139,7 +139,7 @@ class Season
         return $this->dateEnd;
     }
 
-    public function setDateEnd(DateTimeInterface $dateEnd): self
+    public function setDateEnd(?DateTimeInterface $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
 
@@ -166,8 +166,8 @@ class Season
         if ($this->weeks->contains($week)) {
             $this->weeks->removeElement($week);
             // set the owning side to null (unless already changed)
-            if ($week->getWeek() === $this) {
-                $week->setWeek(null);
+            if ($week->getSeason() === $this) {
+                $week->setSeason(null);
             }
         }
 

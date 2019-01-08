@@ -19,7 +19,6 @@ class FamilyRepository extends EntityRepository
             ->where('f.suppressed = 0')
             ->orderBy('f.name', 'ASC')
             ->getQuery()
-            ->getResult()
         ;
     }
 
@@ -34,7 +33,6 @@ class FamilyRepository extends EntityRepository
             ->orderBy('f.name', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
-            ->getResult()
         ;
     }
 

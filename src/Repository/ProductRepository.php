@@ -19,7 +19,6 @@ class ProductRepository extends EntityRepository
             ->where('p.suppressed = 0')
             ->orderBy('p.nameFr', 'ASC')
             ->getQuery()
-            ->getResult()
         ;
     }
 
@@ -34,7 +33,6 @@ class ProductRepository extends EntityRepository
             ->orderBy('p.nameFr', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
-            ->getResult()
         ;
     }
 

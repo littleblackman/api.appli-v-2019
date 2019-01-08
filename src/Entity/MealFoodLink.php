@@ -24,7 +24,7 @@ class MealFoodLink
     private $mealFoodLinkId;
 
     /**
-     * @var App\Entity\Food
+     * @var Food
      *
      * @ORM\ManyToOne(targetEntity="Food", inversedBy="meals")
      * @ORM\JoinColumns({
@@ -34,7 +34,7 @@ class MealFoodLink
     private $food;
 
     /**
-     * @var App\Entity\Meal
+     * @var Meal
      *
      * @ORM\ManyToOne(targetEntity="Meal", inversedBy="foods")
      * @ORM\JoinColumns({

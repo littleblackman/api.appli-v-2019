@@ -62,7 +62,7 @@ class PersonVoter extends Voter
         //Defines access rights
         switch ($attribute) {
             case self::PERSON_CREATE:
-                return $this->canCreate($token, $subject);
+                return $this->canCreate();
                 break;
             case self::PERSON_DELETE:
                 return $this->canDelete($token, $subject);
@@ -71,7 +71,7 @@ class PersonVoter extends Voter
                 return $this->canDisplay($token, $subject);
                 break;
             case self::PERSON_LIST:
-                return $this->canList($token, $subject);
+                return $this->canList();
                 break;
             case self::PERSON_MODIFY:
                 return $this->canModify($token, $subject);
@@ -84,7 +84,7 @@ class PersonVoter extends Voter
     /**
      * Checks if is allowed to create
      */
-    private function canCreate($token, $subject)
+    private function canCreate()
     {
         //Checks roles allowed
         $roles = array(
@@ -164,7 +164,7 @@ class PersonVoter extends Voter
     /**
      * Checks if is allowed to list
      */
-    private function canList($token, $subject)
+    private function canList()
     {
         //Checks roles allowed
         $roles = array(

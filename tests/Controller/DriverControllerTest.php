@@ -22,7 +22,7 @@ class DriverControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"person": "1", "postal": "11111", "priority": 10}'
+            '{"person": "9999", "postal": "11111", "priority": 10}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class DriverControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"person": "1", "postal": "22222", "priority": 10}'
+            '{"person": "9999", "postal": "22222", "priority": 10}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

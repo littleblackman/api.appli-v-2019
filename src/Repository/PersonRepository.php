@@ -20,7 +20,6 @@ class PersonRepository extends EntityRepository
             ->orderBy('p.lastname', 'ASC')
             ->addOrderBy('p.firstname', 'ASC')
             ->getQuery()
-            ->getResult()
         ;
     }
 
@@ -36,7 +35,6 @@ class PersonRepository extends EntityRepository
             ->addOrderBy('p.firstname', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
-            ->getResult()
         ;
     }
 

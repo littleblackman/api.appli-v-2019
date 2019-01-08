@@ -91,7 +91,7 @@ class Family
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
-            $product->setProduct($this);
+            $product->setFamily($this);
         }
 
         return $this;
@@ -102,8 +102,8 @@ class Family
         if ($this->products->contains($product)) {
             $this->products->removeElement($product);
             // set the owning side to null (unless already changed)
-            if ($product->getProduct() === $this) {
-                $product->setProduct(null);
+            if ($product->getFamily() === $this) {
+                $product->setFamily(null);
             }
         }
 

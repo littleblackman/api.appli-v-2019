@@ -1,5 +1,12 @@
 ChangeLog
 
+v0.17
+- Ajout d'une contrainte UNIQUE sur personId de Driver (08/01/2019)
+- Corrections indiquées par phpstan (08/01/2019)
+- Suppression des GetResult pour les méthodes devant être paginées (08/01/2019)
+- Ajout du champ `places` dans Ride et prise en compte dans l'auto dispatch (08/01/2019)
+- Prise en compte du nombre de places par Pickup pour l'auto-dispatch (08/01/2019)
+
 v0.16.24
 - Ajout des Champs Created, etc. pour User (07/01/2019)
 - Ajout de l'email + identifier sur Person qui sont liées à un User (07/01/2019)

@@ -65,22 +65,22 @@ class PickupVoter extends Voter
         //Defines access rights
         switch ($attribute) {
             case self::PICKUP_CREATE:
-                return $this->canCreate($token, $subject);
+                return $this->canCreate();
                 break;
             case self::PICKUP_DELETE:
-                return $this->canDelete($token, $subject);
+                return $this->canDelete();
                 break;
             case self::PICKUP_DISPLAY:
-                return $this->canDisplay($token, $subject);
+                return $this->canDisplay();
                 break;
             case self::PICKUP_GEOCODE:
                 return $this->isAdmin($token);
                 break;
             case self::PICKUP_LIST:
-                return $this->canList($token, $subject);
+                return $this->canList();
                 break;
             case self::PICKUP_MODIFY:
-                return $this->canModify($token, $subject);
+                return $this->canModify();
                 break;
         }
 

@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Driver
  *
- * @ORM\Table(name="driver")
+ * @ORM\Table(name="driver", uniqueConstraints={@ORM\UniqueConstraint(name="driver_UN", columns={"person_id"})})
  * @ORM\Entity(repositoryClass="App\Repository\DriverRepository")
  *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
@@ -33,7 +33,7 @@ class Driver
     private $driverId;
 
     /**
-     * @var App\Entity\Person
+     * @var Person
      *
      * @ORM\OneToOne(targetEntity="Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
@@ -48,7 +48,7 @@ class Driver
     private $priority;
 
     /**
-     * @var App\Entity\Vehicle
+     * @var Vehicle
      *
      * @ORM\OneToOne(targetEntity="Vehicle")
      * @ORM\JoinColumn(name="vehicle_id", referencedColumnName="vehicle_id")
@@ -56,7 +56,7 @@ class Driver
     private $vehicle;
 
     /**
-     * @var App\Entity\Address
+     * @var Address
      *
      * @ORM\OneToOne(targetEntity="Address")
      * @ORM\JoinColumn(name="address_id", referencedColumnName="address_id")
@@ -151,7 +151,7 @@ class Driver
     {
         if (!$this->driverZones->contains($driverZone)) {
             $this->driverZones[] = $driverZone;
-            $driverZone->setDriverZone($this);
+            $driverZone->setDriver($this);
         }
 
         return $this;
@@ -162,8 +162,8 @@ class Driver
         if ($this->driverZones->contains($driverZone)) {
             $this->driverZones->removeElement($driverZone);
             // set the owning side to null (unless already changed)
-            if ($driverZone->getDriverZone() === $this) {
-                $driverZone->setDriverZone(null);
+            if ($driverZone->getDriver() === $this) {
+                $driverZone->setDriver(null);
             }
         }
 

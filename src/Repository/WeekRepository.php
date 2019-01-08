@@ -19,7 +19,6 @@ class WeekRepository extends EntityRepository
             ->where('w.suppressed = 0')
             ->orderBy('w.dateStart', 'ASC')
             ->getQuery()
-            ->getResult()
         ;
     }
 
@@ -34,7 +33,6 @@ class WeekRepository extends EntityRepository
             ->orderBy('w.name', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
-            ->getResult()
         ;
     }
 

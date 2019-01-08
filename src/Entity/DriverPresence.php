@@ -33,7 +33,7 @@ class DriverPresence
     private $driverPresenceId;
 
     /**
-     * @var App\Entity\Driver
+     * @var Driver
      *
      * @ORM\OneToOne(targetEntity="Driver")
      * @ORM\JoinColumn(name="driver_id", referencedColumnName="driver_id")
@@ -92,7 +92,7 @@ class DriverPresence
         return $this->date;
     }
 
-    public function setDate(DateTimeInterface $date): self
+    public function setDate(?DateTimeInterface $date): self
     {
         $this->date = $date;
 
@@ -104,7 +104,7 @@ class DriverPresence
         return $this->start;
     }
 
-    public function setStart(DateTimeInterface $start): self
+    public function setStart(?DateTimeInterface $start): self
     {
         $this->start = $start;
 
@@ -116,7 +116,7 @@ class DriverPresence
         return $this->end;
     }
 
-    public function setEnd(DateTimeInterface $end): self
+    public function setEnd(?DateTimeInterface $end): self
     {
         $this->end = $end;
 

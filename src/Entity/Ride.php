@@ -56,6 +56,13 @@ class Ride
     private $name;
 
     /**
+     * @var integer|null
+     *
+     * @ORM\Column(name="places", type="integer", nullable=true)
+     */
+    private $places;
+
+    /**
      * @var DateTime|null
      *
      * @ORM\Column(name="start", type="time")
@@ -84,7 +91,7 @@ class Ride
     private $endPoint;
 
     /**
-     * @var App\Entity\Driver
+     * @var Driver
      *
      * @ORM\OneToOne(targetEntity="Driver")
      * @ORM\JoinColumn(name="driver_id", referencedColumnName="driver_id")
@@ -92,7 +99,7 @@ class Ride
     private $driver;
 
     /**
-     * @var App\Entity\Vehicle
+     * @var Vehicle
      *
      * @ORM\OneToOne(targetEntity="Vehicle")
      * @ORM\JoinColumn(name="vehicle_id", referencedColumnName="vehicle_id")
@@ -135,12 +142,12 @@ class Ride
         return $this->rideId;
     }
 
-    public function getKind()
+    public function getKind(): ?string
     {
         return $this->kind;
     }
 
-    public function setKind($kind): self
+    public function setKind(?string $kind): self
     {
         $this->kind = $kind;
 
@@ -152,7 +159,7 @@ class Ride
         return $this->date;
     }
 
-    public function setDate(DateTimeInterface $date): self
+    public function setDate(?DateTimeInterface $date): self
     {
         $this->date = $date;
 
@@ -164,31 +171,43 @@ class Ride
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getStart()
+    public function getPlaces(): ?int
+    {
+        return $this->places;
+    }
+
+    public function setPlaces(?int $places): self
+    {
+        $this->places = $places;
+
+        return $this;
+    }
+
+    public function getStart(): ?DateTimeInterface
     {
         return $this->start;
     }
 
-    public function setStart($start): self
+    public function setStart(?DateTimeInterface $start): self
     {
         $this->start = $start;
 
         return $this;
     }
 
-    public function getArrival()
+    public function getArrival(): ?DateTimeInterface
     {
         return $this->arrival;
     }
 
-    public function setArrival($arrival): self
+    public function setArrival(?DateTimeInterface $arrival): self
     {
         $this->arrival = $arrival;
 
@@ -200,7 +219,7 @@ class Ride
         return $this->startPoint;
     }
 
-    public function setStartPoint(string $startPoint): self
+    public function setStartPoint(?string $startPoint): self
     {
         $this->startPoint = $startPoint;
 
@@ -212,7 +231,7 @@ class Ride
         return $this->endPoint;
     }
 
-    public function setEndPoint(string $endPoint): self
+    public function setEndPoint(?string $endPoint): self
     {
         $this->endPoint = $endPoint;
 
@@ -241,6 +260,20 @@ class Ride
         $this->vehicle = $vehicle;
 
         return $this;
+    }
+
+    /**
+     * Return ths number of occupied places by Pickups
+     * @return int
+     */
+    public function getOccupiedPlaces()
+    {
+        $occupiedPlaces = 0;
+        foreach ($this->getPickups() as $pickup) {
+            $occupiedPlaces += 0 === (int) $pickup->getPlaces() ? 1 : (int) $pickup->getPlaces();
+        }
+
+        return $occupiedPlaces;
     }
 
     /**

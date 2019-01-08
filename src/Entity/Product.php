@@ -37,7 +37,7 @@ class Product
     private $productId;
 
     /**
-     * @var App\Entity\Family
+     * @var Family
      *
      * @ORM\ManyToOne(targetEntity="Family", inversedBy="products")
      * @ORM\JoinColumns({
@@ -47,7 +47,7 @@ class Product
     private $family;
 
     /**
-     * @var App\Entity\Season
+     * @var Season
      *
      * @ORM\OneToOne(targetEntity="Season")
      * @ORM\JoinColumn(name="season_id", referencedColumnName="season_id")
@@ -111,7 +111,7 @@ class Product
     private $exclusionTo;
 
     /**
-     * @var App\Entity\Location
+     * @var Location
      *
      * @ORM\OneToOne(targetEntity="Location")
      * @ORM\JoinColumn(name="location_id", referencedColumnName="location_id")
@@ -321,7 +321,7 @@ class Product
         return $this->dateStart;
     }
 
-    public function setDateStart(DateTimeInterface $dateStart): self
+    public function setDateStart(?DateTimeInterface $dateStart): self
     {
         $this->dateStart = $dateStart;
 
@@ -333,7 +333,7 @@ class Product
         return $this->dateEnd;
     }
 
-    public function setDateEnd(DateTimeInterface $dateEnd): self
+    public function setDateEnd(?DateTimeInterface $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
 
@@ -345,7 +345,7 @@ class Product
         return $this->exclusionFrom;
     }
 
-    public function setExclusionFrom(DateTimeInterface $exclusionFrom): self
+    public function setExclusionFrom(?DateTimeInterface $exclusionFrom): self
     {
         $this->exclusionFrom = $exclusionFrom;
 
@@ -357,7 +357,7 @@ class Product
         return $this->exclusionTo;
     }
 
-    public function setExclusionTo(DateTimeInterface $exclusionTo): self
+    public function setExclusionTo(?DateTimeInterface $exclusionTo): self
     {
         $this->exclusionTo = $exclusionTo;
 
@@ -393,7 +393,7 @@ class Product
         return $this->transport;
     }
 
-    public function setTransport(bool $transport): self
+    public function setTransport(?bool $transport): self
     {
         $this->transport = $transport;
 
@@ -405,7 +405,7 @@ class Product
         return $this->dayReference;
     }
 
-    public function setDayReference(string $dayReference): self
+    public function setDayReference(?string $dayReference): self
     {
         $this->dayReference = $dayReference;
 
@@ -417,7 +417,7 @@ class Product
         return $this->daysAvailable;
     }
 
-    public function setDaysAvailable(string $daysAvailable): self
+    public function setDaysAvailable(?string $daysAvailable): self
     {
         $this->daysAvailable = $daysAvailable;
 
@@ -429,7 +429,7 @@ class Product
         return $this->duration;
     }
 
-    public function setDuration(string $duration): self
+    public function setDuration(?string $duration): self
     {
         $this->duration = $duration;
 
@@ -453,31 +453,31 @@ class Product
         return $this->photo;
     }
 
-    public function setPhoto($photo): self
+    public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
 
         return $this;
     }
 
-    public function getVatAmounts()
+    public function getVatAmounts(): ?array
     {
         return $this->vatAmounts;
     }
 
-    public function setVatAmounts($vatAmounts): self
+    public function setVatAmounts(?array $vatAmounts): self
     {
         $this->vatAmounts = $vatAmounts;
 
         return $this;
     }
 
-    public function getPriceTtc()
+    public function getPriceTtc(): ?float
     {
         return $this->priceTtc;
     }
 
-    public function setPriceTtc($priceTtc): self
+    public function setPriceTtc(?float $priceTtc): self
     {
         $this->priceTtc = $priceTtc;
 
