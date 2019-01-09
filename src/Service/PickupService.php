@@ -58,7 +58,7 @@ class PickupService implements PickupServiceInterface
                     $this->checkCoordinates($pickup);
                     //Adds Pickup to its corresponding group of postal code
                     if ($pickupSortOrder['postal'] === $pickup->getPostal()) {
-                        $md5 = md5($pickup->getLongitude() . $pickup->getLatitude());
+                        $md5 = md5($pickup->getLongitude() . $pickup->getLatitude() . $pickup->getStart()->format('H:i'));
 
                         $places = 0 === (int) $pickup->getPlaces() ? 1 : (int) $pickup->getPlaces();
                         $places = isset($pickupsSorted[$pickupSortOrder['postal']][$md5]['places']) ? $pickupsSorted[$pickupSortOrder['postal']][$md5]['places'] + $places : $places;

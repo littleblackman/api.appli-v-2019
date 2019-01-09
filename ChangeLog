@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.17.6.2
+- Ajout de l'heure du Pickup dans le md5 pour grouper les Pickups (09/01/2019)
+
 v0.17.6.1
 - Ajout du filtrage pour les résultats de ->findOneById() (09/01/2019)
 
