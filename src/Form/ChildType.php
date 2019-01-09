@@ -42,6 +42,11 @@ class ChildType extends AbstractType
                 'entry_type' => ChildPersonLinkType::class,
                 'mapped' => false,
                 ))
+            ->add('siblings', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => ChildChildLinkType::class,
+                'mapped' => false,
+                ))
         ;
     }
 

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Child;
+use App\Entity\ChildChildLink;
 use App\Entity\ChildPersonLink;
 use App\Entity\Person;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,19 +33,36 @@ class ChildService implements ChildServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds link between Child and Person
      */
     public function addLink(int $personId, string $relation, Child $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
         if ($person instanceof Person) {
-            $objectPersonLink = new ChildPersonLink();
-            $objectPersonLink
+            $childPersonLink = new ChildPersonLink();
+            $childPersonLink
                 ->setRelation(htmlspecialchars($relation))
                 ->setChild($object)
                 ->setPerson($person)
             ;
-            $this->em->persist($objectPersonLink);
+            $this->em->persist($childPersonLink);
+        }
+    }
+
+    /**
+     * Adds link between Child and Child
+     */
+    public function addSibling(int $childId, string $relation, Child $object)
+    {
+        $child = $this->em->getRepository('App:Child')->findOneById($childId);
+        if ($child instanceof Child) {
+            $childChildLink = new ChildChildLink();
+            $childChildLink
+                ->setRelation(htmlspecialchars($relation))
+                ->setChild($object)
+                ->setChild($child)
+            ;
+            $this->em->persist($childChildLink);
         }
     }
 
@@ -199,6 +217,13 @@ class ChildService implements ChildServiceInterface
                 foreach ($linksToRemove as $personId => $relation) {
                     $this->removeLink($personId, $object);
                 }
+            }
+        }
+
+        //Adds siblings
+        if (isset($data['siblings'])) {
+            foreach ($data['siblings'] as $sibling) {
+                $this->addSibling($sibling['sibling'], $sibling['relation'], $object);
             }
         }
 

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,6 +28,11 @@ class PersonType extends AbstractType
                 ))
             ->add('identifier', TextType::class, array(
                 'required' => false,
+                ))
+            ->add('relations', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => PersonPersonLinkType::class,
+                'mapped' => false,
                 ))
         ;
     }

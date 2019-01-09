@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Person;
 use App\Entity\ChildPersonLink;
 use App\Entity\PersonAddressLink;
+use App\Entity\PersonPersonLink;
 use App\Entity\PersonPhoneLink;
 use App\Entity\UserPersonLink;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,6 +39,23 @@ class PersonService implements PersonServiceInterface
     }
 
     /**
+     * Adds relation between Person and Person
+     */
+    public function addRelation(int $relationId, string $relation, Person $object)
+    {
+        $related = $this->em->getRepository('App:Person')->findOneByPersonId($relationId);
+        if ($related instanceof Person) {
+            $personPersonLink = new PersonPersonLink();
+            $personPersonLink
+                ->setPerson($object)
+                ->setRelated($related)
+                ->setRelation($relation)
+            ;
+            $this->em->persist($personPersonLink);
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create(string $data)
@@ -55,13 +73,14 @@ class PersonService implements PersonServiceInterface
 
         //Adds links from user to person
         $user = isset($data['identifier']) ? $this->em->getRepository('App:User')->findOneByIdentifier($data['identifier']) : null;
-        $user = null !== $user ? $user : $this->mainService->getUser();//Covers the possibilty that no user is found
-        $userPersonLink = new UserPersonLink();
-        $userPersonLink
-            ->setUser($user)
-            ->setPerson($object)
-        ;
-        $this->em->persist($userPersonLink);
+        if (null !== $user) {
+            $userPersonLink = new UserPersonLink();
+            $userPersonLink
+                ->setUser($user)
+                ->setPerson($object)
+            ;
+            $this->em->persist($userPersonLink);
+        }
 
         //Persists in DB
         $this->em->flush();
@@ -192,6 +211,13 @@ class PersonService implements PersonServiceInterface
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
+
+        //Adds relations
+        if (isset($data['relations'])) {
+            foreach ($data['relations'] as $relation) {
+                $this->addRelation($relation['related'], $relation['relation'], $object);
+            }
+        }
 
         //Persists data
         $this->mainService->modify($object);

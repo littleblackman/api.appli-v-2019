@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.17.5
+- Ajout des possibilités pour lier les Child et Person entre eux, ce qui n'était pas effectif (09/01/2019)
+- Modification de l'ordre des Pickups non affectés (09/01/2019)
+- Correction de la création de Person pour autoriser la création sans lien avec le User (09/01/2019)
+
 v0.17.4
 - Ajout d'un PersonPersonLink pour lier les Person (07/01/2019)
 

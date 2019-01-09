@@ -32,7 +32,7 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds link betwenn Product and Component
      */
     public function addLink(int $componentId, Product $object)
     {
