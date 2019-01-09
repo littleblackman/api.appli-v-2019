@@ -193,17 +193,17 @@ class ProductService implements ProductServiceInterface
         $objectArray = $this->mainService->toArray($object->toArray());
 
         //Gets related family
-        if (null !== $object->getFamily()) {
+        if (null !== $object->getFamily() && !$object->getFamily()->getSuppressed()) {
             $objectArray['family'] = $this->mainService->toArray($object->getFamily()->toArray());
         }
 
         //Gets related season
-        if (null !== $object->getSeason()) {
+        if (null !== $object->getSeason() && !$object->getSeason()->getSuppressed()) {
             $objectArray['season'] = $this->mainService->toArray($object->getSeason()->toArray());
         }
 
         //Gets related location
-        if (null !== $object->getLocation()) {
+        if (null !== $object->getLocation() && !$object->getLocation()->getSuppressed()) {
             $objectArray['location'] = $this->mainService->toArray($object->getLocation()->toArray());
         }
 
@@ -211,7 +211,9 @@ class ProductService implements ProductServiceInterface
         if (null !== $object->getComponents()) {
             $components = array();
             foreach($object->getComponents() as $componentLink) {
-                $components[] = $this->mainService->toArray($componentLink->getComponent()->toArray());
+                if (!$componentLink->getComponent()->getSuppressed()) {
+                    $components[] = $this->mainService->toArray($componentLink->getComponent()->toArray());
+                }
             }
             $objectArray['components'] = $components;
         }

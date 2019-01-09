@@ -175,7 +175,7 @@ class DriverPresenceService implements DriverPresenceServiceInterface
         $objectArray = $this->mainService->toArray($object->toArray());
 
         //Gets related driver
-        if (null !== $object->getDriver()) {
+        if (null !== $object->getDriver() && !$object->getDriver()->getSuppressed()) {
             $objectArray['driver'] = $this->driverService->toArray($object->getDriver());
         }
 

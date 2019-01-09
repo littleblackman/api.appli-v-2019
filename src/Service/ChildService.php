@@ -263,9 +263,11 @@ class ChildService implements ChildServiceInterface
         if (null !== $object->getPersons()) {
             $persons = array();
             foreach($object->getPersons() as $personLink) {
-                $personArray = $this->personService->toArray($personLink->getPerson());
-                $personArray['relation'] = $personLink->getRelation();
-                $persons[] = $personArray;
+                if (!$personLink->getPerson()->getSuppressed()) {
+                    $personArray = $this->personService->toArray($personLink->getPerson());
+                    $personArray['relation'] = $personLink->getRelation();
+                    $persons[] = $personArray;
+                }
             }
             $objectArray['persons'] = $persons;
         }
@@ -274,9 +276,11 @@ class ChildService implements ChildServiceInterface
         if (null !== $object->getSiblings()) {
             $siblings = array();
             foreach($object->getSiblings() as $siblingLink) {
-                $siblingArray = $this->mainService->toArray($siblingLink->getSibling()->toArray());
-                $siblingArray['relation'] = $siblingLink->getRelation();
-                $siblings[] = $siblingArray;
+                if (!$siblingLink->getSibling()->getSuppressed()) {
+                    $siblingArray = $this->mainService->toArray($siblingLink->getSibling()->toArray());
+                    $siblingArray['relation'] = $siblingLink->getRelation();
+                    $siblings[] = $siblingArray;
+                }
             }
             $objectArray['siblings'] = $siblings;
         }

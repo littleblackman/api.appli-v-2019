@@ -159,7 +159,9 @@ class SeasonService implements SeasonServiceInterface
         if (null !== $object->getWeeks()) {
             $weeks = array();
             foreach($object->getWeeks() as $week) {
-                $weeks[] = $this->mainService->toArray($week->toArray());
+                if (!$week->getSuppressed()) {
+                    $weeks[] = $this->mainService->toArray($week->toArray());
+                }
             }
             $objectArray['weeks'] = $weeks;
         }

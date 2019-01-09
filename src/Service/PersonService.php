@@ -255,7 +255,9 @@ class PersonService implements PersonServiceInterface
         if (null !== $object->getAddresses()) {
             $addresses = array();
             foreach($object->getAddresses() as $addressLink) {
-                $addresses[] = $this->mainService->toArray($addressLink->getAddress()->toArray());
+                if (!$addressLink->getAddress()->getSuppressed()) {
+                    $addresses[] = $this->mainService->toArray($addressLink->getAddress()->toArray());
+                }
             }
             $objectArray['addresses'] = $addresses;
         }
@@ -263,8 +265,10 @@ class PersonService implements PersonServiceInterface
         //Gets related phones
         if (null !== $object->getPhones()) {
             $phones = array();
-            foreach($object->getPhones() as $addressLink) {
-                $phones[] = $this->mainService->toArray($addressLink->getPhone()->toArray());
+            foreach($object->getPhones() as $phoneLink) {
+                if (!$phoneLink->getPhone()->getSuppressed()) {
+                    $phones[] = $this->mainService->toArray($phoneLink->getPhone()->toArray());
+                }
             }
             $objectArray['phones'] = $phones;
         }
@@ -273,7 +277,9 @@ class PersonService implements PersonServiceInterface
         if (null !== $object->getChildren()) {
             $children = array();
             foreach($object->getChildren() as $childLink) {
-                $children[] = $this->mainService->toArray($childLink->getChild()->toArray());
+                if (!$childLink->getChild()->getSuppressed()) {
+                    $children[] = $this->mainService->toArray($childLink->getChild()->toArray());
+                }
             }
             $objectArray['children'] = $children;
         }
@@ -282,9 +288,11 @@ class PersonService implements PersonServiceInterface
         if (null !== $object->getRelations()) {
             $relations = array();
             foreach($object->getRelations() as $relationLink) {
-                $relationArray = $this->mainService->toArray($relationLink->getRelated()->toArray());
-                $relationArray['relation'] = $relationLink->getRelation();
-                $relations[] = $relationArray;
+                if (!$relationLink->getRelated()->getSuppressed()) {
+                    $relationArray = $this->mainService->toArray($relationLink->getRelated()->toArray());
+                    $relationArray['relation'] = $relationLink->getRelation();
+                    $relations[] = $relationArray;
+                }
             }
             $objectArray['relations'] = $relations;
         }

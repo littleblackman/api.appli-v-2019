@@ -254,12 +254,12 @@ class RideService implements RideServiceInterface
         $objectArray = $this->mainService->toArray($object->toArray());
 
         //Gets related driver
-        if (null !== $object->getDriver()) {
+        if (null !== $object->getDriver() && !$object->getDriver()->getSuppressed()) {
             $objectArray['driver'] = $this->driverService->toArray($object->getDriver());
         }
 
         //Gets related vehicle
-        if (null !== $object->getVehicle()) {
+        if (null !== $object->getVehicle() && !$object->getVehicle()->getSuppressed()) {
             $objectArray['vehicle'] = $this->mainService->toArray($object->getVehicle()->toArray());
         }
 
@@ -268,9 +268,11 @@ class RideService implements RideServiceInterface
             $pickups = array();
             $i = 0;
             foreach($object->getPickups() as $pickup) {
-                $pickups[$i] = $this->mainService->toArray($pickup->toArray());
-                $pickups[$i]['child'] = $this->mainService->toArray($pickup->getChild()->toArray());
-                $i++;
+                if (!$pickup->getSuppressed()) {
+                    $pickups[$i] = $this->mainService->toArray($pickup->toArray());
+                    $pickups[$i]['child'] = $this->mainService->toArray($pickup->getChild()->toArray());
+                    $i++;
+                }
             }
             $objectArray['pickups'] = $pickups;
         }

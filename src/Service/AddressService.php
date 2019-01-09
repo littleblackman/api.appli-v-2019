@@ -193,7 +193,9 @@ class AddressService implements AddressServiceInterface
         if (null !== $object->getPersons()) {
             $persons = array();
             foreach($object->getPersons() as $personLink) {
-                $persons[] = $this->mainService->toArray($personLink->getPerson()->toArray());
+                if (!$personLink->getPerson()->getSuppressed()) {
+                    $persons[] = $this->mainService->toArray($personLink->getPerson()->toArray());
+                }
             }
             $objectArray['persons'] = $persons;
         }

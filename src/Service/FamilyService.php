@@ -137,7 +137,9 @@ class FamilyService implements FamilyServiceInterface
         if (null !== $object->getProducts()) {
             $products = array();
             foreach($object->getProducts() as $product) {
-                $products[] = $this->productService->toArray($product);
+                if (!$product->getSuppressed()) {
+                    $products[] = $this->productService->toArray($product);
+                }
             }
             $objectArray['products'] = $products;
         }

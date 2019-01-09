@@ -189,22 +189,22 @@ class MealService implements MealServiceInterface
         $objectArray = $this->mainService->toArray($object->toArray());
 
         //Gets related child
-        if (null !== $object->getChild()) {
+        if (null !== $object->getChild() && !$object->getChild()->getSuppressed()) {
             $objectArray['child'] = $this->mainService->toArray($object->getChild()->toArray());
         }
 
         //Gets related person
-        if (null !== $object->getPerson()) {
+        if (null !== $object->getPerson() && !$object->getPerson()->getSuppressed()) {
             $objectArray['person'] = $this->mainService->toArray($object->getPerson()->toArray());
         }
 
         //Gets related foods
         if (null !== $object->getFoods()) {
             $foods = array();
-            $i = 0;
             foreach($object->getFoods() as $foodLink) {
-                $foods[$i] = $this->mainService->toArray($foodLink->getFood()->toArray());
-                $i++;
+                if (!$foodLink->getFood()->getSuppressed()) {
+                    $foods[] = $this->mainService->toArray($foodLink->getFood()->toArray());
+                }
             }
             $objectArray['foods'] = $foods;
         }

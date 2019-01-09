@@ -225,17 +225,17 @@ class DriverService implements DriverServiceInterface
         $objectArray = $this->mainService->toArray($object->toArray());
 
         //Gets related person
-        if (null !== $object->getPerson()) {
+        if (null !== $object->getPerson() && !$object->getPerson()->getSuppressed()) {
             $objectArray['person'] = $this->mainService->toArray($object->getPerson()->toArray());
         }
 
         //Gets related vehicle
-        if (null !== $object->getVehicle()) {
+        if (null !== $object->getVehicle() && !$object->getVehicle()->getSuppressed()) {
             $objectArray['vehicle'] = $this->mainService->toArray($object->getVehicle()->toArray());
         }
 
         //Gets related address
-        if (null !== $object->getAddress()) {
+        if (null !== $object->getAddress() && !$object->getAddress()->getSuppressed()) {
             $objectArray['address'] = $this->mainService->toArray($object->getAddress()->toArray());
         }
 
@@ -243,7 +243,9 @@ class DriverService implements DriverServiceInterface
         if (null !== $object->getDriverZones()) {
             $driverZones = array();
             foreach($object->getDriverZones() as $driverZone) {
-                $driverZones[] = $this->mainService->toArray($driverZone->toArray());
+                if (!$driverZone->getSuppressed()) {
+                    $driverZones[] = $this->mainService->toArray($driverZone->toArray());
+                }
             }
             $objectArray['driverZones'] = $driverZones;
         }

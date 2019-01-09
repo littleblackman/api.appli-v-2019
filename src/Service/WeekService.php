@@ -143,7 +143,7 @@ class WeekService implements WeekServiceInterface
         $objectArray = $this->mainService->toArray($object->toArray());
 
         //Gets related season
-        if (null !== $object->getSeason()) {
+        if (null !== $object->getSeason() && !$object->getSeason()->getSuppressed()) {
             $objectArray['season'] = $this->mainService->toArray($object->getSeason()->toArray());
         }
 

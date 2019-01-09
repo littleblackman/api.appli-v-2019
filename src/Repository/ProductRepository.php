@@ -47,7 +47,6 @@ class ProductRepository extends EntityRepository
             ->leftJoin('cl.component', 'c')
             ->where('p.productId = :productId')
             ->andWhere('p.suppressed = 0')
-            ->andWhere('c.suppressed = 0 OR c.suppressed IS NULL')
             ->setParameter('productId', $productId)
             ->getQuery()
             ->getOneOrNullResult()
