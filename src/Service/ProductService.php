@@ -37,7 +37,7 @@ class ProductService implements ProductServiceInterface
     public function addLink(int $componentId, Product $object)
     {
         $component = $this->em->getRepository('App:Component')->findOneById($componentId);
-        if ($component instanceof Component) {
+        if ($component instanceof Component && !$component->getSuppressed()) {
             $productComponentLink = new ProductComponentLink();
             $productComponentLink
                 ->setProduct($object)

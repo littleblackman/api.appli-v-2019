@@ -196,8 +196,7 @@ class DriverService implements DriverServiceInterface
         if (is_array($data) && !empty($data)) {
             foreach ($data as $driverPriority) {
                 $driver = $this->em->getRepository('App:Driver')->findOneById($driverPriority['driver']);
-
-                if ($driver instanceof Driver) {
+                if ($driver instanceof Driver && !$driver->getSuppressed()) {
                     $driver->setPriority($driverPriority['priority']);
                     $this->mainService->modify($driver);
                     $this->mainService->persist($driver);

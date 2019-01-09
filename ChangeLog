@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.17.6.1
+- Ajout du filtrage pour les résultats de ->findOneById() (09/01/2019)
+
 v0.17.6
 - Correction des request leftJoin qui n'affichaient rien si un élément du leftJoin manquait (09/01/2019)
 - Ajout du filtrage si suppressed = true avant l'affichage des tableaux (09/01/2019)

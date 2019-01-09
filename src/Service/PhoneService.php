@@ -33,7 +33,7 @@ class PhoneService implements PhoneServiceInterface
     public function addLink(int $personId, Phone $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person) {
+        if ($person instanceof Person && !$person->getSuppressed()) {
             $personPhoneLink = new PersonPhoneLink();
             $personPhoneLink
                 ->setPerson($person)
@@ -146,7 +146,7 @@ class PhoneService implements PhoneServiceInterface
     public function removeLink(int $personId, Phone $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person) {
+        if ($person instanceof Person && !$person->getSuppressed()) {
             $personPhoneLink = $this->em->getRepository('App:PersonPhoneLink')->findOneBy(array('person' => $person, 'phone' => $object));
             $this->em->remove($personPhoneLink);
         }

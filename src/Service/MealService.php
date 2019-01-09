@@ -33,7 +33,7 @@ class MealService implements MealServiceInterface
     public function addLink(int $foodId, Meal $object)
     {
         $food = $this->em->getRepository('App:Food')->findOneById($foodId);
-        if ($food instanceof Food) {
+        if ($food instanceof Food && !$food->getSuppressed()) {
             $mealFoodLink = new MealFoodLink();
             $mealFoodLink
                 ->setFood($food)

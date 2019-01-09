@@ -225,10 +225,10 @@ class PickupService implements PickupServiceInterface
         if (is_array($data) && !empty($data)) {
             foreach ($data as $dispatch) {
                 $pickup =  $this->em->getRepository('App:Pickup')->findOneById($dispatch['pickupId']);
-                if ($pickup instanceof Pickup) {
+                if ($pickup instanceof Pickup && !$pickup->getSuppressed()) {
                     //Modifies Ride
                     $ride = $this->em->getRepository('App:Ride')->findOneById($dispatch['rideId']);
-                    if ($ride instanceof Ride) {
+                    if ($ride instanceof Ride && !$ride->getSuppressed()) {
                         $pickup->setRide($ride);
                     } elseif (null === $dispatch['rideId'] || 'null' === $dispatch['rideId']) {
                         $pickup->setRide(null);

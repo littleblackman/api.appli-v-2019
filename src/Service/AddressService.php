@@ -33,7 +33,7 @@ class AddressService implements AddressServiceInterface
     public function addLink(int $personId, Address $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person) {
+        if ($person instanceof Person && !$person->getSuppressed()) {
             $personAddressLink = new PersonAddressLink();
             $personAddressLink
                 ->setPerson($person)
@@ -175,7 +175,7 @@ class AddressService implements AddressServiceInterface
     public function removeLink(int $personId, Address $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person) {
+        if ($person instanceof Person && !$person->getSuppressed()) {
             $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $person, 'address' => $object));
             $this->em->remove($personAddressLink);
         }

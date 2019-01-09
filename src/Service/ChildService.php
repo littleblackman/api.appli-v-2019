@@ -38,7 +38,7 @@ class ChildService implements ChildServiceInterface
     public function addLink(int $personId, string $relation, Child $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person) {
+        if ($person instanceof Person && !$person->getSuppressed()) {
             $childPersonLink = new ChildPersonLink();
             $childPersonLink
                 ->setRelation(htmlspecialchars($relation))
@@ -55,7 +55,7 @@ class ChildService implements ChildServiceInterface
     public function addSibling(int $childId, string $relation, Child $object)
     {
         $child = $this->em->getRepository('App:Child')->findOneById($childId);
-        if ($child instanceof Child) {
+        if ($child instanceof Child && !$child->getSuppressed()) {
             $childChildLink = new ChildChildLink();
             $childChildLink
                 ->setRelation(htmlspecialchars($relation))
@@ -245,7 +245,7 @@ class ChildService implements ChildServiceInterface
     public function removeLink(int $personId, Child $object)
     {
         $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person) {
+        if ($person instanceof Person && !$person->getSuppressed()) {
             $objectPersonLink = $this->em->getRepository('App:ChildPersonLink')->findOneBy(array('child' => $object, 'person' => $person));
             $this->em->remove($objectPersonLink);
         }
