@@ -86,6 +86,12 @@ class Person
     private $email;
 
     /**
+     * @ORM\OneToMany(targetEntity="PersonPersonLink", mappedBy="person")
+     * @SWG\Property(ref=@Model(type=Person::class))
+     */
+    private $relations;
+
+    /**
      * @ORM\OneToOne(targetEntity="UserPersonLink", mappedBy="person")
      */
     private $userPersonLink;
@@ -95,6 +101,7 @@ class Person
         $this->addresses = new ArrayCollection();
         $this->phones = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->relations = new ArrayCollection();
     }
 
     /**
@@ -256,6 +263,11 @@ class Person
         return $this;
     }
 
+    public function getRelations()
+    {
+        return $this->relations;
+    }
+
     public function getUserPersonLink(): ?UserPersonLink
     {
         return $this->userPersonLink;
@@ -264,6 +276,29 @@ class Person
     public function setUserPersonLink(?UserPersonLink $userPersonLink): self
     {
         $this->userPersonLink = $userPersonLink;
+
+        return $this;
+    }
+
+    public function addRelation(PersonPersonLink $relation): self
+    {
+        if (!$this->relations->contains($relation)) {
+            $this->relations[] = $relation;
+            $relation->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(PersonPersonLink $relation): self
+    {
+        if ($this->relations->contains($relation)) {
+            $this->relations->removeElement($relation);
+            // set the owning side to null (unless already changed)
+            if ($relation->getPerson() === $this) {
+                $relation->setPerson(null);
+            }
+        }
 
         return $this;
     }

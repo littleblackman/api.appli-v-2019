@@ -252,6 +252,17 @@ class PersonService implements PersonServiceInterface
             $objectArray['children'] = $children;
         }
 
+        //Gets related persons
+        if (null !== $object->getRelations()) {
+            $relations = array();
+            foreach($object->getRelations() as $relationLink) {
+                $relationArray = $this->mainService->toArray($relationLink->getRelated()->toArray());
+                $relationArray['relation'] = $relationLink->getRelation();
+                $relations[] = $relationArray;
+            }
+            $objectArray['relations'] = $relations;
+        }
+
         return $objectArray;
     }
 }
