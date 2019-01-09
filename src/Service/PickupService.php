@@ -94,9 +94,8 @@ class PickupService implements PickupServiceInterface
     public function affectRide($rides, $pickups, $postal, $priority)
     {
         //Filters Rides to keep only those that are NOT full
-        $defaultPlaces = 8;
         $rides = array_filter($rides, function($i) {
-            $ridePlaces = 0 === (int) $i->getPlaces() ? $defaultPlaces : (int) $i->getPlaces();
+            $ridePlaces = 0 === (int) $i->getPlaces() ? 8 : (int) $i->getPlaces();
             return (int) $ridePlaces > $i->getOccupiedPlaces() && !$i->getLocked();
         });
 
@@ -114,7 +113,7 @@ class PickupService implements PickupServiceInterface
              */
             $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getStart()->format('H:i:s'));
             $rideDateArrival = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getArrival()->format('H:i:s'));
-            $ridePlaces = 0 === (int) $ride->getPlaces() ? $defaultPlaces : (int) $ride->getPlaces();
+            $ridePlaces = 0 === (int) $ride->getPlaces() ? 8 : (int) $ride->getPlaces();
             if (isset($ride->getDriver()->getDriverZones()[$priority]) &&
                 $postal === (int) $ride->getDriver()->getDriverZones()[$priority]->getPostal() &&
                 $pickups['places'] + $ride->getOccupiedPlaces() <= $ridePlaces &&
