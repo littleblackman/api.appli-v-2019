@@ -28,6 +28,10 @@ class RideVoter extends Voter
 
     public const RIDE_LIST = 'rideList';
 
+    public const RIDE_LOCK = 'rideLock';
+
+    public const RIDE_UNLOCK = 'rideUnlock';
+
     public const RIDE_MODIFY = 'rideModify';
 
     private const ATTRIBUTES = array(
@@ -35,7 +39,9 @@ class RideVoter extends Voter
         self::RIDE_DELETE,
         self::RIDE_DISPLAY,
         self::RIDE_LIST,
+        self::RIDE_LOCK,
         self::RIDE_MODIFY,
+        self::RIDE_UNLOCK,
     );
 
     public function __construct(Security $security)
@@ -73,8 +79,14 @@ class RideVoter extends Voter
             case self::RIDE_LIST:
                 return $this->canList();
                 break;
+            case self::RIDE_LOCK:
+                return $this->canLock();
+                break;
             case self::RIDE_MODIFY:
                 return $this->canModify();
+                break;
+            case self::RIDE_UNLOCK:
+                return $this->canUnlock();
                 break;
         }
 
@@ -170,6 +182,27 @@ class RideVoter extends Voter
     }
 
     /**
+     * Checks if is allowed to lock
+     */
+    private function canLock()
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Checks if is allowed to modify
      */
     private function canModify()
@@ -178,6 +211,27 @@ class RideVoter extends Voter
         $roles = array(
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if is allowed to unlock
+     */
+    private function canUnlock()
+    {
+        //Checks roles allowed
+        $roles = array(
             'ROLE_MANAGER',
             'ROLE_LEADER',
             'ROLE_ADMIN',

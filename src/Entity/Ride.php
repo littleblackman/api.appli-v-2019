@@ -35,6 +35,13 @@ class Ride
     private $rideId;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="locked", type="boolean")
+     */
+    private $locked;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="kind", type="string", length=8, nullable=true)
@@ -140,6 +147,18 @@ class Ride
     public function getRideId(): ?int
     {
         return $this->rideId;
+    }
+
+    public function getLocked(): ?bool
+    {
+        return $this->locked;
+    }
+
+    public function setLocked(?bool $locked): self
+    {
+        $this->locked = $locked;
+
+        return $this;
     }
 
     public function getKind(): ?string

@@ -97,7 +97,7 @@ class PickupService implements PickupServiceInterface
         $defaultPlaces = 8;
         $rides = array_filter($rides, function($i) {
             $ridePlaces = 0 === (int) $i->getPlaces() ? $defaultPlaces : (int) $i->getPlaces();
-            return (int) $ridePlaces > $i->getOccupiedPlaces();
+            return (int) $ridePlaces > $i->getOccupiedPlaces() && !$i->getLocked();
         });
 
         //Filters Pickups to keep only those that are NOT affected

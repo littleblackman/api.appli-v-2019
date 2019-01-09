@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.17.3
+- Ajout des Routes pour lock/unlock Ride (09/01/2019)
+
 v0.17.2
 - Ajout de `symfony/dotenv` dans le require pour pouvoir mettre l'environnement (08/01/2019)
 

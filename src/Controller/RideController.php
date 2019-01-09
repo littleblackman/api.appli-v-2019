@@ -439,4 +439,88 @@ class RideController extends AbstractController
 
         return new JsonResponse($suppressedData);
     }
+
+//LOCK
+
+    /**
+     * Locks a Ride
+     *
+     * @Route("/ride/lock/{rideId}",
+     *    name="ride_lock",
+     *    requirements={"rideId": "^([0-9]+)"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("ride", expr="repository.findOneById(rideId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="ride", ref=@Model(type=Ride::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="rideId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the ride",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Ride")
+     */
+    public function lock(Ride $ride)
+    {
+        $this->denyAccessUnlessGranted('rideLock', $ride);
+
+        $lockData = $this->rideService->lock($ride);
+
+        return new JsonResponse($lockData);
+    }
+
+//UNLOCK
+
+    /**
+     * Unlocks a Ride
+     *
+     * @Route("/ride/unlock/{rideId}",
+     *    name="ride_unlock",
+     *    requirements={"rideId": "^([0-9]+)"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("ride", expr="repository.findOneById(rideId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="ride", ref=@Model(type=Ride::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="rideId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the ride",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Ride")
+     */
+    public function unlock(Ride $ride)
+    {
+        $this->denyAccessUnlessGranted('rideUnlock', $ride);
+
+        $lockData = $this->rideService->unlock($ride);
+
+        return new JsonResponse($lockData);
+    }
 }
