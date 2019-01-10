@@ -49,6 +49,13 @@ class Ride
     private $kind;
 
     /**
+     * @var int|null
+     *
+     * @ORM\Column(name="linked_ride_id", type="integer", nullable=true)
+     */
+    private $linkedRide;
+
+    /**
      * @var DateTime|null
      *
      * @ORM\Column(name="date", type="date")
@@ -169,6 +176,19 @@ class Ride
     public function setKind(?string $kind): self
     {
         $this->kind = $kind;
+
+        return $this;
+    }
+
+
+    public function getLinkedRide(): ?int
+    {
+        return $this->linkedRide;
+    }
+
+    public function setLinkedRide(?int $linkedRide): self
+    {
+        $this->linkedRide = $linkedRide;
 
         return $this;
     }

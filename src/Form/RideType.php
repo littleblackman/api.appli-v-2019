@@ -29,6 +29,9 @@ class RideType extends AbstractType
             ->add('kind', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('linkedRide', IntegerType::class, array(
+                'required' => false,
+                ))
             ->add('date', DateType::class, array(
                 'required' => false,
                 'widget' => 'single_text',
