@@ -92,7 +92,7 @@ class Person
     private $relations;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserPersonLink", mappedBy="person")
+     * @ORM\OneToOne(targetEntity="UserPersonLink", mappedBy="person", cascade={"persist"})
      */
     private $userPersonLink;
 

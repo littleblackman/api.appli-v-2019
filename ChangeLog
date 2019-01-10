@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.17.7
+- Modification de la suppression d'un utilisateur pour le marquer comme supprimé ainsi que tous les "objets" liés (07/01/2019)
+
 v0.17.6.3
 - Suppression de l'obligation de combustible pour Vehicle (10/01/2019)
 
