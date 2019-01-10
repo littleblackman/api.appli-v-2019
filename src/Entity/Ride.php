@@ -49,9 +49,10 @@ class Ride
     private $kind;
 
     /**
-     * @var int|null
+     * @var Ride
      *
-     * @ORM\Column(name="linked_ride_id", type="integer", nullable=true)
+     * @ORM\OneToOne(targetEntity="Ride")
+     * @ORM\JoinColumn(name="linked_ride_id", referencedColumnName="ride_id")
      */
     private $linkedRide;
 
@@ -181,12 +182,12 @@ class Ride
     }
 
 
-    public function getLinkedRide(): ?int
+    public function getLinkedRide(): ?Ride
     {
         return $this->linkedRide;
     }
 
-    public function setLinkedRide(?int $linkedRide): self
+    public function setLinkedRide(?Ride $linkedRide): self
     {
         $this->linkedRide = $linkedRide;
 

@@ -36,15 +36,23 @@ class RideService implements RideServiceInterface
     }
 
     /**
-     * Adds time's data (should be done from RideType but it returns null...)
+     * Adds specific data that could not be added via generic method
      */
-    public function addTimeData(Ride $object, array $data)
+    public function addSpecificData(Ride $object, array $data)
     {
+        //Should be done from RideType but it returns null...
         if (isset($data['start'])) {
             $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
         }
+
+        //Should be done from RideType but it returns null...
         if (isset($data['arrival'])) {
             $object->setArrival(DateTime::createFromFormat('H:i:s', $data['arrival']));
+        }
+
+        //Converts to boolean
+        if (isset($data['locked'])) {
+            $object->setLocked((bool) $data['locked']);
         }
     }
 
@@ -56,7 +64,7 @@ class RideService implements RideServiceInterface
         //Submits data
         $object = new Ride();
         $data = $this->mainService->submit($object, 'ride-create', $data);
-        $this->addTimeData($object, $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -84,7 +92,7 @@ class RideService implements RideServiceInterface
             //Submits data
             $object = new Ride();
             $this->mainService->submit($object, 'ride-create', $rideData);
-            $this->addTimeData($object, $rideData);
+            $this->addSpecificData($object, $rideData);
 
             //Checks if entity has been filled
             $this->isEntityFilled($object);
@@ -228,7 +236,7 @@ class RideService implements RideServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'ride-modify', $data);
-        $this->addTimeData($object, $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);

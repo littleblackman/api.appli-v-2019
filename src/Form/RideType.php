@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Driver;
+use App\Entity\Ride;
 use App\Entity\Vehicle;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -29,8 +30,9 @@ class RideType extends AbstractType
             ->add('kind', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('linkedRide', IntegerType::class, array(
+            ->add('linkedRide', EntityType::class, array(
                 'required' => false,
+                'class' => Ride::class,
                 ))
             ->add('date', DateType::class, array(
                 'required' => false,

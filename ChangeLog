@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.17.8.1
+- Correction `linkedRideId` (10/01/2019)
+
 v0.17.8
 - Ajout d'un champ `linkedRideId` dans les Ride (10/01/2019)
 
