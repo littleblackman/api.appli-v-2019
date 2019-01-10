@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.17.8.2
+- Corrections DriverPresenceService.php et ProductService (10/01/2019)
+
 v0.17.8.1
 - Correction `linkedRideId` (10/01/2019)
 

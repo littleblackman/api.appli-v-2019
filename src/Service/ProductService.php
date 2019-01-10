@@ -48,6 +48,17 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
+     * Adds specific data that could not be added via generic method
+     */
+    public function addSpecificData(Product $object, array $data)
+    {
+        //Converts to boolean
+        if (isset($data['transport'])) {
+            $object->setTransport((bool) $data['transport']);
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create(string $data)
@@ -55,6 +66,7 @@ class ProductService implements ProductServiceInterface
         //Submits data
         $object = new Product();
         $data = $this->mainService->submit($object, 'product-create', $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -155,19 +167,7 @@ class ProductService implements ProductServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'product-modify', $data);
-        $fieldsArray = array(
-            'daysAvailable',
-            'duration',
-            'expectedTimes',
-        );
-        foreach ($fieldsArray as $field) {
-            if (isset($data[$field]) && null !== $data[$field]) {
-                $method = 'set' . ucfirst($field);
-                if (method_exists($object, $method)) {
-                    $object->$method($data[$field]);
-                }
-            }
-        }
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);

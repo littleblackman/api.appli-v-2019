@@ -31,13 +31,16 @@ class DriverPresenceService implements DriverPresenceServiceInterface
     }
 
     /**
-     * Adds time's data (should be done from RideType but it returns null...)
+     * Adds specific data that could not be added via generic method
      */
-    public function addTimeData(DriverPresence $object, array $data)
+    public function addSpecificData(DriverPresence $object, array $data)
     {
+        //Should be done from DriverPresenceType but it returns null...
         if (isset($data['start'])) {
             $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
         }
+
+        //Should be done from DriverPresenceType but it returns null...
         if (isset($data['end'])) {
             $object->setEnd(DateTime::createFromFormat('H:i:s', $data['end']));
         }
@@ -57,7 +60,7 @@ class DriverPresenceService implements DriverPresenceServiceInterface
                     $object = new DriverPresence();
                     //Submits data
                     $this->mainService->submit($object, 'driver-presence-create', $driverPresence);
-                    $this->addTimeData($object, $driverPresence);
+                    $this->addSpecificData($object, $driverPresence);
 
                     //Checks if entity has been filled
                     $this->isEntityFilled($object);
