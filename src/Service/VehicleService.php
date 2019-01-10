@@ -81,8 +81,7 @@ class VehicleService implements VehicleServiceInterface
     public function isEntityFilled(Vehicle $object)
     {
         if (null === $object->getName() ||
-            null === $object->getMatriculation() ||
-            null === $object->getCombustible()) {
+            null === $object->getMatriculation()) {
             throw new UnprocessableEntityHttpException('Missing data for Vehicle -> ' . json_encode($object->toArray()));
         }
     }

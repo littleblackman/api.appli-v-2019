@@ -167,7 +167,7 @@ class DriverService implements DriverServiceInterface
                     $this->em->remove($driverZone);
                 }
 
-                //Adds sublitted zones
+                //Adds submitted zones
                 foreach ($links as $link) {
                     $this->addZone($object, $link['postal'], $link['priority']);
                 }
