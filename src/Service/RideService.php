@@ -183,7 +183,7 @@ class RideService implements RideServiceInterface
     }
 
     /**
-     * Returns the ride linked to date and driver
+     * Returns the rides linked to date and driver
      * @return array
      */
     public function findAllByDateByDriver(string $date, $driver)
@@ -191,6 +191,30 @@ class RideService implements RideServiceInterface
         return $this->em
             ->getRepository('App:Ride')
             ->findAllByDateByDriver($date, $driver)
+        ;
+    }
+
+    /**
+     * Returns the rides that are linked to another one for date
+     * @return array
+     */
+    public function findAllLinked(string $date)
+    {
+        return $this->em
+            ->getRepository('App:Ride')
+            ->findAllLinked($date)
+        ;
+    }
+
+    /**
+     * Returns the ride correspoonding to rideId
+     * @return array
+     */
+    public function findOneById(int $rideId)
+    {
+        return $this->em
+            ->getRepository('App:Ride')
+            ->findOneById($rideId)
         ;
     }
 

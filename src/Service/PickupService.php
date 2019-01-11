@@ -36,18 +36,39 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Affects all the Pickups to Rides for a specific date
+     * Affects the Pickups to Rides for a specific date
      */
     public function affect($date, $kind, $force)
     {
-        //Defines Pickups to use
-        if ($force) {
-            $pickupsSortOrder = $this->countAllByDate($date, $kind);
-            $pickups = $this->findAllByDate($date, $kind);
-        } else {
-            $pickupsSortOrder = $this->countAllUnaffected($date, $kind);
-            $pickups = $this->findAllUnaffected($date, $kind);
+        //Unaffects Pickups if force is requested
+        if($force) {
+            $this->unaffect($date, $kind);
         }
+
+        //Affects all the Pickups
+        if ('all' === $kind) {
+            //Affect the dropin Pickups
+            $this->affectPickups($date, 'dropin');
+
+            //Affect the dropoff Pickups using LinkedRide
+            $this->affectPickupsLinkedRide($date);
+
+            //Affect the dropoff Pickups not linked via LinkedRide
+            $this->affectPickups($date, 'dropoff');
+        //Affects only the specific kind of Pickup
+        } else {
+            $this->affectPickups($date, $kind);
+        }
+    }
+
+    /**
+     * Affects the Pickups to Rides
+     */
+    public function affectPickups($date, $kind)
+    {
+        //Defines Pickups to use
+        $pickupsSortOrder = $this->countAllUnaffected($date, $kind);
+        $pickups = $this->findAllUnaffected($date, $kind);
 
         if (!empty($pickups)) {
             //Sorts Pickup by greater number of postal code and builds the array([postal][md5(address)]['pickups'][Pickups]) to group same addresses in same Ride
@@ -89,6 +110,49 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
+     * Affects all the Pickups that correspond between Ride and LinkedRide
+     */
+    public function affectPickupLinkedRide($ride)
+    {
+        $linkedRide = $this->rideService->findOneById($ride->getLinkedRide()->getRideId());
+        $linkedRideDateStart = new DateTime($linkedRide->getDate()->format('Y-m-d') . ' ' . $linkedRide->getStart()->format('H:i:s'));
+        $linkedRideDateArrival = new DateTime($linkedRide->getDate()->format('Y-m-d') . ' ' . $linkedRide->getArrival()->format('H:i:s'));
+
+        $pickups = $ride->getPickups();
+        foreach ($pickups as $pickup) {
+            //Affects Pickup to LinkedRide if there is a correponding dropoff for the same child and with is start within the time slot for the Ride
+            $pickupDropoff = $this->em->getRepository('App:Pickup')->findOneByDateKindChild($ride->getDate()->format('Y-m-d'), 'dropoff', $pickup->getChild());
+            if (null !== $pickupDropoff &&
+                $pickupDropoff->getStart() >= $linkedRideDateStart &&
+                $pickupDropoff->getStart() <= $linkedRideDateArrival
+            ) {
+                $pickupDropoff
+                    ->setRide($linkedRide)
+                    ->setSortOrder($linkedRide->getPickups()->count() + 1)
+                    ->setStatus('automatic')
+                    ->setStatusChange(new DateTime())
+                ;
+                $this->mainService->modify($pickupDropoff);
+                $this->mainService->persist($pickupDropoff);
+                $this->em->refresh($linkedRide);
+            }
+        }
+    }
+
+    /**
+     * Affects the Pickups (dropoff) to Rides using LinkedRide
+     */
+    public function affectPickupsLinkedRide($date)
+    {
+        $rides = $this->rideService->findAllLinked($date);
+        if (null !== $rides) {
+            foreach ($rides as $ride) {
+                $this->affectPickupLinkedRide($ride);
+            }
+        }
+    }
+
+    /**
      * Affects the Ride to the Pickup
      */
     public function affectRide($rides, $pickups, $postal, $priority)
@@ -117,7 +181,9 @@ class PickupService implements PickupServiceInterface
             if (isset($ride->getDriver()->getDriverZones()[$priority]) &&
                 $postal === (int) $ride->getDriver()->getDriverZones()[$priority]->getPostal() &&
                 $pickups['places'] + $ride->getOccupiedPlaces() <= $ridePlaces &&
-                $pickups['start'] >= $rideDateStart && $pickups['start'] <= $rideDateArrival) {
+                $pickups['start'] >= $rideDateStart &&
+                $pickups['start'] <= $rideDateArrival
+            ) {
                 foreach ($pickups['pickups'] as $pickup) {
                     $pickup
                         ->setRide($ride)
@@ -148,17 +214,6 @@ class PickupService implements PickupServiceInterface
         ) {
             $this->mainService->addCoordinates($object);
         }
-    }
-
-    /**
-     * Gets all the Pickups by date
-     */
-    public function countAllByDate(string $date, string $kind)
-    {
-        return $this->em
-            ->getRepository('App:Pickup')
-            ->countAllByDate($date, $kind)
-        ;
     }
 
     /**
@@ -306,7 +361,7 @@ class PickupService implements PickupServiceInterface
      */
     public function geocode()
     {
-        $counterRecords = 0;
+        $counter = 0;
         $pickups = $this->em
             ->getRepository('App:Pickup')
             ->findGeocode()
@@ -315,11 +370,11 @@ class PickupService implements PickupServiceInterface
             if ($this->mainService->addCoordinates($pickup)) {
                 $this->mainService->modify($pickup);
                 $this->mainService->persist($pickup);
-                $counterRecords++;
+                $counter++;
             }
         }
 
-        return $counterRecords;
+        return $counter;
     }
 
     /**
@@ -389,29 +444,33 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Unaffects all the pickups to rides and drivers for a specific date
+     * Unaffects all the pickups from rides for a specific date
      */
     public function unaffect($date, $kind)
     {
-        $pickups = $this->findAllByDate($date, $kind);
-        if (!empty($pickups)) {
-            $counter = 0;
-            foreach ($pickups as $pickup) {
-                $pickup
-                    ->setRide(null)
-                    ->setSortOrder(null)
-                    ->setStatus(null)
-                    ->setStatusChange(new DateTime())
-                ;
-                $this->mainService->modify($pickup);
+        $counter = 0;
+        $kinds = 'all' === $kind ? array('dropin','dropoff') : array($kind);
+        foreach ($kinds as $kind) {
+            $pickups = $this->findAllByDate($date, $kind);
+            if (!empty($pickups)) {
+                foreach ($pickups as $pickup) {
+                    $pickup
+                        ->setRide(null)
+                        ->setSortOrder(null)
+                        ->setStatus(null)
+                        ->setStatusChange(new DateTime())
+                    ;
+                    $this->mainService->modify($pickup);
 
-                $counter++;
-                if (20 === $counter) {
-                    $this->em->flush();
+                    $counter++;
+                    if (20 === $counter) {
+                        $this->em->flush();
+                        $counter = 0;
+                    }
                 }
             }
-
-            $this->em->flush();
         }
+
+        $this->em->flush();
     }
 }

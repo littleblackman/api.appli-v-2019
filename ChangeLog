@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.18
+- Suppression des méthodes de sélection des Pickup quand force === true pour faire un unaffect d'abord et ensuite select des unaffected (11/01/2019)
+- Mise en place de la possibilité d'affecter tous les pickups en utilisant 'all' (11/01/2019)
+- Mise en place de la possibilité d'affecter des Pickups sur un Ride lié (11/01/2019)
+
 v0.17.8.2
 - Corrections DriverPresenceService.php et ProductService (10/01/2019)
 

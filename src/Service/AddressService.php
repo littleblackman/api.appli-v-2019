@@ -114,7 +114,7 @@ class AddressService implements AddressServiceInterface
      */
     public function geocode()
     {
-        $counterRecords = 0;
+        $counter = 0;
         $addresses = $this->em
             ->getRepository('App:Address')
             ->findGeocode()
@@ -123,11 +123,11 @@ class AddressService implements AddressServiceInterface
             if ($this->mainService->addCoordinates($address)) {
                 $this->mainService->modify($address);
                 $this->mainService->persist($address);
-                $counterRecords++;
+                $counter++;
             }
         }
 
-        return $counterRecords;
+        return $counter;
     }
 
     /**

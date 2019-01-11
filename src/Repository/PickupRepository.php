@@ -11,28 +11,6 @@ use Doctrine\ORM\EntityRepository;
 class PickupRepository extends EntityRepository
 {
     /**
-     * Counts all the pickups for a date by postal
-     */
-    public function countAllByDate($date, $kind)
-    {
-        return $this->createQueryBuilder('p')
-            ->select('p.postal, COUNT(p.postal) as countPostal')
-            ->where('p.start LIKE :date')
-            ->andWhere('p.kind = :kind')
-            ->andWhere('p.suppressed = 0')
-            ->setParameter('date', $date . '%')
-            ->setParameter('kind', $kind)
-            ->groupBy('p.postal')
-            ->distinct()
-            ->setParameter('date', $date . '%')
-            ->orderBy('countPostal', 'DESC')
-            ->addOrderBy('p.postal', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
      * Counts all the pickups that are not affected to a ride by postal
      */
     public function countAllUnaffected($date, $kind)
@@ -150,6 +128,25 @@ class PickupRepository extends EntityRepository
             ->where('p.pickupId = :pickupId')
             ->andWhere('p.suppressed = 0')
             ->setParameter('pickupId', $pickupId)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    /**
+     * Returns the pickup that correspond to date, kind and child
+     */
+    public function findOneByDateKindChild($date, $kind, $child)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.start LIKE :date')
+            ->andWhere('p.kind = :kind')
+            ->andWhere('p.child = :child')
+            ->andWhere('p.ride IS NULL')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('kind', $kind)
+            ->setParameter('child', $child)
             ->getQuery()
             ->getOneOrNullResult()
         ;

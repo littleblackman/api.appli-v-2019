@@ -172,13 +172,13 @@ class PickupController extends AbstractController
 //AFFECT
 
     /**
-     * Affects all the Pickups to the rides and drivers
+     * Affects all the Pickups to the rides
      *
      * @Route("/pickup/affect/{date}/{kind}/{force}",
      *    name="pickup_affect",
      *    requirements={
      *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
-     *        "kind": "^(dropin|dropoff)$",
+     *        "kind": "^(all|dropin|dropoff)$",
      *        "force": "^(true|false)$"
      *    },
      *    defaults={"force": false},
@@ -204,7 +204,7 @@ class PickupController extends AbstractController
      * @SWG\Parameter(
      *     name="kind",
      *     in="path",
-     *     description="Kind of Pickup (dropin|dropoff)",
+     *     description="Kind of Pickup (all|dropin|dropoff)",
      *     type="string",
      * )
      * @SWG\Parameter(
@@ -224,16 +224,55 @@ class PickupController extends AbstractController
         return new JsonResponse(array('status' => true));
     }
 
+//AFFECT TO LINKED RIDE
+
+    /**
+     * Affects all the Pickups to the linked Ride
+     *
+     * @Route("/pickup/affect-linked-ride/{rideId}",
+     *    name="pickup_affect_linked_ride",
+     *    requirements={"rideId": "^([0-9]+)$"},
+     *    methods={"HEAD", "PUT"})
+     * @Entity("ride", expr="repository.findOneById(rideId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="rideId",
+     *     in="path",
+     *     description="Id of the current Ride (dropin one)",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function affectLinkedRide(Ride $ride)
+    {
+        $this->denyAccessUnlessGranted('pickupModify', null);
+
+        $this->pickupService->affectPickupLinkedRide($ride);
+
+        return new JsonResponse(array('status' => true));
+    }
+
 //UNAFFECT
 
     /**
-     * Unaffects all the Pickups to the rides and drivers
+     * Unaffects all the Pickups to the rides
      *
      * @Route("/pickup/unaffect/{date}/{kind}",
      *    name="pickup_unaffect",
      *    requirements={
      *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
-     *        "kind": "^(dropin|dropoff)$"
+     *        "kind": "^(all|dropin|dropoff)$"
      *    },
      *    methods={"HEAD", "PUT"})
      *
@@ -257,7 +296,7 @@ class PickupController extends AbstractController
      * @SWG\Parameter(
      *     name="kind",
      *     in="path",
-     *     description="Kind of Pickup (dropin|dropoff)",
+     *     description="Kind of Pickup (all|dropin|dropoff)",
      *     type="string",
      * )
      * @SWG\Tag(name="Pickup")

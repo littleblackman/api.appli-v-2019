@@ -84,6 +84,22 @@ class RideRepository extends EntityRepository
     }
 
     /**
+     * Returns the rides that are linked to another one for date
+     */
+    public function findAllLinked(string $date)
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.date LIKE :date')
+            ->andWhere('r.linkedRide IS NOT NULL')
+            ->andWhere('r.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->orderBy('r.start', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns the rides by date and driver
      */
     public function findAllByDateByDriver($date, $driver)
