@@ -232,30 +232,6 @@ class RideService implements RideServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function lock(Ride $object)
-    {
-        //Submits data
-        $data = json_encode(array('locked' => true));
-        $data = $this->mainService->submit($object, 'ride-modify', $data);
-
-        //Checks if entity has been filled
-        $this->isEntityFilled($object);
-
-        //Persists data
-        $this->mainService->modify($object);
-        $this->mainService->persist($object);
-
-        //Returns data
-        return array(
-            'status' => true,
-            'message' => 'Trajet locked',
-            'ride' => $this->toArray($object),
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function modify(Ride $object, string $data)
     {
         //Submits data
@@ -295,6 +271,11 @@ class RideService implements RideServiceInterface
             $objectArray['vehicle'] = $this->mainService->toArray($object->getVehicle()->toArray());
         }
 
+        //Gets related LinkedRide
+        if (null !== $object->getLinkedRide() && !$object->getLinkedRide()->getSuppressed()) {
+            $objectArray['linkedRide'] = $this->mainService->toArray($object->getLinkedRide()->toArray());
+        }
+
         //Gets related pickups
         if (null !== $object->getPickups()) {
             $pickups = array();
@@ -310,29 +291,5 @@ class RideService implements RideServiceInterface
         }
 
         return $objectArray;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function unlock(Ride $object)
-    {
-        //Submits data
-        $data = json_encode(array('locked' => false));
-        $data = $this->mainService->submit($object, 'ride-modify', $data);
-
-        //Checks if entity has been filled
-        $this->isEntityFilled($object);
-
-        //Persists data
-        $this->mainService->modify($object);
-        $this->mainService->persist($object);
-
-        //Returns data
-        return array(
-            'status' => true,
-            'message' => 'Trajet unlocked',
-            'ride' => $this->toArray($object),
-        );
     }
 }
