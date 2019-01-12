@@ -289,7 +289,7 @@ class PersonService implements PersonServiceInterface
             $relations = array();
             foreach($object->getRelations() as $relationLink) {
                 if (!$relationLink->getRelated()->getSuppressed()) {
-                    $relationArray = $this->mainService->toArray($relationLink->getRelated()->toArray());
+                    $relationArray = $this->toArray($relationLink->getRelated());
                     $relationArray['relation'] = $relationLink->getRelation();
                     $relations[] = $relationArray;
                 }
