@@ -183,22 +183,22 @@
         },
         {
             "name": "c975l/services-bundle",
-            "version": "v1.1.4",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/ServicesBundle.git",
-                "reference": "28f7b447842ef75cbc6cd72f730c59d803e1cd9f"
+                "reference": "249ebaabaac605e62d0d3adc20483b5ca0cc9d66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/ServicesBundle/zipball/28f7b447842ef75cbc6cd72f730c59d803e1cd9f",
-                "reference": "28f7b447842ef75cbc6cd72f730c59d803e1cd9f",
+                "url": "https://api.github.com/repos/975L/ServicesBundle/zipball/249ebaabaac605e62d0d3adc20483b5ca0cc9d66",
+                "reference": "249ebaabaac605e62d0d3adc20483b5ca0cc9d66",
                 "shasum": ""
             },
             "require": {
-                "cocur/slugify": "^3.1",
-                "doctrine/orm": "^2.6",
-                "knplabs/knp-snappy": "^1.1",
+                "cocur/slugify": "^3",
+                "doctrine/orm": "^2",
+                "knplabs/knp-snappy": "^1",
                 "php": "^7",
                 "symfony/routing": "*",
                 "symfony/security": "*",
@@ -206,8 +206,8 @@
                 "twig/extensions": "^1"
             },
             "require-dev": {
-                "rector/rector": "^0.3.30",
-                "symplify/easy-coding-standard": "^5.2"
+                "rector/rector": "^0",
+                "symplify/easy-coding-standard": "^5"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -237,7 +237,7 @@
                 "bundle",
                 "symfony"
             ],
-            "time": "2018-12-25T15:27:57+00:00"
+            "time": "2019-01-15T17:56:57+00:00"
         },
         {
             "name": "c975l/toolbar-bundle",
@@ -5757,16 +5757,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.6.0",
+            "version": "v2.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "a11dd39f5b6589e14f0ff3b36675d06047c589b1"
+                "reference": "7d7342c8a4059fefb9b8d07db0cc14007021f9b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a11dd39f5b6589e14f0ff3b36675d06047c589b1",
-                "reference": "a11dd39f5b6589e14f0ff3b36675d06047c589b1",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7d7342c8a4059fefb9b8d07db0cc14007021f9b7",
+                "reference": "7d7342c8a4059fefb9b8d07db0cc14007021f9b7",
                 "shasum": ""
             },
             "require": {
@@ -5820,7 +5820,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2018-12-16T10:36:48+00:00"
+            "time": "2019-01-14T15:00:48+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -6988,16 +6988,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "0.3",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "ed3223362174b8067729930439e139794e9e514a"
+                "reference": "2cc49f47c69b023eaf05b48e6529389893b13d74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/ed3223362174b8067729930439e139794e9e514a",
-                "reference": "ed3223362174b8067729930439e139794e9e514a",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/2cc49f47c69b023eaf05b48e6529389893b13d74",
+                "reference": "2cc49f47c69b023eaf05b48e6529389893b13d74",
                 "shasum": ""
             },
             "require": {
@@ -7007,7 +7007,7 @@
                 "consistence/coding-standard": "^2.0.0",
                 "jakub-onderka/php-parallel-lint": "^0.9.2",
                 "phing/phing": "^2.16.0",
-                "phpstan/phpstan": "^0.10@dev",
+                "phpstan/phpstan": "^0.10",
                 "phpunit/phpunit": "^6.3",
                 "slevomat/coding-standard": "^3.3.0",
                 "symfony/process": "^3.4 || ^4.0"
@@ -7030,7 +7030,7 @@
                 "MIT"
             ],
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
-            "time": "2018-06-20T17:48:01+00:00"
+            "time": "2019-01-14T12:26:23+00:00"
         },
         {
             "name": "phpstan/phpstan",
@@ -7107,16 +7107,16 @@
         },
         {
             "name": "rector/rector",
-            "version": "v0.3.34",
+            "version": "v0.3.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "2de27d78feb47c6c787604442bfa6d30e745e466"
+                "reference": "884d64b865c4c7d3adb08b02c8f9c40e4ab31da3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/2de27d78feb47c6c787604442bfa6d30e745e466",
-                "reference": "2de27d78feb47c6c787604442bfa6d30e745e466",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/884d64b865c4c7d3adb08b02c8f9c40e4ab31da3",
+                "reference": "884d64b865c4c7d3adb08b02c8f9c40e4ab31da3",
                 "shasum": ""
             },
             "require": {
@@ -7124,7 +7124,7 @@
                 "jean85/pretty-package-versions": "^1.2",
                 "nette/robot-loader": "^3.1",
                 "nette/utils": "^2.5",
-                "nikic/php-parser": "^4.1",
+                "nikic/php-parser": "^4.2",
                 "php": "^7.1",
                 "phpstan/phpstan": "^0.10.7",
                 "sebastian/diff": "^3.0",
@@ -7191,7 +7191,7 @@
                 "instant refactoring",
                 "instant upgrades"
             ],
-            "time": "2019-01-12T10:11:59+00:00"
+            "time": "2019-01-14T12:48:29+00:00"
         },
         {
             "name": "sebastian/diff",

@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.19.2
+- Mise à jour des bundles (15/01/2019)
+
 v0.19.1
 - Ajout de tests sur les links (15/01/2019)
 - Suppression des links pour les méthodes delete et suppression des liens automatique (15/01/2019)

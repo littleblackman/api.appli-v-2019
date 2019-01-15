@@ -1,3 +1,9 @@
+apidoc
+Documentation
+config_bundles.yaml
+config_bundles.yaml.bak
+config/jwt
+backup_config.cnf
 
 ###> symfony/framework-bundle ###
 /.env
@@ -5,11 +11,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-apidoc
-Documentation
-config_bundles.yaml
-config_bundles.yaml.bak
-config/jwt
 
 ###> symfony/phpunit-bridge ###
 .phpunit
