@@ -327,11 +327,11 @@ class ChildController extends AbstractController
      * )
      * @SWG\Tag(name="Child")
      */
-    public function delete(Request $request, Child $child)
+    public function delete(Child $child)
     {
         $this->denyAccessUnlessGranted('childDelete', $child);
 
-        $suppressedData = $this->childService->delete($child, $request->getContent());
+        $suppressedData = $this->childService->delete($child);
 
         return new JsonResponse($suppressedData);
     }

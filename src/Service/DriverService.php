@@ -54,20 +54,19 @@ class DriverService implements DriverServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Persists data
-        $this->mainService->create($object);
-        $this->mainService->persist($object);
-
         //Adds links for DriverZones
         if (isset($data['links'])) {
             $links = $data['links'];
-
             if (null !== $links && is_array($links) && !empty($links)) {
                 foreach ($links as $link) {
                     $this->addZone($object, $link['postal'], $link['priority']);
                 }
             }
         }
+
+        //Persists data
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(

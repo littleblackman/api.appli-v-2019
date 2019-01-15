@@ -317,20 +317,13 @@ class WeekController extends AbstractController
      *     required=true,
      *     type="integer",
      * )
-     * @SWG\Parameter(
-     *     name="links",
-     *     in="body",
-     *     description="Data for the Week",
-     *     required=true,
-     *     @Model(type=WeekType::class)
-     * )
      * @SWG\Tag(name="Week")
      */
-    public function delete(Request $request, Week $week)
+    public function delete(Week $week)
     {
         $this->denyAccessUnlessGranted('weekDelete', $week);
 
-        $suppressedData = $this->weekService->delete($week, $request->getContent());
+        $suppressedData = $this->weekService->delete($week);
 
         return new JsonResponse($suppressedData);
     }

@@ -4,72 +4,59 @@ namespace App\Tests\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use App\Entity\Meal;
+use App\Entity\Sport;
 use App\Tests\TestTrait;
 
-class MealControllerTest extends WebTestCase
+class SportControllerTest extends WebTestCase
 {
     use TestTrait;
 
     /**
-     * Tests creation Meal
+     * Tests creation Sport
      */
     public function testCreate()
     {
         $this->clientAuthenticated->request(
             'POST',
-            '/meal/create',
+            '/sport/create',
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2018-11-20", "child": "1", "person": "1", "freeName": "Free name", "links": [{"foodId": "1"}]}'
+            '{"name": "Sport", "kind": "Kind"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
 
-        $this->assertArrayHasKey('mealId', $content['meal']);
+        $this->assertArrayHasKey('sportId', $content['sport']);
 
-        self::$objectId = $content['meal']['mealId'];
+        self::$objectId = $content['sport']['sportId'];
     }
 
     /**
-     * Tests display Meal
+     * Tests display Sport
      */
     public function testDisplay()
     {
-        $this->clientAuthenticated->request('GET', '/meal/display/' . self::$objectId);
+        $this->clientAuthenticated->request('GET', '/sport/display/' . self::$objectId);
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests modify Meal
+     * Tests modify Sport
      */
     public function testModify()
     {
         //Tests with full data array
         $this->clientAuthenticated->request(
             'PUT',
-            '/meal/modify/' . self::$objectId,
+            '/sport/modify/' . self::$objectId,
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2018-11-20", "child": "1", "person": "1", "freeName": "Free name modifié", "links": [{"foodId": "1"}]}'
-        );
-
-        $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
-
-        //Tests with partial data array
-        $this->clientAuthenticated->request(
-            'PUT',
-            '/meal/modify/' . self::$objectId,
-            array(),
-            array(),
-            array('CONTENT_TYPE' => 'application/json'),
-            '{"freeName": "Free name modifié 2"}'
+            '{"name": "Sport modifié", "kind": "Kind modifié"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -77,27 +64,38 @@ class MealControllerTest extends WebTestCase
     }
 
     /**
-     * Tests list of Child
+     * Tests list of Sport
      */
     public function testList()
     {
-        $this->clientAuthenticated->request('GET', '/meal/list/2018-11-20');
+        $this->clientAuthenticated->request('GET', '/sport/list');
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests delete Meal AND physically deletes it
+     * Tests search of Child
+     */
+    public function testSearch()
+    {
+        $this->clientAuthenticated->request('GET', '/sport/search/amil');
+
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
+     * Tests delete Sport AND physically deletes it
      */
     public function testDelete()
     {
-        $this->clientAuthenticated->request('DELETE', '/meal/delete/' . self::$objectId);
+        $this->clientAuthenticated->request('DELETE', '/sport/delete/' . self::$objectId);
 
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Deletes physically the entity created by test
-        $this->deleteEntity('Meal', 'mealId', self::$objectId);
+        $this->deleteEntity('Sport', 'sportId', self::$objectId);
     }
 }

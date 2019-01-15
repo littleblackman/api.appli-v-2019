@@ -251,20 +251,13 @@ class LocationController extends AbstractController
      *     description="Id of the location",
      *     type="integer",
      * )
-     * @SWG\Parameter(
-     *     name="data",
-     *     in="body",
-     *     description="Data for the Location",
-     *     required=true,
-     *     @Model(type=LocationType::class)
-     * )
      * @SWG\Tag(name="Location")
      */
-    public function delete(Request $request, Location $location)
+    public function delete(Location $location)
     {
         $this->denyAccessUnlessGranted('locationDelete', $location);
 
-        $suppressedData = $this->locationService->delete($location, $request->getContent());
+        $suppressedData = $this->locationService->delete($location);
 
         return new JsonResponse($suppressedData);
     }

@@ -2,10 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Component;
-use App\Form\ComponentType;
-use App\Form\ProductComponentLinkType;
-use App\Service\ComponentServiceInterface;
+use App\Entity\Sport;
+use App\Form\SportType;
+use App\Service\SportServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -16,25 +15,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * ComponentController class
+ * SportController class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class ComponentController extends AbstractController
+class SportController extends AbstractController
 {
-    private $componentService;
+    private $sportService;
 
-    public function __construct(ComponentServiceInterface $componentService)
+    public function __construct(SportServiceInterface $sportService)
     {
-        $this->componentService = $componentService;
+        $this->sportService = $sportService;
     }
 
 //LIST
 
     /**
-     * Lists all the components
+     * Lists all the categories
      *
-     * @Route("/component/list",
-     *    name="component_list",
+     * @Route("/sport/list",
+     *    name="sport_list",
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -42,7 +41,7 @@ class ComponentController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Component::class)),
+     *         @SWG\Items(ref=@Model(type=Sport::class))
      *     )
      * )
      * @SWG\Response(
@@ -63,33 +62,33 @@ class ComponentController extends AbstractController
      *     type="integer",
      *     default="50",
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Sport")
      */
     public function listAll(Request $request, PaginatorInterface $paginator)
     {
-        $this->denyAccessUnlessGranted('componentList');
+        $this->denyAccessUnlessGranted('sportList');
 
-        $components = $paginator->paginate(
-            $this->componentService->findAll(),
+        $categories = $paginator->paginate(
+            $this->sportService->findAll(),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        $componentsArray = array();
-        foreach ($components->getItems() as $component) {
-            $componentsArray[] = $this->componentService->toArray($component);
+        $categoriesArray = array();
+        foreach ($categories->getItems() as $sport) {
+            $categoriesArray[] = $this->sportService->toArray($sport);
         };
 
-        return new JsonResponse($componentsArray);
+        return new JsonResponse($categoriesArray);
     }
 
 //SEARCH
 
     /**
-     * Searches for %{term}% in name_fr for Component
+     * Searches for %{term}% in name_fr for Sport
      *
-     * @Route("/component/search/{term}",
-     *    name="component_search",
+     * @Route("/sport/search/{term}",
+     *    name="sport_search",
      *    requirements={"term": "^([a-zA-Z]+)"},
      *    methods={"HEAD", "GET"})
      *
@@ -98,7 +97,7 @@ class ComponentController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Component::class))
+     *         @SWG\Items(ref=@Model(type=Sport::class))
      *     )
      * )
      * @SWG\Response(
@@ -134,37 +133,37 @@ class ComponentController extends AbstractController
      */
     public function search(Request $request, PaginatorInterface $paginator, string $term)
     {
-        $this->denyAccessUnlessGranted('componentList');
+        $this->denyAccessUnlessGranted('sportList');
 
-        $components = $paginator->paginate(
-            $this->componentService->findAllSearch($term),
+        $categories = $paginator->paginate(
+            $this->sportService->findAllSearch($term),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        $componentsArray = array();
-        foreach ($components->getItems() as $component) {
-            $componentsArray[] = $this->componentService->toArray($component);
+        $categoriesArray = array();
+        foreach ($categories->getItems() as $sport) {
+            $categoriesArray[] = $this->sportService->toArray($sport);
         };
 
-        return new JsonResponse($componentsArray);
+        return new JsonResponse($categoriesArray);
     }
 
 //DISPLAY
 
     /**
-     * Displays component
+     * Displays sport
      *
-     * @Route("/component/display/{componentId}",
-     *    name="component_display",
-     *    requirements={"componentId": "^([0-9]+)"},
+     * @Route("/sport/display/{sportId}",
+     *    name="sport_display",
+     *    requirements={"sportId": "^([0-9]+)"},
      *    methods={"HEAD", "GET"})
-     * @Entity("component", expr="repository.findOneById(componentId)")
+     * @Entity("sport", expr="repository.findOneById(sportId)")
      *
      * @SWG\Response(
      *     response=200,
      *     description="Success",
-     *     @Model(type=Component::class)
+     *     @Model(type=Sport::class)
      * )
      * @SWG\Response(
      *     response=403,
@@ -175,29 +174,29 @@ class ComponentController extends AbstractController
      *     description="Not Found",
      * )
      * @SWG\Parameter(
-     *     name="componentId",
+     *     name="sportId",
      *     in="path",
-     *     description="Id of the component",
+     *     description="Id of the sport",
      *     type="integer",
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Sport")
      */
-    public function display(Component $component)
+    public function display(Sport $sport)
     {
-        $this->denyAccessUnlessGranted('componentDisplay', $component);
+        $this->denyAccessUnlessGranted('sportDisplay', $sport);
 
-        $componentArray = $this->componentService->toArray($component);
+        $sportArray = $this->sportService->toArray($sport);
 
-        return new JsonResponse($componentArray);
+        return new JsonResponse($sportArray);
     }
 
 //CREATE
 
     /**
-     * Creates component
+     * Creates sport
      *
-     * @Route("/component/create",
-     *    name="component_create",
+     * @Route("/sport/create",
+     *    name="sport_create",
      *    methods={"HEAD", "POST"})
      *
      * @SWG\Response(
@@ -206,7 +205,7 @@ class ComponentController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="component", ref=@Model(type=Component::class)),
+     *         @SWG\Property(property="sport", ref=@Model(type=Sport::class)),
      *     )
      * )
      * @SWG\Response(
@@ -216,17 +215,17 @@ class ComponentController extends AbstractController
      * @SWG\Parameter(
      *     name="data",
      *     in="body",
-     *     description="Data for the Component",
+     *     description="Data for the Sport",
      *     required=true,
-     *     @Model(type=ComponentType::class)
+     *     @Model(type=SportType::class)
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Sport")
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('componentCreate', null);
+        $this->denyAccessUnlessGranted('sportCreate', null);
 
-        $createdData = $this->componentService->create($request->getContent());
+        $createdData = $this->sportService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }
@@ -234,13 +233,13 @@ class ComponentController extends AbstractController
 //MODIFY
 
     /**
-     * Modifies component
+     * Modifies sport
      *
-     * @Route("/component/modify/{componentId}",
-     *    name="component_modify",
-     *    requirements={"componentId": "^([0-9]+)"},
+     * @Route("/sport/modify/{sportId}",
+     *    name="sport_modify",
+     *    requirements={"sportId": "^([0-9]+)"},
      *    methods={"HEAD", "PUT"})
-     * @Entity("component", expr="repository.findOneById(componentId)")
+     * @Entity("sport", expr="repository.findOneById(sportId)")
      *
      * @SWG\Response(
      *     response=200,
@@ -248,7 +247,7 @@ class ComponentController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="component", ref=@Model(type=Component::class)),
+     *         @SWG\Property(property="sport", ref=@Model(type=Sport::class)),
      *     )
      * )
      * @SWG\Response(
@@ -260,26 +259,26 @@ class ComponentController extends AbstractController
      *     description="Not Found",
      * )
      * @SWG\Parameter(
-     *     name="componentId",
+     *     name="sportId",
      *     in="path",
-     *     description="Id for the component",
+     *     description="Id for the sport",
      *     required=true,
      *     type="integer",
      * )
      * @SWG\Parameter(
      *     name="data",
      *     in="body",
-     *     description="Data for the Component",
+     *     description="Data for the Sport",
      *     required=true,
-     *     @Model(type=ComponentType::class)
+     *     @Model(type=SportType::class)
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Sport")
      */
-    public function modify(Request $request, Component $component)
+    public function modify(Request $request, Sport $sport)
     {
-        $this->denyAccessUnlessGranted('componentModify', $component);
+        $this->denyAccessUnlessGranted('sportModify', $sport);
 
-        $modifiedData = $this->componentService->modify($component, $request->getContent());
+        $modifiedData = $this->sportService->modify($sport, $request->getContent());
 
         return new JsonResponse($modifiedData);
     }
@@ -287,13 +286,13 @@ class ComponentController extends AbstractController
 //DELETE
 
     /**
-     * Deletes component
+     * Deletes sport
      *
-     * @Route("/component/delete/{componentId}",
-     *    name="component_delete",
-     *    requirements={"componentId": "^([0-9]+)"},
+     * @Route("/sport/delete/{sportId}",
+     *    name="sport_delete",
+     *    requirements={"sportId": "^([0-9]+)"},
      *    methods={"HEAD", "DELETE"})
-     * @Entity("component", expr="repository.findOneById(componentId)")
+     * @Entity("sport", expr="repository.findOneById(sportId)")
      *
      * @SWG\Response(
      *     response=200,
@@ -312,19 +311,19 @@ class ComponentController extends AbstractController
      *     description="Not Found",
      * )
      * @SWG\Parameter(
-     *     name="componentId",
+     *     name="sportId",
      *     in="path",
-     *     description="Id for the component",
+     *     description="Id for the sport",
      *     required=true,
      *     type="integer",
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Sport")
      */
-    public function delete(Component $component)
+    public function delete(Sport $sport)
     {
-        $this->denyAccessUnlessGranted('componentDelete', $component);
+        $this->denyAccessUnlessGranted('sportDelete', $sport);
 
-        $suppressedData = $this->componentService->delete($component);
+        $suppressedData = $this->sportService->delete($sport);
 
         return new JsonResponse($suppressedData);
     }

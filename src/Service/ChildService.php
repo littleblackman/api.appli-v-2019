@@ -108,15 +108,13 @@ class ChildService implements ChildServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(Child $object, string $data)
+    public function delete(Child $object)
     {
-        $data = json_decode($data, true);
-
         //Removes links from person/s to child
-        $links = $data['links'];
-        if (null !== $links && is_array($links) && !empty($links)) {
+        $links = $object->getPersons();
+        if (null !== $links && !empty($links)) {
             foreach ($links as $link) {
-                $this->removeLink((int) $link['personId'], $object);
+                $this->removeLink($link->getPerson()->getPersonId(), $object);
             }
         }
 
@@ -175,10 +173,6 @@ class ChildService implements ChildServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Persists data
-        $this->mainService->modify($object);
-        $this->mainService->persist($object);
-
         //Modifies links
         if (isset($data['links'])) {
             $links = $data['links'];
@@ -224,9 +218,9 @@ class ChildService implements ChildServiceInterface
             }
         }
 
-        //Persists in DB
-        $this->em->flush();
-        $this->em->refresh($object);
+        //Persists data
+        $this->mainService->modify($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(
@@ -237,7 +231,7 @@ class ChildService implements ChildServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Deletes the link between the Child and the Person
      */
     public function removeLink(int $personId, Child $object)
     {

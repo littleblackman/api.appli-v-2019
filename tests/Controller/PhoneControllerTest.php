@@ -22,7 +22,7 @@ class PhoneControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"name": "Name", "phone": "0123456789"}'
+            '{"name": "Name", "phone": "0123456789", "links": {"personId": "1"}}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class PhoneControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"name": "Name modifié", "phone": "0123456789"}'
+            '{"name": "Name modifié", "phone": "0123456789", "links": {"personId": "1"}}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

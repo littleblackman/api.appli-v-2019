@@ -83,7 +83,7 @@ class SeasonService implements SeasonServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(Season $object, string $data)
+    public function delete(Season $object)
     {
         //Persists data
         $this->mainService->delete($object);
@@ -134,10 +134,6 @@ class SeasonService implements SeasonServiceInterface
         //Persists data
         $this->mainService->modify($object);
         $this->mainService->persist($object);
-
-        //Persists in DB
-        $this->em->flush();
-        $this->em->refresh($object);
 
         //Returns data
         return array(

@@ -2,41 +2,41 @@
 
 namespace App\Service;
 
-use App\Entity\Phone;
+use App\Entity\Category;
 
 /**
- * PhoneServiceInterface class
+ * CategoryServiceInterface class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-interface PhoneServiceInterface
+interface CategoryServiceInterface
 {
     /**
-     * Creates the phone
+     * Creates the category
      * @return array
      */
     public function create(string $data);
 
     /**
-     * Marks the phone as deleted
+     * Marks the category as deleted
      * @return array
      */
-    public function delete(Phone $object);
+    public function delete(Category $object);
 
     /**
      * Checks if the entity has been well filled
      * @throw Exception
      */
-    public function isEntityFilled(Phone $object);
+    public function isEntityFilled(Category $object);
 
     /**
-     * Modifies the phone
+     * Modifies the category
      * @return array
      */
-    public function modify(Phone $object, string $data);
+    public function modify(Category $object, string $data);
 
     /**
      * Converts entity to array
      * @return array
      */
-    public function toArray(Phone $object);
+    public function toArray(Category $object);
 }

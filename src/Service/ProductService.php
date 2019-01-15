@@ -164,7 +164,7 @@ class ProductService implements ProductServiceInterface
             $object->setIsSportAssociated((bool) $data['isSportAssociated']);
         }
 
-        //Adds links to products
+        //Adds/Removes links to products
         $linksArray = array(
             'categories' => 'category',
             'components' => 'component',
@@ -172,12 +172,19 @@ class ProductService implements ProductServiceInterface
             'sports' => 'sport',
         );
         foreach ($linksArray as $key => $value) {
-            if (isset($data[$key])) {
+            if (array_key_exists($key, $data)) {
                 $links = $data[$key];
+                //Adds link
                 if (null !== $links && is_array($links) && !empty($links)) {
                     $method = 'add' . ucfirst($value) . 'Link';
                     foreach ($links as $link) {
                         $this->$method((int) $link[$value], $object);
+                    }
+                //Removes link
+                } elseif (null === $data[$key]) {
+                    $method = 'get' . ucfirst($key);
+                    foreach ($object->$method() as $productLink) {
+                        $this->em->remove($productLink);
                     }
                 }
             }

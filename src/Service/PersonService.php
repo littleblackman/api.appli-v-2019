@@ -67,10 +67,6 @@ class PersonService implements PersonServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Persists data
-        $this->mainService->create($object);
-        $this->mainService->persist($object);
-
         //Adds links from user to person
         $user = isset($data['identifier']) ? $this->em->getRepository('App:User')->findOneByIdentifier($data['identifier']) : null;
         if (null !== $user) {
@@ -82,9 +78,9 @@ class PersonService implements PersonServiceInterface
             $this->em->persist($userPersonLink);
         }
 
-        //Persists in DB
-        $this->em->flush();
-        $this->em->refresh($object);
+        //Persists data
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(

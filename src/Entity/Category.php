@@ -42,7 +42,7 @@ class Category
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Product", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="ProductCategoryLink", mappedBy="category")
      * @SWG\Property(ref=@Model(type=Product::class))
      */
     private $products;

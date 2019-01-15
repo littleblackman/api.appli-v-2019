@@ -58,10 +58,8 @@ class WeekService implements WeekServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(Week $object, string $data)
+    public function delete(Week $object)
     {
-        $data = json_decode($data, true);
-
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);

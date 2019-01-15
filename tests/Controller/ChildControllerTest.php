@@ -22,7 +22,7 @@ class ChildControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"firstname": "Firstname", "lastname": "Lastname", "phone": "0123456789", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo"}'
+            '{"firstname": "Firstname", "lastname": "Lastname", "phone": "0123456789", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo", "links": [{"personId": "74800", "relation": "Relation"}], "siblings": [{"sibling": "74800", "relation": "Relation"}]}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class ChildControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"firstname": "Firstname modifié", "lastname": "Lastname", "phone": "0123456789", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo"}'
+            '{"firstname": "Firstname modifié", "lastname": "Lastname", "phone": "0123456789", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo", "links": [{"personId": "74800", "relation": "Relation"}], "siblings": [{"sibling": "74800", "relation": "Relation"}]}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

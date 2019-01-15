@@ -319,11 +319,11 @@ class ProductController extends AbstractController
      * )
      * @SWG\Tag(name="Product")
      */
-    public function delete(Request $request, Product $product)
+    public function delete(Product $product)
     {
         $this->denyAccessUnlessGranted('productDelete', $product);
 
-        $suppressedData = $this->productService->delete($product, $request->getContent());
+        $suppressedData = $this->productService->delete($product);
 
         return new JsonResponse($suppressedData);
     }

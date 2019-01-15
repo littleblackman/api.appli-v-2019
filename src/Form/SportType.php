@@ -19,8 +19,6 @@ class SportType extends AbstractType
             ->add('name', TextType::class, array(
                 'required' => false,
                 ))
-        ;
-        $builder
             ->add('kind', TextType::class, array(
                 'required' => false,
                 ))

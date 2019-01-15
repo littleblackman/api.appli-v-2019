@@ -20,7 +20,7 @@ interface AddressServiceInterface
      * Marks the address as deleted
      * @return array
      */
-    public function delete(Address $object, string $data);
+    public function delete(Address $object);
 
     /**
      * Checks if the entity has been well filled

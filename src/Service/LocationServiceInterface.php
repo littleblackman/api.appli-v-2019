@@ -20,7 +20,7 @@ interface LocationServiceInterface
      * Marks the location as deleted
      * @return array
      */
-    public function delete(Location $object, string $data);
+    public function delete(Location $object);
 
     /**
      * Checks if the entity has been well filled

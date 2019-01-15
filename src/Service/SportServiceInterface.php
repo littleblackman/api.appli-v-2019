@@ -2,41 +2,41 @@
 
 namespace App\Service;
 
-use App\Entity\Phone;
+use App\Entity\Sport;
 
 /**
- * PhoneServiceInterface class
+ * SportServiceInterface class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-interface PhoneServiceInterface
+interface SportServiceInterface
 {
     /**
-     * Creates the phone
+     * Creates the sport
      * @return array
      */
     public function create(string $data);
 
     /**
-     * Marks the phone as deleted
+     * Marks the sport as deleted
      * @return array
      */
-    public function delete(Phone $object);
+    public function delete(Sport $object);
 
     /**
      * Checks if the entity has been well filled
      * @throw Exception
      */
-    public function isEntityFilled(Phone $object);
+    public function isEntityFilled(Sport $object);
 
     /**
-     * Modifies the phone
+     * Modifies the sport
      * @return array
      */
-    public function modify(Phone $object, string $data);
+    public function modify(Sport $object, string $data);
 
     /**
      * Converts entity to array
      * @return array
      */
-    public function toArray(Phone $object);
+    public function toArray(Sport $object);
 }

@@ -195,20 +195,13 @@ class PhoneController extends AbstractController
      *     required=true,
      *     type="integer",
      * )
-     * @SWG\Parameter(
-     *     name="links",
-     *     in="body",
-     *     description="Data for the Phone",
-     *     required=true,
-     *     @Model(type=PersonPhoneLinkType::class)
-     * )
      * @SWG\Tag(name="Phone")
      */
-    public function delete(Request $request, Phone $phone)
+    public function delete(Phone $phone)
     {
         $this->denyAccessUnlessGranted('phoneDelete', $phone);
 
-        $suppressedData = $this->phoneService->delete($phone, $request->getContent());
+        $suppressedData = $this->phoneService->delete($phone);
 
         return new JsonResponse($suppressedData);
     }

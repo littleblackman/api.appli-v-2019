@@ -22,7 +22,7 @@ class AddressControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"name": "Name", "address": "address 1", "address2": "address 2", "postal": "11111", "town": "Town", "country": "Country"}'
+            '{"name": "Name", "address": "address 1", "address2": "address 2", "postal": "11111", "town": "Town", "country": "Country", "links": {"personId": "1"}}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class AddressControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"name": "Name modifié", "address": "address 1", "address2": "address 2", "postal": "11111", "town": "Town", "country": "Country"}'
+            '{"name": "Name modifié", "address": "address 1", "address2": "address 2", "postal": "11111", "town": "Town", "country": "Country", "links": {"person": "1"}}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

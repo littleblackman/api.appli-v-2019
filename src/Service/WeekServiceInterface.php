@@ -20,7 +20,7 @@ interface WeekServiceInterface
      * Marks the week as deleted
      * @return array
      */
-    public function delete(Week $object, string $data);
+    public function delete(Week $object);
 
     /**
      * Checks if the entity has been well filled

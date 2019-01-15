@@ -319,11 +319,11 @@ class FamilyController extends AbstractController
      * )
      * @SWG\Tag(name="Family")
      */
-    public function delete(Request $request, Family $family)
+    public function delete(Family $family)
     {
         $this->denyAccessUnlessGranted('familyDelete', $family);
 
-        $suppressedData = $this->familyService->delete($family, $request->getContent());
+        $suppressedData = $this->familyService->delete($family);
 
         return new JsonResponse($suppressedData);
     }

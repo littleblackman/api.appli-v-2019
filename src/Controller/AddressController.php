@@ -195,20 +195,13 @@ class AddressController extends AbstractController
      *     required=true,
      *     type="integer",
      * )
-     * @SWG\Parameter(
-     *     name="links",
-     *     in="body",
-     *     description="Data for the Address",
-     *     required=true,
-     *     @Model(type=PersonAddressLinkType::class)
-     * )
      * @SWG\Tag(name="Address")
      */
-    public function delete(Request $request, Address $address)
+    public function delete(Address $address)
     {
         $this->denyAccessUnlessGranted('addressDelete', $address);
 
-        $suppressedData = $this->addressService->delete($address, $request->getContent());
+        $suppressedData = $this->addressService->delete($address);
 
         return new JsonResponse($suppressedData);
     }

@@ -5,7 +5,11 @@ namespace App\Entity;
 use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\SuppressionTrait;
 use App\Entity\Traits\UpdateTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 /**
  * Location
@@ -50,6 +54,17 @@ class Location
      * @ORM\Column(name="photo", type="string", length=256, nullable=true)
      */
     private $photo;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProductLocationLink", mappedBy="location")
+     * @SWG\Property(ref=@Model(type=Product::class))
+     */
+    private $products;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     /**
      * Converts the entity in an array
@@ -98,6 +113,37 @@ class Location
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductCategoryLink[]
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(ProductCategoryLink $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+            $product->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(ProductCategoryLink $product): self
+    {
+        if ($this->products->contains($product)) {
+            $this->products->removeElement($product);
+            // set the owning side to null (unless already changed)
+            if ($product->getCategory() === $this) {
+                $product->setCategory(null);
+            }
+        }
 
         return $this;
     }

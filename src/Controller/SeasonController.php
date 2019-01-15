@@ -262,20 +262,13 @@ class SeasonController extends AbstractController
      *     description="Id of the season",
      *     type="integer",
      * )
-     * @SWG\Parameter(
-     *     name="data",
-     *     in="body",
-     *     description="Data for the Season",
-     *     required=true,
-     *     @Model(type=SeasonType::class)
-     * )
      * @SWG\Tag(name="Season")
      */
-    public function delete(Request $request, Season $season)
+    public function delete(Season $season)
     {
         $this->denyAccessUnlessGranted('seasonDelete', $season);
 
-        $suppressedData = $this->seasonService->delete($season, $request->getContent());
+        $suppressedData = $this->seasonService->delete($season);
 
         return new JsonResponse($suppressedData);
     }

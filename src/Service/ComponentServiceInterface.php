@@ -20,7 +20,7 @@ interface ComponentServiceInterface
      * Marks the component as deleted
      * @return array
      */
-    public function delete(Component $object, string $data);
+    public function delete(Component $object);
 
     /**
      * Checks if the entity has been well filled

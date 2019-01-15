@@ -52,8 +52,16 @@ class LocationService implements LocationServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(Location $object, string $data)
+    public function delete(Location $object)
     {
+        //Removes links to products
+        $products = $object->getProducts();
+        if (null !== $products && !empty($products)) {
+            foreach ($products as $productLink) {
+                $this->em->remove($productLink);
+            }
+        }
+
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);

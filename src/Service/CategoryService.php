@@ -2,27 +2,31 @@
 
 namespace App\Service;
 
-use App\Entity\Component;
+use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
- * ComponentService class
+ * CategoryService class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class ComponentService implements ComponentServiceInterface
+class CategoryService implements CategoryServiceInterface
 {
     private $em;
 
     private $mainService;
 
+    private $productService;
+
     public function __construct(
         EntityManagerInterface $em,
-        MainServiceInterface $mainService
+        MainServiceInterface $mainService,
+        ProductServiceInterface $productService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
+        $this->productService = $productService;
     }
 
     /**
@@ -31,8 +35,8 @@ class ComponentService implements ComponentServiceInterface
     public function create(string $data)
     {
         //Submits data
-        $object = new Component();
-        $data = $this->mainService->submit($object, 'component-create', $data);
+        $object = new Category();
+        $data = $this->mainService->submit($object, 'category-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -44,15 +48,15 @@ class ComponentService implements ComponentServiceInterface
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Composant ajouté',
-            'component' => $this->toArray($object),
+            'message' => 'Catégorie ajoutée',
+            'category' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Component $object)
+    public function delete(Category $object)
     {
         //Removes links to products
         $products = $object->getProducts();
@@ -68,30 +72,30 @@ class ComponentService implements ComponentServiceInterface
 
         return array(
             'status' => true,
-            'message' => 'Composant supprimé',
+            'message' => 'Catégorie supprimée',
         );
     }
 
     /**
-     * Returns the list of all components in the array format
+     * Returns the list of all families in the array format
      * @return array
      */
     public function findAll()
     {
         return $this->em
-            ->getRepository('App:Component')
+            ->getRepository('App:Category')
             ->findAll()
         ;
     }
 
     /**
-     * Searches the term in the Component collection
+     * Searches the term in the Category collection
      * @return array
      */
     public function findAllSearch(string $term)
     {
         return $this->em
-            ->getRepository('App:Component')
+            ->getRepository('App:Category')
             ->findAllSearch($term)
         ;
     }
@@ -99,23 +103,20 @@ class ComponentService implements ComponentServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function isEntityFilled(Component $object)
+    public function isEntityFilled(Category $object)
     {
-        if (null === $object->getNameFr() ||
-            null === $object->getDescriptionFr() ||
-            null === $object->getPrice() ||
-            null === $object->getVat()) {
-            throw new UnprocessableEntityHttpException('Missing data for Component -> ' . json_encode($object->toArray()));
+        if (null === $object->getName()) {
+            throw new UnprocessableEntityHttpException('Missing data for Category -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function modify(Component $object, string $data)
+    public function modify(Category $object, string $data)
     {
         //Submits data
-        $data = $this->mainService->submit($object, 'component-modify', $data);
+        $data = $this->mainService->submit($object, 'category-modify', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -127,15 +128,15 @@ class ComponentService implements ComponentServiceInterface
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Composant modifié',
-            'component' => $this->toArray($object),
+            'message' => 'Catégorie modifiée',
+            'category' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toArray(Component $object)
+    public function toArray(Category $object)
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());

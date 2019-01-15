@@ -31,6 +31,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'address-modify':
                 $form = AddressType::class;
                 break;
+            case 'category-create':
+            case 'category-modify':
+                $form = CategoryType::class;
+                break;
             case 'child-create':
             case 'child-modify':
                 $form = ChildType::class;
@@ -86,6 +90,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'season-create':
             case 'season-modify':
                 $form = SeasonType::class;
+                break;
+            case 'sport-create':
+            case 'sport-modify':
+                $form = SportType::class;
                 break;
             case 'vehicle-create':
             case 'vehicle-modify':

@@ -225,11 +225,11 @@ class DriverPresenceController extends AbstractController
      * )
      * @SWG\Tag(name="DriverPresence")
      */
-    public function delete(Request $request, DriverPresence $driverPresence)
+    public function delete(DriverPresence $driverPresence)
     {
         $this->denyAccessUnlessGranted('driverPresenceDelete', $driverPresence);
 
-        $suppressedData = $this->driverPresenceService->delete($driverPresence, $request->getContent());
+        $suppressedData = $this->driverPresenceService->delete($driverPresence);
 
         return new JsonResponse($suppressedData);
     }

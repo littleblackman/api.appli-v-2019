@@ -2,10 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Component;
-use App\Form\ComponentType;
-use App\Form\ProductComponentLinkType;
-use App\Service\ComponentServiceInterface;
+use App\Entity\Category;
+use App\Form\CategoryType;
+use App\Service\CategoryServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -16,25 +15,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * ComponentController class
+ * CategoryController class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class ComponentController extends AbstractController
+class CategoryController extends AbstractController
 {
-    private $componentService;
+    private $categoryService;
 
-    public function __construct(ComponentServiceInterface $componentService)
+    public function __construct(CategoryServiceInterface $categoryService)
     {
-        $this->componentService = $componentService;
+        $this->categoryService = $categoryService;
     }
 
 //LIST
 
     /**
-     * Lists all the components
+     * Lists all the categories
      *
-     * @Route("/component/list",
-     *    name="component_list",
+     * @Route("/category/list",
+     *    name="category_list",
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -42,7 +41,7 @@ class ComponentController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Component::class)),
+     *         @SWG\Items(ref=@Model(type=Category::class))
      *     )
      * )
      * @SWG\Response(
@@ -63,33 +62,33 @@ class ComponentController extends AbstractController
      *     type="integer",
      *     default="50",
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Category")
      */
     public function listAll(Request $request, PaginatorInterface $paginator)
     {
-        $this->denyAccessUnlessGranted('componentList');
+        $this->denyAccessUnlessGranted('categoryList');
 
-        $components = $paginator->paginate(
-            $this->componentService->findAll(),
+        $categories = $paginator->paginate(
+            $this->categoryService->findAll(),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        $componentsArray = array();
-        foreach ($components->getItems() as $component) {
-            $componentsArray[] = $this->componentService->toArray($component);
+        $categoriesArray = array();
+        foreach ($categories->getItems() as $category) {
+            $categoriesArray[] = $this->categoryService->toArray($category);
         };
 
-        return new JsonResponse($componentsArray);
+        return new JsonResponse($categoriesArray);
     }
 
 //SEARCH
 
     /**
-     * Searches for %{term}% in name_fr for Component
+     * Searches for %{term}% in name_fr for Category
      *
-     * @Route("/component/search/{term}",
-     *    name="component_search",
+     * @Route("/category/search/{term}",
+     *    name="category_search",
      *    requirements={"term": "^([a-zA-Z]+)"},
      *    methods={"HEAD", "GET"})
      *
@@ -98,7 +97,7 @@ class ComponentController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Component::class))
+     *         @SWG\Items(ref=@Model(type=Category::class))
      *     )
      * )
      * @SWG\Response(
@@ -134,37 +133,37 @@ class ComponentController extends AbstractController
      */
     public function search(Request $request, PaginatorInterface $paginator, string $term)
     {
-        $this->denyAccessUnlessGranted('componentList');
+        $this->denyAccessUnlessGranted('categoryList');
 
-        $components = $paginator->paginate(
-            $this->componentService->findAllSearch($term),
+        $categories = $paginator->paginate(
+            $this->categoryService->findAllSearch($term),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        $componentsArray = array();
-        foreach ($components->getItems() as $component) {
-            $componentsArray[] = $this->componentService->toArray($component);
+        $categoriesArray = array();
+        foreach ($categories->getItems() as $category) {
+            $categoriesArray[] = $this->categoryService->toArray($category);
         };
 
-        return new JsonResponse($componentsArray);
+        return new JsonResponse($categoriesArray);
     }
 
 //DISPLAY
 
     /**
-     * Displays component
+     * Displays category
      *
-     * @Route("/component/display/{componentId}",
-     *    name="component_display",
-     *    requirements={"componentId": "^([0-9]+)"},
+     * @Route("/category/display/{categoryId}",
+     *    name="category_display",
+     *    requirements={"categoryId": "^([0-9]+)"},
      *    methods={"HEAD", "GET"})
-     * @Entity("component", expr="repository.findOneById(componentId)")
+     * @Entity("category", expr="repository.findOneById(categoryId)")
      *
      * @SWG\Response(
      *     response=200,
      *     description="Success",
-     *     @Model(type=Component::class)
+     *     @Model(type=Category::class)
      * )
      * @SWG\Response(
      *     response=403,
@@ -175,29 +174,29 @@ class ComponentController extends AbstractController
      *     description="Not Found",
      * )
      * @SWG\Parameter(
-     *     name="componentId",
+     *     name="categoryId",
      *     in="path",
-     *     description="Id of the component",
+     *     description="Id of the category",
      *     type="integer",
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Category")
      */
-    public function display(Component $component)
+    public function display(Category $category)
     {
-        $this->denyAccessUnlessGranted('componentDisplay', $component);
+        $this->denyAccessUnlessGranted('categoryDisplay', $category);
 
-        $componentArray = $this->componentService->toArray($component);
+        $categoryArray = $this->categoryService->toArray($category);
 
-        return new JsonResponse($componentArray);
+        return new JsonResponse($categoryArray);
     }
 
 //CREATE
 
     /**
-     * Creates component
+     * Creates category
      *
-     * @Route("/component/create",
-     *    name="component_create",
+     * @Route("/category/create",
+     *    name="category_create",
      *    methods={"HEAD", "POST"})
      *
      * @SWG\Response(
@@ -206,7 +205,7 @@ class ComponentController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="component", ref=@Model(type=Component::class)),
+     *         @SWG\Property(property="category", ref=@Model(type=Category::class)),
      *     )
      * )
      * @SWG\Response(
@@ -216,17 +215,17 @@ class ComponentController extends AbstractController
      * @SWG\Parameter(
      *     name="data",
      *     in="body",
-     *     description="Data for the Component",
+     *     description="Data for the Category",
      *     required=true,
-     *     @Model(type=ComponentType::class)
+     *     @Model(type=CategoryType::class)
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Category")
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('componentCreate', null);
+        $this->denyAccessUnlessGranted('categoryCreate', null);
 
-        $createdData = $this->componentService->create($request->getContent());
+        $createdData = $this->categoryService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }
@@ -234,13 +233,13 @@ class ComponentController extends AbstractController
 //MODIFY
 
     /**
-     * Modifies component
+     * Modifies category
      *
-     * @Route("/component/modify/{componentId}",
-     *    name="component_modify",
-     *    requirements={"componentId": "^([0-9]+)"},
+     * @Route("/category/modify/{categoryId}",
+     *    name="category_modify",
+     *    requirements={"categoryId": "^([0-9]+)"},
      *    methods={"HEAD", "PUT"})
-     * @Entity("component", expr="repository.findOneById(componentId)")
+     * @Entity("category", expr="repository.findOneById(categoryId)")
      *
      * @SWG\Response(
      *     response=200,
@@ -248,7 +247,7 @@ class ComponentController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="component", ref=@Model(type=Component::class)),
+     *         @SWG\Property(property="category", ref=@Model(type=Category::class)),
      *     )
      * )
      * @SWG\Response(
@@ -260,26 +259,26 @@ class ComponentController extends AbstractController
      *     description="Not Found",
      * )
      * @SWG\Parameter(
-     *     name="componentId",
+     *     name="categoryId",
      *     in="path",
-     *     description="Id for the component",
+     *     description="Id for the category",
      *     required=true,
      *     type="integer",
      * )
      * @SWG\Parameter(
      *     name="data",
      *     in="body",
-     *     description="Data for the Component",
+     *     description="Data for the Category",
      *     required=true,
-     *     @Model(type=ComponentType::class)
+     *     @Model(type=CategoryType::class)
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Category")
      */
-    public function modify(Request $request, Component $component)
+    public function modify(Request $request, Category $category)
     {
-        $this->denyAccessUnlessGranted('componentModify', $component);
+        $this->denyAccessUnlessGranted('categoryModify', $category);
 
-        $modifiedData = $this->componentService->modify($component, $request->getContent());
+        $modifiedData = $this->categoryService->modify($category, $request->getContent());
 
         return new JsonResponse($modifiedData);
     }
@@ -287,13 +286,13 @@ class ComponentController extends AbstractController
 //DELETE
 
     /**
-     * Deletes component
+     * Deletes category
      *
-     * @Route("/component/delete/{componentId}",
-     *    name="component_delete",
-     *    requirements={"componentId": "^([0-9]+)"},
+     * @Route("/category/delete/{categoryId}",
+     *    name="category_delete",
+     *    requirements={"categoryId": "^([0-9]+)"},
      *    methods={"HEAD", "DELETE"})
-     * @Entity("component", expr="repository.findOneById(componentId)")
+     * @Entity("category", expr="repository.findOneById(categoryId)")
      *
      * @SWG\Response(
      *     response=200,
@@ -312,19 +311,19 @@ class ComponentController extends AbstractController
      *     description="Not Found",
      * )
      * @SWG\Parameter(
-     *     name="componentId",
+     *     name="categoryId",
      *     in="path",
-     *     description="Id for the component",
+     *     description="Id for the category",
      *     required=true,
      *     type="integer",
      * )
-     * @SWG\Tag(name="Component")
+     * @SWG\Tag(name="Category")
      */
-    public function delete(Component $component)
+    public function delete(Category $category)
     {
-        $this->denyAccessUnlessGranted('componentDelete', $component);
+        $this->denyAccessUnlessGranted('categoryDelete', $category);
 
-        $suppressedData = $this->componentService->delete($component);
+        $suppressedData = $this->categoryService->delete($category);
 
         return new JsonResponse($suppressedData);
     }

@@ -20,7 +20,7 @@ interface ChildServiceInterface
      * Marks the child as deleted
      * @return array
      */
-    public function delete(Child $object, string $data);
+    public function delete(Child $object);
 
     /**
      * Checks if the entity has been well filled

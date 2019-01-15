@@ -55,10 +55,6 @@ class MealService implements MealServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Persists data
-        $this->mainService->create($object);
-        $this->mainService->persist($object);
-
         //Adds links from food to meal
         if (isset($data['links'])) {
             $links = $data['links'];
@@ -67,12 +63,12 @@ class MealService implements MealServiceInterface
                 foreach ($links as $link) {
                     $this->addLink((int) $link['foodId'], $object);
                 }
-
-                //Persists in DB
-                $this->em->flush();
-                $this->em->refresh($object);
             }
         }
+
+        //Persists data
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(
@@ -157,10 +153,6 @@ class MealService implements MealServiceInterface
                 foreach ($links as $link) {
                     $this->addLink((int) $link['foodId'], $object);
                 }
-
-                //Persists in DB
-                $this->em->flush();
-                $this->em->refresh($object);
             }
         }
 

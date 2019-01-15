@@ -20,7 +20,7 @@ interface SeasonServiceInterface
      * Marks the season as deleted
      * @return array
      */
-    public function delete(Season $object, string $data);
+    public function delete(Season $object);
 
     /**
      * Checks if the entity has been well filled

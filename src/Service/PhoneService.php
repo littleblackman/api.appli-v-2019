@@ -55,22 +55,17 @@ class PhoneService implements PhoneServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-        //Persists data
-        $this->mainService->create($object);
-        $this->mainService->persist($object);
-
         //Adds links from person/s to phone
         if (isset($data['links'])) {
             $links = $data['links'];
-
             if (null !== $links && is_array($links) && !empty($links)) {
                 $this->addLink((int) $links['personId'], $object);
-
-                //Persists in DB
-                $this->em->flush();
-                $this->em->refresh($object);
             }
         }
+
+        //Persists data
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(
@@ -83,14 +78,15 @@ class PhoneService implements PhoneServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(Phone $object, string $data)
+    public function delete(Phone $object)
     {
-        $data = json_decode($data, true);
-
         //Removes links from person/s to phone
-        $links = $data['links'];
-        if (null !== $links && is_array($links) && !empty($links)) {
-            $this->removeLink((int) $links['personId'], $object);
+        $links = $object->getPersons();
+        if (null !== $links && !empty($links)) {
+            foreach ($links as $link) {
+                $personPhoneLink = $this->em->getRepository('App:PersonPhoneLink')->findOneBy(array('person' => $link->getPerson(), 'phone' => $object));
+                $this->em->remove($personPhoneLink);
+            }
         }
 
         //Persists data
@@ -135,18 +131,6 @@ class PhoneService implements PhoneServiceInterface
             'message' => 'Téléphone modifié',
             'phone' => $this->toArray($object),
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function removeLink(int $personId, Phone $object)
-    {
-        $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person && !$person->getSuppressed()) {
-            $personPhoneLink = $this->em->getRepository('App:PersonPhoneLink')->findOneBy(array('person' => $person, 'phone' => $object));
-            $this->em->remove($personPhoneLink);
-        }
     }
 
     /**

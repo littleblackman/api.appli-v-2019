@@ -5,7 +5,11 @@ namespace App\Entity;
 use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\SuppressionTrait;
 use App\Entity\Traits\UpdateTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 /**
  * Sport
@@ -45,6 +49,17 @@ class Sport
     private $kind;
 
     /**
+     * @ORM\OneToMany(targetEntity="ProductSportLink", mappedBy="sport")
+     * @SWG\Property(ref=@Model(type=Product::class))
+     */
+    private $products;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
@@ -79,6 +94,37 @@ class Sport
     public function setKind(string $kind): self
     {
         $this->kind = $kind;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductSportLink[]
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(ProductSportLink $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+            $product->setSport($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(ProductSportLink $product): self
+    {
+        if ($this->products->contains($product)) {
+            $this->products->removeElement($product);
+            // set the owning side to null (unless already changed)
+            if ($product->getSport() === $this) {
+                $product->setSport(null);
+            }
+        }
 
         return $this;
     }

@@ -58,22 +58,17 @@ class AddressService implements AddressServiceInterface
         //Checks coordinates
         $this->mainService->addCoordinates($object);
 
-        //Persists data
-        $this->mainService->create($object);
-        $this->mainService->persist($object);
-
         //Adds links from person/s to address
         if (isset($data['links'])) {
             $links = $data['links'];
-
             if (null !== $links && is_array($links) && !empty($links)) {
                 $this->addLink((int) $links['personId'], $object);
-
-                //Persists in DB
-                $this->em->flush();
-                $this->em->refresh($object);
             }
         }
+
+        //Persists data
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
 
         //Returns data
         return array(
@@ -86,14 +81,15 @@ class AddressService implements AddressServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(Address $object, string $data)
+    public function delete(Address $object)
     {
-        $data = json_decode($data, true);
-
         //Removes links from person/s to address
-        $links = $data['links'];
-        if (null !== $links && is_array($links) && !empty($links)) {
-            $this->removeLink((int) $links['personId'], $object);
+        $links = $object->getPersons();
+        if (null !== $links && !empty($links)) {
+            foreach ($links as $link) {
+                $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $link->getPerson(), 'address' => $object));
+                $this->em->remove($personAddressLink);
+            }
         }
 
         //Persists data
@@ -164,18 +160,6 @@ class AddressService implements AddressServiceInterface
             'message' => 'Adresse modifiée',
             'address' => $this->toArray($object),
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function removeLink(int $personId, Address $object)
-    {
-        $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person && !$person->getSuppressed()) {
-            $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $person, 'address' => $object));
-            $this->em->remove($personAddressLink);
-        }
     }
 
     /**
