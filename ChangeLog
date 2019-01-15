@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.19
+- Modification des Products et ajout des Entités liées (14/01/2019)
+- Déplacement du persist des objects sur delete après la supression des liens (15/01/2019)
+
 v0.18.2
 - Ajout de la possibilité d'exporter les données du User (12/01/2019)
 

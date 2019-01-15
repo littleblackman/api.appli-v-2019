@@ -83,42 +83,6 @@ class Product
     private $descriptionEn;
 
     /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="date_start", type="date")
-     */
-    private $dateStart;
-
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="date_end", type="date")
-     */
-    private $dateEnd;
-
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="exclusion_from", type="date")
-     */
-    private $exclusionFrom;
-
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="exclusion_to", type="date")
-     */
-    private $exclusionTo;
-
-    /**
-     * @var Location
-     *
-     * @ORM\OneToOne(targetEntity="Location")
-     * @ORM\JoinColumn(name="location_id", referencedColumnName="location_id")
-     */
-    private $location;
-
-    /**
      * @var boolean
      *
      * @ORM\Column(name="transport", type="boolean")
@@ -128,43 +92,92 @@ class Product
     /**
      * @var string|null
      *
-     * @ORM\Column(name="day_reference", length=8, type="string")
-     */
-    private $dayReference;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="days_available", length=256, type="string")
-     */
-    private $daysAvailable;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="duration", length=256, type="string")
-     */
-    private $duration;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="expected_times", length=256, type="string")
-     */
-    private $expectedTimes;
-
-    /**
-     * @var string|null
-     *
      * @ORM\Column(name="photo", type="string", length=256, nullable=true)
      */
     private $photo;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_location_selectable", type="boolean")
+     */
+    private $isLocationSelectable;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_date_selectable", type="boolean")
+     */
+    private $isDateSelectable;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_hour_selectable", type="boolean")
+     */
+    private $isHourSelectable;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_sport_associated", type="boolean")
+     */
+    private $isSportAssociated;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="visibility", type="string", length=32, nullable=true)
+     */
+    private $visibility;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="hour_dropin", type="time")
+     */
+    private $hourDropin;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="hour_dropoff", type="time")
+     */
+    private $hourDropoff;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProductCategoryLink", mappedBy="product")
+     * @SWG\Property(ref=@Model(type=Category::class))
+     */
+    private $categories;
 
     /**
      * @ORM\OneToMany(targetEntity="ProductComponentLink", mappedBy="product")
      * @SWG\Property(ref=@Model(type=Component::class))
      */
     private $components;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProductDateLink", mappedBy="product")
+     */
+    private $dates;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProductHourLink", mappedBy="product")
+     */
+    private $hours;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProductLocationLink", mappedBy="product")
+     * @SWG\Property(ref=@Model(type=Location::class))
+     */
+    private $locations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ProductSportLink", mappedBy="product")
+     * @SWG\Property(ref=@Model(type=Sport::class))
+     */
+    private $sports;
 
     /**
      * @var string[]|null
@@ -186,7 +199,12 @@ class Product
 
     public function __construct()
     {
+        $this->categories = new ArrayCollection();
         $this->components = new ArrayCollection();
+        $this->dates = new ArrayCollection();
+        $this->hours = new ArrayCollection();
+        $this->locations = new ArrayCollection();
+        $this->sports = new ArrayCollection();
     }
 
     /**
@@ -227,25 +245,11 @@ class Product
         $objectArray = get_object_vars($this);
 
         //Specific data
-        if (null !== $objectArray['dateStart']) {
-            $objectArray['dateStart'] = $objectArray['dateStart']->format('Y-m-d');
+        if (null !== $objectArray['hourDropin']) {
+            $objectArray['hourDropin'] = $objectArray['hourDropin']->format('H:i:s');
         }
-        if (null !== $objectArray['dateEnd']) {
-            $objectArray['dateEnd'] = $objectArray['dateEnd']->format('Y-m-d');
-        }
-        if (null !== $objectArray['exclusionFrom']) {
-            $objectArray['exclusionFrom'] = $objectArray['exclusionFrom']->format('Y-m-d');
-        }
-        if (null !== $objectArray['exclusionTo']) {
-            $objectArray['exclusionTo'] = $objectArray['exclusionTo']->format('Y-m-d');
-        }
-        $fieldsArray = array(
-            'daysAvailable',
-            'duration',
-            'expectedTimes',
-        );
-        foreach ($fieldsArray as $field) {
-            $objectArray[$field] = unserialize($objectArray[$field]);
+        if (null !== $objectArray['hourDropoff']) {
+            $objectArray['hourDropoff'] = $objectArray['hourDropoff']->format('H:i:s');
         }
 
         return $objectArray;
@@ -316,54 +320,6 @@ class Product
         return $this;
     }
 
-    public function getDateStart(): ?DateTimeInterface
-    {
-        return $this->dateStart;
-    }
-
-    public function setDateStart(?DateTimeInterface $dateStart): self
-    {
-        $this->dateStart = $dateStart;
-
-        return $this;
-    }
-
-    public function getDateEnd(): ?DateTimeInterface
-    {
-        return $this->dateEnd;
-    }
-
-    public function setDateEnd(?DateTimeInterface $dateEnd): self
-    {
-        $this->dateEnd = $dateEnd;
-
-        return $this;
-    }
-
-    public function getExclusionFrom(): ?DateTimeInterface
-    {
-        return $this->exclusionFrom;
-    }
-
-    public function setExclusionFrom(?DateTimeInterface $exclusionFrom): self
-    {
-        $this->exclusionFrom = $exclusionFrom;
-
-        return $this;
-    }
-
-    public function getExclusionTo(): ?DateTimeInterface
-    {
-        return $this->exclusionTo;
-    }
-
-    public function setExclusionTo(?DateTimeInterface $exclusionTo): self
-    {
-        $this->exclusionTo = $exclusionTo;
-
-        return $this;
-    }
-
     public function getSeason(): ?Season
     {
         return $this->season;
@@ -372,18 +328,6 @@ class Product
     public function setSeason(?Season $season): self
     {
         $this->season = $season;
-
-        return $this;
-    }
-
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?Location $location): self
-    {
-        $this->location = $location;
 
         return $this;
     }
@@ -400,54 +344,6 @@ class Product
         return $this;
     }
 
-    public function getDayReference(): ?string
-    {
-        return $this->dayReference;
-    }
-
-    public function setDayReference(?string $dayReference): self
-    {
-        $this->dayReference = $dayReference;
-
-        return $this;
-    }
-
-    public function getDaysAvailable(): ?string
-    {
-        return $this->daysAvailable;
-    }
-
-    public function setDaysAvailable(?string $daysAvailable): self
-    {
-        $this->daysAvailable = $daysAvailable;
-
-        return $this;
-    }
-
-    public function getDuration(): ?string
-    {
-        return $this->duration;
-    }
-
-    public function setDuration(?string $duration): self
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    public function getExpectedTimes(): ?string
-    {
-        return unserialize($this->expectedTimes);
-    }
-
-    public function setExpectedTimes(array $expectedTimes): self
-    {
-        $this->expectedTimes = serialize($expectedTimes);
-
-        return $this;
-    }
-
     public function getPhoto(): ?string
     {
         return $this->photo;
@@ -460,30 +356,93 @@ class Product
         return $this;
     }
 
-    public function getVatAmounts(): ?array
+    public function getIsLocationSelectable(): ?bool
     {
-        return $this->vatAmounts;
+        return $this->isLocationSelectable;
     }
 
-    public function setVatAmounts(?array $vatAmounts): self
+    public function setIsLocationSelectable(bool $isLocationSelectable): self
     {
-        $this->vatAmounts = $vatAmounts;
+        $this->isLocationSelectable = $isLocationSelectable;
 
         return $this;
     }
 
-    public function getPriceTtc(): ?float
+    public function getIsDateSelectable(): ?bool
     {
-        return $this->priceTtc;
+        return $this->isDateSelectable;
     }
 
-    public function setPriceTtc(?float $priceTtc): self
+    public function setIsDateSelectable(bool $isDateSelectable): self
     {
-        $this->priceTtc = $priceTtc;
+        $this->isDateSelectable = $isDateSelectable;
 
         return $this;
     }
 
+    public function getIsHourSelectable(): ?bool
+    {
+        return $this->isHourSelectable;
+    }
+
+    public function setIsHourSelectable(bool $isHourSelectable): self
+    {
+        $this->isHourSelectable = $isHourSelectable;
+
+        return $this;
+    }
+
+    public function getIsSportAssociated(): ?bool
+    {
+        return $this->isSportAssociated;
+    }
+
+    public function setIsSportAssociated(bool $isSportAssociated): self
+    {
+        $this->isSportAssociated = $isSportAssociated;
+
+        return $this;
+    }
+
+    public function getVisibility(): ?string
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(?string $visibility): self
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    public function getHourDropin(): ?DateTimeInterface
+    {
+        return $this->hourDropin;
+    }
+
+    public function setHourDropin(DateTimeInterface $hourDropin): self
+    {
+        $this->hourDropin = $hourDropin;
+
+        return $this;
+    }
+
+    public function getHourDropoff(): ?DateTimeInterface
+    {
+        return $this->hourDropoff;
+    }
+
+    public function setHourDropoff(DateTimeInterface $hourDropoff): self
+    {
+        $this->hourDropoff = $hourDropoff;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductComponentLink[]
+     */
     public function getComponents()
     {
         return $this->components;
@@ -508,6 +467,185 @@ class Product
                 $component->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductCategoryLink[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(ProductCategoryLink $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(ProductCategoryLink $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+            // set the owning side to null (unless already changed)
+            if ($category->getProduct() === $this) {
+                $category->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductDateLink[]
+     */
+    public function getDates(): Collection
+    {
+        return $this->dates;
+    }
+
+    public function addDate(ProductDateLink $date): self
+    {
+        if (!$this->dates->contains($date)) {
+            $this->dates[] = $date;
+            $date->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDate(ProductDateLink $date): self
+    {
+        if ($this->dates->contains($date)) {
+            $this->dates->removeElement($date);
+            // set the owning side to null (unless already changed)
+            if ($date->getProduct() === $this) {
+                $date->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductHourLink[]
+     */
+    public function getHours(): Collection
+    {
+        return $this->hours;
+    }
+
+    public function addHour(ProductHourLink $hour): self
+    {
+        if (!$this->hours->contains($hour)) {
+            $this->hours[] = $hour;
+            $hour->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHour(ProductHourLink $hour): self
+    {
+        if ($this->hours->contains($hour)) {
+            $this->hours->removeElement($hour);
+            // set the owning side to null (unless already changed)
+            if ($hour->getProduct() === $this) {
+                $hour->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductLocationLink[]
+     */
+    public function getLocations(): Collection
+    {
+        return $this->locations;
+    }
+
+    public function addLocation(ProductLocationLink $location): self
+    {
+        if (!$this->locations->contains($location)) {
+            $this->locations[] = $location;
+            $location->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLocation(ProductLocationLink $location): self
+    {
+        if ($this->locations->contains($location)) {
+            $this->locations->removeElement($location);
+            // set the owning side to null (unless already changed)
+            if ($location->getProduct() === $this) {
+                $location->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductSportLink[]
+     */
+    public function getSports(): Collection
+    {
+        return $this->sports;
+    }
+
+    public function addSport(ProductSportLink $sport): self
+    {
+        if (!$this->sports->contains($sport)) {
+            $this->sports[] = $sport;
+            $sport->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSport(ProductSportLink $sport): self
+    {
+        if ($this->sports->contains($sport)) {
+            $this->sports->removeElement($sport);
+            // set the owning side to null (unless already changed)
+            if ($sport->getProduct() === $this) {
+                $sport->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getVatAmounts(): ?array
+    {
+        return $this->vatAmounts;
+    }
+
+    public function setVatAmounts(?array $vatAmounts): self
+    {
+        $this->vatAmounts = $vatAmounts;
+
+        return $this;
+    }
+
+    public function getPriceTtc(): ?float
+    {
+        return $this->priceTtc;
+    }
+
+    public function setPriceTtc(?float $priceTtc): self
+    {
+        $this->priceTtc = $priceTtc;
 
         return $this;
     }

@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\Person;
 use App\Entity\ChildPersonLink;
+use App\Entity\Person;
 use App\Entity\PersonAddressLink;
 use App\Entity\PersonPersonLink;
 use App\Entity\PersonPhoneLink;
@@ -99,10 +99,6 @@ class PersonService implements PersonServiceInterface
      */
     public function delete(Person $object)
     {
-        //Persists data
-        $this->mainService->delete($object);
-        $this->mainService->persist($object);
-
         //Removes links from user to person
         $userPersonLink = $this->em->getRepository('App:UserPersonLink')->findOneByPerson($object);
         if ($userPersonLink instanceof UserPersonLink) {
@@ -133,8 +129,9 @@ class PersonService implements PersonServiceInterface
             }
         }
 
-        //Persists in DB
-        $this->em->flush();
+        //Persists data
+        $this->mainService->delete($object);
+        $this->mainService->persist($object);
 
         return array(
             'status' => true,

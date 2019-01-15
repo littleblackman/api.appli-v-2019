@@ -3,15 +3,13 @@
 namespace App\Form;
 
 use App\Entity\Family;
-use App\Entity\Location;
 use App\Entity\Season;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -44,53 +42,65 @@ class ProductType extends AbstractType
             ->add('descriptionEn', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('dateStart', DateType::class, array(
-                'required' => false,
-                'widget' => 'single_text',
-                ))
-            ->add('dateEnd', DateType::class, array(
-                'required' => false,
-                'widget' => 'single_text',
-                ))
-            ->add('exclusionFrom', DateType::class, array(
-                'required' => false,
-                'widget' => 'single_text',
-                ))
-            ->add('exclusionTo', DateType::class, array(
-                'required' => false,
-                'widget' => 'single_text',
-                ))
-            ->add('location', EntityType::class, array(
-                'required' => false,
-                'class' => Location::class,
-                ))
             ->add('transport', CheckboxType::class, array(
                 'required' => false,
-                ))
-            ->add('dayReference', TextType::class, array(
-                'required' => false,
-                ))
-            ->add('daysAvailable', CollectionType::class, array(
-                'required' => false,
-                'entry_type' => ChoiceType::class,
-                'mapped' => false,
-                ))
-            ->add('duration', CollectionType::class, array(
-                'required' => false,
-                'entry_type' => TextType::class,
-                'mapped' => false,
-                ))
-            ->add('expectedTimes', CollectionType::class, array(
-                'required' => false,
-                'entry_type' => TextType::class,
-                'mapped' => false,
                 ))
             ->add('photo', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('links', CollectionType::class, array(
+            ->add('isLocationSelectable', CheckboxType::class, array(
+                'required' => false,
+                ))
+            ->add('isDateSelectable', CheckboxType::class, array(
+                'required' => false,
+                ))
+            ->add('isHourSelectable', CheckboxType::class, array(
+                'required' => false,
+                ))
+            ->add('isSportAssociated', CheckboxType::class, array(
+                'required' => false,
+                ))
+            ->add('visibility', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('hourDropin', TimeType::class, array(
+                'required' => false,
+                'input' => 'datetime',
+                'widget' => 'single_text',
+                ))
+            ->add('hourDropoff', TimeType::class, array(
+                'required' => false,
+                'input' => 'datetime',
+                'widget' => 'single_text',
+                ))
+            ->add('categories', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => ProductCategoryLinkType::class,
+                'mapped' => false,
+                ))
+            ->add('components', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ProductComponentLinkType::class,
+                'mapped' => false,
+                ))
+            ->add('dates', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => ProductDateLinkType::class,
+                'mapped' => false,
+                ))
+            ->add('hours', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => ProductHourLinkType::class,
+                'mapped' => false,
+                ))
+            ->add('locations', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => ProductLocationLinkType::class,
+                'mapped' => false,
+                ))
+            ->add('sports', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => ProductSportLinkType::class,
                 'mapped' => false,
                 ))
         ;

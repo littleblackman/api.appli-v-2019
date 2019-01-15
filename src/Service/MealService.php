@@ -87,21 +87,17 @@ class MealService implements MealServiceInterface
      */
     public function delete(Meal $object)
     {
-        //Persists data
-        $this->mainService->delete($object);
-        $this->mainService->persist($object);
-
         //Removes links from meal to food
         $links = $object->getFoods();
         if (null !== $links && !empty($links)) {
             foreach ($links as $link) {
                 $this->em->remove($link);
             }
-
-            //Persists in DB
-            $this->em->flush();
-            $this->em->refresh($object);
         }
+
+        //Persists data
+        $this->mainService->delete($object);
+        $this->mainService->persist($object);
 
         return array(
             'status' => true,

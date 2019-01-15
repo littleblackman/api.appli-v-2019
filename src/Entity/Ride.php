@@ -181,7 +181,6 @@ class Ride
         return $this;
     }
 
-
     public function getLinkedRide(): ?Ride
     {
         return $this->linkedRide;

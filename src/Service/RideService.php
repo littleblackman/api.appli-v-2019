@@ -44,8 +44,6 @@ class RideService implements RideServiceInterface
         if (isset($data['start'])) {
             $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
         }
-
-        //Should be done from RideType but it returns null...
         if (isset($data['arrival'])) {
             $object->setArrival(DateTime::createFromFormat('H:i:s', $data['arrival']));
         }

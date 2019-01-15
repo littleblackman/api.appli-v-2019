@@ -39,8 +39,6 @@ class DriverPresenceService implements DriverPresenceServiceInterface
         if (isset($data['start'])) {
             $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
         }
-
-        //Should be done from DriverPresenceType but it returns null...
         if (isset($data['end'])) {
             $object->setEnd(DateTime::createFromFormat('H:i:s', $data['end']));
         }

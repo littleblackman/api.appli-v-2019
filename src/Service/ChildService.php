@@ -112,20 +112,17 @@ class ChildService implements ChildServiceInterface
     {
         $data = json_decode($data, true);
 
-        //Persists data
-        $this->mainService->delete($object);
-        $this->mainService->persist($object);
-
         //Removes links from person/s to child
         $links = $data['links'];
         if (null !== $links && is_array($links) && !empty($links)) {
             foreach ($links as $link) {
                 $this->removeLink((int) $link['personId'], $object);
             }
-
-            //Persists in DB
-            $this->em->flush();
         }
+
+        //Persists data
+        $this->mainService->delete($object);
+        $this->mainService->persist($object);
 
         return array(
             'status' => true,

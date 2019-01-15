@@ -129,7 +129,7 @@ class ProductController extends AbstractController
      *     type="integer",
      *     default="50",
      * )
-     * @SWG\Tag(name="Child")
+     * @SWG\Tag(name="Product")
      */
     public function search(Request $request, PaginatorInterface $paginator, string $term)
     {

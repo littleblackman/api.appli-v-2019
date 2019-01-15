@@ -22,7 +22,7 @@ class ProductControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"family": "1", "season": "1", "nameFr": "name Fr", "nameEn": "Name En", "descriptionFr": "Description Fr", "descriptionEn": "Description En", "dateStart": "2018-11-20", "dateEnd": "2018-11-21", "exclusionFrom": "2018-11-20", "exclusionTo": "2018-11-20", "location": "1", "transport": true, "dayReference": "Day ref"}'
+            '{"family": "1", "season": "1", "nameFr": "name Fr", "nameEn": "Name En", "descriptionFr": "Description Fr", "descriptionEn": "Description En", "transport": "true", "photo": "/path/to/picture.jpg", "isLocationSelectable": "true", "isDateSelectable": "true", "isHourSelectable": "true", "isSportAssociated": "true", "visibility": "visible", "hourDropin": "10:40:00", "hourDropoff": "11:40:00", "categories": [{"category": "1"}], "components": [{"component": "1"}], "dates": [{"date": "2018-04-06"}], "hours": [{"start": "09:00:00", "end": "10:00:00"}], "locations": [{"location": "1"}], "sports": [{"sport": "1"}]}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class ProductControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"family": "1", "season": "1", "nameFr": "name Fr", "nameEn": "Name En", "descriptionFr": "Description Fr", "descriptionEn": "Description En", "dateStart": "2018-11-20", "dateEnd": "2018-11-21", "exclusionFrom": "2018-11-20", "exclusionTo": "2018-11-20", "location": "1", "transport": true, "dayReference": "Day ref"}'
+            '{"family": "1", "season": "1", "nameFr": "name Fr modifié", "nameEn": "Name En modified", "descriptionFr": "Description Fr modifiée", "descriptionEn": "Description En modified", "transport": "false", "photo": "/path/to/picture-modified.jpg", "isLocationSelectable": "false", "isDateSelectable": "false", "isHourSelectable": "false", "isSportAssociated": "false", "visibility": "invisible", "hourDropin": "11:40:00", "hourDropoff": "12:40:00"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -69,7 +69,7 @@ class ProductControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"family": "Family modifiée 2"}'
+            '{"nameFr": "name Fr modifié 2"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

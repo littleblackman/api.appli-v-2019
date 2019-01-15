@@ -2,9 +2,18 @@
 
 namespace App\Service;
 
+use App\Entity\Category;
 use App\Entity\Component;
+use App\Entity\Location;
 use App\Entity\Product;
+use App\Entity\ProductCategoryLink;
 use App\Entity\ProductComponentLink;
+use App\Entity\ProductDateLink;
+use App\Entity\ProductHourLink;
+use App\Entity\ProductLocationLink;
+use App\Entity\ProductSportLink;
+use App\Entity\Sport;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -32,9 +41,9 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Adds link betwenn Product and Component
+     * Adds link between Product and Component
      */
-    public function addLink(int $componentId, Product $object)
+    public function addComponentLink(int $componentId, Product $object)
     {
         $component = $this->em->getRepository('App:Component')->findOneById($componentId);
         if ($component instanceof Component && !$component->getSuppressed()) {
@@ -48,13 +57,150 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
+     * Adds link between Product and Sport
+     */
+    public function addSportLink(int $sportId, Product $object)
+    {
+        $sport = $this->em->getRepository('App:Sport')->findOneById($sportId);
+        if ($sport instanceof Sport && !$sport->getSuppressed()) {
+            $productSportLink = new ProductSportLink();
+            $productSportLink
+                ->setProduct($object)
+                ->setSport($sport)
+            ;
+            $this->em->persist($productSportLink);
+        }
+    }
+
+    /**
+     * Adds link between Product and Category
+     */
+    public function addCategoryLink(int $categoryId, Product $object)
+    {
+        $category = $this->em->getRepository('App:Category')->findOneById($categoryId);
+        if ($category instanceof Category && !$category->getSuppressed()) {
+            $productCategoryLink = new ProductCategoryLink();
+            $productCategoryLink
+                ->setProduct($object)
+                ->setCategory($category)
+            ;
+            $this->em->persist($productCategoryLink);
+        }
+    }
+
+    /**
+     * Adds link between Product and Location
+     */
+    public function addLocationLink(int $locationId, Product $object)
+    {
+        $location = $this->em->getRepository('App:Location')->findOneById($locationId);
+        if ($location instanceof Location && !$location->getSuppressed()) {
+            $productLocationLink = new ProductLocationLink();
+            $productLocationLink
+                ->setProduct($object)
+                ->setLocation($location)
+            ;
+            $this->em->persist($productLocationLink);
+        }
+    }
+
+    /**
+     * Adds link between Product and Date
+     */
+    public function addDateLink($date, Product $object)
+    {
+        $date = $date instanceof DateTime ? $date : new DateTime($date);
+        $productDateLink = new ProductDateLink();
+        $productDateLink
+            ->setProduct($object)
+            ->setDate($date)
+        ;
+        $this->em->persist($productDateLink);
+    }
+
+    /**
+     * Adds link between Product and Hour
+     */
+    public function addHourLink($start, $end, Product $object)
+    {
+        $start = $start instanceof DateTime ? $start : new DateTime('1970-01-01' . $start);
+        $end = $end instanceof DateTime ? $end : new DateTime('1970-01-01' . $end);
+        $productHourLink = new ProductHourLink();
+        $productHourLink
+            ->setProduct($object)
+            ->setStart($start)
+            ->setEnd($end)
+        ;
+        $this->em->persist($productHourLink);
+    }
+
+    /**
      * Adds specific data that could not be added via generic method
      */
     public function addSpecificData(Product $object, array $data)
     {
+        //Should be done from RideType but it returns null...
+        if (isset($data['hourDropin'])) {
+            $object->setHourDropin(DateTime::createFromFormat('H:i:s', $data['hourDropin']));
+        }
+        if (isset($data['hourDropoff'])) {
+            $object->setHourDropoff(DateTime::createFromFormat('H:i:s', $data['hourDropoff']));
+        }
+
         //Converts to boolean
         if (isset($data['transport'])) {
             $object->setTransport((bool) $data['transport']);
+        }
+        if (isset($data['isLocationSelectable'])) {
+            $object->setIsLocationSelectable((bool) $data['isLocationSelectable']);
+        }
+        if (isset($data['isDateSelectable'])) {
+            $object->setIsDateSelectable((bool) $data['isDateSelectable']);
+        }
+        if (isset($data['isHourSelectable'])) {
+            $object->setIsHourSelectable((bool) $data['isHourSelectable']);
+        }
+        if (isset($data['isSportAssociated'])) {
+            $object->setIsSportAssociated((bool) $data['isSportAssociated']);
+        }
+
+        //Adds links to products
+        $linksArray = array(
+            'categories' => 'category',
+            'components' => 'component',
+            'locations' => 'location',
+            'sports' => 'sport',
+        );
+        foreach ($linksArray as $key => $value) {
+            if (isset($data[$key])) {
+                $links = $data[$key];
+                if (null !== $links && is_array($links) && !empty($links)) {
+                    $method = 'add' . ucfirst($value) . 'Link';
+                    foreach ($links as $link) {
+                        $this->$method((int) $link[$value], $object);
+                    }
+                }
+            }
+        }
+
+        //Adds links to dates
+        if (isset($data['dates'])) {
+            $dates = $data['dates'];
+            if (null !== $dates && is_array($dates) && !empty($dates)) {
+                foreach ($dates as $date) {
+                    $this->addDateLink($date['date'], $object);
+                }
+            }
+        }
+
+        //Adds links to hours
+        if (isset($data['hours'])) {
+            $hours = $data['hours'];
+            if (null !== $hours && is_array($hours) && !empty($hours)) {
+                foreach ($hours as $hour) {
+                    $this->addHourLink($hour['start'], $hour['end'], $object);
+                }
+            }
         }
     }
 
@@ -75,21 +221,6 @@ class ProductService implements ProductServiceInterface
         $this->mainService->create($object);
         $this->mainService->persist($object);
 
-        //Adds links from component/s to product
-        if (isset($data['links'])) {
-            $links = $data['links'];
-
-            if (null !== $links && is_array($links) && !empty($links)) {
-                foreach ($links as $link) {
-                    $this->addLink((int) $link['componentId'], $object);
-                }
-
-                //Persists in DB
-                $this->em->flush();
-                $this->em->refresh($object);
-            }
-        }
-
         //Returns data
         return array(
             'status' => true,
@@ -103,21 +234,28 @@ class ProductService implements ProductServiceInterface
      */
     public function delete(Product $object)
     {
+        //Removes links to products
+        $linksArray = array(
+            'categories',
+            'components',
+            'dates',
+            'hours',
+            'locations',
+            'sports',
+        );
+        foreach ($linksArray as $linkArray) {
+            $method = 'get' . ucfirst($linkArray);
+            $links = $object->$method();
+            if (null !== $links && !empty($links)) {
+                foreach ($links as $link) {
+                    $this->em->remove($link);
+                }
+            }
+        }
+
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
-
-        //Removes links from product to components
-        $links = $object->getComponents();
-        if (null !== $links && !empty($links)) {
-            foreach ($links as $link) {
-                $this->em->remove($link);
-            }
-
-            //Persists in DB
-            $this->em->flush();
-            $this->em->refresh($object);
-        }
 
         return array(
             'status' => true,
@@ -202,20 +340,50 @@ class ProductService implements ProductServiceInterface
             $objectArray['season'] = $this->mainService->toArray($object->getSeason()->toArray());
         }
 
-        //Gets related location
-        if (null !== $object->getLocation() && !$object->getLocation()->getSuppressed()) {
-            $objectArray['location'] = $this->mainService->toArray($object->getLocation()->toArray());
+        //Gets related links
+        $linksArray = array(
+            'categories' => 'category',
+            'components' => 'component',
+            'locations' => 'location',
+            'sports' => 'sport',
+        );
+        foreach ($linksArray as $key => $value) {
+            $methodCollection = 'get' . ucfirst($key);
+            $methodObject = 'get' . ucfirst($value);
+            if (null !== $object->$methodCollection()) {
+                $links = array();
+                foreach($object->$methodCollection() as $link) {
+                    if (!$link->$methodObject()->getSuppressed()) {
+                        $links[] = $this->mainService->toArray($link->$methodObject()->toArray());
+                    }
+                }
+                $objectArray[$key] = $links;
+            }
         }
 
-        //Gets related components
-        if (null !== $object->getComponents()) {
-            $components = array();
-            foreach($object->getComponents() as $componentLink) {
-                if (!$componentLink->getComponent()->getSuppressed()) {
-                    $components[] = $this->mainService->toArray($componentLink->getComponent()->toArray());
+        //Gets related dates
+        if (null !== $object->getDates()) {
+            $dates = array();
+            foreach($object->getDates() as $date) {
+                if (null !== $date->getDate()) {
+                    $dates[] = $date->getDate()->format('Y-m-d');
                 }
             }
-            $objectArray['components'] = $components;
+            $objectArray['dates'] = $dates;
+        }
+
+        //Gets related hours
+        if (null !== $object->getHours()) {
+            $hours = array();
+            foreach($object->getHours() as $hour) {
+                if (null !== $hour->getStart()) {
+                    $hours[]['start'] = $hour->getStart()->format('H:i');
+                }
+                if (null !== $hour->getEnd()) {
+                    $hours[]['end'] = $hour->getEnd()->format('H:i');
+                }
+            }
+            $objectArray['hours'] = $hours;
         }
 
         return $objectArray;
