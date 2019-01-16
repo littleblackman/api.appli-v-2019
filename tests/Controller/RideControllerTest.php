@@ -24,10 +24,8 @@ class RideControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"kind": "dropin", "date": "2018-11-20", "start": "08:00:00", "end": "09:00:00", "name": "Name", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('rideId', $content['ride']);
 
         self::$objectId = $content['ride']['rideId'];
@@ -39,10 +37,6 @@ class RideControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/ride/display/' . self::$objectId);
-
-        $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -61,7 +55,6 @@ class RideControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"kind": "dropin", "date": "2018-11-20", "start": "09:00:00", "end": "10:00:00", "name": "Name modifié", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
@@ -74,7 +67,6 @@ class RideControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Name modifié 2"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -85,25 +77,21 @@ class RideControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/ride/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Tests with status coming
         $this->clientAuthenticated->request('GET', '/ride/list/coming');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Tests with status finished
         $this->clientAuthenticated->request('GET', '/ride/list/finished');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Tests with date
         $this->clientAuthenticated->request('GET', '/ride/list/2018-11-20');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -114,7 +102,6 @@ class RideControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/ride/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

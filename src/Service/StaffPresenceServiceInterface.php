@@ -2,35 +2,35 @@
 
 namespace App\Service;
 
-use App\Entity\DriverPresence;
+use App\Entity\StaffPresence;
 
 /**
- * DriverPresenceServiceInterface class
+ * StaffPresenceServiceInterface class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-interface DriverPresenceServiceInterface
+interface StaffPresenceServiceInterface
 {
     /**
-     * Creates the driverPresence
+     * Creates the staffPresence
      * @return array
      */
     public function create(string $data);
 
     /**
-     * Marks the driverPresence as deleted
+     * Marks the staffPresence as deleted
      * @return array
      */
-    public function delete(DriverPresence $object);
+    public function delete(StaffPresence $object);
 
     /**
      * Checks if the entity has been well filled
      * @throw Exception
      */
-    public function isEntityFilled(DriverPresence $object);
+    public function isEntityFilled(StaffPresence $object);
 
     /**
      * Converts entity to array
      * @return array
      */
-    public function toArray(DriverPresence $object);
+    public function toArray(StaffPresence $object);
 }

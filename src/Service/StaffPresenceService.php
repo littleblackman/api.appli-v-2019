@@ -2,40 +2,40 @@
 
 namespace App\Service;
 
-use App\Entity\DriverPresence;
+use App\Entity\StaffPresence;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
- * DriverPresenceService class
+ * StaffPresenceService class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class DriverPresenceService implements DriverPresenceServiceInterface
+class StaffPresenceService implements StaffPresenceServiceInterface
 {
     private $em;
 
-    private $driverService;
+    private $staffService;
 
     private $mainService;
 
     public function __construct(
         EntityManagerInterface $em,
-        DriverServiceInterface $driverService,
+        StaffServiceInterface $staffService,
         MainServiceInterface $mainService
     )
     {
         $this->em = $em;
-        $this->driverService = $driverService;
+        $this->staffService = $staffService;
         $this->mainService = $mainService;
     }
 
     /**
      * Adds specific data that could not be added via generic method
      */
-    public function addSpecificData(DriverPresence $object, array $data)
+    public function addSpecificData(StaffPresence $object, array $data)
     {
-        //Should be done from DriverPresenceType but it returns null...
+        //Should be done from StaffPresenceType but it returns null...
         if (array_key_exists('start', $data)) {
             $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
         }
@@ -51,16 +51,16 @@ class DriverPresenceService implements DriverPresenceServiceInterface
     {
         $data = json_decode($data, true);
         if (is_array($data)) {
-            foreach ($data as $driverPresence) {
-                $object = $this->em->getRepository('App:DriverPresence')->findByData($driverPresence);
+            foreach ($data as $staffPresence) {
+                $object = $this->em->getRepository('App:StaffPresence')->findByData($staffPresence);
                 //Creates object if not already existing
                 if (null === $object) {
-                    $object = new DriverPresence();
+                    $object = new StaffPresence();
                     $this->mainService->create($object);
 
                     //Submits data
-                    $this->mainService->submit($object, 'driver-presence-create', $driverPresence);
-                    $this->addSpecificData($object, $driverPresence);
+                    $this->mainService->submit($object, 'staff-presence-create', $staffPresence);
+                    $this->addSpecificData($object, $staffPresence);
 
                     //Checks if entity has been filled
                     $this->isEntityFilled($object);
@@ -73,7 +73,7 @@ class DriverPresenceService implements DriverPresenceServiceInterface
             //Returns data
             return array(
                 'status' => true,
-                'message' => 'DriverPresence ajoutées',
+                'message' => 'StaffPresence ajoutées',
             );
         }
 
@@ -83,7 +83,7 @@ class DriverPresenceService implements DriverPresenceServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(DriverPresence $object)
+    public function delete(StaffPresence $object)
     {
         //Persists data
         $this->mainService->delete($object);
@@ -91,19 +91,19 @@ class DriverPresenceService implements DriverPresenceServiceInterface
 
         return array(
             'status' => true,
-            'message' => 'DriverPresence supprimée',
+            'message' => 'StaffPresence supprimée',
         );
     }
 
     /**
-     * Deletes DriverPresence by array of ids
+     * Deletes StaffPresence by array of ids
      */
     public function deleteByArray(string $data)
     {
         $data = json_decode($data, true);
         if (is_array($data)) {
-            foreach ($data as $driverPresence) {
-                $object = $this->em->getRepository('App:DriverPresence')->findByData($driverPresence);
+            foreach ($data as $staffPresence) {
+                $object = $this->em->getRepository('App:StaffPresence')->findByData($staffPresence);
 
                 //Submits data
                 $this->mainService->delete($object);
@@ -112,7 +112,7 @@ class DriverPresenceService implements DriverPresenceServiceInterface
 
             return array(
                 'status' => true,
-                'message' => 'DriverPresence supprimées',
+                'message' => 'StaffPresence supprimées',
             );
         }
 
@@ -120,63 +120,63 @@ class DriverPresenceService implements DriverPresenceServiceInterface
     }
 
     /**
-     * Returns the list of all drivers in the array format
+     * Returns the list of all staffs in the array format
      * @return array
      */
-    public function findAllByDate($date)
+    public function findAllByKindAndDate($kind, $date)
     {
         return $this->em
-            ->getRepository('App:DriverPresence')
-            ->findAllByDate($date)
+            ->getRepository('App:StaffPresence')
+            ->findAllByKindAndDate($kind, $date)
         ;
     }
 
     /**
-     * Returns the list of presence by driver
+     * Returns the list of presence by staff
      * @return array
      */
-    public function findByDriver($driverId, $date)
+    public function findByStaff($staffId, $date)
     {
         return $this->em
-            ->getRepository('App:DriverPresence')
-            ->findByDriver($driverId, $date)
+            ->getRepository('App:StaffPresence')
+            ->findByStaff($staffId, $date)
         ;
     }
 
     /**
-     * Returns the list of all drivers present for the date
+     * Returns the list of all staffs present for the date
      * @return array
      */
-    public function findDriversByPresenceDate($date)
+    public function findStaffsByPresenceDate($date)
     {
         return $this->em
-            ->getRepository('App:DriverPresence')
-            ->findDriversByPresenceDate($date)
+            ->getRepository('App:StaffPresence')
+            ->findStaffsByPresenceDate($date)
         ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isEntityFilled(DriverPresence $object)
+    public function isEntityFilled(StaffPresence $object)
     {
-        if (null === $object->getDriver() ||
+        if (null === $object->getStaff() ||
             null === $object->getDate()) {
-            throw new UnprocessableEntityHttpException('Missing data for DriverPresence -> ' . json_encode($object->toArray()));
+            throw new UnprocessableEntityHttpException('Missing data for StaffPresence -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toArray(DriverPresence $object)
+    public function toArray(StaffPresence $object)
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
 
-        //Gets related driver
-        if (null !== $object->getDriver() && !$object->getDriver()->getSuppressed()) {
-            $objectArray['driver'] = $this->driverService->toArray($object->getDriver());
+        //Gets related staff
+        if (null !== $object->getStaff() && !$object->getStaff()->getSuppressed()) {
+            $objectArray['staff'] = $this->staffService->toArray($object->getStaff());
         }
 
         return $objectArray;

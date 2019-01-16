@@ -24,10 +24,8 @@ class PhoneControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Name", "phone": "0123456789", "links": {"personId": "1"}}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('phoneId', $content['phone']);
 
         self::$objectId = $content['phone']['phoneId'];
@@ -39,7 +37,6 @@ class PhoneControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/phone/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class PhoneControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Name modifié", "phone": "0123456789", "links": {"personId": "1"}}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
@@ -71,7 +67,6 @@ class PhoneControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Name modifié 2"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -82,7 +77,6 @@ class PhoneControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/phone/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

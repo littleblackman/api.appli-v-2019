@@ -24,10 +24,8 @@ class VehicleControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Name", "matriculation": "XX-111-XX", "combustible": "diesel", "photo": "/url/photo"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('vehicleId', $content['vehicle']);
 
         self::$objectId = $content['vehicle']['vehicleId'];
@@ -39,7 +37,6 @@ class VehicleControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/vehicle/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class VehicleControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Name modified", "matriculation": "XX-111-XX", "combustible": "diesel", "photo": "/url/photo"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
@@ -71,7 +67,6 @@ class VehicleControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Name modified 2"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -82,7 +77,6 @@ class VehicleControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/vehicle/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -93,7 +87,6 @@ class VehicleControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/vehicle/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

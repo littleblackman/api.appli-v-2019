@@ -2,17 +2,17 @@
 
 namespace App\Security;
 
-use App\Entity\DriverPresence;
+use App\Entity\Staff;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * DriverPresenceVoter class
+ * StaffVoter class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class DriverPresenceVoter extends Voter
+class StaffVoter extends Voter
 {
     /**
      * Stores Security
@@ -20,22 +20,22 @@ class DriverPresenceVoter extends Voter
      */
     private $security;
 
-    public const DRIVER_PRESENCE_CREATE = 'driverPresenceCreate';
+    public const STAFF_CREATE = 'staffCreate';
 
-    public const DRIVER_PRESENCE_DELETE = 'driverPresenceDelete';
+    public const STAFF_DELETE = 'staffDelete';
 
-    public const DRIVER_PRESENCE_DISPLAY = 'driverPresenceDisplay';
+    public const STAFF_DISPLAY = 'staffDisplay';
 
-    public const DRIVER_PRESENCE_LIST = 'driverPresenceList';
+    public const STAFF_LIST = 'staffList';
 
-    public const DRIVER_PRESENCE_MODIFY = 'driverPresenceModify';
+    public const STAFF_MODIFY = 'staffModify';
 
     private const ATTRIBUTES = array(
-        self::DRIVER_PRESENCE_CREATE,
-        self::DRIVER_PRESENCE_DELETE,
-        self::DRIVER_PRESENCE_DISPLAY,
-        self::DRIVER_PRESENCE_LIST,
-        self::DRIVER_PRESENCE_MODIFY,
+        self::STAFF_CREATE,
+        self::STAFF_DELETE,
+        self::STAFF_DISPLAY,
+        self::STAFF_LIST,
+        self::STAFF_MODIFY,
     );
 
     public function __construct(Security $security)
@@ -46,7 +46,7 @@ class DriverPresenceVoter extends Voter
     protected function supports($attribute, $subject)
     {
         if (null !== $subject) {
-            return $subject instanceof DriverPresence && in_array($attribute, self::ATTRIBUTES);
+            return $subject instanceof Staff && in_array($attribute, self::ATTRIBUTES);
         }
 
         return in_array($attribute, self::ATTRIBUTES);
@@ -61,19 +61,19 @@ class DriverPresenceVoter extends Voter
 
         //Defines access rights
         switch ($attribute) {
-            case self::DRIVER_PRESENCE_CREATE:
+            case self::STAFF_CREATE:
                 return $this->canCreate();
                 break;
-            case self::DRIVER_PRESENCE_DELETE:
+            case self::STAFF_DELETE:
                 return $this->canDelete();
                 break;
-            case self::DRIVER_PRESENCE_DISPLAY:
+            case self::STAFF_DISPLAY:
                 return $this->canDisplay();
                 break;
-            case self::DRIVER_PRESENCE_LIST:
+            case self::STAFF_LIST:
                 return $this->canList();
                 break;
-            case self::DRIVER_PRESENCE_MODIFY:
+            case self::STAFF_MODIFY:
                 return $this->canModify();
                 break;
         }

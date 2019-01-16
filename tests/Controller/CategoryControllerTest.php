@@ -24,10 +24,8 @@ class CategoryControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Catégorie"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('categoryId', $content['category']);
 
         self::$objectId = $content['category']['categoryId'];
@@ -39,7 +37,6 @@ class CategoryControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/category/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class CategoryControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Catégorie modifiée"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -69,7 +65,6 @@ class CategoryControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/category/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -80,7 +75,6 @@ class CategoryControllerTest extends WebTestCase
     public function testSearch()
     {
         $this->clientAuthenticated->request('GET', '/category/search/amil');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -91,7 +85,6 @@ class CategoryControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/category/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

@@ -24,10 +24,8 @@ class WeekControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"season": "1", "kind": "stage", "name": "Nom semaine", "dateStart": "1999-01-20"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('weekId', $content['week']);
 
         self::$objectId = $content['week']['weekId'];
@@ -39,7 +37,6 @@ class WeekControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/week/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class WeekControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"season": "1", "kind": "ecole", "name": "Nom semaine modifié", "dateStart": "1999-01-20"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
@@ -71,7 +67,6 @@ class WeekControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"kind": "stage"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -82,7 +77,6 @@ class WeekControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/week/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -93,7 +87,6 @@ class WeekControllerTest extends WebTestCase
     public function testSearch()
     {
         $this->clientAuthenticated->request('GET', '/child/search/name');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -104,7 +97,6 @@ class WeekControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/week/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

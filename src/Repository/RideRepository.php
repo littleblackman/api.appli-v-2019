@@ -16,10 +16,10 @@ class RideRepository extends EntityRepository
     public function findAllByDate($date)
     {
         return $this->createQueryBuilder('r')
-            ->addSelect('d', 'p', 'v', 'pi', 'z')
-            ->leftJoin('r.driver', 'd')
-            ->leftJoin('d.person', 'p')
-            ->leftJoin('d.driverZones', 'z')
+            ->addSelect('s', 'p', 'v', 'pi', 'z')
+            ->leftJoin('r.staff', 's')
+            ->leftJoin('s.person', 'p')
+            ->leftJoin('s.driverZones', 'z')
             ->leftJoin('r.vehicle', 'v')
             ->leftJoin('r.pickups', 'pi')
             ->where('r.date LIKE :date')
@@ -39,10 +39,10 @@ class RideRepository extends EntityRepository
     public function findAllByDateAndKind($date, $kind)
     {
         return $this->createQueryBuilder('r')
-            ->addSelect('d', 'p', 'v', 'pi', 'z')
-            ->leftJoin('r.driver', 'd')
-            ->leftJoin('d.person', 'p')
-            ->leftJoin('d.driverZones', 'z')
+            ->addSelect('s', 'p', 'v', 'pi', 'z')
+            ->leftJoin('r.staff', 's')
+            ->leftJoin('s.person', 'p')
+            ->leftJoin('s.driverZones', 'z')
             ->leftJoin('r.vehicle', 'v')
             ->leftJoin('r.pickups', 'pi')
             ->where('r.date LIKE :date')
@@ -52,7 +52,7 @@ class RideRepository extends EntityRepository
             ->setParameter('kind', $kind)
             ->orderBy('r.date', 'ASC')
             ->addOrderBy('r.start', 'ASC')
-            ->addOrderBy('d.priority', 'ASC')
+            ->addOrderBy('s.priority', 'ASC')
             ->addOrderBy('pi.sortOrder', 'ASC')
             ->getQuery()
             ->getResult()
@@ -66,10 +66,10 @@ class RideRepository extends EntityRepository
     {
         $operator = 'finished' === $status ? '<' : '>=';
         return $this->createQueryBuilder('r')
-            ->addSelect('d', 'p', 'v', 'pi', 'z')
-            ->leftJoin('r.driver', 'd')
-            ->leftJoin('d.person', 'p')
-            ->leftJoin('d.driverZones', 'z')
+            ->addSelect('s', 'p', 'v', 'pi', 'z')
+            ->leftJoin('r.staff', 's')
+            ->leftJoin('s.person', 'p')
+            ->leftJoin('s.driverZones', 'z')
             ->leftJoin('r.vehicle', 'v')
             ->leftJoin('r.pickups', 'pi')
             ->where('r.date ' . $operator . ' :date')
@@ -100,22 +100,22 @@ class RideRepository extends EntityRepository
     }
 
     /**
-     * Returns the rides by date and driver
+     * Returns the rides by date and staff
      */
-    public function findAllByDateByDriver($date, $driver)
+    public function findAllByDateByStaff($date, $staff)
     {
         return $this->createQueryBuilder('r')
-            ->addSelect('d', 'p', 'v', 'pi', 'z')
-            ->leftJoin('r.driver', 'd')
-            ->leftJoin('d.person', 'p')
-            ->leftJoin('d.driverZones', 'z')
+            ->addSelect('s', 'p', 'v', 'pi', 'z')
+            ->leftJoin('r.staff', 's')
+            ->leftJoin('s.person', 'p')
+            ->leftJoin('s.driverZones', 'z')
             ->leftJoin('r.vehicle', 'v')
             ->leftJoin('r.pickups', 'pi')
             ->where('r.date = :date')
-            ->andWhere('r.driver = :driver')
+            ->andWhere('r.staff = :staff')
             ->andWhere('r.suppressed = 0')
             ->setParameter('date', $date)
-            ->setParameter('driver', $driver->getDriverId())
+            ->setParameter('staff', $staff->getStaffId())
             ->orderBy('r.date', 'ASC')
             ->addOrderBy('r.start', 'ASC')
             ->addOrderBy('pi.sortOrder', 'ASC')
@@ -125,22 +125,22 @@ class RideRepository extends EntityRepository
     }
 
     /**
-     * Returns the ride by date and driver
+     * Returns the ride by date and staff
      */
-    public function findOneByDateByDriverId($date, $driverId)
+    public function findOneByDateByStaffId($date, $staff)
     {
         return $this->createQueryBuilder('r')
-            ->addSelect('d', 'p', 'v', 'pi', 'z')
-            ->leftJoin('r.driver', 'd')
-            ->leftJoin('d.person', 'p')
-            ->leftJoin('d.driverZones', 'z')
+            ->addSelect('s', 'p', 'v', 'pi', 'z')
+            ->leftJoin('r.staff', 's')
+            ->leftJoin('s.person', 'p')
+            ->leftJoin('s.driverZones', 'z')
             ->leftJoin('r.vehicle', 'v')
             ->leftJoin('r.pickups', 'pi')
             ->where('r.date = :date')
-            ->andWhere('d.person = :person')
+            ->andWhere('s.person = :person')
             ->andWhere('r.suppressed = 0')
             ->setParameter('date', $date)
-            ->setParameter('driver', $driverId)
+            ->setParameter('staff', $staff)
             ->getQuery()
             ->getOneOrNullResult()
         ;
@@ -152,10 +152,10 @@ class RideRepository extends EntityRepository
     public function findOneById($rideId)
     {
         return $this->createQueryBuilder('r')
-            ->addSelect('d', 'p', 'v', 'pi', 'z')
-            ->leftJoin('r.driver', 'd')
-            ->leftJoin('d.person', 'p')
-            ->leftJoin('d.driverZones', 'z')
+            ->addSelect('s', 'p', 'v', 'pi', 'z')
+            ->leftJoin('r.staff', 's')
+            ->leftJoin('s.person', 'p')
+            ->leftJoin('s.driverZones', 'z')
             ->leftJoin('r.vehicle', 'v')
             ->leftJoin('r.pickups', 'pi')
             ->where('r.rideId = :rideId')

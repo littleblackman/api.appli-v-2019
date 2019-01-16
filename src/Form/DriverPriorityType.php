@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Driver;
+use App\Entity\Staff;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -18,9 +18,9 @@ class DriverPriorityType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('driver', EntityType::class, array(
+            ->add('staff', EntityType::class, array(
                 'required' => false,
-                'class' => Driver::class,
+                'class' => Staff::class,
                 ))
             ->add('priority', IntegerType::class, array(
                 'required' => false,

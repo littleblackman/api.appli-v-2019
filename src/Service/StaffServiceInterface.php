@@ -2,41 +2,41 @@
 
 namespace App\Service;
 
-use App\Entity\Driver;
+use App\Entity\Staff;
 
 /**
- * DriverServiceInterface class
+ * StaffServiceInterface class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-interface DriverServiceInterface
+interface StaffServiceInterface
 {
     /**
-     * Creates the driver
+     * Creates the staff
      * @return array
      */
     public function create(string $data);
 
     /**
-     * Marks the driver as deleted
+     * Marks the staff as deleted
      * @return array
      */
-    public function delete(Driver $object);
+    public function delete(Staff $object);
 
     /**
      * Checks if the entity has been well filled
      * @throw Exception
      */
-    public function isEntityFilled(Driver $object);
+    public function isEntityFilled(Staff $object);
 
     /**
-     * Modifies the driver
+     * Modifies the staff
      * @return array
      */
-    public function modify(Driver $object, string $data);
+    public function modify(Staff $object, string $data);
 
     /**
      * Converts entity to array
      * @return array
      */
-    public function toArray(Driver $object);
+    public function toArray(Staff $object);
 }

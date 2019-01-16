@@ -18,20 +18,20 @@ class RideService implements RideServiceInterface
 
     private $mainService;
 
-    private $driverService;
+    private $staffService;
 
     private $vehicleService;
 
     public function __construct(
         EntityManagerInterface $em,
         MainServiceInterface $mainService,
-        DriverServiceInterface $driverService,
+        StaffServiceInterface $staffService,
         VehicleServiceInterface $vehicleService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
-        $this->driverService = $driverService;
+        $this->staffService = $staffService;
         $this->vehicleService = $vehicleService;
     }
 
@@ -181,14 +181,14 @@ class RideService implements RideServiceInterface
     }
 
     /**
-     * Returns the rides linked to date and driver
+     * Returns the rides linked to date and staff
      * @return array
      */
-    public function findAllByDateByDriver(string $date, $driver)
+    public function findAllByDateByStaff(string $date, $staff)
     {
         return $this->em
             ->getRepository('App:Ride')
-            ->findAllByDateByDriver($date, $driver)
+            ->findAllByDateByStaff($date, $staff)
         ;
     }
 
@@ -259,9 +259,9 @@ class RideService implements RideServiceInterface
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
 
-        //Gets related driver
-        if (null !== $object->getDriver() && !$object->getDriver()->getSuppressed()) {
-            $objectArray['driver'] = $this->driverService->toArray($object->getDriver());
+        //Gets related staff
+        if (null !== $object->getStaff() && !$object->getStaff()->getSuppressed()) {
+            $objectArray['staff'] = $this->staffService->toArray($object->getStaff());
         }
 
         //Gets related vehicle

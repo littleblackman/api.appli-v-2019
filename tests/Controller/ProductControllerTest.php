@@ -24,10 +24,8 @@ class ProductControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"family": "1", "season": "1", "nameFr": "name Fr", "nameEn": "Name En", "descriptionFr": "Description Fr", "priceTtc": "415.50", "descriptionEn": "Description En", "transport": "true", "photo": "/path/to/picture.jpg", "isLocationSelectable": "true", "isDateSelectable": "true", "isHourSelectable": "true", "isSportAssociated": "true", "visibility": "visible", "hourDropin": "10:40:00", "hourDropoff": "11:40:00", "categories": [{"category": "1"}], "components": [{"nameFr": "string", "nameEn": "string", "vat": 5.5, "priceHt": 150, "priceVat": 8.25, "priceTtc": 158.25, "quantity": 10, "totalHt": 1500.00, "totalVat": 82.50, "totalTtc": 1582.50}, {"nameFr": "string", "nameEn": "string", "vat": 5.5, "priceHt": 150, "priceVat": 8.25, "priceTtc": 158.25, "quantity": 10, "totalHt": 1500.00, "totalVat": 82.50, "totalTtc": 1582.50}], "dates": [{"date": "2018-04-06"}], "hours": [{"start": "09:00:00", "end": "10:00:00"}], "locations": [{"location": "1"}], "sports": [{"sport": "1"}]}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('productId', $content['product']);
 
         self::$objectId = $content['product']['productId'];
@@ -39,7 +37,6 @@ class ProductControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/product/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class ProductControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"family": "1", "season": "1", "nameFr": "name Fr modifié", "nameEn": "Name En modified", "descriptionFr": "Description Fr modifiée", "descriptionEn": "Description En modified", "priceTtc": "425.50", "transport": "false", "photo": "/path/to/picture-modified.jpg", "isLocationSelectable": "false", "isDateSelectable": "false", "isHourSelectable": "false", "isSportAssociated": "false", "visibility": "invisible", "hourDropin": "11:40:00", "hourDropoff": "12:40:00", "components": [{"nameFr": "string", "nameEn": "string", "vat": 5.5, "priceHt": 150, "priceVat": 8.25, "priceTtc": 158.25, "quantity": 10, "totalHt": 1500.00, "totalVat": 82.50, "totalTtc": 1582.50}]}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
@@ -71,7 +67,6 @@ class ProductControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"nameFr": "name Fr modifié 2"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -82,7 +77,6 @@ class ProductControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/product/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -93,7 +87,6 @@ class ProductControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/product/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

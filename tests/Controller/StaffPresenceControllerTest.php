@@ -4,71 +4,67 @@ namespace App\Tests\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use App\Entity\DriverPresence;
+use App\Entity\StaffPresence;
 use App\Tests\TestTrait;
 
-class DriverPresenceControllerTest extends WebTestCase
+class StaffPresenceControllerTest extends WebTestCase
 {
     use TestTrait;
 
     /**
-     * Tests creation DriverPresence
+     * Tests creation StaffPresence
      */
     public function testCreate()
     {
         $this->clientAuthenticated->request(
             'POST',
-            '/driver/presence/create',
+            '/staff/presence/create',
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '[{"driver": "1", "date": "1999-01-20", "start": "08:00:00", "end": "12:00:00"}]'
+            '[{"staff": "1", "date": "1999-01-20", "start": "08:00:00", "end": "12:00:00"}]'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests display DriverPresence
+     * Tests display StaffPresence
      */
     public function testDisplay()
     {
-        $this->clientAuthenticated->request('GET', '/driver/presence/display/1/1999-01-20');
-
+        $this->clientAuthenticated->request('GET', '/staff/presence/display/1/1999-01-20');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests list of DriverPresence
+     * Tests list of StaffPresence
      */
     public function testList()
     {
-        $this->clientAuthenticated->request('GET', '/driver/presence/list/1999-01-20');
-
+        $this->clientAuthenticated->request('GET', '/staff/presence/list/driver/1999-01-20');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests delete DriverPresence AND physically deletes it
+     * Tests delete StaffPresence AND physically deletes it
      */
     public function testDelete()
     {
         $data = array(
-            'driver' => '1',
+            'staff' => '1',
             'date' => '1999-01-20',
             'start' => '08:00:00',
             'end' => '12:00:00',
         );
-        self::$objectId = $this->em->getRepository('App:DriverPresence')->findByData($data)->getDriverPresenceId();
-        $this->clientAuthenticated->request('DELETE', '/driver/presence/delete/' . self::$objectId);
-
+        self::$objectId = $this->em->getRepository('App:StaffPresence')->findByData($data)->getStaffPresenceId();
+        $this->clientAuthenticated->request('DELETE', '/staff/presence/delete/' . self::$objectId);
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Deletes physically the entity created by test
-        $this->deleteEntity('DriverPresence', 'driverPresenceId', self::$objectId);
+        $this->deleteEntity('StaffPresence', 'staffPresenceId', self::$objectId);
     }
 }

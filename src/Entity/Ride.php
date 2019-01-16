@@ -106,12 +106,12 @@ class Ride
     private $endPoint;
 
     /**
-     * @var Driver
+     * @var Staff
      *
-     * @ORM\OneToOne(targetEntity="Driver")
-     * @ORM\JoinColumn(name="driver_id", referencedColumnName="driver_id")
+     * @ORM\OneToOne(targetEntity="Staff")
+     * @ORM\JoinColumn(name="staff_id", referencedColumnName="staff_id")
      */
-    private $driver;
+    private $staff;
 
     /**
      * @var Vehicle
@@ -277,14 +277,14 @@ class Ride
         return $this;
     }
 
-    public function getDriver(): ?Driver
+    public function getStaff(): ?Staff
     {
-        return $this->driver;
+        return $this->staff;
     }
 
-    public function setDriver(?Driver $driver): self
+    public function setStaff(?Staff $staff): self
     {
-        $this->driver = $driver;
+        $this->staff = $staff;
 
         return $this;
     }

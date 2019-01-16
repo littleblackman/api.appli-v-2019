@@ -24,10 +24,8 @@ class FamilyControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Famille"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('familyId', $content['family']);
 
         self::$objectId = $content['family']['familyId'];
@@ -39,7 +37,6 @@ class FamilyControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/family/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class FamilyControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Famille modifiée"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -69,7 +65,6 @@ class FamilyControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/family/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -80,7 +75,6 @@ class FamilyControllerTest extends WebTestCase
     public function testSearch()
     {
         $this->clientAuthenticated->request('GET', '/family/search/amil');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -91,7 +85,6 @@ class FamilyControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/family/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

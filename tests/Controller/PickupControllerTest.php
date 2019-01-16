@@ -27,7 +27,6 @@ class PickupControllerTest extends WebTestCase
 
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('pickupId', $content['pickup']);
 
         self::$objectId = $content['pickup']['pickupId'];
@@ -39,7 +38,6 @@ class PickupControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/pickup/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -83,31 +81,104 @@ class PickupControllerTest extends WebTestCase
     {
         //Tests with date
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Tests with date and status
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/absent');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Tests with date and status
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/supported');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Tests with date for unaffected dropin
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/unaffected/dropin');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Tests with date for unaffected dropoff
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/unaffected/dropoff');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
 
+    /**
+     * Tests affect
+     */
+    public function testAffect()
+    {
+        //Tests with dropin
+        $this->clientAuthenticated->request('PUT', '/pickup/affect/2018-10-22/dropin');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+        $this->clientAuthenticated->request('PUT', '/pickup/affect/2018-10-22/dropin/true');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests with dropoff
+        $this->clientAuthenticated->request('PUT', '/pickup/affect/2018-10-22/dropoff');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+        $this->clientAuthenticated->request('PUT', '/pickup/affect/2018-10-22/dropoff/true');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests with all
+        $this->clientAuthenticated->request('PUT', '/pickup/affect/2018-10-22/all');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+        $this->clientAuthenticated->request('PUT', '/pickup/affect/2018-10-22/all/true');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
+     * Tests unaffect
+     */
+    public function testUnaffect()
+    {
+        //Tests with dropin
+        $this->clientAuthenticated->request('PUT', '/pickup/unaffect/2018-10-22/dropin');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests with dropoff
+        $this->clientAuthenticated->request('PUT', '/pickup/unaffect/2018-10-22/dropoff');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests with all
+        $this->clientAuthenticated->request('PUT', '/pickup/unaffect/2018-10-22/all');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
+     * Tests affect Pickups to linkedRide
+     */
+    public function testLinkedRide()
+    {
+        $this->clientAuthenticated->request('PUT', '/pickup/affect-linked-ride/10');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
+     * Tests Dispatch Pickups
+     */
+    public function testDispatch()
+    {
+        $this->clientAuthenticated->request(
+            'PUT',
+            '/pickup/dispatch',
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '[{"pickupId": 1, "rideId": 1, "sortOrder": 1, "validated": "validated", "start": "2018-10-22 09:00:00"}]'
+        );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -118,7 +189,6 @@ class PickupControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/pickup/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

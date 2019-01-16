@@ -24,10 +24,8 @@ class MealControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"date": "2018-11-20", "child": "1", "person": "1", "freeName": "Free name", "links": [{"foodId": "1"}]}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('mealId', $content['meal']);
 
         self::$objectId = $content['meal']['mealId'];
@@ -39,7 +37,6 @@ class MealControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/meal/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class MealControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"date": "2018-11-20", "child": "1", "person": "1", "freeName": "Free name modifié", "links": [{"foodId": "1"}]}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
@@ -71,7 +67,6 @@ class MealControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"freeName": "Free name modifié 2"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -82,7 +77,6 @@ class MealControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/meal/list/2018-11-20');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -93,7 +87,6 @@ class MealControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/meal/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

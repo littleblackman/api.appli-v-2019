@@ -4,100 +4,111 @@ namespace App\Tests\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use App\Entity\Driver;
+use App\Entity\Staff;
 use App\Tests\TestTrait;
 
-class DriverControllerTest extends WebTestCase
+class StaffControllerTest extends WebTestCase
 {
     use TestTrait;
 
     /**
-     * Tests creation Driver
+     * Tests creation Staff
      */
     public function testCreate()
     {
         $this->clientAuthenticated->request(
             'POST',
-            '/driver/create',
+            '/staff/create',
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"person": "9999", "postal": "11111", "priority": 10}'
+            '{"person": "9999", "kind": "driver", "postal": "11111", "priority": 10}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
+        $this->assertArrayHasKey('staffId', $content['staff']);
 
-        $this->assertArrayHasKey('driverId', $content['driver']);
-
-        self::$objectId = $content['driver']['driverId'];
+        self::$objectId = $content['staff']['staffId'];
     }
 
     /**
-     * Tests display Driver
+     * Tests display Staff
      */
     public function testDisplay()
     {
-        $this->clientAuthenticated->request('GET', '/driver/display/' . self::$objectId);
-
+        $this->clientAuthenticated->request('GET', '/staff/display/' . self::$objectId);
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests modify Driver
+     * Tests modify Staff
      */
     public function testModify()
     {
         //Tests with full data array
         $this->clientAuthenticated->request(
             'PUT',
-            '/driver/modify/' . self::$objectId,
+            '/staff/modify/' . self::$objectId,
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"person": "9999", "postal": "22222", "priority": 10}'
+            '{"person": "9999", "kind": "administrative", "postal": "22222", "priority": 10}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Tests with partial data array
         $this->clientAuthenticated->request(
             'PUT',
-            '/driver/modify/' . self::$objectId,
+            '/staff/modify/' . self::$objectId,
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
             '{"postal": "33333"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests list of Driver
+     * Tests add priority
+     */
+    public function testPriority()
+    {
+        //Tests with full data array
+        $this->clientAuthenticated->request(
+            'PUT',
+            '/staff/priority',
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '[{"staff": "9999", "priority": 10}]'
+        );
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
+     * Tests list of Staff
      */
     public function testList()
     {
-        $this->clientAuthenticated->request('GET', '/driver/list');
-
+        $this->clientAuthenticated->request('GET', '/staff/list/driver');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
 
     /**
-     * Tests delete Driver AND physically deletes it
+     * Tests delete Staff AND physically deletes it
      */
     public function testDelete()
     {
-        $this->clientAuthenticated->request('DELETE', '/driver/delete/' . self::$objectId);
-
+        $this->clientAuthenticated->request('DELETE', '/staff/delete/' . self::$objectId);
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
         //Deletes physically the entity created by test
-        $this->deleteEntity('Driver', 'driverId', self::$objectId);
+        $this->deleteEntity('Staff', 'staffId', self::$objectId);
     }
 }

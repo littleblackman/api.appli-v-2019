@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Driver;
+use App\Entity\Staff;
 use App\Entity\Ride;
 use App\Entity\Vehicle;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -60,9 +60,9 @@ class RideType extends AbstractType
             ->add('endPoint', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('driver', EntityType::class, array(
+            ->add('staff', EntityType::class, array(
                 'required' => false,
-                'class' => Driver::class,
+                'class' => Staff::class,
                 ))
             ->add('vehicle', EntityType::class, array(
                 'required' => false,

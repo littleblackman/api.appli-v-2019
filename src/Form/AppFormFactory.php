@@ -43,14 +43,6 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'component-modify':
                 $form = ComponentType::class;
                 break;
-            case 'driver-create':
-            case 'driver-modify':
-                $form = DriverType::class;
-                break;
-            case 'driver-presence-create':
-            case 'driver-presence-modify':
-                $form = DriverPresenceType::class;
-                break;
             case 'family-create':
             case 'family-modify':
                 $form = FamilyType::class;
@@ -94,6 +86,14 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'sport-create':
             case 'sport-modify':
                 $form = SportType::class;
+                break;
+            case 'staff-create':
+            case 'staff-modify':
+                $form = StaffType::class;
+                break;
+            case 'staff-presence-create':
+            case 'staff-presence-modify':
+                $form = StaffPresenceType::class;
                 break;
             case 'vehicle-create':
             case 'vehicle-modify':

@@ -13,21 +13,21 @@ class DriverPriority
     /**
      * @var string|null
      */
-    private $driver;
+    private $staff;
 
     /**
      * @var integer
      */
     private $priority;
 
-    public function getDriver(): ?Driver
+    public function getStaff(): ?Staff
     {
-        return $this->driver;
+        return $this->staff;
     }
 
-    public function setDriver(?Driver $driver): self
+    public function setStaff(?Staff $driver): self
     {
-        $this->driver = $driver;
+        $this->staff = $staff;
 
         return $this;
     }

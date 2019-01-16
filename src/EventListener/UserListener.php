@@ -155,7 +155,7 @@ class UserListener implements EventSubscriberInterface
     public function cleanRelations($relations)
     {
         foreach ($relations as $key => $value) {
-            unset($relations[$key]['driver']);
+            unset($relations[$key]['staff']);
             unset($relations[$key]['relations']);
             unset($relations[$key]['userPersonLink']);
             foreach ($this->getRemovedData() as $data) {

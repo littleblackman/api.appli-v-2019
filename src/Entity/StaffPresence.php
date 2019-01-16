@@ -10,14 +10,14 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * DriverPresence
+ * StaffPresence
  *
- * @ORM\Table(name="driver_presence")
- * @ORM\Entity(repositoryClass="App\Repository\DriverPresenceRepository")
+ * @ORM\Table(name="staff_presence")
+ * @ORM\Entity(repositoryClass="App\Repository\StaffPresenceRepository")
  *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class DriverPresence
+class StaffPresence
 {
     use CreationTrait;
     use UpdateTrait;
@@ -26,19 +26,19 @@ class DriverPresence
     /**
      * @var int
      *
-     * @ORM\Column(name="driver_presence_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="staff_presence_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $driverPresenceId;
+    private $staffPresenceId;
 
     /**
-     * @var Driver
+     * @var Staff
      *
-     * @ORM\OneToOne(targetEntity="Driver")
-     * @ORM\JoinColumn(name="driver_id", referencedColumnName="driver_id")
+     * @ORM\OneToOne(targetEntity="Staff")
+     * @ORM\JoinColumn(name="staff_id", referencedColumnName="staff_id")
      */
-    private $driver;
+    private $staff;
 
     /**
      * @var DateTime|null
@@ -82,9 +82,9 @@ class DriverPresence
         return $objectArray;
     }
 
-    public function getDriverPresenceId(): ?int
+    public function getStaffPresenceId(): ?int
     {
-        return $this->driverPresenceId;
+        return $this->staffPresenceId;
     }
 
     public function getDate(): ?DateTimeInterface
@@ -123,14 +123,14 @@ class DriverPresence
         return $this;
     }
 
-    public function getDriver(): ?Driver
+    public function getStaff(): ?Staff
     {
-        return $this->driver;
+        return $this->staff;
     }
 
-    public function setDriver(?Driver $driver): self
+    public function setStaff(?Staff $staff): self
     {
-        $this->driver = $driver;
+        $this->staff = $staff;
 
         return $this;
     }

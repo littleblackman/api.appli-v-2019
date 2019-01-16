@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Driver;
+use App\Entity\Staff;
 use App\Entity\Ride;
 use App\Form\RideType;
-use App\Service\DriverServiceInterface;
+use App\Service\StaffServiceInterface;
 use App\Service\RideServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -22,16 +22,16 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class RideController extends AbstractController
 {
-    private $driverService;
+    private $staffService;
 
     private $rideService;
 
     public function __construct(
-        DriverServiceInterface $driverService,
+        StaffServiceInterface $staffService,
         RideServiceInterface $rideService
     )
     {
-        $this->driverService = $driverService;
+        $this->staffService = $staffService;
         $this->rideService = $rideService;
     }
 
@@ -164,13 +164,13 @@ class RideController extends AbstractController
 //DISPLAY BY DATE AND DRIVERID
 
     /**
-     * Displays the rides for a specific date and driver
+     * Displays the rides for a specific date and staff
      *
-     * @Route("/ride/display/{date}/{driverId}",
-     *    name="ride_display_date_driver",
+     * @Route("/ride/display/{date}/{staffId}",
+     *    name="ride_display_date_staff",
      *    requirements={
      *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
-     *        "driverId": "^([0-9]+)$"
+     *        "staffId": "^([0-9]+)$"
      *    },
      *    methods={"HEAD", "GET"})
      *
@@ -193,21 +193,21 @@ class RideController extends AbstractController
      *     type="string",
      * )
      * @SWG\Parameter(
-     *     name="driverId",
+     *     name="staffId",
      *     in="path",
-     *     description="Id for the Driver",
+     *     description="Id for the Staff",
      *     type="string",
      * )
      * @SWG\Tag(name="Ride")
      */
-    public function displayByDateAndDriver($date, $driverId)
+    public function displayByDateAndStaff($date, $staffId)
     {
         $this->denyAccessUnlessGranted('rideDisplay');
 
         $ridesArray = array();
-        $driver = $this->driverService->findOneById($driverId);
-        if ($driver instanceof Driver && !$driver->getSuppressed()) {
-            $rides = $this->rideService->findAllByDateByDriver($date, $driver);
+        $staff = $this->staffService->findOneById($staffId);
+        if ($staff instanceof Staff && !$staff->getSuppressed()) {
+            $rides = $this->rideService->findAllByDateByStaff($date, $staff);
             foreach ($rides as $ride) {
                 $ridesArray[] = $this->rideService->toArray($ride);
             };

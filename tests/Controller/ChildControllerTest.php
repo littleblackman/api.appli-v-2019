@@ -24,10 +24,8 @@ class ChildControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"firstname": "Firstname", "lastname": "Lastname", "phone": "0123456789", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo", "links": [{"personId": "74800", "relation": "Relation"}], "siblings": [{"sibling": "74800", "relation": "Relation"}]}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('childId', $content['child']);
 
         self::$objectId = $content['child']['childId'];
@@ -39,7 +37,6 @@ class ChildControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/child/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class ChildControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"firstname": "Firstname modifié", "lastname": "Lastname", "phone": "0123456789", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo", "links": [{"personId": "74800", "relation": "Relation"}], "siblings": [{"sibling": "74800", "relation": "Relation"}]}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
@@ -71,7 +67,6 @@ class ChildControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"firstname": "Firstname modifié 2"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -82,7 +77,6 @@ class ChildControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/child/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -93,7 +87,6 @@ class ChildControllerTest extends WebTestCase
     public function testSearch()
     {
         $this->clientAuthenticated->request('GET', '/child/search/name');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -104,7 +97,6 @@ class ChildControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/child/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

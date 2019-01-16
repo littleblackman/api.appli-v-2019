@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Driver;
+use App\Entity\Staff;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -11,17 +11,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * DriverPresenceType FormType
+ * StaffPresenceType FormType
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class DriverPresenceType extends AbstractType
+class StaffPresenceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('driver', EntityType::class, array(
+            ->add('staff', EntityType::class, array(
                 'required' => false,
-                'class' => Driver::class,
+                'class' => Staff::class,
                 ))
             ->add('date', DateType::class, array(
                 'required' => false,
@@ -43,8 +43,8 @@ class DriverPresenceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'App\Entity\DriverPresence',
-            'intention' => 'DriverPresenceForm',
+            'data_class' => 'App\Entity\StaffPresence',
+            'intention' => 'StaffPresenceForm',
         ));
     }
 }

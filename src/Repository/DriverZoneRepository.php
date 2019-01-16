@@ -18,7 +18,7 @@ class DriverZoneRepository extends EntityRepository
     {
         return (int) $this->createQueryBuilder('z')
             ->select('COUNT(DISTINCT z.postal) AS MaxZones')
-            ->groupBy('z.driver')
+            ->groupBy('z.staff')
             ->where('z.suppressed = 0')
             ->orderBy('MaxZones', 'DESC')
             ->setMaxResults(1)

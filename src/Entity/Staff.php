@@ -10,14 +10,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Driver
+ * Staff
  *
- * @ORM\Table(name="driver", uniqueConstraints={@ORM\UniqueConstraint(name="driver_UN", columns={"person_id"})})
- * @ORM\Entity(repositoryClass="App\Repository\DriverRepository")
+ * @ORM\Table(name="staff", uniqueConstraints={@ORM\UniqueConstraint(name="staff_UN", columns={"person_id"})})
+ * @ORM\Entity(repositoryClass="App\Repository\StaffRepository")
  *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class Driver
+class Staff
 {
     use CreationTrait;
     use UpdateTrait;
@@ -26,11 +26,18 @@ class Driver
     /**
      * @var int
      *
-     * @ORM\Column(name="driver_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="staff_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $driverId;
+    private $staffId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="kind", type="string", nullable=true)
+     */
+    private $kind;
 
     /**
      * @var Person
@@ -64,7 +71,7 @@ class Driver
     private $address;
 
     /**
-     * @ORM\OneToMany(targetEntity="DriverZone", mappedBy="driver")
+     * @ORM\OneToMany(targetEntity="DriverZone", mappedBy="staff")
      */
     private $driverZones;
 
@@ -86,9 +93,21 @@ class Driver
         return $objectArray;
     }
 
-    public function getDriverId(): ?int
+    public function getStaffId(): ?int
     {
-        return $this->driverId;
+        return $this->staffId;
+    }
+
+    public function getKind(): ?string
+    {
+        return $this->kind;
+    }
+
+    public function setKind(?string $kind): self
+    {
+        $this->kind = $kind;
+
+        return $this;
     }
 
     public function getPerson(): ?Person
@@ -151,7 +170,7 @@ class Driver
     {
         if (!$this->driverZones->contains($driverZone)) {
             $this->driverZones[] = $driverZone;
-            $driverZone->setDriver($this);
+            $driverZone->setStaff($this);
         }
 
         return $this;
@@ -162,8 +181,8 @@ class Driver
         if ($this->driverZones->contains($driverZone)) {
             $this->driverZones->removeElement($driverZone);
             // set the owning side to null (unless already changed)
-            if ($driverZone->getDriver() === $this) {
-                $driverZone->setDriver(null);
+            if ($driverZone->getStaff() === $this) {
+                $driverZone->setStaff(null);
             }
         }
 

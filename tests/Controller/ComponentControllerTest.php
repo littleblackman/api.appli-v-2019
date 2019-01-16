@@ -24,10 +24,8 @@ class ComponentControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"nameFr": "name fr", "nameEn": "name en", "vat": 5.5}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('componentId', $content['component']);
 
         self::$objectId = $content['component']['componentId'];
@@ -39,7 +37,6 @@ class ComponentControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/component/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class ComponentControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"nameFr": "name fr modifié", "nameEn": "name en", "vat": 5.5}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
@@ -71,7 +67,6 @@ class ComponentControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"nameFr": "name fr modifié 2"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -82,7 +77,6 @@ class ComponentControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/component/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -93,7 +87,6 @@ class ComponentControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/component/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

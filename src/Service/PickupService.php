@@ -16,7 +16,7 @@ class PickupService implements PickupServiceInterface
 {
     private $em;
 
-    private $driverService;
+    private $staffService;
 
     private $mainService;
 
@@ -24,13 +24,13 @@ class PickupService implements PickupServiceInterface
 
     public function __construct(
         EntityManagerInterface $em,
-        DriverServiceInterface $driverService,
+        StaffServiceInterface $staffService,
         MainServiceInterface $mainService,
         RideServiceInterface $rideService
     )
     {
         $this->em = $em;
-        $this->driverService = $driverService;
+        $this->staffService = $staffService;
         $this->mainService = $mainService;
         $this->rideService = $rideService;
     }
@@ -96,7 +96,7 @@ class PickupService implements PickupServiceInterface
 
             //Affects Pickups in the order of postal code and makes as many passes as maxDriverZones
             $rides = $this->rideService->findAllByDateAndKind($date, $kind);
-            $maxDriverZones = $this->driverService->getMaxDriverZones() - 1;
+            $maxDriverZones = $this->staffService->getMaxDriverZones() - 1;
             if (null !== $rides) {
                 for ($priority = 0; $priority <= $maxDriverZones; $priority++) {
                     foreach ($pickupsSorted as $postal => $pickupsByPostal) {
@@ -178,8 +178,10 @@ class PickupService implements PickupServiceInterface
             $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getStart()->format('H:i:s'));
             $rideDateArrival = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getArrival()->format('H:i:s'));
             $ridePlaces = 0 === (int) $ride->getPlaces() ? 8 : (int) $ride->getPlaces();
-            if (array_key_exists($priority, $ride->getDriver()->getDriverZones()) &&
-                $postal === (int) $ride->getDriver()->getDriverZones()[$priority]->getPostal() &&
+
+            if (isset($ride->getStaff()->getDriverZones()[$priority]) &&
+                null !== $ride->getStaff()->getDriverZones()[$priority] &&
+                $postal === (int) $ride->getStaff()->getDriverZones()[$priority]->getPostal() &&
                 $pickups['places'] + $ride->getOccupiedPlaces() <= $ridePlaces &&
                 $pickups['start'] >= $rideDateStart &&
                 $pickups['start'] <= $rideDateArrival

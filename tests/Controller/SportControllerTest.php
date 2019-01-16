@@ -24,10 +24,8 @@ class SportControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Sport", "kind": "Kind"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('sportId', $content['sport']);
 
         self::$objectId = $content['sport']['sportId'];
@@ -39,7 +37,6 @@ class SportControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/sport/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class SportControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"name": "Sport modifié", "kind": "Kind modifié"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -69,7 +65,6 @@ class SportControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/sport/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -80,7 +75,6 @@ class SportControllerTest extends WebTestCase
     public function testSearch()
     {
         $this->clientAuthenticated->request('GET', '/sport/search/amil');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -91,7 +85,6 @@ class SportControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/sport/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

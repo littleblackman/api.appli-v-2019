@@ -2,16 +2,16 @@
 
 namespace App\Service;
 
-use App\Entity\Driver;
+use App\Entity\Staff;
 use App\Entity\DriverZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
- * DriverService class
+ * StaffService class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class DriverService implements DriverServiceInterface
+class StaffService implements StaffServiceInterface
 {
     private $em;
 
@@ -29,11 +29,11 @@ class DriverService implements DriverServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function addZone(Driver $object, string $postal, int $priority)
+    public function addZone(Staff $object, string $postal, int $priority)
     {
         $driverZone = new DriverZone();
         $driverZone
-            ->setDriver($object)
+            ->setStaff($object)
             ->setPostal($postal)
             ->setPriority($priority)
         ;
@@ -48,9 +48,9 @@ class DriverService implements DriverServiceInterface
     public function create(string $data)
     {
         //Submits data
-        $object = new Driver();
+        $object = new Staff();
         $this->mainService->create($object);
-        $data = $this->mainService->submit($object, 'driver-create', $data);
+        $data = $this->mainService->submit($object, 'staff-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -71,15 +71,15 @@ class DriverService implements DriverServiceInterface
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Driver ajouté',
-            'driver' => $this->toArray($object),
+            'message' => 'Staff ajouté',
+            'staff' => $this->toArray($object),
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(Driver $object)
+    public function delete(Staff $object)
     {
         //Removes links for zones
         $links = $object->getDriverZones();
@@ -95,19 +95,19 @@ class DriverService implements DriverServiceInterface
 
         return array(
             'status' => true,
-            'message' => 'Driver supprimé',
+            'message' => 'Staff supprimé',
         );
     }
 
     /**
-     * Returns the Driver based on its id
-     * @return Driver
+     * Returns the Staff based on its id
+     * @return Staff
      */
-    public function findOneById($driverId)
+    public function findOneById($staffId)
     {
         return $this->em
-            ->getRepository('App:Driver')
-            ->findOneById($driverId)
+            ->getRepository('App:Staff')
+            ->findOneById($staffId)
         ;
     }
 
@@ -124,34 +124,34 @@ class DriverService implements DriverServiceInterface
     }
 
     /**
-     * Returns the list of all drivers in the array format
+     * Returns the list of all staffs in the array format
      * @return array
      */
-    public function findAll()
+    public function findAllByKind($kind)
     {
         return $this->em
-            ->getRepository('App:Driver')
-            ->findAll()
+            ->getRepository('App:Staff')
+            ->findAllByKind($kind)
         ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isEntityFilled(Driver $object)
+    public function isEntityFilled(Staff $object)
     {
         if (null === $object->getPerson()) {
-            throw new UnprocessableEntityHttpException('Missing data for Driver -> ' . json_encode($object->toArray()));
+            throw new UnprocessableEntityHttpException('Missing data for Staff -> ' . json_encode($object->toArray()));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function modify(Driver $object, string $data)
+    public function modify(Staff $object, string $data)
     {
         //Submits data
-        $data = $this->mainService->submit($object, 'driver-modify', $data);
+        $data = $this->mainService->submit($object, 'staff-modify', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -180,25 +180,25 @@ class DriverService implements DriverServiceInterface
         //Returns data
         return array(
             'status' => true,
-            'message' => 'Driver modifié',
-            'driver' => $this->toArray($object),
+            'message' => 'Staff modifié',
+            'staff' => $this->toArray($object),
         );
     }
 
     /**
-     * Modifies the priorities for Drivers
+     * Modifies the priorities for Staffs
      */
     public function priority(string $data)
     {
         //Modifies priorities
         $data = json_decode($data, true);
         if (is_array($data) && !empty($data)) {
-            foreach ($data as $driverPriority) {
-                $driver = $this->em->getRepository('App:Driver')->findOneById($driverPriority['driver']);
-                if ($driver instanceof Driver && !$driver->getSuppressed()) {
-                    $driver->setPriority($driverPriority['priority']);
-                    $this->mainService->modify($driver);
-                    $this->mainService->persist($driver);
+            foreach ($data as $staffPriority) {
+                $staff = $this->em->getRepository('App:Staff')->findOneById($staffPriority['staff']);
+                if ($staff instanceof Staff && !$staff->getSuppressed()) {
+                    $staff->setPriority($staffPriority['priority']);
+                    $this->mainService->modify($staff);
+                    $this->mainService->persist($staff);
                 }
             }
 
@@ -217,7 +217,7 @@ class DriverService implements DriverServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function toArray(Driver $object)
+    public function toArray(Staff $object)
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());

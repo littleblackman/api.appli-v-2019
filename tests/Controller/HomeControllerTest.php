@@ -16,7 +16,6 @@ class HomeControllerTest extends WebTestCase
     public function testHome()
     {
         $this->clientAuthenticated->request('GET', '/');
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
     }

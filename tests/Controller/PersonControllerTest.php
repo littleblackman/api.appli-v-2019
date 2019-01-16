@@ -24,10 +24,8 @@ class PersonControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"firstname": "Firstname", "lastname": "Lastname", "photo": "/url/photo", "relations": [{"related": "1", "relation": "Relation"}]}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
-
         $this->assertArrayHasKey('personId', $content['person']);
 
         self::$objectId = $content['person']['personId'];
@@ -39,7 +37,6 @@ class PersonControllerTest extends WebTestCase
     public function testDisplay()
     {
         $this->clientAuthenticated->request('GET', '/person/display/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -58,7 +55,6 @@ class PersonControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"firstname": "Firstname modifié", "lastname": "Lastname", "photo": "/url/photo", "relations": [{"related": "1", "relation": "Relation"}]}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
@@ -71,7 +67,6 @@ class PersonControllerTest extends WebTestCase
             array('CONTENT_TYPE' => 'application/json'),
             '{"firstname": "Firstname modifié 2"}'
         );
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -82,7 +77,6 @@ class PersonControllerTest extends WebTestCase
     public function testList()
     {
         $this->clientAuthenticated->request('GET', '/person/list');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -93,7 +87,6 @@ class PersonControllerTest extends WebTestCase
     public function testSearch()
     {
         $this->clientAuthenticated->request('GET', '/person/search/name');
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -104,7 +97,6 @@ class PersonControllerTest extends WebTestCase
     public function testDelete()
     {
         $this->clientAuthenticated->request('DELETE', '/person/delete/' . self::$objectId);
-
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

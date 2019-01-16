@@ -31,12 +31,12 @@ class DriverZone
     private $driverZoneId;
 
     /**
-     * @var Driver
+     * @var Staff
      *
-     * @ORM\OneToOne(targetEntity="Driver")
-     * @ORM\JoinColumn(name="driver_id", referencedColumnName="driver_id")
+     * @ORM\OneToOne(targetEntity="Staff")
+     * @ORM\JoinColumn(name="staff_id", referencedColumnName="staff_id")
      */
-    private $driver;
+    private $staff;
 
     /**
      * @var string|null
@@ -91,14 +91,14 @@ class DriverZone
         return $this;
     }
 
-    public function getDriver(): ?Driver
+    public function getStaff(): ?Staff
     {
-        return $this->driver;
+        return $this->staff;
     }
 
-    public function setDriver(?Driver $driver): self
+    public function setStaff(?Staff $staff): self
     {
-        $this->driver = $driver;
+        $this->staff = $staff;
 
         return $this;
     }

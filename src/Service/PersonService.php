@@ -19,7 +19,7 @@ class PersonService implements PersonServiceInterface
 {
     private $addressService;
 
-    private $driverService;
+    private $staffService;
 
     private $em;
 
@@ -27,13 +27,13 @@ class PersonService implements PersonServiceInterface
 
     public function __construct(
         AddressServiceInterface $addressService,
-        DriverServiceInterface $driverService,
+        StaffServiceInterface $staffService,
         EntityManagerInterface $em,
         MainServiceInterface $mainService
     )
     {
         $this->addressService = $addressService;
-        $this->driverService = $driverService;
+        $this->staffService = $staffService;
         $this->em = $em;
         $this->mainService = $mainService;
     }
@@ -241,8 +241,8 @@ class PersonService implements PersonServiceInterface
         }
 
         //Gets Driver if is one
-        $driver = $this->em->getRepository('App:Driver')->findOneByPerson($object->getPersonId());
-        $objectArray['driver'] = null !== $driver ? $this->driverService->toArray($driver) : null;
+        $driver = $this->em->getRepository('App:Staff')->findOneByPerson($object->getPersonId());
+        $objectArray['driver'] = null !== $driver && 'driver' === $driver->getKind() ? $this->staffService->toArray($driver) : null;
 
         //Gets related addresses
         if (null !== $object->getAddresses()) {
