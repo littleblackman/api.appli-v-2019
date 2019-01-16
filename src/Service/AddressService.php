@@ -50,6 +50,7 @@ class AddressService implements AddressServiceInterface
     {
         //Submits data
         $object = new Address();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'address-create', $data);
 
         //Checks if entity has been filled
@@ -59,7 +60,7 @@ class AddressService implements AddressServiceInterface
         $this->mainService->addCoordinates($object);
 
         //Adds links from person/s to address
-        if (isset($data['links'])) {
+        if (array_key_exists('links', $data)) {
             $links = $data['links'];
             if (null !== $links && is_array($links) && !empty($links)) {
                 $this->addLink((int) $links['personId'], $object);
@@ -67,7 +68,6 @@ class AddressService implements AddressServiceInterface
         }
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data

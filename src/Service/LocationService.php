@@ -32,13 +32,13 @@ class LocationService implements LocationServiceInterface
     {
         //Submits data
         $object = new Location();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'location-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data

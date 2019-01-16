@@ -178,7 +178,7 @@ class PickupService implements PickupServiceInterface
             $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getStart()->format('H:i:s'));
             $rideDateArrival = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getArrival()->format('H:i:s'));
             $ridePlaces = 0 === (int) $ride->getPlaces() ? 8 : (int) $ride->getPlaces();
-            if (isset($ride->getDriver()->getDriverZones()[$priority]) &&
+            if (array_key_exists($priority, $ride->getDriver()->getDriverZones()) &&
                 $postal === (int) $ride->getDriver()->getDriverZones()[$priority]->getPostal() &&
                 $pickups['places'] + $ride->getOccupiedPlaces() <= $ridePlaces &&
                 $pickups['start'] >= $rideDateStart &&
@@ -234,6 +234,7 @@ class PickupService implements PickupServiceInterface
     {
         //Submits data
         $object = new Pickup();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'pickup-create', $data);
 
         //Checks if entity has been filled
@@ -243,7 +244,6 @@ class PickupService implements PickupServiceInterface
         $this->checkCoordinates($object);
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data
@@ -406,7 +406,7 @@ class PickupService implements PickupServiceInterface
         $this->isEntityFilled($object);
 
         //Checks coordinates
-        if (isset($data['address'])) {
+        if (array_key_exists('address', $data)) {
             $this->checkCoordinates($object, true);
         }
 

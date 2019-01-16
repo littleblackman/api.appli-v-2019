@@ -36,10 +36,10 @@ class DriverPresenceService implements DriverPresenceServiceInterface
     public function addSpecificData(DriverPresence $object, array $data)
     {
         //Should be done from DriverPresenceType but it returns null...
-        if (isset($data['start'])) {
+        if (array_key_exists('start', $data)) {
             $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
         }
-        if (isset($data['end'])) {
+        if (array_key_exists('end', $data)) {
             $object->setEnd(DateTime::createFromFormat('H:i:s', $data['end']));
         }
     }
@@ -56,6 +56,8 @@ class DriverPresenceService implements DriverPresenceServiceInterface
                 //Creates object if not already existing
                 if (null === $object) {
                     $object = new DriverPresence();
+                    $this->mainService->create($object);
+
                     //Submits data
                     $this->mainService->submit($object, 'driver-presence-create', $driverPresence);
                     $this->addSpecificData($object, $driverPresence);
@@ -64,7 +66,6 @@ class DriverPresenceService implements DriverPresenceServiceInterface
                     $this->isEntityFilled($object);
 
                     //Persists data
-                    $this->mainService->create($object);
                     $this->mainService->persist($object);
                 }
             }

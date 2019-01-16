@@ -50,13 +50,14 @@ class MealService implements MealServiceInterface
     {
         //Submits data
         $object = new Meal();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'meal-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Adds links from food to meal
-        if (isset($data['links'])) {
+        if (array_key_exists('links', $data)) {
             $links = $data['links'];
 
             if (null !== $links && is_array($links) && !empty($links)) {
@@ -67,7 +68,6 @@ class MealService implements MealServiceInterface
         }
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data
@@ -141,7 +141,7 @@ class MealService implements MealServiceInterface
         $this->isEntityFilled($object);
 
         //Modifies links from food to meal
-        if (isset($data['links'])) {
+        if (array_key_exists('links', $data)) {
             $links = $data['links'];
 
             if (null !== $links && is_array($links) && !empty($links)) {

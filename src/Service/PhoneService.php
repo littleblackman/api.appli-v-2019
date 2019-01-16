@@ -50,13 +50,14 @@ class PhoneService implements PhoneServiceInterface
     {
         //Submits data
         $object = new Phone();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'phone-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Adds links from person/s to phone
-        if (isset($data['links'])) {
+        if (array_key_exists('links', $data)) {
             $links = $data['links'];
             if (null !== $links && is_array($links) && !empty($links)) {
                 $this->addLink((int) $links['personId'], $object);
@@ -64,7 +65,6 @@ class PhoneService implements PhoneServiceInterface
         }
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data

@@ -22,7 +22,7 @@ class ComponentControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"nameFr": "name fr", "nameEn": "name en", "descriptionFr": "description fr", "descriptionEn": "description en", "price": 100, "vat": 5.5}'
+            '{"nameFr": "name fr", "nameEn": "name en", "vat": 5.5}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -56,7 +56,7 @@ class ComponentControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"nameFr": "name fr modifié", "nameEn": "name en", "descriptionFr": "description fr", "descriptionEn": "description en", "price": 100, "vat": 5.5}'
+            '{"nameFr": "name fr modifié", "nameEn": "name en", "vat": 5.5}'
         );
 
         $response = $this->clientAuthenticated->getResponse();

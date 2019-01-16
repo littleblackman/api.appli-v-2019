@@ -62,13 +62,14 @@ class PersonService implements PersonServiceInterface
     {
         //Submits data
         $object = new Person();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'person-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Adds links from user to person
-        $user = isset($data['identifier']) ? $this->em->getRepository('App:User')->findOneByIdentifier($data['identifier']) : null;
+        $user = array_key_exists('identifier', $data) ? $this->em->getRepository('App:User')->findOneByIdentifier($data['identifier']) : null;
         if (null !== $user) {
             $userPersonLink = new UserPersonLink();
             $userPersonLink
@@ -79,7 +80,6 @@ class PersonService implements PersonServiceInterface
         }
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data
@@ -206,7 +206,7 @@ class PersonService implements PersonServiceInterface
         $this->isEntityFilled($object);
 
         //Adds relations
-        if (isset($data['relations'])) {
+        if (array_key_exists('relations', $data)) {
             foreach ($data['relations'] as $relation) {
                 $this->addRelation($relation['related'], $relation['relation'], $object);
             }

@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Component;
 use App\Form\ComponentType;
-use App\Form\ProductComponentLinkType;
+use App\Form\ProductComponentType;
 use App\Service\ComponentServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;

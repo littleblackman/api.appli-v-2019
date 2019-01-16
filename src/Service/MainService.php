@@ -149,11 +149,13 @@ class MainService implements MainServiceInterface
         $form->submit($data, false);
 
         //Sets fields to null
-        foreach ($data as $key => $value) {
-            if (null === $value || 'null' === $value) {
-                $method = 'set' . ucfirst($key);
-                if (method_exists($object, $method)) {
-                    $object->$method(null);
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                if (null === $value || 'null' === $value) {
+                    $method = 'set' . ucfirst($key);
+                    if (method_exists($object, $method)) {
+                        $object->$method(null);
+                    }
                 }
             }
         }

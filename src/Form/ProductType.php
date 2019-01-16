@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -41,6 +42,10 @@ class ProductType extends AbstractType
                 ))
             ->add('descriptionEn', TextType::class, array(
                 'required' => false,
+                ))
+            ->add('priceTtc', NumberType::class, array(
+                'required' => false,
+                'scale' => 2,
                 ))
             ->add('transport', CheckboxType::class, array(
                 'required' => false,
@@ -80,7 +85,7 @@ class ProductType extends AbstractType
                 ))
             ->add('components', CollectionType::class, array(
                 'required' => false,
-                'entry_type' => ProductComponentLinkType::class,
+                'entry_type' => ProductComponentType::class,
                 'mapped' => false,
                 ))
             ->add('dates', CollectionType::class, array(

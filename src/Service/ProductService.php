@@ -7,7 +7,7 @@ use App\Entity\Component;
 use App\Entity\Location;
 use App\Entity\Product;
 use App\Entity\ProductCategoryLink;
-use App\Entity\ProductComponentLink;
+use App\Entity\ProductComponent;
 use App\Entity\ProductDateLink;
 use App\Entity\ProductHourLink;
 use App\Entity\ProductLocationLink;
@@ -43,17 +43,26 @@ class ProductService implements ProductServiceInterface
     /**
      * Adds link between Product and Component
      */
-    public function addComponentLink(int $componentId, Product $object)
+    public function addComponent($data, Product $object)
     {
-        $component = $this->em->getRepository('App:Component')->findOneById($componentId);
-        if ($component instanceof Component && !$component->getSuppressed()) {
-            $productComponentLink = new ProductComponentLink();
-            $productComponentLink
-                ->setProduct($object)
-                ->setComponent($component)
-            ;
-            $this->em->persist($productComponentLink);
-        }
+        $productComponent = new ProductComponent();
+        $this->mainService->create($productComponent);
+        $productComponent
+            ->setProduct($object)
+            ->setNameFr(array_key_exists('nameFr', $data) ? $data['nameFr'] : null)
+            ->setNameEn(array_key_exists('nameEn', $data) ? $data['nameEn'] : null)
+            ->setVat(array_key_exists('vat', $data) ? $data['vat'] : null)
+            ->setPriceHt(array_key_exists('priceHt', $data) ? $data['priceHt'] : null)
+            ->setPriceVat(array_key_exists('priceVat', $data) ? $data['priceVat'] : null)
+            ->setPriceTtc(array_key_exists('priceTtc', $data) ? $data['priceTtc'] : null)
+            ->setQuantity(array_key_exists('quantity', $data) ? $data['quantity'] : null)
+            ->setTotalHt(array_key_exists('totalHt', $data) ? $data['totalHt'] : null)
+            ->setTotalVat(array_key_exists('totalVat', $data) ? $data['totalVat'] : null)
+            ->setTotalTtc(array_key_exists('totalTtc', $data) ? $data['totalTtc'] : null)
+        ;
+
+        //Persists data
+        $this->mainService->persist($productComponent);
     }
 
     /**
@@ -107,31 +116,39 @@ class ProductService implements ProductServiceInterface
     /**
      * Adds link between Product and Date
      */
-    public function addDateLink($date, Product $object)
+    public function addDateLink($data, Product $object)
     {
-        $date = $date instanceof DateTime ? $date : new DateTime($date);
-        $productDateLink = new ProductDateLink();
-        $productDateLink
-            ->setProduct($object)
-            ->setDate($date)
-        ;
-        $this->em->persist($productDateLink);
+        if (array_key_exists('date', $data)) {
+            $date = $data['date'] instanceof DateTime ? $data['date'] : new DateTime($data['date']);
+            if ($date instanceof DateTime) {
+                $productDateLink = new ProductDateLink();
+                $productDateLink
+                    ->setProduct($object)
+                    ->setDate($date)
+                ;
+                $this->em->persist($productDateLink);
+            }
+        }
     }
 
     /**
      * Adds link between Product and Hour
      */
-    public function addHourLink($start, $end, Product $object)
+    public function addHourLink($data, Product $object)
     {
-        $start = $start instanceof DateTime ? $start : new DateTime('1970-01-01' . $start);
-        $end = $end instanceof DateTime ? $end : new DateTime('1970-01-01' . $end);
-        $productHourLink = new ProductHourLink();
-        $productHourLink
-            ->setProduct($object)
-            ->setStart($start)
-            ->setEnd($end)
-        ;
-        $this->em->persist($productHourLink);
+        if (array_key_exists('start', $data) && array_key_exists('end', $data)) {
+            $start = $data['start'] instanceof DateTime ? $data['start'] : new DateTime('1970-01-01' . $data['start']);
+            $end = $data['end'] instanceof DateTime ? $data['end'] : new DateTime('1970-01-01' . $data['end']);
+            if ($start instanceof DateTime && $end instanceof DateTime) {
+                $productHourLink = new ProductHourLink();
+                $productHourLink
+                    ->setProduct($object)
+                    ->setStart($start)
+                    ->setEnd($end)
+                ;
+                $this->em->persist($productHourLink);
+            }
+        }
     }
 
     /**
@@ -140,34 +157,33 @@ class ProductService implements ProductServiceInterface
     public function addSpecificData(Product $object, array $data)
     {
         //Should be done from RideType but it returns null...
-        if (isset($data['hourDropin'])) {
+        if (array_key_exists('hourDropin', $data)) {
             $object->setHourDropin(DateTime::createFromFormat('H:i:s', $data['hourDropin']));
         }
-        if (isset($data['hourDropoff'])) {
+        if (array_key_exists('hourDropoff', $data)) {
             $object->setHourDropoff(DateTime::createFromFormat('H:i:s', $data['hourDropoff']));
         }
 
         //Converts to boolean
-        if (isset($data['transport'])) {
+        if (array_key_exists('transport', $data)) {
             $object->setTransport((bool) $data['transport']);
         }
-        if (isset($data['isLocationSelectable'])) {
+        if (array_key_exists('isLocationSelectable', $data)) {
             $object->setIsLocationSelectable((bool) $data['isLocationSelectable']);
         }
-        if (isset($data['isDateSelectable'])) {
+        if (array_key_exists('isDateSelectable', $data)) {
             $object->setIsDateSelectable((bool) $data['isDateSelectable']);
         }
-        if (isset($data['isHourSelectable'])) {
+        if (array_key_exists('isHourSelectable', $data)) {
             $object->setIsHourSelectable((bool) $data['isHourSelectable']);
         }
-        if (isset($data['isSportAssociated'])) {
+        if (array_key_exists('isSportAssociated', $data)) {
             $object->setIsSportAssociated((bool) $data['isSportAssociated']);
         }
 
         //Adds/Removes links to products
         $linksArray = array(
             'categories' => 'category',
-            'components' => 'component',
             'locations' => 'location',
             'sports' => 'sport',
         );
@@ -190,25 +206,65 @@ class ProductService implements ProductServiceInterface
             }
         }
 
+        //Adds components
+        if (array_key_exists('components', $data)) {
+            $components = $data['components'];
+            if (null !== $components && is_array($components) && !empty($components)) {
+                foreach ($components as $component) {
+                    $this->addComponent($component, $object);
+                }
+            //Removes components
+            } elseif (null === $components) {
+                foreach ($object->getComponents() as $productComponent) {
+                    $this->mainService->delete($productComponent);
+                    $this->mainService->persist($productComponent);
+                }
+            }
+
+            //Calculates the totals by ventilated vat rate
+            $this->em->refresh($object);
+            $object->setPrices($this->calculateVatTotals($object->getComponents()));
+        }
+
         //Adds links to dates
-        if (isset($data['dates'])) {
+        if (array_key_exists('dates', $data)) {
             $dates = $data['dates'];
             if (null !== $dates && is_array($dates) && !empty($dates)) {
                 foreach ($dates as $date) {
-                    $this->addDateLink($date['date'], $object);
+                    $this->addDateLink($date, $object);
                 }
             }
         }
 
         //Adds links to hours
-        if (isset($data['hours'])) {
+        if (array_key_exists('hours', $data)) {
             $hours = $data['hours'];
             if (null !== $hours && is_array($hours) && !empty($hours)) {
                 foreach ($hours as $hour) {
-                    $this->addHourLink($hour['start'], $hour['end'], $object);
+                    $this->addHourLink($hour, $object);
                 }
             }
         }
+    }
+
+    /**
+     * Calculates the totals by ventilated vat rate
+     */
+    public function calculateVatTotals($components)
+    {
+        if (null === $components) {
+            return null;
+        }
+
+        $prices = array();
+        foreach ($components as $component) {
+            $vatRate = $component->getVat();
+            $prices["$vatRate"]['totalVat'] = isset($prices["$vatRate"]['totalVat']) ? $prices["$vatRate"]['totalVat'] + $component->getTotalVat() : $component->getTotalVat();
+            $prices["$vatRate"]['totalHt'] = isset($prices["$vatRate"]['totalHt']) ? $prices["$vatRate"]['totalHt'] + $component->getTotalHt() : $component->getTotalHt();
+            $prices["$vatRate"]['totalTtc'] = isset($prices["$vatRate"]['totalTtc']) ? $prices["$vatRate"]['totalTtc'] + $component->getTotalTtc() : $component->getTotalTtc();
+        }
+
+        return $prices;
     }
 
     /**
@@ -218,6 +274,7 @@ class ProductService implements ProductServiceInterface
     {
         //Submits data
         $object = new Product();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'product-create', $data);
         $this->addSpecificData($object, $data);
 
@@ -225,7 +282,6 @@ class ProductService implements ProductServiceInterface
         $this->isEntityFilled($object);
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data
@@ -312,6 +368,14 @@ class ProductService implements ProductServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'product-modify', $data);
+
+        //Removes Components if new ones are submitted
+        if (array_key_exists('components', $data) && is_array($data['components'])) {
+            foreach ($object->getComponents() as $productComponent) {
+                $this->mainService->delete($productComponent);
+                $this->mainService->persist($productComponent);
+            }
+        }
         $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
@@ -350,7 +414,6 @@ class ProductService implements ProductServiceInterface
         //Gets related links
         $linksArray = array(
             'categories' => 'category',
-            'components' => 'component',
             'locations' => 'location',
             'sports' => 'sport',
         );
@@ -366,6 +429,17 @@ class ProductService implements ProductServiceInterface
                 }
                 $objectArray[$key] = $links;
             }
+        }
+
+        //Gets related components
+        if (null !== $object->getComponents()) {
+            $components = array();
+            foreach($object->getComponents() as $component) {
+                if (!$component->getSuppressed()) {
+                    $components[] = $this->mainService->toArray($component->toArray());
+                }
+            }
+            $objectArray['components'] = $components;
         }
 
         //Gets related dates

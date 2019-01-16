@@ -15,8 +15,8 @@ class DriverPresenceRepository extends EntityRepository
      */
     public function findByData($data)
     {
-        $startCondition = isset($data['start']) ? 'pr.start = :start' : '1 = 1';
-        $endCondition = isset($data['end']) ? 'pr.end = :end' : '1 = 1';
+        $startCondition = array_key_exists('start', $data) ? 'pr.start = :start' : '1 = 1';
+        $endCondition = array_key_exists('end', $data) ? 'pr.end = :end' : '1 = 1';
 
         $qb = $this->createQueryBuilder('pr')
             ->addSelect('d, z')
@@ -33,10 +33,10 @@ class DriverPresenceRepository extends EntityRepository
             ->setParameter('date', $data['date'] . '%')
         ;
 
-        if (isset($data['start'])) {
+        if (array_key_exists('start', $data)) {
             $qb->setParameter('start', $data['start']);
         }
-        if (isset($data['end'])) {
+        if (array_key_exists('end', $data)) {
             $qb->setParameter('end', $data['end']);
         }
 

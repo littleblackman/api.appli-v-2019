@@ -49,13 +49,14 @@ class DriverService implements DriverServiceInterface
     {
         //Submits data
         $object = new Driver();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'driver-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Adds links for DriverZones
-        if (isset($data['links'])) {
+        if (array_key_exists('links', $data)) {
             $links = $data['links'];
             if (null !== $links && is_array($links) && !empty($links)) {
                 foreach ($links as $link) {
@@ -65,7 +66,6 @@ class DriverService implements DriverServiceInterface
         }
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data
@@ -157,7 +157,7 @@ class DriverService implements DriverServiceInterface
         $this->isEntityFilled($object);
 
         //Modifies links for driverZones
-        if (isset($data['links'])) {
+        if (array_key_exists('links', $data)) {
             $links = $data['links'];
 
             if (null !== $links && is_array($links) && !empty($links)) {

@@ -32,6 +32,7 @@ class WeekService implements WeekServiceInterface
     {
         //Submits data
         $object = new Week();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'week-create', $data);
 
         //Checks if entity has been filled
@@ -43,7 +44,6 @@ class WeekService implements WeekServiceInterface
         //Persists data if week NOT exists with same DateStart
         $week = $this->em->getRepository('App:Week')->findOneByDateStart($dateStart);
         if (null === $week) {
-            $this->mainService->create($object);
             $this->mainService->persist($object);
         }
 

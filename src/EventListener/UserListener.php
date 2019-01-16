@@ -81,7 +81,7 @@ class UserListener implements EventSubscriberInterface
                     'relations',
                 );
                 foreach ($uneededData as $data) {
-                    if (isset($personToArray[$data])) {
+                    if (array_key_exists($data, $personToArray)) {
                         $method = 'clean' . ucfirst($data);
                         if (method_exists($this, $method)) {
                             $personToArray[$data] = $this->$method($personToArray[$data]);

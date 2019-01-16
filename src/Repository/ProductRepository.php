@@ -42,9 +42,8 @@ class ProductRepository extends EntityRepository
     public function findOneById($productId)
     {
         return $this->createQueryBuilder('p')
-            ->select('p', 'cl', 'c')
-            ->leftJoin('p.components', 'cl')
-            ->leftJoin('cl.component', 'c')
+            ->select('p', 'c')
+            ->leftJoin('p.components', 'c')
             ->where('p.productId = :productId')
             ->andWhere('p.suppressed = 0')
             ->setParameter('productId', $productId)

@@ -32,13 +32,13 @@ class FoodService implements FoodServiceInterface
     {
         //Submits data
         $object = new Food();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'food-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data

@@ -41,15 +41,15 @@ class RideService implements RideServiceInterface
     public function addSpecificData(Ride $object, array $data)
     {
         //Should be done from RideType but it returns null...
-        if (isset($data['start'])) {
+        if (array_key_exists('start', $data)) {
             $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
         }
-        if (isset($data['arrival'])) {
+        if (array_key_exists('arrival', $data)) {
             $object->setArrival(DateTime::createFromFormat('H:i:s', $data['arrival']));
         }
 
         //Converts to boolean
-        if (isset($data['locked'])) {
+        if (array_key_exists('locked', $data)) {
             $object->setLocked((bool) $data['locked']);
         }
     }
@@ -61,6 +61,7 @@ class RideService implements RideServiceInterface
     {
         //Submits data
         $object = new Ride();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'ride-create', $data);
         $this->addSpecificData($object, $data);
 
@@ -68,7 +69,6 @@ class RideService implements RideServiceInterface
         $this->isEntityFilled($object);
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data
@@ -89,6 +89,7 @@ class RideService implements RideServiceInterface
         foreach ($data as $rideData) {
             //Submits data
             $object = new Ride();
+            $this->mainService->create($object);
             $this->mainService->submit($object, 'ride-create', $rideData);
             $this->addSpecificData($object, $rideData);
 
@@ -96,7 +97,6 @@ class RideService implements RideServiceInterface
             $this->isEntityFilled($object);
 
             //Persists data
-            $this->mainService->create($object);
             $this->mainService->persist($object);
         }
 

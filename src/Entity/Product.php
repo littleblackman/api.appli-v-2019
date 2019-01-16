@@ -83,6 +83,20 @@ class Product
     private $descriptionEn;
 
     /**
+     * @var float|null
+     *
+     * @ORM\Column(name="price_ttc", type="float", nullable=true)
+     */
+    private $priceTtc;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="prices", type="string", nullable=true)
+     */
+    private $prices;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="transport", type="boolean")
@@ -152,8 +166,8 @@ class Product
     private $categories;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProductComponentLink", mappedBy="product")
-     * @SWG\Property(ref=@Model(type=Component::class))
+     * @ORM\OneToMany(targetEntity="ProductComponent", mappedBy="product")
+     * @SWG\Property(ref=@Model(type=ProductComponent::class))
      */
     private $components;
 
@@ -179,24 +193,6 @@ class Product
      */
     private $sports;
 
-    /**
-     * @var string[]|null
-     * "vatAmounts": {"rate": {
-     *      "0": {"componentId": 2, "componentName": "name", "vatAmount": 16.67, "ht": 83.33, "price": 100},
-     *      "vat": 16.67,
-     *      "ht": 83.33,
-     *      "ttc": 100
-     *      },
-     *   }
-     */
-    private $vatAmounts;
-
-    /**
-     * @var float|null
-     * @SWG\Property(type="number")
-     */
-    private $priceTtc;
-
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -212,36 +208,6 @@ class Product
      */
     public function toArray()
     {
-        //Calculates VAT related prices
-        $componentLinks = $this->getComponents();
-        if (null !== $componentLinks) {
-            $vatArray = array();
-            $priceTtc = 0;
-            foreach ($componentLinks as $componentLink) {
-                $component = $componentLink->getComponent();
-                $vatRate = $component->getVat();
-                $componentVatAmount = round($component->getPrice() - ($component->getPrice() / (1 + ($component->getVat() / 100))), 2, PHP_ROUND_HALF_UP);
-                $componentHtAmount = round($component->getPrice() - $componentVatAmount, 2, PHP_ROUND_HALF_UP);
-                $vatArray["$vatRate"][] = array(
-                    'componentId' => $component->getComponentId(),
-                    'componentName' => $component->getNameFr(),
-                    'vatAmount' => $componentVatAmount,
-                    'ht' => $componentHtAmount,
-                    'price' => $component->getPrice(),
-                );
-                $vatArray["$vatRate"]['vat'] = isset($vatArray["$vatRate"]['vat']) ? $vatArray["$vatRate"]['vat'] + $componentVatAmount : $componentVatAmount;
-                $vatArray["$vatRate"]['ht'] = isset($vatArray["$vatRate"]['ht']) ? $vatArray["$vatRate"]['ht'] + $componentHtAmount : $componentHtAmount;
-                $vatArray["$vatRate"]['ttc'] = isset($vatArray["$vatRate"]['ttc']) ? $vatArray["$vatRate"]['ttc'] + $component->getPrice() : $component->getPrice();
-
-                $priceTtc += $component->getPrice();
-            }
-            $this
-                ->setVatAmounts($vatArray)
-                ->setPriceTtc($priceTtc)
-            ;
-        }
-
-        //Converts to array
         $objectArray = get_object_vars($this);
 
         //Specific data
@@ -250,6 +216,9 @@ class Product
         }
         if (null !== $objectArray['hourDropoff']) {
             $objectArray['hourDropoff'] = $objectArray['hourDropoff']->format('H:i:s');
+        }
+        if (null !== $objectArray['prices']) {
+            $objectArray['prices'] = $this->getPrices();
         }
 
         return $objectArray;
@@ -316,6 +285,30 @@ class Product
     public function setDescriptionEn(?string $descriptionEn): self
     {
         $this->descriptionEn = $descriptionEn;
+
+        return $this;
+    }
+
+    public function getPriceTtc(): ?float
+    {
+        return $this->priceTtc;
+    }
+
+    public function setPriceTtc(?float $priceTtc): self
+    {
+        $this->priceTtc = $priceTtc;
+
+        return $this;
+    }
+
+    public function getPrices(): ?array
+    {
+        return unserialize($this->prices);
+    }
+
+    public function setPrices(?array $prices): self
+    {
+        $this->prices = serialize($prices);
 
         return $this;
     }
@@ -441,14 +434,14 @@ class Product
     }
 
     /**
-     * @return Collection|ProductComponentLink[]
+     * @return Collection|ProductComponent[]
      */
     public function getComponents()
     {
         return $this->components;
     }
 
-    public function addComponent(ProductComponentLink $component): self
+    public function addComponent(ProductComponent $component): self
     {
         if (!$this->components->contains($component)) {
             $this->components[] = $component;
@@ -458,7 +451,7 @@ class Product
         return $this;
     }
 
-    public function removeComponent(ProductComponentLink $component): self
+    public function removeComponent(ProductComponent $component): self
     {
         if ($this->components->contains($component)) {
             $this->components->removeElement($component);
@@ -622,30 +615,6 @@ class Product
                 $sport->setProduct(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getVatAmounts(): ?array
-    {
-        return $this->vatAmounts;
-    }
-
-    public function setVatAmounts(?array $vatAmounts): self
-    {
-        $this->vatAmounts = $vatAmounts;
-
-        return $this;
-    }
-
-    public function getPriceTtc(): ?float
-    {
-        return $this->priceTtc;
-    }
-
-    public function setPriceTtc(?float $priceTtc): self
-    {
-        $this->priceTtc = $priceTtc;
 
         return $this;
     }

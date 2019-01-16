@@ -36,13 +36,13 @@ class SportService implements SportServiceInterface
     {
         //Submits data
         $object = new Sport();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'sport-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data

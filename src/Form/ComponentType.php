@@ -23,22 +23,9 @@ class ComponentType extends AbstractType
             ->add('nameEn', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('descriptionFr', TextType::class, array(
-                'required' => false,
-                ))
-            ->add('descriptionEn', TextType::class, array(
-                'required' => false,
-                ))
-            ->add('price', NumberType::class, array(
-                'required' => false,
-                'scale' => 2,
-                ))
             ->add('vat', NumberType::class, array(
                 'required' => false,
                 'scale' => 2,
-                ))
-            ->add('photo', TextType::class, array(
-                'required' => false,
                 ))
         ;
     }

@@ -32,13 +32,13 @@ class ComponentService implements ComponentServiceInterface
     {
         //Submits data
         $object = new Component();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'component-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data
@@ -54,14 +54,6 @@ class ComponentService implements ComponentServiceInterface
      */
     public function delete(Component $object)
     {
-        //Removes links to products
-        $products = $object->getProducts();
-        if (null !== $products && !empty($products)) {
-            foreach ($products as $productLink) {
-                $this->em->remove($productLink);
-            }
-        }
-
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
@@ -102,8 +94,6 @@ class ComponentService implements ComponentServiceInterface
     public function isEntityFilled(Component $object)
     {
         if (null === $object->getNameFr() ||
-            null === $object->getDescriptionFr() ||
-            null === $object->getPrice() ||
             null === $object->getVat()) {
             throw new UnprocessableEntityHttpException('Missing data for Component -> ' . json_encode($object->toArray()));
         }
@@ -139,17 +129,6 @@ class ComponentService implements ComponentServiceInterface
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
-
-        //Gets related products
-        if (null !== $object->getProducts()) {
-            $products = array();
-            foreach($object->getProducts() as $productLink) {
-                if (!$productLink->getProduct()->getSuppressed()) {
-                    $products[] = $this->mainService->toArray($productLink->getProduct()->toArray());
-                }
-            }
-            $objectArray['products'] = $products;
-        }
 
         return $objectArray;
     }

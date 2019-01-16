@@ -36,13 +36,13 @@ class FamilyService implements FamilyServiceInterface
     {
         //Submits data
         $object = new Family();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'family-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Returns data

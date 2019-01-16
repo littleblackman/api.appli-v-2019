@@ -5,8 +5,6 @@ namespace App\Entity;
 use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\SuppressionTrait;
 use App\Entity\Traits\UpdateTrait;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
@@ -49,27 +47,6 @@ class Component
     private $nameEn;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="description_fr", type="string", nullable=true)
-     */
-    private $descriptionFr;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description_en", type="string", nullable=true)
-     */
-    private $descriptionEn;
-
-    /**
-     * @var float|null
-     *
-     * @ORM\Column(name="price", type="float", nullable=true)
-     */
-    private $price;
-
-    /**
      * @var float|null
      *
      * @ORM\Column(name="vat", type="float", nullable=true)
@@ -77,47 +54,10 @@ class Component
     private $vat;
 
     /**
-     * @var float|null
-     * @SWG\Property(type="number")
-     */
-    private $vatAmount;
-
-    /**
-     * @var float|null
-     * @SWG\Property(type="number")
-     */
-    private $priceHt;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="photo", type="string", length=256, nullable=true)
-     */
-    private $photo;
-
-    /**
-     * @ORM\OneToMany(targetEntity="ProductComponentLink", mappedBy="component")
-     * @SWG\Property(ref=@Model(type=Product::class))
-     */
-    private $products;
-
-    public function __construct()
-    {
-        $this->products = new ArrayCollection();
-    }
-
-    /**
      * Converts the entity in an array
      */
     public function toArray()
     {
-        //Calculates VAT related prices
-        $vatAmount = round($this->getPrice() - ($this->getPrice() / (1 + ($this->getVat() / 100))), 2, PHP_ROUND_HALF_UP);
-        $this
-            ->setVatAmount($vatAmount)
-            ->setPriceHt($this->getPrice() - $vatAmount)
-        ;
-
         $componentArray = get_object_vars($this);
 
         return $componentArray;
@@ -152,42 +92,6 @@ class Component
         return $this;
     }
 
-    public function getDescriptionFr(): ?string
-    {
-        return $this->descriptionFr;
-    }
-
-    public function setDescriptionFr(?string $descriptionFr): self
-    {
-        $this->descriptionFr = $descriptionFr;
-
-        return $this;
-    }
-
-    public function getDescriptionEn(): ?string
-    {
-        return $this->descriptionEn;
-    }
-
-    public function setDescriptionEn(?string $descriptionEn): self
-    {
-        $this->descriptionEn = $descriptionEn;
-
-        return $this;
-    }
-
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(?float $price): self
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
     public function getVat(): ?float
     {
         return $this->vat;
@@ -196,70 +100,6 @@ class Component
     public function setVat(?float$vat): self
     {
         $this->vat = $vat;
-
-        return $this;
-    }
-
-    public function getVatAmount(): ?float
-    {
-        return $this->vatAmount;
-    }
-
-    public function setVatAmount(?float$vatAmount): self
-    {
-        $this->vatAmount = $vatAmount;
-
-        return $this;
-    }
-
-    public function getPriceHt(): ?float
-    {
-        return $this->priceHt;
-    }
-
-    public function setPriceHt(?float$priceHt): self
-    {
-        $this->priceHt = $priceHt;
-
-        return $this;
-    }
-
-    public function getPhoto(): ?string
-    {
-        return $this->photo;
-    }
-
-    public function setPhoto(?string $photo): self
-    {
-        $this->photo = $photo;
-
-        return $this;
-    }
-
-    public function getProducts()
-    {
-        return $this->products;
-    }
-
-    public function addProduct(ProductComponentLink $product): self
-    {
-        if (!$this->products->contains($product)) {
-            $this->products[] = $product;
-            $product->setComponent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(ProductComponentLink $product): self
-    {
-        if ($this->products->contains($product)) {
-            $this->products->removeElement($product);
-            // set the owning side to null (unless already changed)
-            if ($product->getComponent() === $this) {
-                $product->setComponent(null);
-            }
-        }
 
         return $this;
     }

@@ -73,17 +73,17 @@ class ChildService implements ChildServiceInterface
     {
         //Submits data
         $object = new Child();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'child-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Persists data
-        $this->mainService->create($object);
         $this->mainService->persist($object);
 
         //Adds links from person/s to child
-        if (isset($data['links'])) {
+        if (array_key_exists('links', $data)) {
             $links = $data['links'];
 
             if (is_array($links) && !empty($links)) {
@@ -174,7 +174,7 @@ class ChildService implements ChildServiceInterface
         $this->isEntityFilled($object);
 
         //Modifies links
-        if (isset($data['links'])) {
+        if (array_key_exists('links', $data)) {
             $links = $data['links'];
 
             //Gets submitted links to person
@@ -212,7 +212,7 @@ class ChildService implements ChildServiceInterface
         }
 
         //Adds siblings
-        if (isset($data['siblings'])) {
+        if (array_key_exists('siblings', $data)) {
             foreach ($data['siblings'] as $sibling) {
                 $this->addSibling($sibling['sibling'], $sibling['relation'], $object);
             }

@@ -37,6 +37,7 @@ class SeasonService implements SeasonServiceInterface
     {
         //Submits data
         $object = new Season();
+        $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'season-create', $data);
 
         //Checks if entity has been filled
@@ -48,7 +49,6 @@ class SeasonService implements SeasonServiceInterface
         //Persists data if season NOT exists with same DateStart
         $season = $this->em->getRepository('App:Season')->findOneByDateStart($dateStart);
         if (null === $season) {
-            $this->mainService->create($object);
             $this->mainService->persist($object);
         } else {
             $object = $season;

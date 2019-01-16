@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.20
+- Modification des Component pour que les prix soient enregistrées dans la table de liens (16/01/2019)
+- Remplacement des isset sur array par array_key_exists (16/01/2019)
+- Déplacement des appels `$this->mainService->create($object);` directement après la création de l'objet (16/01/2019)
+
 v0.19.2
 - Mise à jour des bundles (15/01/2019)
 
