@@ -38,6 +38,7 @@ class StaffPresenceController extends AbstractController
      *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$",
      *        "kind": "^([a-zA-Z]+)$"
      *    },
+     *    defaults={"kind": "all"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(

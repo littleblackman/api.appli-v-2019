@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.21.2
+- Ajout de "all" pour /staff/presence/list/{kind}/{date} (17/01/2019)
+
 v0.21.1
 - Ajout de la possibilité d'utiliser staff/list sans kind (17/01/2019)
 - Ajout de /staff/search/{term} (17/01/2019)

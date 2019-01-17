@@ -51,19 +51,27 @@ class StaffPresenceRepository extends EntityRepository
      */
     public function findAllByKindAndDate($kind, $date)
     {
-        return $this->createQueryBuilder('pr')
+        $kindCondition = 'all' !== $kind ? 's.kind = :kind' : '1 = 1';
+
+        $qb = $this->createQueryBuilder('pr')
             ->addSelect('s, z')
             ->leftJoin('pr.staff', 's')
             ->leftJoin('s.person', 'p')
             ->leftJoin('s.driverZones', 'z')
             ->where('pr.suppressed = 0')
-            ->andWhere('s.kind = :kind')
+            ->andWhere($kindCondition)
             ->andWhere('pr.date LIKE :date')
             ->orderBy('pr.date', 'ASC')
             ->addOrderBy('pr.start', 'ASC')
             ->addOrderBy('z.priority', 'ASC')
-            ->setParameter('kind', $kind)
             ->setParameter('date', $date . '%')
+        ;
+
+        if ('all' !== $kind) {
+            $qb->setParameter('kind', $kind);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult()
         ;
