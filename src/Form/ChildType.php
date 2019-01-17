@@ -41,11 +41,13 @@ class ChildType extends AbstractType
                 'required' => false,
                 'entry_type' => ChildPersonLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
             ->add('siblings', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ChildChildLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

@@ -109,7 +109,7 @@ class AppFormFactory implements AppFormFactoryInterface
         }
 
         if (null !== $form) {
-            return $this->formFactory->create($form, $object);
+            return $this->formFactory->create($form, $object, ['csrf_protection' => false]);
         }
 
         return false;

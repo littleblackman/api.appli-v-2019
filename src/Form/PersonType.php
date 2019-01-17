@@ -33,6 +33,7 @@ class PersonType extends AbstractType
                 'required' => false,
                 'entry_type' => PersonPersonLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

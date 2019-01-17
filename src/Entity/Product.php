@@ -39,10 +39,8 @@ class Product
     /**
      * @var Family
      *
-     * @ORM\ManyToOne(targetEntity="Family", inversedBy="products")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="family_id", referencedColumnName="family_id")
-     * })
+     * @ORM\ManyToOne(targetEntity="Family")
+     * @ORM\JoinColumn(name="family_id", referencedColumnName="family_id")
      */
     private $family;
 

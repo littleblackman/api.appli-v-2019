@@ -27,6 +27,7 @@ class PhoneType extends AbstractType
                 'required' => false,
                 'entry_type' => PersonPhoneLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

@@ -82,31 +82,37 @@ class ProductType extends AbstractType
                 'required' => false,
                 'entry_type' => ProductCategoryLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
             ->add('components', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ProductComponentType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
             ->add('dates', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ProductDateLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
             ->add('hours', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ProductHourLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
             ->add('locations', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ProductLocationLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
             ->add('sports', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => ProductSportLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

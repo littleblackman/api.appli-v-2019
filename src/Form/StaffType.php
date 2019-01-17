@@ -44,6 +44,7 @@ class StaffType extends AbstractType
                 'required' => false,
                 'entry_type' => DriverZoneType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

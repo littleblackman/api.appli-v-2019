@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Form\AppFormFactoryInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -147,6 +148,12 @@ class MainService implements MainServiceInterface
         $data = is_array($data) ? $data : json_decode($data, true);
         $form = $this->formFactory->create($formName, $object);
         $form->submit($data, false);
+
+        //Gets errors
+        $errors = $form->getErrors();
+        foreach ($errors as $error) {
+            throw new LogicException('Error ' . get_class($error->getCause()) . ' --> ' . $error->getMessageTemplate() . ' ' . json_encode($error->getMessageParameters()));
+        }
 
         //Sets fields to null
         if (is_array($data)) {

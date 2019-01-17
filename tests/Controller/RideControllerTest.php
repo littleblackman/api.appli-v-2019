@@ -22,7 +22,7 @@ class RideControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"kind": "dropin", "date": "2018-11-20", "start": "08:00:00", "end": "09:00:00", "name": "Name", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
+            '{"locked": true, "kind": "dropin", "linkedRide": 2, "date": "2018-11-20", "name": "Name", "places": 8, "start": "08:00:00", "arrival": "09:00:00", "startPoint": "Start point", "endPoint": "End point", "staff": "1", "vehicle": "1"}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
@@ -53,7 +53,7 @@ class RideControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"kind": "dropin", "date": "2018-11-20", "start": "09:00:00", "end": "10:00:00", "name": "Name modifié", "startPoint": "Start point", "endPoint": "End point", "person": "1", "vehicle": "1"}'
+            '{"locked": false, "kind": "dropff", "linkedRide": 2, "date": "2018-11-20", "name": "Name", "places": 8, "start": "08:00:00", "arrival": "09:00:00", "startPoint": "Start point", "endPoint": "End point", "staff": "1", "vehicle": "1"}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);

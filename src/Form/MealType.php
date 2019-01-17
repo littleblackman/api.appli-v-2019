@@ -40,6 +40,7 @@ class MealType extends AbstractType
                 'required' => false,
                 'entry_type' => MealFoodLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.21.3
+- Suppression de la vérification CSRF sur les forms (17/01/2019)
+- Mise en place d'un message d'erreur si le champ soumis n'existe pas (17/01/2019)
+
 v0.21.2
 - Ajout de "all" pour /staff/presence/list/{kind}/{date} (17/01/2019)
 

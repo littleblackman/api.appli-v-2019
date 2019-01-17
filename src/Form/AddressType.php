@@ -48,6 +48,7 @@ class AddressType extends AbstractType
                 'required' => false,
                 'entry_type' => PersonAddressLinkType::class,
                 'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

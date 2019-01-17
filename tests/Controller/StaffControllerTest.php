@@ -22,7 +22,7 @@ class StaffControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"person": "9999", "kind": "driver", "postal": "11111", "priority": 10}'
+            '{"person": "9999", "kind": "driver", "priority": 10, "vehicle": 1, "address": 1}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
@@ -53,7 +53,7 @@ class StaffControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"person": "9999", "kind": "administrative", "postal": "22222", "priority": 10}'
+            '{"person": "9999", "kind": "staff", "priority": 10, "vehicle": 1, "address": 1}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
@@ -65,7 +65,7 @@ class StaffControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"postal": "33333"}'
+            '{"kind": "driver"}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
