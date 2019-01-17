@@ -183,16 +183,16 @@
         },
         {
             "name": "c975l/services-bundle",
-            "version": "v1.2.2",
+            "version": "v1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/ServicesBundle.git",
-                "reference": "945f0d4ae13b55c47980fe366e51ec889867b56c"
+                "reference": "ce03671c02c930ced231e56f26a8f4e44d4dc01b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/ServicesBundle/zipball/945f0d4ae13b55c47980fe366e51ec889867b56c",
-                "reference": "945f0d4ae13b55c47980fe366e51ec889867b56c",
+                "url": "https://api.github.com/repos/975L/ServicesBundle/zipball/ce03671c02c930ced231e56f26a8f4e44d4dc01b",
+                "reference": "ce03671c02c930ced231e56f26a8f4e44d4dc01b",
                 "shasum": ""
             },
             "require": {
@@ -237,7 +237,7 @@
                 "bundle",
                 "symfony"
             ],
-            "time": "2019-01-17T14:05:25+00:00"
+            "time": "2019-01-17T22:35:56+00:00"
         },
         {
             "name": "c975l/toolbar-bundle",
