@@ -94,6 +94,11 @@ class StaffControllerTest extends WebTestCase
      */
     public function testList()
     {
+        $this->clientAuthenticated->request('GET', '/staff/list');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Test with driver
         $this->clientAuthenticated->request('GET', '/staff/list/driver');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);

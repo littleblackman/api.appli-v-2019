@@ -90,7 +90,7 @@ class ComponentController extends AbstractController
      *
      * @Route("/component/search/{term}",
      *    name="component_search",
-     *    requirements={"term": "^([a-zA-Z]+)"},
+     *    requirements={"term": "^([a-zA-Z0-9]+)"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(

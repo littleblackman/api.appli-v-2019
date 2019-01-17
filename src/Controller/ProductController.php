@@ -89,7 +89,7 @@ class ProductController extends AbstractController
      *
      * @Route("/product/search/{term}",
      *    name="product_search",
-     *    requirements={"term": "^([a-zA-Z]+)"},
+     *    requirements={"term": "^([a-zA-Z0-9]+)"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(

@@ -89,7 +89,7 @@ class WeekController extends AbstractController
      *
      * @Route("/week/search/{term}",
      *    name="week_search",
-     *    requirements={"term": "^([a-zA-Z]+)"},
+     *    requirements={"term": "^([a-zA-Z0-9]+)"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(

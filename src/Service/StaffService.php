@@ -103,7 +103,7 @@ class StaffService implements StaffServiceInterface
      * Returns the Staff based on its id
      * @return Staff
      */
-    public function findOneById($staffId)
+    public function findOneById(int $staffId)
     {
         return $this->em
             ->getRepository('App:Staff')
@@ -127,11 +127,23 @@ class StaffService implements StaffServiceInterface
      * Returns the list of all staffs in the array format
      * @return array
      */
-    public function findAllByKind($kind)
+    public function findAllByKind(string $kind)
     {
         return $this->em
             ->getRepository('App:Staff')
             ->findAllByKind($kind)
+        ;
+    }
+
+    /**
+     * Returns the list of all staffs in the array format
+     * @return array
+     */
+    public function findAllSearch(string $term)
+    {
+        return $this->em
+            ->getRepository('App:Staff')
+            ->findAllSearch($term)
         ;
     }
 

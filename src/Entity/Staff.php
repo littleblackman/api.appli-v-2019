@@ -71,7 +71,7 @@ class Staff
     private $address;
 
     /**
-     * @ORM\OneToMany(targetEntity="DriverZone", mappedBy="staff")
+     * @ORM\OneToMany(targetEntity="DriverZone", mappedBy="staff", cascade={"persist"})
      */
     private $driverZones;
 

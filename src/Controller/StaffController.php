@@ -36,6 +36,7 @@ class StaffController extends AbstractController
      * @Route("/staff/list/{kind}",
      *    name="staff_list",
      *    requirements={"kind": "^([a-zA-Z]+)"},
+     *    defaults={"kind": "all"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -78,6 +79,72 @@ class StaffController extends AbstractController
 
         $staffs = $paginator->paginate(
             $this->staffService->findAllByKind($kind),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $staffsArray = array();
+        foreach ($staffs->getItems() as $staff) {
+            $staffsArray[] = $this->staffService->toArray($staff);
+        };
+
+        return new JsonResponse($staffsArray);
+    }
+
+//SEARCH
+
+    /**
+     * Searches for %{term}% in firstname|lastname for Staff
+     *
+     * @Route("/staff/search/{term}",
+     *    name="staff_search",
+     *    requirements={"term": "^([a-zA-Z0-9]+)"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Staff::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="term",
+     *     in="path",
+     *     required=true,
+     *     description="Searched term",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Staff")
+     */
+    public function search(Request $request, PaginatorInterface $paginator, string $term)
+    {
+        $this->denyAccessUnlessGranted('staffList');
+        $staffs = $paginator->paginate(
+            $this->staffService->findAllSearch($term),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
