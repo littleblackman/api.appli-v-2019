@@ -89,7 +89,7 @@ class ChildController extends AbstractController
      *
      * @Route("/child/search/{term}",
      *    name="child_search",
-     *    requirements={"term": "^([a-zA-Z0-9]+)"},
+     *    requirements={"term": "^([a-zA-Z0-9\ \-]+)"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(

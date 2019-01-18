@@ -75,6 +75,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'product-modify':
                 $form = ProductType::class;
                 break;
+            case 'registration-create':
+            case 'registration-modify':
+                $form = RegistrationType::class;
+                break;
             case 'ride-create':
             case 'ride-modify':
                 $form = RideType::class;

@@ -98,7 +98,7 @@ class StaffController extends AbstractController
      *
      * @Route("/staff/search/{term}",
      *    name="staff_search",
-     *    requirements={"term": "^([a-zA-Z0-9]+)"},
+     *    requirements={"term": "^([a-zA-Z0-9\ \-]+)"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(

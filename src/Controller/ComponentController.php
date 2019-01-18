@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Component;
 use App\Form\ComponentType;
-use App\Form\ProductComponentType;
 use App\Service\ComponentServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -90,7 +89,7 @@ class ComponentController extends AbstractController
      *
      * @Route("/component/search/{term}",
      *    name="component_search",
-     *    requirements={"term": "^([a-zA-Z0-9]+)"},
+     *    requirements={"term": "^([a-zA-Z0-9\ \-]+)"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(

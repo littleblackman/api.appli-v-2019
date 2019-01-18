@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Staff;
 use App\Entity\Ride;
+use App\Entity\Staff;
 use App\Form\RideType;
-use App\Service\StaffServiceInterface;
 use App\Service\RideServiceInterface;
+use App\Service\StaffServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;

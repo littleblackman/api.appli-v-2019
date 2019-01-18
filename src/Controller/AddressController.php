@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Address;
 use App\Form\AddressType;
-use App\Form\PersonAddressLinkType;
 use App\Service\AddressServiceInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;

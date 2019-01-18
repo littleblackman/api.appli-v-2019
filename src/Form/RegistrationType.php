@@ -2,13 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\Ride;
-use App\Entity\Staff;
-use App\Entity\Vehicle;
+use App\Entity\Child;
+use App\Entity\Person;
+use App\Entity\Product;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -16,57 +17,49 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * RideType FormType
+ * RegistrationType FormType
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class RideType extends AbstractType
+class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('locked', CheckboxType::class, array(
-                'required' => false,
-                ))
-            ->add('kind', TextType::class, array(
-                'required' => false,
-                ))
-            ->add('linkedRide', EntityType::class, array(
-                'required' => false,
-                'class' => Ride::class,
-                ))
-            ->add('date', DateType::class, array(
+            ->add('registration', DateTimeType::class, array(
                 'required' => false,
                 'widget' => 'single_text',
                 ))
-            ->add('name', TextType::class, array(
+            ->add('child', EntityType::class, array(
+                'required' => false,
+                'class' => Child::class,
+                ))
+            ->add('person', EntityType::class, array(
+                'required' => false,
+                'class' => Person::class,
+                ))
+            ->add('product', EntityType::class, array(
+                'required' => false,
+                'class' => Product::class,
+                ))
+            ->add('invoice', IntegerType::class, array(
                 'required' => false,
                 ))
-            ->add('places', IntegerType::class, array(
+            ->add('isPayed', CheckboxType::class, array(
                 'required' => false,
                 ))
-            ->add('start', TimeType::class, array(
+            ->add('sessionDate', DateType::class, array(
+                'required' => false,
+                'widget' => 'single_text',
+                ))
+            ->add('sessionStart', TimeType::class, array(
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 ))
-            ->add('arrival', TimeType::class, array(
+            ->add('sessionEnd', TimeType::class, array(
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
-                ))
-            ->add('startPoint', TextType::class, array(
-                'required' => false,
-                ))
-            ->add('endPoint', TextType::class, array(
-                'required' => false,
-                ))
-            ->add('staff', EntityType::class, array(
-                'required' => false,
-                'class' => Staff::class,
-                ))
-            ->add('vehicle', EntityType::class, array(
-                'required' => false,
-                'class' => Vehicle::class,
                 ))
         ;
     }
@@ -74,8 +67,8 @@ class RideType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'App\Entity\Ride',
-            'intention' => 'RideForm',
+            'data_class' => 'App\Entity\Registration',
+            'intention' => 'RegistrationForm',
         ));
     }
 }

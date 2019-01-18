@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Phone;
-use App\Form\PersonPhoneLinkType;
 use App\Form\PhoneType;
 use App\Service\PhoneServiceInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;

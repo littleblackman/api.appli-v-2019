@@ -6,8 +6,6 @@ use App\Entity\Traits\CreationTrait;
 use App\Entity\Traits\SuppressionTrait;
 use App\Entity\Traits\UpdateTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
 
 /**
  * Component
