@@ -39,6 +39,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'child-modify':
                 $form = ChildType::class;
                 break;
+            case 'child-presence-create':
+            case 'child-presence-modify':
+                $form = ChildPresenceType::class;
+                break;
             case 'component-create':
             case 'component-modify':
                 $form = ComponentType::class;

@@ -106,7 +106,6 @@ class Registration
      */
     private $location;
 
-
     /**
      * @var Product
      *
@@ -251,6 +250,7 @@ class Registration
 
         return $this;
     }
+
     public function getLocation(): ?Location
     {
         return $this->location;

@@ -106,8 +106,10 @@ class StaffPresenceService implements StaffPresenceServiceInterface
                 $object = $this->em->getRepository('App:StaffPresence')->findByData($staffPresence);
 
                 //Submits data
-                $this->mainService->delete($object);
-                $this->mainService->persist($object);
+                if ($object instanceof StaffPresence) {
+                    $this->mainService->delete($object);
+                    $this->mainService->persist($object);
+                }
             }
 
             return array(

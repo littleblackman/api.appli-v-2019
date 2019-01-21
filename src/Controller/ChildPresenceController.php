@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\StaffPresence;
-use App\Form\StaffPresenceType;
-use App\Service\StaffPresenceServiceInterface;
+use App\Entity\ChildPresence;
+use App\Form\ChildPresenceType;
+use App\Service\ChildPresenceServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -15,30 +15,26 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * StaffPresenceController class
+ * ChildPresenceController class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class StaffPresenceController extends AbstractController
+class ChildPresenceController extends AbstractController
 {
-    private $staffPresenceService;
+    private $childPresenceService;
 
-    public function __construct(StaffPresenceServiceInterface $staffPresenceService)
+    public function __construct(ChildPresenceServiceInterface $childPresenceService)
     {
-        $this->staffPresenceService = $staffPresenceService;
+        $this->childPresenceService = $childPresenceService;
     }
 
 //LIST
 
     /**
-     * Lists all the staff presences by kind of staff and date
+     * Lists all the child presences by date
      *
-     * @Route("/staff/presence/list/{kind}/{date}",
-     *    name="staff_presence_list_date",
-     *    requirements={
-     *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$",
-     *        "kind": "^([a-zA-Z]+)$"
-     *    },
-     *    defaults={"kind": "all"},
+     * @Route("/child/presence/list/{date}",
+     *    name="child_presence_list_date",
+     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -46,7 +42,7 @@ class StaffPresenceController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=StaffPresence::class))
+     *         @SWG\Items(ref=@Model(type=ChildPresence::class))
      *     )
      * )
      * @SWG\Response(
@@ -54,15 +50,9 @@ class StaffPresenceController extends AbstractController
      *     description="Access denied",
      * )
      * @SWG\Parameter(
-     *     name="kind",
-     *     in="path",
-     *     description="Kind for the staff",
-     *     type="string",
-     * )
-     * @SWG\Parameter(
      *     name="date",
      *     in="path",
-     *     description="Date for the staff presence (YYYY-MM-DD | YYYY-MM)",
+     *     description="Date for the child presence (YYYY-MM-DD | YYYY-MM)",
      *     type="string",
      * )
      * @SWG\Parameter(
@@ -79,35 +69,35 @@ class StaffPresenceController extends AbstractController
      *     type="integer",
      *     default="50",
      * )
-     * @SWG\Tag(name="StaffPresence")
+     * @SWG\Tag(name="ChildPresence")
      */
-    public function listAll(Request $request, $kind, $date, PaginatorInterface $paginator)
+    public function listAll(Request $request, $date, PaginatorInterface $paginator)
     {
-        $this->denyAccessUnlessGranted('staffPresenceList');
+        $this->denyAccessUnlessGranted('childPresenceList');
 
-        $staffPresences = $paginator->paginate(
-            $this->staffPresenceService->findAllByKindAndDate($kind, $date),
+        $childPresences = $paginator->paginate(
+            $this->childPresenceService->findAllByDate($date),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
 
-        $staffPresencesArray = array();
-        foreach ($staffPresences->getItems() as $staffPresence) {
-            $staffPresencesArray[] = $this->staffPresenceService->toArray($staffPresence);
+        $childPresencesArray = array();
+        foreach ($childPresences->getItems() as $childPresence) {
+            $childPresencesArray[] = $this->childPresenceService->toArray($childPresence);
         };
 
-        return new JsonResponse($staffPresencesArray);
+        return new JsonResponse($childPresencesArray);
     }
 
 //DISPLAY
 
     /**
-     * Displays staffPresence using staffId and date (optional)
+     * Displays childPresence using childId and date (optional)
      *
-     * @Route("/staff/presence/display/{staffId}/{date}",
-     *    name="staff_presence_display",
+     * @Route("/child/presence/display/{childId}/{date}",
+     *    name="child_presence_display",
      *    requirements={
-     *        "staffId": "^([0-9]+)",
+     *        "childId": "^([0-9]+)",
      *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"
      *    },
      *    defaults={"date": null},
@@ -118,7 +108,7 @@ class StaffPresenceController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=StaffPresence::class))
+     *         @SWG\Items(ref=@Model(type=ChildPresence::class))
      *     )
      * )
      * @SWG\Response(
@@ -130,40 +120,40 @@ class StaffPresenceController extends AbstractController
      *     description="Not Found",
      * )
      * @SWG\Parameter(
-     *     name="staffId",
+     *     name="childId",
      *     in="path",
      *     required=true,
-     *     description="Id of the staff",
+     *     description="Id of the child",
      *     type="integer",
      * )
      * @SWG\Parameter(
      *     name="date",
      *     in="path",
-     *     description="Date for the staff presence (YYYY-MM-DD | YYYY-MM optional)",
+     *     description="Date for the child presence (YYYY-MM-DD | YYYY-MM optional)",
      *     type="string",
      *     default="null",
      * )
-     * @SWG\Tag(name="StaffPresence")
+     * @SWG\Tag(name="ChildPresence")
      */
-    public function display($staffId, $date)
+    public function display($childId, $date)
     {
-        $this->denyAccessUnlessGranted('staffPresenceDisplay', null);
+        $this->denyAccessUnlessGranted('childPresenceDisplay', null);
 
-        $staffPresencesArray = array();
-        foreach ($this->staffPresenceService->findByStaff($staffId, $date) as $staffPresence) {
-            $staffPresencesArray[] = $this->staffPresenceService->toArray($staffPresence);
+        $childPresencesArray = array();
+        foreach ($this->childPresenceService->findByChild($childId, $date) as $childPresence) {
+            $childPresencesArray[] = $this->childPresenceService->toArray($childPresence);
         };
 
-        return new JsonResponse($staffPresencesArray);
+        return new JsonResponse($childPresencesArray);
     }
 
 //CREATE
 
     /**
-     * Creates StaffPresence
+     * Creates ChildPresence
      *
-     * @Route("/staff/presence/create",
-     *    name="staff_presence_create",
+     * @Route("/child/presence/create",
+     *    name="child_presence_create",
      *    methods={"HEAD", "POST"})
      *
      * @SWG\Response(
@@ -181,20 +171,20 @@ class StaffPresenceController extends AbstractController
      * @SWG\Parameter(
      *     name="data",
      *     in="body",
-     *     description="Data for the StaffPresence",
+     *     description="Data for the ChildPresence",
      *     required=true,
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=StaffPresenceType::class))
+     *         @SWG\Items(ref=@Model(type=ChildPresenceType::class))
      *     )
      * )
-     * @SWG\Tag(name="StaffPresence")
+     * @SWG\Tag(name="ChildPresence")
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('staffPresenceCreate', null);
+        $this->denyAccessUnlessGranted('childPresenceCreate', null);
 
-        $createdData = $this->staffPresenceService->create($request->getContent());
+        $createdData = $this->childPresenceService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }
@@ -202,13 +192,13 @@ class StaffPresenceController extends AbstractController
 //DELETE BY ID
 
     /**
-     * Deletes staffPresence using its id
+     * Deletes childPresence using its id
      *
-     * @Route("/staff/presence/delete/{staffPresenceId}",
-     *    name="staff_presence_delete",
-     *    requirements={"staffPresenceId": "^([0-9]+)"},
+     * @Route("/child/presence/delete/{childPresenceId}",
+     *    name="child_presence_delete",
+     *    requirements={"childPresenceId": "^([0-9]+)"},
      *    methods={"HEAD", "DELETE"})
-     * @Entity("component", expr="repository.findOneById(staffPresenceId)")
+     * @Entity("component", expr="repository.findOneById(childPresenceId)")
      *
      * @SWG\Response(
      *     response=200,
@@ -227,19 +217,19 @@ class StaffPresenceController extends AbstractController
      *     description="Not Found",
      * )
      * @SWG\Parameter(
-     *     name="staffPresenceId",
+     *     name="childPresenceId",
      *     in="path",
-     *     description="Id for the StaffPresence",
+     *     description="Id for the ChildPresence",
      *     required=true,
      *     type="integer",
      * )
-     * @SWG\Tag(name="StaffPresence")
+     * @SWG\Tag(name="ChildPresence")
      */
-    public function delete(StaffPresence $staffPresence)
+    public function delete(ChildPresence $childPresence)
     {
-        $this->denyAccessUnlessGranted('staffPresenceDelete', $staffPresence);
+        $this->denyAccessUnlessGranted('childPresenceDelete', $childPresence);
 
-        $suppressedData = $this->staffPresenceService->delete($staffPresence);
+        $suppressedData = $this->childPresenceService->delete($childPresence);
 
         return new JsonResponse($suppressedData);
     }
@@ -247,10 +237,10 @@ class StaffPresenceController extends AbstractController
 //DELETE BY ARRAY OF IDS
 
     /**
-     * Deletes staffPresence
+     * Deletes childPresence
      *
-     * @Route("/staff/presence/delete",
-     *    name="staff_presence_delete_by_array",
+     * @Route("/child/presence/delete",
+     *    name="child_presence_delete_by_array",
      *    methods={"HEAD", "DELETE"})
      *
      * @SWG\Response(
@@ -268,20 +258,20 @@ class StaffPresenceController extends AbstractController
      * @SWG\Parameter(
      *     name="data",
      *     in="body",
-     *     description="Data for the StaffPresence",
+     *     description="Data for the ChildPresence",
      *     required=true,
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=StaffPresenceType::class))
+     *         @SWG\Items(ref=@Model(type=ChildPresenceType::class))
      *     )
      * )
-     * @SWG\Tag(name="StaffPresence")
+     * @SWG\Tag(name="ChildPresence")
      */
     public function deleteByArray(Request $request)
     {
-        $this->denyAccessUnlessGranted('staffPresenceDelete', null);
+        $this->denyAccessUnlessGranted('childPresenceDelete', null);
 
-        $suppressedData = $this->staffPresenceService->deleteByArray($request->getContent());
+        $suppressedData = $this->childPresenceService->deleteByArray($request->getContent());
 
         return new JsonResponse($suppressedData);
     }

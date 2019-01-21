@@ -5,30 +5,26 @@ namespace App\Form;
 use App\Entity\Child;
 use App\Entity\Location;
 use App\Entity\Person;
-use App\Entity\Product;
-use App\Entity\Sport;
+use App\Entity\Registration;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * RegistrationType FormType
+ * ChildPresenceType FormType
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class RegistrationType extends AbstractType
+class ChildPresenceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('registration', DateTimeType::class, array(
+            ->add('registration', EntityType::class, array(
                 'required' => false,
-                'widget' => 'single_text',
+                'class' => Registration::class,
                 ))
             ->add('child', EntityType::class, array(
                 'required' => false,
@@ -38,37 +34,23 @@ class RegistrationType extends AbstractType
                 'required' => false,
                 'class' => Person::class,
                 ))
-            ->add('product', EntityType::class, array(
-                'required' => false,
-                'class' => Product::class,
-                ))
-            ->add('invoice', IntegerType::class, array(
-                'required' => false,
-                ))
-            ->add('isPayed', CheckboxType::class, array(
-                'required' => false,
-                ))
-            ->add('sessionDate', DateType::class, array(
-                'required' => false,
-                'widget' => 'single_text',
-                ))
-            ->add('sessionStart', TimeType::class, array(
-                'required' => false,
-                'input' => 'datetime',
-                'widget' => 'single_text',
-                ))
-            ->add('sessionEnd', TimeType::class, array(
-                'required' => false,
-                'input' => 'datetime',
-                'widget' => 'single_text',
-                ))
             ->add('location', EntityType::class, array(
                 'required' => false,
                 'class' => Location::class,
                 ))
-            ->add('sport', EntityType::class, array(
+            ->add('date', DateType::class, array(
                 'required' => false,
-                'class' => Sport::class,
+                'widget' => 'single_text',
+                ))
+            ->add('start', TimeType::class, array(
+                'required' => false,
+                'input' => 'datetime',
+                'widget' => 'single_text',
+                ))
+            ->add('end', TimeType::class, array(
+                'required' => false,
+                'input' => 'datetime',
+                'widget' => 'single_text',
                 ))
         ;
     }
@@ -76,8 +58,8 @@ class RegistrationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'App\Entity\Registration',
-            'intention' => 'RegistrationForm',
+            'data_class' => 'App\Entity\ChildPresence',
+            'intention' => 'ChildPresenceForm',
         ));
     }
 }
