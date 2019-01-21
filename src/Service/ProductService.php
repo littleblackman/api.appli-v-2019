@@ -177,8 +177,8 @@ class ProductService implements ProductServiceInterface
         if (array_key_exists('isHourSelectable', $data)) {
             $object->setIsHourSelectable((bool) $data['isHourSelectable']);
         }
-        if (array_key_exists('isSportAssociated', $data)) {
-            $object->setIsSportAssociated((bool) $data['isSportAssociated']);
+        if (array_key_exists('isSportSelectable', $data)) {
+            $object->setIsSportSelectable((bool) $data['isSportSelectable']);
         }
 
         //Adds/Removes links to products

@@ -120,7 +120,7 @@ class StaffPresenceService implements StaffPresenceServiceInterface
     }
 
     /**
-     * Returns the list of all staffs in the array format
+     * Returns the list of all staff presence by kind and date
      * @return array
      */
     public function findAllByKindAndDate($kind, $date)
@@ -144,7 +144,7 @@ class StaffPresenceService implements StaffPresenceServiceInterface
     }
 
     /**
-     * Returns the list of all staffs present for the date
+     * Returns the list of all staffs presences for the date
      * @return array
      */
     public function findStaffsByPresenceDate($date)

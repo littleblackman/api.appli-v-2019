@@ -62,7 +62,7 @@ class ProductType extends AbstractType
             ->add('isHourSelectable', CheckboxType::class, array(
                 'required' => false,
                 ))
-            ->add('isSportAssociated', CheckboxType::class, array(
+            ->add('isSportSelectable', CheckboxType::class, array(
                 'required' => false,
                 ))
             ->add('visibility', TextType::class, array(

@@ -134,7 +134,7 @@ class Product
      *
      * @ORM\Column(name="is_sport_associated", type="boolean")
      */
-    private $isSportAssociated;
+    private $isSportSelectable;
 
     /**
      * @var string|null
@@ -383,14 +383,14 @@ class Product
         return $this;
     }
 
-    public function getIsSportAssociated(): ?bool
+    public function getIsSportSelectable(): ?bool
     {
-        return $this->isSportAssociated;
+        return $this->isSportSelectable;
     }
 
-    public function setIsSportAssociated(bool $isSportAssociated): self
+    public function setIsSportSelectable(bool $isSportSelectable): self
     {
-        $this->isSportAssociated = $isSportAssociated;
+        $this->isSportSelectable = $isSportSelectable;
 
         return $this;
     }

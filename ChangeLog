@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.23.1
+- Modification Product->isSportAssociated par isSportSelectable (21/01/2019)
+
 v0.23
 - Migration Symfony 4.2 (21/01/2019)
 - Ajout de champs pour Registration (21/01/2019)
