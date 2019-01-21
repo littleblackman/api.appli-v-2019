@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Child;
+use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Product;
+use App\Entity\Sport;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -60,6 +62,14 @@ class RegistrationType extends AbstractType
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
+                ))
+            ->add('location', EntityType::class, array(
+                'required' => false,
+                'class' => Location::class,
+                ))
+            ->add('sport', EntityType::class, array(
+                'required' => false,
+                'class' => Sport::class,
                 ))
         ;
     }

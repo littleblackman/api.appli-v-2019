@@ -30,7 +30,7 @@ class StaffPresenceController extends AbstractController
 //LIST
 
     /**
-     * Lists all the staff presences by date
+     * Lists all the staff presences by kind of staff and date
      *
      * @Route("/staff/presence/list/{kind}/{date}",
      *    name="staff_presence_list_date",

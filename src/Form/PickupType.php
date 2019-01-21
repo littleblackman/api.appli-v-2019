@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Child;
+use App\Entity\Registration;
 use App\Entity\Ride;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -22,6 +23,10 @@ class PickupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('registration', EntityType::class, array(
+                'required' => false,
+                'class' => Registration::class,
+                ))
             ->add('kind', TextType::class, array(
                 'required' => false,
                 ))

@@ -33,6 +33,14 @@ class Pickup
     private $pickupId;
 
     /**
+     * @var Registration
+     *
+     * @ORM\OneToOne(targetEntity="Registration")
+     * @ORM\JoinColumn(name="registration_id", referencedColumnName="registration_id")
+     */
+    private $registration;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="kind", type="string", length=8, nullable=true)
@@ -153,6 +161,18 @@ class Pickup
     public function getPickupId(): ?int
     {
         return $this->pickupId;
+    }
+
+    public function getRegistration(): ?Registration
+    {
+        return $this->registration;
+    }
+
+    public function setRegistration(?Registration $registration): self
+    {
+        $this->registration = $registration;
+
+        return $this;
     }
 
     public function getKind(): ?string

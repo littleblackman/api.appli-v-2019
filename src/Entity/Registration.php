@@ -99,6 +99,23 @@ class Registration
     private $sessionEnd;
 
     /**
+     * @var Product
+     *
+     * @ORM\OneToOne(targetEntity="Location")
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="location_id")
+     */
+    private $location;
+
+
+    /**
+     * @var Product
+     *
+     * @ORM\OneToOne(targetEntity="Sport")
+     * @ORM\JoinColumn(name="sport_id", referencedColumnName="sport_id")
+     */
+    private $sport;
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
@@ -135,6 +152,42 @@ class Registration
     public function setRegistration(?DateTimeInterface $registration): self
     {
         $this->registration = $registration;
+
+        return $this;
+    }
+
+    public function getChild(): ?Child
+    {
+        return $this->child;
+    }
+
+    public function setChild(?Child $child): self
+    {
+        $this->child = $child;
+
+        return $this;
+    }
+
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?Person $person): self
+    {
+        $this->person = $person;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
 
         return $this;
     }
@@ -198,39 +251,26 @@ class Registration
 
         return $this;
     }
-
-    public function getChild(): ?Child
+    public function getLocation(): ?Location
     {
-        return $this->child;
+        return $this->location;
     }
 
-    public function setChild(?Child $child): self
+    public function setLocation(?Location $location): self
     {
-        $this->child = $child;
+        $this->location = $location;
 
         return $this;
     }
 
-    public function getProduct(): ?Product
+    public function getSport(): ?Sport
     {
-        return $this->product;
+        return $this->sport;
     }
 
-    public function setProduct(?Product $product): self
+    public function setSport(?Sport $sport): self
     {
-        $this->product = $product;
-
-        return $this;
-    }
-
-    public function getPerson(): ?Person
-    {
-        return $this->person;
-    }
-
-    public function setPerson(?Person $person): self
-    {
-        $this->person = $person;
+        $this->sport = $sport;
 
         return $this;
     }

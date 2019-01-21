@@ -432,6 +432,11 @@ class PickupService implements PickupServiceInterface
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
 
+        //Gets related registration
+        if (null !== $object->getRegistration() && !$object->getRegistration()->getSuppressed()) {
+            $objectArray['registration'] = $this->mainService->toArray($object->getRegistration()->toArray());
+        }
+
         //Gets related child
         if (null !== $object->getChild() && !$object->getChild()->getSuppressed()) {
             $objectArray['child'] = $this->mainService->toArray($object->getChild()->toArray());

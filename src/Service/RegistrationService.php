@@ -164,6 +164,16 @@ class RegistrationService implements RegistrationServiceInterface
             $objectArray['product'] = $this->mainService->toArray($object->getProduct()->toArray());
         }
 
+        //Gets related location
+        if (null !== $object->getLocation() && !$object->getLocation()->getSuppressed()) {
+            $objectArray['location'] = $this->mainService->toArray($object->getLocation()->toArray());
+        }
+
+        //Gets related sport
+        if (null !== $object->getSport() && !$object->getSport()->getSuppressed()) {
+            $objectArray['sport'] = $this->mainService->toArray($object->getSport()->toArray());
+        }
+
         return $objectArray;
     }
 }

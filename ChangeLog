@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.23
+- Migration Symfony 4.2 (21/01/2019)
+- Ajout de champs pour Registration (21/01/2019)
+- Ajout du champ registration sur Pickup (21/01/2019)
+
 v0.22
 - Mise en place des inscriptions (18/01/2019)
 
