@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.23.2.1
+- Correction nom du champ "is_sport_selectable" (21/01/2019)
+
 v0.23.2
 - Ajout de ChildPresence (21/01/2019)
 - Correction du deletepar array of id de StaffPresence (21/01/2019)

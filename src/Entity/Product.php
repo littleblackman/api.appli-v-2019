@@ -132,7 +132,7 @@ class Product
     /**
      * @var boolean
      *
-     * @ORM\Column(name="is_sport_associated", type="boolean")
+     * @ORM\Column(name="is_sport_selectable", type="boolean")
      */
     private $isSportSelectable;
 
