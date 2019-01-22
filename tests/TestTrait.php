@@ -54,8 +54,7 @@ trait TestTrait
             $response->headers->contains('Content-Type', 'application/json'),
             $response->headers
         );
-
-        $content = json_decode($response->getContent(), true, 10);
+        $content = json_decode($response->getContent(), true, 50);
 
         return $content;
     }

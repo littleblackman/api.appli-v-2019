@@ -71,11 +71,18 @@ class Registration
     private $invoice;
 
     /**
-     * @var boolean
+     * @var float|null
      *
-     * @ORM\Column(name="is_payed", type="boolean")
+     * @ORM\Column(name="payed", type="float", nullable=true)
      */
-    private $isPayed;
+    private $payed;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="status", type="string", length=16, nullable=true)
+     */
+    private $status;
 
     /**
      * @var DateTime|null
@@ -203,14 +210,26 @@ class Registration
         return $this;
     }
 
-    public function getIsPayed(): ?bool
+    public function getPayed(): ?float
     {
-        return $this->isPayed;
+        return $this->payed;
     }
 
-    public function setIsPayed(bool $isPayed): self
+    public function setPayed(float $payed): self
     {
-        $this->isPayed = $isPayed;
+        $this->payed = $payed;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

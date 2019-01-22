@@ -38,11 +38,6 @@ class RegistrationService implements RegistrationServiceInterface
         //Adds registration datetime
         $object->setRegistration(new DateTime());
 
-        //Converts to boolean
-        if (array_key_exists('isPayed', $data)) {
-            $object->setIsPayed((bool) $data['isPayed']);
-        }
-
         //Should be done from StaffPresenceType but it returns null...
         if (array_key_exists('sessionStart', $data)) {
             $object->setSessionStart(DateTime::createFromFormat('H:i:s', $data['sessionStart']));

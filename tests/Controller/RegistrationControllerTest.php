@@ -22,7 +22,7 @@ class RegistrationControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"child": "1", "person": "1", "product": "1", "invoice": 1, "isPayed": true, "sessionDate": "2018-01-20", "sessionStart": "09:00:00", "sessionEnd": "18:00:00", "location": 1, "sport": 1}'
+            '{"child": "1", "person": "1", "product": "1", "invoice": 1, "payed": "100.50", "status": "Status", "sessionDate": "2018-01-20", "sessionStart": "09:00:00", "sessionEnd": "18:00:00", "location": 1, "sport": 1}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
@@ -53,7 +53,7 @@ class RegistrationControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"child": "1", "person": "1", "product": "1", "invoice": 1, "isPayed": true, "sessionDate": "2018-01-21", "sessionStart": "09:05:00", "sessionEnd": "18:05:00", "location": 1, "sport": 1}'
+            '{"child": "1", "person": "1", "product": "1", "invoice": 1, "payed": "100.50", "status": "Status", "sessionDate": "2018-01-21", "sessionStart": "09:05:00", "sessionEnd": "18:05:00", "location": 1, "sport": 1}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);

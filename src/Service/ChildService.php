@@ -35,34 +35,48 @@ class ChildService implements ChildServiceInterface
     /**
      * Adds link between Child and Person
      */
-    public function addLink(int $personId, string $relation, Child $object)
+    public function addLinks(Child $object, array $data)
     {
-        $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person && !$person->getSuppressed()) {
-            $childPersonLink = new ChildPersonLink();
-            $childPersonLink
-                ->setRelation(htmlspecialchars($relation))
-                ->setChild($object)
-                ->setPerson($person)
-            ;
-            $this->em->persist($childPersonLink);
+        if (array_key_exists('links', $data)) {
+            $this->removeLinks($object);
+            if (is_array($data['links']) && !empty($data['links'])) {
+                foreach ($data['links'] as $link) {
+                    $person = $this->em->getRepository('App:Person')->findOneById($link['personId']);
+                    if ($person instanceof Person && !$person->getSuppressed()) {
+                        $childPersonLink = new ChildPersonLink();
+                        $childPersonLink
+                            ->setRelation(htmlspecialchars($link['relation']))
+                            ->setChild($object)
+                            ->setPerson($person)
+                        ;
+                        $this->em->persist($childPersonLink);
+                    }
+                }
+            }
         }
     }
 
     /**
      * Adds link between Child and Child
      */
-    public function addSibling(int $childId, string $relation, Child $object)
+    public function addSiblings(Child $object, array $data)
     {
-        $child = $this->em->getRepository('App:Child')->findOneById($childId);
-        if ($child instanceof Child && !$child->getSuppressed()) {
-            $childChildLink = new ChildChildLink();
-            $childChildLink
-                ->setRelation(htmlspecialchars($relation))
-                ->setChild($object)
-                ->setChild($child)
-            ;
-            $this->em->persist($childChildLink);
+        if (array_key_exists('siblings', $data)) {
+            $this->removeSiblings($object);
+            if (is_array($data['siblings']) && !empty($data['siblings'])) {
+                foreach ($data['siblings'] as $sibling) {
+                    $child = $this->em->getRepository('App:Child')->findOneById($sibling['siblingId']);
+                    if ($child instanceof Child && !$child->getSuppressed()) {
+                        $childChildLink = new ChildChildLink();
+                        $childChildLink
+                            ->setRelation(htmlspecialchars($sibling['relation']))
+                            ->setChild($object)
+                            ->setSibling($child)
+                        ;
+                        $this->em->persist($childChildLink);
+                    }
+                }
+            }
         }
     }
 
@@ -79,23 +93,12 @@ class ChildService implements ChildServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
+        //Adds links
+        $this->addLinks($object, $data);
+        $this->addSiblings($object, $data);
+
         //Persists data
         $this->mainService->persist($object);
-
-        //Adds links from person/s to child
-        if (array_key_exists('links', $data)) {
-            $links = $data['links'];
-
-            if (is_array($links) && !empty($links)) {
-                foreach ($links as $link) {
-                    $this->addLink((int) $link['personId'], $link['relation'], $object);
-                }
-
-                //Persists in DB
-                $this->em->flush();
-                $this->em->refresh($object);
-            }
-        }
 
         //Returns data
         return array(
@@ -110,13 +113,9 @@ class ChildService implements ChildServiceInterface
      */
     public function delete(Child $object)
     {
-        //Removes links from person/s to child
-        $links = $object->getPersons();
-        if (null !== $links && !empty($links)) {
-            foreach ($links as $link) {
-                $this->removeLink($link->getPerson()->getPersonId(), $object);
-            }
-        }
+        //Removes links
+        $this->removeLinks($object);
+        $this->removeSiblings($object);
 
         //Persists data
         $this->mainService->delete($object);
@@ -170,53 +169,12 @@ class ChildService implements ChildServiceInterface
         //Submits data
         $data = $this->mainService->submit($object, 'child-modify', $data);
 
+        //Adds links
+        $this->addLinks($object, $data);
+        $this->addSiblings($object, $data);
+
         //Checks if entity has been filled
         $this->isEntityFilled($object);
-
-        //Modifies links
-        if (array_key_exists('links', $data)) {
-            $links = $data['links'];
-
-            //Gets submitted links to person
-            $submittedLinks = array();
-            if (is_array($links) && !empty($links)) {
-                foreach ($links as $link) {
-                    $submittedLinks[(int) $link['personId']] = $link['relation'];
-                }
-            }
-
-            //Gets existing links to person
-            $existingLinks = array();
-            $currentLinks = $object->getPersons()->toArray();
-            if (null !== $currentLinks && is_array($currentLinks) && !empty($currentLinks)) {
-                foreach ($currentLinks as $currentLink) {
-                    $existingLinks[$currentLink->getPerson()->getPersonId()] = $currentLink->getRelation();
-                }
-            }
-
-            //Adds links from person/s to child
-            $linksToAdd = array_diff($submittedLinks, $existingLinks);
-            if (!empty($linksToAdd)) {
-                foreach ($linksToAdd as $personId => $relation) {
-                    $this->addLink($personId, $relation, $object);
-                }
-            }
-
-            //Removes links from person/s to child
-            $linksToRemove = array_diff($existingLinks, $submittedLinks);
-            if (!empty($linksToRemove)) {
-                foreach ($linksToRemove as $personId => $relation) {
-                    $this->removeLink($personId, $object);
-                }
-            }
-        }
-
-        //Adds siblings
-        if (array_key_exists('siblings', $data)) {
-            foreach ($data['siblings'] as $sibling) {
-                $this->addSibling($sibling['sibling'], $sibling['relation'], $object);
-            }
-        }
 
         //Persists data
         $this->mainService->modify($object);
@@ -231,14 +189,28 @@ class ChildService implements ChildServiceInterface
     }
 
     /**
-     * Deletes the link between the Child and the Person
+     * Removes links from person/s to child
      */
-    public function removeLink(int $personId, Child $object)
+    public function removeLinks(Child $object)
     {
-        $person = $this->em->getRepository('App:Person')->findOneById($personId);
-        if ($person instanceof Person && !$person->getSuppressed()) {
-            $objectPersonLink = $this->em->getRepository('App:ChildPersonLink')->findOneBy(array('child' => $object, 'person' => $person));
-            $this->em->remove($objectPersonLink);
+        $links = $object->getPersons();
+        if (null !== $links && !empty($links)) {
+            foreach ($links as $link) {
+                $this->em->remove($link);
+            }
+        }
+    }
+
+    /**
+     * Removes links from child to child
+     */
+    public function removeSiblings(Child $object)
+    {
+        $siblings = $object->getSiblings();
+        if (null !== $siblings && !empty($siblings)) {
+            foreach ($siblings as $sibling) {
+                $this->em->remove($sibling);
+            }
         }
     }
 

@@ -181,7 +181,24 @@ class ProductService implements ProductServiceInterface
             $object->setIsSportSelectable((bool) $data['isSportSelectable']);
         }
 
-        //Adds/Removes links to products
+        //Removes links to product
+        $productLinks = array(
+            'categories',
+            'components',
+            'dates',
+            'hours',
+            'locations',
+            'sports',
+        );
+        $dataDeleteLinks = array();
+        foreach ($productLinks as $productLink) {
+            if (array_key_exists($productLink, $data)) {
+                $dataDeleteLinks[] = $productLink;
+            }
+        }
+        $this->removeLinks($object, $dataDeleteLinks);
+
+        //Adds links to product
         $linksArray = array(
             'categories' => 'category',
             'locations' => 'location',
@@ -190,17 +207,10 @@ class ProductService implements ProductServiceInterface
         foreach ($linksArray as $key => $value) {
             if (array_key_exists($key, $data)) {
                 $links = $data[$key];
-                //Adds link
                 if (null !== $links && is_array($links) && !empty($links)) {
                     $method = 'add' . ucfirst($value) . 'Link';
                     foreach ($links as $link) {
                         $this->$method((int) $link[$value], $object);
-                    }
-                //Removes link
-                } elseif (null === $data[$key]) {
-                    $method = 'get' . ucfirst($key);
-                    foreach ($object->$method() as $productLink) {
-                        $this->em->remove($productLink);
                     }
                 }
             }
@@ -212,12 +222,6 @@ class ProductService implements ProductServiceInterface
             if (null !== $components && is_array($components) && !empty($components)) {
                 foreach ($components as $component) {
                     $this->addComponent($component, $object);
-                }
-            //Removes components
-            } elseif (null === $components) {
-                foreach ($object->getComponents() as $productComponent) {
-                    $this->mainService->delete($productComponent);
-                    $this->mainService->persist($productComponent);
                 }
             }
 
@@ -298,7 +302,7 @@ class ProductService implements ProductServiceInterface
     public function delete(Product $object)
     {
         //Removes links to products
-        $linksArray = array(
+        $data = array(
             'categories',
             'components',
             'dates',
@@ -306,15 +310,7 @@ class ProductService implements ProductServiceInterface
             'locations',
             'sports',
         );
-        foreach ($linksArray as $linkArray) {
-            $method = 'get' . ucfirst($linkArray);
-            $links = $object->$method();
-            if (null !== $links && !empty($links)) {
-                foreach ($links as $link) {
-                    $this->em->remove($link);
-                }
-            }
-        }
+        $this->removeLinks($object, $data);
 
         //Persists data
         $this->mainService->delete($object);
@@ -368,14 +364,6 @@ class ProductService implements ProductServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'product-modify', $data);
-
-        //Removes Components if new ones are submitted
-        if (array_key_exists('components', $data) && is_array($data['components'])) {
-            foreach ($object->getComponents() as $productComponent) {
-                $this->mainService->delete($productComponent);
-                $this->mainService->persist($productComponent);
-            }
-        }
         $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
@@ -391,6 +379,22 @@ class ProductService implements ProductServiceInterface
             'message' => 'Produit modifié',
             'product' => $this->toArray($object),
         );
+    }
+
+    /**
+     * Removes links from Product
+     */
+    public function removeLinks(Product $object, array $data)
+    {
+        foreach ($data as $field) {
+            $method = 'get' . ucfirst($field);
+            $links = $object->$method();
+            if (null !== $links && !empty($links)) {
+                foreach ($links as $link) {
+                    $this->em->remove($link);
+                }
+            }
+        }
     }
 
     /**
