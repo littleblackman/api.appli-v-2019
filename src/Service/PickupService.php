@@ -272,6 +272,25 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
+     * Deletes Pickup by registrationId
+     */
+    public function deleteByRegistrationId(int $registrationId)
+    {
+        $pickups = $this->em->getRepository('App:Pickup')->findByRegistrationId($registrationId);
+        if (!empty($pickups)) {
+            foreach ($pickups as $pickup) {
+                $this->mainService->delete($pickup);
+                $this->mainService->persist($pickup);
+            }
+
+            return array(
+                'status' => true,
+                'message' => 'Pickup supprimés',
+            );
+        }
+    }
+
+    /**
      * Modifies the dispatch for Pickups
      */
     public function dispatch(string $data)
@@ -461,18 +480,21 @@ class PickupService implements PickupServiceInterface
             $pickups = $this->findAllByDate($date, $kind);
             if (!empty($pickups)) {
                 foreach ($pickups as $pickup) {
-                    $pickup
-                        ->setRide(null)
-                        ->setSortOrder(null)
-                        ->setStatus(null)
-                        ->setStatusChange(new DateTime())
-                    ;
-                    $this->mainService->modify($pickup);
+                    //Unaffects ïckup if it's ride is NOT locked
+                    if (null !== $pickup->getRide() && !$pickup->getRide()->getLocked()) {
+                        $pickup
+                            ->setRide(null)
+                            ->setSortOrder(null)
+                            ->setStatus(null)
+                            ->setStatusChange(new DateTime())
+                        ;
+                        $this->mainService->modify($pickup);
 
-                    $counter++;
-                    if (20 === $counter) {
-                        $this->em->flush();
-                        $counter = 0;
+                        $counter++;
+                        if (20 === $counter) {
+                            $this->em->flush();
+                            $counter = 0;
+                        }
                     }
                 }
             }

@@ -65,7 +65,12 @@ class ChildPresenceControllerTest extends WebTestCase
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 
-        //Test by array of id
+        //Tests by registrationId
+        $this->clientAuthenticated->request('DELETE', '/child/presence/delete-registration/1');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests by array of id
         $data = array(
             array(
                 'child' => '1',

@@ -50,6 +50,9 @@ class ProductType extends AbstractType
             ->add('transport', CheckboxType::class, array(
                 'required' => false,
                 ))
+            ->add('lunch', CheckboxType::class, array(
+                'required' => false,
+                ))
             ->add('photo', TextType::class, array(
                 'required' => false,
                 ))

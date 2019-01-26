@@ -102,6 +102,13 @@ class Product
     private $transport;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="lunch", type="boolean")
+     */
+    private $lunch;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="photo", type="string", length=256, nullable=true)
@@ -331,6 +338,18 @@ class Product
     public function setTransport(?bool $transport): self
     {
         $this->transport = $transport;
+
+        return $this;
+    }
+
+    public function getLunch(): ?bool
+    {
+        return $this->lunch;
+    }
+
+    public function setLunch(?bool $lunch): self
+    {
+        $this->lunch = $lunch;
 
         return $this;
     }

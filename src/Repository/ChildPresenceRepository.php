@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityRepository;
 class ChildPresenceRepository extends EntityRepository
 {
     /**
-     * Returns all the presence linked to the data provided
+     * Returns all the childPresence linked to the data provided
      */
     public function findByData($data)
     {
@@ -44,7 +44,7 @@ class ChildPresenceRepository extends EntityRepository
     }
 
     /**
-     * Returns all the presence by date
+     * Returns all the childPresence by date
      */
     public function findAllByDate($date)
     {
@@ -62,7 +62,7 @@ class ChildPresenceRepository extends EntityRepository
     }
 
     /**
-     * Returns all the presence by child
+     * Returns all the childPresence by child
      */
     public function findByChild($childId, $date)
     {
@@ -86,6 +86,33 @@ class ChildPresenceRepository extends EntityRepository
         return $qb
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    /**
+     * Returns all the childPresence using the registrationId linked
+     */
+    public function findByRegistrationId($registrationId)
+    {
+        return $this->createQueryBuilder('pr')
+            ->where('pr.registration = :registrationId')
+            ->setParameter('registrationId', $registrationId)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Returns the pickup if not suppressed
+     */
+    public function findOneById($childPresenceId)
+    {
+        return $this->createQueryBuilder('pr')
+            ->where('pr.childPresenceId = :childPresenceId')
+            ->andWhere('pr.suppressed = 0')
+            ->setParameter('childPresenceId', $childPresenceId)
+            ->getQuery()
+            ->getOneOrNullResult()
         ;
     }
 }

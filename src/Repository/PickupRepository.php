@@ -101,6 +101,19 @@ class PickupRepository extends EntityRepository
     }
 
     /**
+     * Returns all the pickup using the registrationId linked
+     */
+    public function findByRegistrationId($registrationId)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.registration = :registrationId')
+            ->setParameter('registrationId', $registrationId)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns the pickups to geocode
      */
     public function findGeocode()

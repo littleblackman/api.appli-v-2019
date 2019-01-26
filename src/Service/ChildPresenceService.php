@@ -124,6 +124,25 @@ class ChildPresenceService implements ChildPresenceServiceInterface
     }
 
     /**
+     * Deletes ChildPresence by registrationId
+     */
+    public function deleteByRegistrationId(int $registrationId)
+    {
+        $childPresences = $this->em->getRepository('App:ChildPresence')->findByRegistrationId($registrationId);
+        if (!empty($childPresences)) {
+            foreach ($childPresences as $childPresence) {
+                $this->mainService->delete($childPresence);
+                $this->mainService->persist($childPresence);
+            }
+
+            return array(
+                'status' => true,
+                'message' => 'ChildPresence supprimées',
+            );
+        }
+    }
+
+    /**
      * Returns the list of all children presence by date
      * @return array
      */

@@ -188,7 +188,13 @@ class PickupControllerTest extends WebTestCase
      */
     public function testDelete()
     {
+        //Tests by id
         $this->clientAuthenticated->request('DELETE', '/pickup/delete/' . self::$objectId);
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests by registrationId
+        $this->clientAuthenticated->request('DELETE', '/pickup/delete-registration/1');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
 

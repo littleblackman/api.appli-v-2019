@@ -539,6 +539,50 @@ class PickupController extends AbstractController
         return new JsonResponse($suppressedData);
     }
 
+//DELETE BY REGISTRATION_ID
+
+    /**
+     * Deletes pickup using the registrationId
+     *
+     * @Route("/pickup/delete-registration/{registrationId}",
+     *    name="pickup_delete_by_registration",
+     *    requirements={"registrationId": "^([0-9]+)"},
+     *    methods={"HEAD", "DELETE"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="registrationId",
+     *     in="path",
+     *     required=true,
+     *     description="RegistrationId linked to the pickup",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function deleteByRegistrationId(int $registrationId)
+    {
+        $this->denyAccessUnlessGranted('pickupDelete', null);
+
+        $suppressedData = $this->pickupService->deleteByRegistrationId($registrationId);
+
+        return new JsonResponse($suppressedData);
+    }
+
 //GEOCODING
 
     /**

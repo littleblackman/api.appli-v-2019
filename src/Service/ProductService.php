@@ -168,6 +168,9 @@ class ProductService implements ProductServiceInterface
         if (array_key_exists('transport', $data)) {
             $object->setTransport((bool) $data['transport']);
         }
+        if (array_key_exists('lunch', $data)) {
+            $object->setLunch((bool) $data['lunch']);
+        }
         if (array_key_exists('isLocationSelectable', $data)) {
             $object->setIsLocationSelectable((bool) $data['isLocationSelectable']);
         }

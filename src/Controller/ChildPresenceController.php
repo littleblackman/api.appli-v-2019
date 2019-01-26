@@ -198,7 +198,7 @@ class ChildPresenceController extends AbstractController
      *    name="child_presence_delete",
      *    requirements={"childPresenceId": "^([0-9]+)"},
      *    methods={"HEAD", "DELETE"})
-     * @Entity("component", expr="repository.findOneById(childPresenceId)")
+     * @Entity("childPresence", expr="repository.findOneById(childPresenceId)")
      *
      * @SWG\Response(
      *     response=200,
@@ -272,6 +272,50 @@ class ChildPresenceController extends AbstractController
         $this->denyAccessUnlessGranted('childPresenceDelete', null);
 
         $suppressedData = $this->childPresenceService->deleteByArray($request->getContent());
+
+        return new JsonResponse($suppressedData);
+    }
+
+//DELETE BY REGISTRATION_ID
+
+    /**
+     * Deletes childPresence using the registrationId
+     *
+     * @Route("/child/presence/delete-registration/{registrationId}",
+     *    name="child_presence_delete_by_registration",
+     *    requirements={"registrationId": "^([0-9]+)"},
+     *    methods={"HEAD", "DELETE"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="registrationId",
+     *     in="path",
+     *     required=true,
+     *     description="RegistrationId linked to the childPresence",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="ChildPresence")
+     */
+    public function deleteByRegistrationId(int $registrationId)
+    {
+        $this->denyAccessUnlessGranted('childPresenceDelete', null);
+
+        $suppressedData = $this->childPresenceService->deleteByRegistrationId($registrationId);
 
         return new JsonResponse($suppressedData);
     }
