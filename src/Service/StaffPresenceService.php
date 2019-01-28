@@ -50,7 +50,7 @@ class StaffPresenceService implements StaffPresenceServiceInterface
     public function create(string $data)
     {
         $data = json_decode($data, true);
-        if (is_array($data)) {
+        if (is_array($data) && !empty($data)) {
             foreach ($data as $staffPresence) {
                 $object = $this->em->getRepository('App:StaffPresence')->findByData($staffPresence);
                 //Creates object if not already existing
@@ -101,7 +101,7 @@ class StaffPresenceService implements StaffPresenceServiceInterface
     public function deleteByArray(string $data)
     {
         $data = json_decode($data, true);
-        if (is_array($data)) {
+        if (is_array($data) && !empty($data)) {
             foreach ($data as $staffPresence) {
                 $object = $this->em->getRepository('App:StaffPresence')->findByData($staffPresence);
 

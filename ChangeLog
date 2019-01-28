@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.23.7
+- Ajout d'une route `/product/list/child/{chilId}` pour lister les Product spécifiques à un Child (28/01/2019)
+- Ajout de la possibilité de crééer des Pickups par array (28/01/2019)
+
 v0.23.6
 - Ajout de places dans Vehicle (28/01/2019)
 - Ajout de maxChildren sur Staff (28/01/2019)

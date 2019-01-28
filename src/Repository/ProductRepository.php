@@ -17,6 +17,21 @@ class ProductRepository extends EntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.suppressed = 0')
+            ->andWhere('p.child IS NULL')
+            ->orderBy('p.nameFr', 'ASC')
+            ->getQuery()
+        ;
+    }
+
+    /**
+     * Returns all the products linked to a child in an array
+     */
+    public function findAllByChild($childId)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.suppressed = 0')
+            ->andWhere('p.child = :childId')
+            ->setParameter('childId', $childId)
             ->orderBy('p.nameFr', 'ASC')
             ->getQuery()
         ;
@@ -30,6 +45,7 @@ class ProductRepository extends EntityRepository
         return $this->createQueryBuilder('p')
             ->where('LOWER(p.nameFr) LIKE :term')
             ->andWhere('p.suppressed = 0')
+            ->andWhere('p.child IS NULL')
             ->orderBy('p.nameFr', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()

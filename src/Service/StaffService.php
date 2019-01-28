@@ -220,10 +220,7 @@ class StaffService implements StaffServiceInterface
             );
         }
 
-        //Returns data
-        return array(
-            'status' => false,
-        );
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
     }
 
     /**

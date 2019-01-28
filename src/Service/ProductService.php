@@ -338,6 +338,18 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
+     * Returns the list of all products linked to a child in the array format
+     * @return array
+     */
+    public function findAllByChild($childId)
+    {
+        return $this->em
+            ->getRepository('App:Product')
+            ->findAllByChild($childId)
+        ;
+    }
+
+    /**
      * Searches the term in the Product collection
      * @return array
      */
@@ -416,6 +428,11 @@ class ProductService implements ProductServiceInterface
         //Gets related season
         if (null !== $object->getSeason() && !$object->getSeason()->getSuppressed()) {
             $objectArray['season'] = $this->mainService->toArray($object->getSeason()->toArray());
+        }
+
+        //Gets related child
+        if (null !== $object->getChild() && !$object->getChild()->getSuppressed()) {
+            $objectArray['season'] = $this->mainService->toArray($object->getChild()->toArray());
         }
 
         //Gets related links

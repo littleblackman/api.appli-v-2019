@@ -441,6 +441,46 @@ class PickupController extends AbstractController
         return new JsonResponse($createdData);
     }
 
+//CREATE BY ARRAY
+
+    /**
+     * Creates multiples Pickups
+     *
+     * @Route("/pickup/create-multiple",
+     *    name="pickup_create_multiple",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="pickup", ref=@Model(type=Pickup::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Pickup",
+     *     required=true,
+     *     @Model(type=PickupType::class)
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function createMultiple(Request $request)
+    {
+        $this->denyAccessUnlessGranted('pickupCreate', null);
+
+        $createdData = $this->pickupService->createMultiple($request->getContent());
+
+        return new JsonResponse($createdData);
+    }
+
 //MODIFY
 
     /**

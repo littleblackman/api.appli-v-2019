@@ -232,7 +232,7 @@ class PickupService implements PickupServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create(string $data)
+    public function create(string $data, $return = true)
     {
         //Submits data
         $object = new Pickup();
@@ -249,11 +249,34 @@ class PickupService implements PickupServiceInterface
         $this->mainService->persist($object);
 
         //Returns data
-        return array(
-            'status' => true,
-            'message' => 'Pickup ajouté',
-            'pickup' => $this->toArray($object),
-        );
+        if ($return) {
+            return array(
+                'status' => true,
+                'message' => 'Pickup ajouté',
+                'pickup' => $this->toArray($object),
+            );
+        }
+    }
+
+    /**
+     * Creates multiples Pickups
+     */
+    public function createMultiple(string $data)
+    {
+        $data = json_decode($data, true);
+        if (is_array($data) && !empty($data)) {
+            foreach ($data as $newPickup) {
+                $this->create(json_encode($newPickup), false);
+            }
+
+            //Returns data
+            return array(
+                'status' => true,
+                'message' => 'Pickups ajoutés',
+            );
+        }
+
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
     }
 
     /**
@@ -297,7 +320,6 @@ class PickupService implements PickupServiceInterface
     {
         //Modifies dispatch and sort order
         $data = json_decode($data, true);
-
         if (is_array($data) && !empty($data)) {
             foreach ($data as $dispatch) {
                 $pickup =  $this->em->getRepository('App:Pickup')->findOneById($dispatch['pickupId']);
@@ -338,10 +360,7 @@ class PickupService implements PickupServiceInterface
             );
         }
 
-        //Returns data
-        return array(
-            'status' => false,
-        );
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
     }
 
     /**

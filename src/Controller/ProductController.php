@@ -82,6 +82,61 @@ class ProductController extends AbstractController
         return new JsonResponse($productsArray);
     }
 
+//LIST FOR A CHILD
+
+    /**
+     * Lists all the products linked to a Child
+     *
+     * @Route("/product/list/child/{childId}",
+     *    name="product_list_by_child",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Product::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Product")
+     */
+    public function listAllByChild(Request $request, PaginatorInterface $paginator, $childId)
+    {
+        $this->denyAccessUnlessGranted('productList');
+
+        $products = $paginator->paginate(
+            $this->productService->findAllByChild($childId),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $productsArray = array();
+        foreach ($products->getItems() as $product) {
+            $productsArray[] = $this->productService->toArray($product);
+        };
+
+        return new JsonResponse($productsArray);
+    }
+
 //SEARCH
 
     /**

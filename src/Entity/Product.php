@@ -109,6 +109,14 @@ class Product
     private $lunch;
 
     /**
+     * @var Child
+     *
+     * @ORM\OneToOne(targetEntity="Child")
+     * @ORM\JoinColumn(name="child_id", referencedColumnName="child_id")
+     */
+    private $child;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="photo", type="string", length=256, nullable=true)
@@ -246,6 +254,18 @@ class Product
         return $this;
     }
 
+    public function getSeason(): ?Season
+    {
+        return $this->season;
+    }
+
+    public function setSeason(?Season $season): self
+    {
+        $this->season = $season;
+
+        return $this;
+    }
+
     public function getNameFr(): ?string
     {
         return $this->nameFr;
@@ -318,18 +338,6 @@ class Product
         return $this;
     }
 
-    public function getSeason(): ?Season
-    {
-        return $this->season;
-    }
-
-    public function setSeason(?Season $season): self
-    {
-        $this->season = $season;
-
-        return $this;
-    }
-
     public function getTransport(): ?bool
     {
         return $this->transport;
@@ -350,6 +358,18 @@ class Product
     public function setLunch(?bool $lunch): self
     {
         $this->lunch = $lunch;
+
+        return $this;
+    }
+
+    public function getChild(): ?Child
+    {
+        return $this->child;
+    }
+
+    public function setChild(?Child $child): self
+    {
+        $this->child = $child;
 
         return $this;
     }

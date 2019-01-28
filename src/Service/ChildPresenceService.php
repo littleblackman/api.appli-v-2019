@@ -52,7 +52,7 @@ class ChildPresenceService implements ChildPresenceServiceInterface
     public function create(string $data)
     {
         $data = json_decode($data, true);
-        if (is_array($data)) {
+        if (is_array($data) && !empty($data)) {
             foreach ($data as $childPresence) {
                 $object = $this->em->getRepository('App:ChildPresence')->findByData($childPresence);
                 //Creates object if not already existing
@@ -103,7 +103,7 @@ class ChildPresenceService implements ChildPresenceServiceInterface
     public function deleteByArray(string $data)
     {
         $data = json_decode($data, true);
-        if (is_array($data)) {
+        if (is_array($data) && !empty($data)) {
             foreach ($data as $childPresence) {
                 $object = $this->em->getRepository('App:ChildPresence')->findByData($childPresence);
 

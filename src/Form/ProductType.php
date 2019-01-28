@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Child;
 use App\Entity\Family;
 use App\Entity\Season;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -52,6 +53,10 @@ class ProductType extends AbstractType
                 ))
             ->add('lunch', CheckboxType::class, array(
                 'required' => false,
+                ))
+            ->add('child', EntityType::class, array(
+                'required' => false,
+                'class' => Child::class,
                 ))
             ->add('photo', TextType::class, array(
                 'required' => false,

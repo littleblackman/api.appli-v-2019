@@ -6,6 +6,7 @@ use App\Form\AppFormFactoryInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -149,7 +150,7 @@ class MainService implements MainServiceInterface
 
         //Bad array
         if (null !== $data && !is_array($dataArray)) {
-            throw new LogicException('Error Bad Array format --> ' . $data);
+            throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . $data);
         }
 
         //Submits form

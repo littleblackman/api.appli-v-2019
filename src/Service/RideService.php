@@ -85,26 +85,29 @@ class RideService implements RideServiceInterface
     public function createMultiple(string $data)
     {
         $data = json_decode($data, true);
+        if (is_array($data) && !empty($data)) {
+            foreach ($data as $rideData) {
+                //Submits data
+                $object = new Ride();
+                $this->mainService->create($object);
+                $this->mainService->submit($object, 'ride-create', $rideData);
+                $this->addSpecificData($object, $rideData);
 
-        foreach ($data as $rideData) {
-            //Submits data
-            $object = new Ride();
-            $this->mainService->create($object);
-            $this->mainService->submit($object, 'ride-create', $rideData);
-            $this->addSpecificData($object, $rideData);
+                //Checks if entity has been filled
+                $this->isEntityFilled($object);
 
-            //Checks if entity has been filled
-            $this->isEntityFilled($object);
+                //Persists data
+                $this->mainService->persist($object);
+            }
 
-            //Persists data
-            $this->mainService->persist($object);
+            //Returns data
+            return array(
+                'status' => true,
+                'message' => 'Trajets ajoutés',
+            );
         }
 
-        //Returns data
-        return array(
-            'status' => true,
-            'message' => 'Trajets ajoutés',
-        );
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
     }
 
     /**

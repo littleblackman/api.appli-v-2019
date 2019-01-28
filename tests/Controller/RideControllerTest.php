@@ -29,6 +29,19 @@ class RideControllerTest extends WebTestCase
         $this->assertArrayHasKey('rideId', $content['ride']);
 
         self::$objectId = $content['ride']['rideId'];
+
+        //Tests multiple creation
+        $this->clientAuthenticated->request(
+            'POST',
+            '/ride/create-multiple',
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '[{"locked": true, "kind": "dropin", "linkedRide": 2, "date": "2018-11-20", "name": "Name", "places": 8, "start": "08:00:00", "arrival": "09:00:00", "startPoint": "Start point", "endPoint": "End point", "staff": "1", "vehicle": "1"}, {"locked": true, "kind": "dropin", "linkedRide": 2, "date": "2018-11-20", "name": "Name", "places": 8, "start": "08:00:00", "arrival": "09:00:00", "startPoint": "Start point", "endPoint": "End point", "staff": "1", "vehicle": "1"}]'
+        );
+
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
     }
 
     /**
