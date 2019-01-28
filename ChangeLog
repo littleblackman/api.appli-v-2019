@@ -1,5 +1,12 @@
 ChangeLog
 
+v0.23.6
+- Ajout de places dans Vehicle (28/01/2019)
+- Ajout de maxChildren sur Staff (28/01/2019)
+- Conversion de session_date + session_start et session_end -> sessions pour Registration (28/01/2019)
+- Ajout d'une erreur si le tableau envoyé n'est pas bien formatté (28/01/2019)
+- Correction de l'affichade de `hours` pour Product (28/01/2019)
+
 v0.23.5
 - Ajout de la possibilité d'afficher pour une année les ChildPresence et StaffPresence (28/01/2019)
 

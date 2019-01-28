@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,6 +24,9 @@ class VehicleType extends AbstractType
                 'required' => false,
                 ))
             ->add('combustible', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('places', IntegerType::class, array(
                 'required' => false,
                 ))
             ->add('photo', TextType::class, array(

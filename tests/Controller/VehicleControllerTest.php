@@ -22,7 +22,7 @@ class VehicleControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"name": "Name", "matriculation": "XX-111-XX", "combustible": "diesel", "photo": "/url/photo"}'
+            '{"name": "Name", "matriculation": "XX-111-XX", "combustible": "diesel", "places": 8, "photo": "/url/photo"}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
@@ -53,7 +53,7 @@ class VehicleControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"name": "Name modified", "matriculation": "XX-111-XX", "combustible": "diesel", "photo": "/url/photo"}'
+            '{"name": "Name modified", "matriculation": "XX-111-XX", "combustible": "diesel", "places": 8, "photo": "/url/photo"}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);

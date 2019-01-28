@@ -52,6 +52,13 @@ class Vehicle
     private $combustible;
 
     /**
+     * @var integer|null
+     *
+     * @ORM\Column(name="places", type="integer", nullable=true)
+     */
+    private $places;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="photo", type="string", length=256, nullable=true)
@@ -105,6 +112,18 @@ class Vehicle
     public function setCombustible(?string $combustible): self
     {
         $this->combustible = $combustible;
+
+        return $this;
+    }
+
+    public function getPlaces(): ?int
+    {
+        return $this->places;
+    }
+
+    public function setPlaces(?int $places): self
+    {
+        $this->places = $places;
 
         return $this;
     }

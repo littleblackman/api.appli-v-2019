@@ -50,6 +50,13 @@ class Staff
     /**
      * @var int
      *
+     * @ORM\Column(name="max_children", type="integer", nullable=true)
+     */
+    private $maxChildren;
+
+    /**
+     * @var int
+     *
      * @ORM\Column(name="priority", type="integer", nullable=true)
      */
     private $priority;
@@ -130,6 +137,18 @@ class Staff
     public function setPriority(?int $priority): self
     {
         $this->priority = $priority;
+
+        return $this;
+    }
+
+    public function getMaxChildren(): ?int
+    {
+        return $this->maxChildren;
+    }
+
+    public function setMaxChildren(?int $maxChildren): self
+    {
+        $this->maxChildren = $maxChildren;
 
         return $this;
     }

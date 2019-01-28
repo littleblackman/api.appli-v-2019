@@ -22,11 +22,14 @@ class StaffType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('kind', TextType::class, array(
+                'required' => false,
+                ))
             ->add('person', EntityType::class, array(
                 'required' => false,
                 'class' => Person::class,
                 ))
-            ->add('kind', TextType::class, array(
+            ->add('maxChildren', IntegerType::class, array(
                 'required' => false,
                 ))
             ->add('priority', IntegerType::class, array(

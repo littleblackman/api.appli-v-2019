@@ -85,25 +85,11 @@ class Registration
     private $status;
 
     /**
-     * @var DateTime|null
+     * @var string|null
      *
-     * @ORM\Column(name="session_date", type="date", nullable=true)
+     * @ORM\Column(name="sessions", type="string", nullable=true)
      */
-    private $sessionDate;
-
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="session_start", type="time", nullable=true)
-     */
-    private $sessionStart;
-
-    /**
-     * @var DateTime|null
-     *
-     * @ORM\Column(name="session_end", type="time", nullable=true)
-     */
-    private $sessionEnd;
+    private $sessions;
 
     /**
      * @var Product
@@ -132,14 +118,8 @@ class Registration
         if (null !== $objectArray['registration']) {
             $objectArray['registration'] = $objectArray['registration']->format('Y-m-d');
         }
-        if (null !== $objectArray['sessionDate']) {
-            $objectArray['sessionDate'] = $objectArray['sessionDate']->format('Y-m-d');
-        }
-        if (null !== $objectArray['sessionStart']) {
-            $objectArray['sessionStart'] = $objectArray['sessionStart']->format('H:i:s');
-        }
-        if (null !== $objectArray['sessionEnd']) {
-            $objectArray['sessionEnd'] = $objectArray['sessionEnd']->format('H:i:s');
+        if (null !== $objectArray['sessions']) {
+            $objectArray['sessions'] = unserialize($objectArray['sessions']);
         }
 
         return $objectArray;
@@ -234,38 +214,14 @@ class Registration
         return $this;
     }
 
-    public function getSessionDate(): ?DateTimeInterface
+    public function getSessions()
     {
-        return $this->sessionDate;
+        return unserialize($this->sessions);
     }
 
-    public function setSessionDate(?DateTimeInterface $sessionDate): self
+    public function setSessions($sessions): self
     {
-        $this->sessionDate = $sessionDate;
-
-        return $this;
-    }
-
-    public function getSessionStart(): ?DateTimeInterface
-    {
-        return $this->sessionStart;
-    }
-
-    public function setSessionStart(?DateTimeInterface $sessionStart): self
-    {
-        $this->sessionStart = $sessionStart;
-
-        return $this;
-    }
-
-    public function getSessionEnd(): ?DateTimeInterface
-    {
-        return $this->sessionEnd;
-    }
-
-    public function setSessionEnd(?DateTimeInterface $sessionEnd): self
-    {
-        $this->sessionEnd = $sessionEnd;
+        $this->sessions = $sessions;
 
         return $this;
     }

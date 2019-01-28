@@ -38,12 +38,9 @@ class RegistrationService implements RegistrationServiceInterface
         //Adds registration datetime
         $object->setRegistration(new DateTime());
 
-        //Should be done from StaffPresenceType but it returns null...
-        if (array_key_exists('sessionStart', $data)) {
-            $object->setSessionStart(DateTime::createFromFormat('H:i:s', $data['sessionStart']));
-        }
-        if (array_key_exists('sessionEnd', $data)) {
-            $object->setSessionEnd(DateTime::createFromFormat('H:i:s', $data['sessionEnd']));
+        //Adds sessions
+        if (array_key_exists('sessions', $data)) {
+            $object->setSessions(serialize($data['sessions']));
         }
     }
 
@@ -104,10 +101,7 @@ class RegistrationService implements RegistrationServiceInterface
     public function isEntityFilled(Registration $object)
     {
         if (null === $object->getChild() ||
-            null === $object->getProduct() ||
-            null === $object->getSessionDate() ||
-            null === $object->getSessionStart() ||
-            null === $object->getSessionEnd()) {
+            null === $object->getProduct()) {
             throw new UnprocessableEntityHttpException('Missing data for Registration -> ' . json_encode($object->toArray()));
         }
     }

@@ -145,9 +145,16 @@ class MainService implements MainServiceInterface
      */
     public function submit($object, $formName, $data)
     {
-        $data = is_array($data) ? $data : json_decode($data, true);
+        $dataArray = is_array($data) ? $data : json_decode($data, true);
+
+        //Bad array
+        if (null !== $data && !is_array($dataArray)) {
+            throw new LogicException('Error Bad Array format --> ' . $data);
+        }
+
+        //Submits form
         $form = $this->formFactory->create($formName, $object);
-        $form->submit($data, false);
+        $form->submit($dataArray, false);
 
         //Gets errors
         $errors = $form->getErrors();
@@ -156,8 +163,8 @@ class MainService implements MainServiceInterface
         }
 
         //Sets fields to null
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
+        if (is_array($dataArray)) {
+            foreach ($dataArray as $key => $value) {
                 if (null === $value || 'null' === $value) {
                     $method = 'set' . ucfirst($key);
                     if (method_exists($object, $method)) {
@@ -167,7 +174,7 @@ class MainService implements MainServiceInterface
             }
         }
 
-        return $data;
+        return $dataArray;
     }
 
     /**

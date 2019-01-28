@@ -9,13 +9,10 @@ use App\Entity\Product;
 use App\Entity\Sport;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -54,19 +51,8 @@ class RegistrationType extends AbstractType
             ->add('status', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('sessionDate', DateType::class, array(
+            ->add('sessions', TextType::class, array(
                 'required' => false,
-                'widget' => 'single_text',
-                ))
-            ->add('sessionStart', TimeType::class, array(
-                'required' => false,
-                'input' => 'datetime',
-                'widget' => 'single_text',
-                ))
-            ->add('sessionEnd', TimeType::class, array(
-                'required' => false,
-                'input' => 'datetime',
-                'widget' => 'single_text',
                 ))
             ->add('location', EntityType::class, array(
                 'required' => false,

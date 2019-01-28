@@ -463,13 +463,15 @@ class ProductService implements ProductServiceInterface
         //Gets related hours
         if (null !== $object->getHours()) {
             $hours = array();
+            $i = 0;
             foreach($object->getHours() as $hour) {
                 if (null !== $hour->getStart()) {
-                    $hours[]['start'] = $hour->getStart()->format('H:i');
+                    $hours[$i]['start'] = $hour->getStart()->format('H:i');
                 }
                 if (null !== $hour->getEnd()) {
-                    $hours[]['end'] = $hour->getEnd()->format('H:i');
+                    $hours[$i]['end'] = $hour->getEnd()->format('H:i');
                 }
+                $i++;
             }
             $objectArray['hours'] = $hours;
         }
