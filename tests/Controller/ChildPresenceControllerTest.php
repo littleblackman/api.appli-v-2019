@@ -33,7 +33,27 @@ class ChildPresenceControllerTest extends WebTestCase
      */
     public function testDisplay()
     {
+        //Tests for a day
         $this->clientAuthenticated->request('GET', '/child/presence/display/1/2019-01-20');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests for a month
+        $this->clientAuthenticated->request('GET', '/child/presence/display/1/2019-01');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests for a year
+        $this->clientAuthenticated->request('GET', '/child/presence/display/1/2019');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests for whole
+        $this->clientAuthenticated->request('GET', '/child/presence/display/1/all');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        $this->clientAuthenticated->request('GET', '/child/presence/display/1');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }
@@ -43,7 +63,13 @@ class ChildPresenceControllerTest extends WebTestCase
      */
     public function testList()
     {
+        //Tests for a day
         $this->clientAuthenticated->request('GET', '/child/presence/list/2019-01-20');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests for a month
+        $this->clientAuthenticated->request('GET', '/child/presence/list/2019-01');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }

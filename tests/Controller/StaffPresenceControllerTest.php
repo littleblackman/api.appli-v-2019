@@ -33,6 +33,7 @@ class StaffPresenceControllerTest extends WebTestCase
      */
     public function testDisplay()
     {
+        //Test for a day
         $this->clientAuthenticated->request('GET', '/staff/presence/display/1/2019-01-20');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
@@ -43,7 +44,13 @@ class StaffPresenceControllerTest extends WebTestCase
      */
     public function testList()
     {
+        //Tests for a day
         $this->clientAuthenticated->request('GET', '/staff/presence/list/driver/2019-01-20');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests for a month
+        $this->clientAuthenticated->request('GET', '/staff/presence/list/driver/2019-01');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }

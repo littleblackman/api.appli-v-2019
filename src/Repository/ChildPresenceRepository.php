@@ -66,7 +66,7 @@ class ChildPresenceRepository extends EntityRepository
      */
     public function findByChild($childId, $date)
     {
-        $dateCriteria = null !== $date ? 'pr.date LIKE :date' : ' 1 = 1';
+        $dateCriteria = 'all' !== $date ? 'pr.date LIKE :date' : ' 1 = 1';
 
         $qb = $this->createQueryBuilder('pr')
             ->addSelect('c')
@@ -79,7 +79,7 @@ class ChildPresenceRepository extends EntityRepository
             ->setParameter('childId', $childId)
         ;
 
-        if (null !== $date) {
+        if ('all' !== $date) {
             $qb->setParameter('date', $date . '%');
         }
 

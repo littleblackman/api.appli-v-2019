@@ -56,7 +56,7 @@ class StaffPresenceController extends AbstractController
      * @SWG\Parameter(
      *     name="kind",
      *     in="path",
-     *     description="Kind for the staff",
+     *     description="Kind for the staff (Default: all)",
      *     type="string",
      * )
      * @SWG\Parameter(
@@ -108,9 +108,9 @@ class StaffPresenceController extends AbstractController
      *    name="staff_presence_display",
      *    requirements={
      *        "staffId": "^([0-9]+)",
-     *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"
+     *        "date": "^(all|([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2})|([0-9]{4}))$"
      *    },
-     *    defaults={"date": null},
+     *    defaults={"date": "all"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -139,7 +139,7 @@ class StaffPresenceController extends AbstractController
      * @SWG\Parameter(
      *     name="date",
      *     in="path",
-     *     description="Date for the staff presence (YYYY-MM-DD | YYYY-MM optional)",
+     *     description="Date for the staff presence (all | YYYY-MM-DD | YYYY-MM | YYYY (default: all))",
      *     type="string",
      *     default="null",
      * )

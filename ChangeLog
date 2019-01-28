@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.23.5
+- Ajout de la possibilité d'afficher pour une année les ChildPresence et StaffPresence (28/01/2019)
+
 v0.23.4
 - Ajout du maintien des Pickups pour un Ride lock lors de unaffect (26/01/2019)
 - Ajout d'une propriété `lunch` sur Product (26/01/2019)
