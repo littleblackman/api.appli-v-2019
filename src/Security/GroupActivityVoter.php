@@ -2,17 +2,17 @@
 
 namespace App\Security;
 
-use App\Entity\PickupActivity;
+use App\Entity\GroupActivity;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * PickupActivityVoter class
+ * GroupActivityVoter class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class PickupActivityVoter extends Voter
+class GroupActivityVoter extends Voter
 {
     /**
      * Stores Security
@@ -20,22 +20,22 @@ class PickupActivityVoter extends Voter
      */
     private $security;
 
-    public const PICKUP_ACTIVITY_CREATE = 'pickupActivityCreate';
+    public const GROUP_ACTIVITY_CREATE = 'groupActivityCreate';
 
-    public const PICKUP_ACTIVITY_DELETE = 'pickupActivityDelete';
+    public const GROUP_ACTIVITY_DELETE = 'groupActivityDelete';
 
-    public const PICKUP_ACTIVITY_DISPLAY = 'pickupActivityDisplay';
+    public const GROUP_ACTIVITY_DISPLAY = 'groupActivityDisplay';
 
-    public const PICKUP_ACTIVITY_LIST = 'pickupActivityList';
+    public const GROUP_ACTIVITY_LIST = 'groupActivityList';
 
-    public const PICKUP_ACTIVITY_MODIFY = 'pickupActivityModify';
+    public const GROUP_ACTIVITY_MODIFY = 'groupActivityModify';
 
     private const ATTRIBUTES = array(
-        self::PICKUP_ACTIVITY_CREATE,
-        self::PICKUP_ACTIVITY_DELETE,
-        self::PICKUP_ACTIVITY_DISPLAY,
-        self::PICKUP_ACTIVITY_LIST,
-        self::PICKUP_ACTIVITY_MODIFY,
+        self::GROUP_ACTIVITY_CREATE,
+        self::GROUP_ACTIVITY_DELETE,
+        self::GROUP_ACTIVITY_DISPLAY,
+        self::GROUP_ACTIVITY_LIST,
+        self::GROUP_ACTIVITY_MODIFY,
     );
 
     public function __construct(Security $security)
@@ -46,7 +46,7 @@ class PickupActivityVoter extends Voter
     protected function supports($attribute, $subject)
     {
         if (null !== $subject) {
-            return $subject instanceof PickupActivity && in_array($attribute, self::ATTRIBUTES);
+            return $subject instanceof GroupActivity && in_array($attribute, self::ATTRIBUTES);
         }
 
         return in_array($attribute, self::ATTRIBUTES);
@@ -61,19 +61,19 @@ class PickupActivityVoter extends Voter
 
         //Defines access rights
         switch ($attribute) {
-            case self::PICKUP_ACTIVITY_CREATE:
+            case self::GROUP_ACTIVITY_CREATE:
                 return $this->canCreate();
                 break;
-            case self::PICKUP_ACTIVITY_DELETE:
+            case self::GROUP_ACTIVITY_DELETE:
                 return $this->canDelete();
                 break;
-            case self::PICKUP_ACTIVITY_DISPLAY:
+            case self::GROUP_ACTIVITY_DISPLAY:
                 return $this->canDisplay();
                 break;
-            case self::PICKUP_ACTIVITY_LIST:
+            case self::GROUP_ACTIVITY_LIST:
                 return $this->canList();
                 break;
-            case self::PICKUP_ACTIVITY_MODIFY:
+            case self::GROUP_ACTIVITY_MODIFY:
                 return $this->canModify();
                 break;
         }

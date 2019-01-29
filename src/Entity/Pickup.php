@@ -113,7 +113,7 @@ class Pickup
     /**
      * @var string
      *
-     * @ORM\Column(name="comment", type="string", length=32)
+     * @ORM\Column(name="comment", type="string")
      */
     private $comment;
 
