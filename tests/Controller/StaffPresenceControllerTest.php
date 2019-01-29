@@ -53,6 +53,11 @@ class StaffPresenceControllerTest extends WebTestCase
         $this->clientAuthenticated->request('GET', '/staff/presence/list/driver/2019-01');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
+
+        //Tests for totals
+        $this->clientAuthenticated->request('GET', '/staff/presence/total/1');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
     }
 
     /**

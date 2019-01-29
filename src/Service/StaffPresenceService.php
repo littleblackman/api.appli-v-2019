@@ -158,6 +158,42 @@ class StaffPresenceService implements StaffPresenceServiceInterface
     }
 
     /**
+     * Returns the total of staffPresence for a specific season
+     */
+    public function getTotals(int $seasonId)
+    {
+        //Gets the season dates
+        $season = $this->em->getRepository('App:Season')->findOneById($seasonId);
+        $seasonStart = $season->getDateStart()->format('Y-m-d');
+        $seasonEnd = $season->getDateEnd()->format('Y-m-d');
+
+        //Gets the staffPresence within the season
+        $staffPresences = $this->em->getRepository('App:StaffPresence')->findAllBetweenDates($seasonStart, $seasonEnd);
+        $staffPresencesArray = array();
+        foreach ($staffPresences as $staffPresence) {
+            $staffPresencesArray[$staffPresence->getStaff()->getStaffId()][] = $staffPresence->getDate()->format('Y-m-d');
+            $staffPresencesArray[$staffPresence->getStaff()->getStaffId()]['data'] =  array(
+                'staffId' => $staffPresence->getStaff()->getStaffId(),
+                'firstname' => $staffPresence->getStaff()->getPerson()->getFirstname(),
+                'lastname' => $staffPresence->getStaff()->getPerson()->getLastname(),
+            );
+        }
+        unset($staffPresences);
+
+        //Creates the array for the totals
+        $i = 0;
+        $staffPresencesArrayFinal = array();
+        foreach ($staffPresencesArray as $key => $staffPresence) {
+            $staffPresencesArrayFinal[$i] = $staffPresence['data'];
+            unset($staffPresence['data']);
+            $staffPresencesArrayFinal[$i]['total'] = count(array_unique($staffPresence));
+            $i++;
+        }
+
+        return $staffPresencesArrayFinal;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(StaffPresence $object)

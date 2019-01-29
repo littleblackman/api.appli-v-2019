@@ -11,6 +11,23 @@ use Doctrine\ORM\EntityRepository;
 class StaffPresenceRepository extends EntityRepository
 {
     /**
+     * Counts all the staffPresences between two dates
+     */
+    public function findAllBetweenDates($start, $end)
+    {
+        return $this->createQueryBuilder('pr')
+            ->where('pr.date >= :start')
+            ->andWhere('pr.date <= :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->orderBy('pr.staff', 'ASC')
+            ->addOrderBy('pr.date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns all the presence linked to the data provided
      */
     public function findByData($data)

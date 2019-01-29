@@ -157,6 +157,50 @@ class StaffPresenceController extends AbstractController
         return new JsonResponse($staffPresencesArray);
     }
 
+//DISPLAY TOTALS BY SEASON
+
+    /**
+     * Displays the totals of staffPresence by season
+     *
+     * @Route("/staff/presence/total/{seasonId}",
+     *    name="staff_presence__total",
+     *    requirements={"seasonId": "^([0-9]+)"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=StaffPresence::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="seasonId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the season",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="StaffPresence")
+     */
+    public function total(int $seasonId)
+    {
+        $this->denyAccessUnlessGranted('staffPresenceDisplay', null);
+
+        $totals = $this->staffPresenceService->getTotals($seasonId);
+
+        return new JsonResponse($totals);
+    }
+
 //CREATE
 
     /**
