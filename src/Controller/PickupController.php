@@ -63,7 +63,7 @@ class PickupController extends AbstractController
      * @SWG\Parameter(
      *     name="status",
      *     in="path",
-     *     description="automatic|absent|supported|null pickups",
+     *     description="Status for the Pickup automatic|absent|supported|null",
      *     type="string",
      *     default="null",
      * )
@@ -110,7 +110,6 @@ class PickupController extends AbstractController
      *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$",
      *        "kind": "^(dropin|dropoff)$"
      *    },
-     *    defaults={"status": "null"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -441,7 +440,7 @@ class PickupController extends AbstractController
         return new JsonResponse($createdData);
     }
 
-//CREATE BY ARRAY
+//CREATE MULTIPLE
 
     /**
      * Creates multiples Pickups

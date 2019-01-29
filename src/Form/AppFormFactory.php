@@ -55,6 +55,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'food-modify':
                 $form = FoodType::class;
                 break;
+            case 'group-activity-create':
+            case 'group-activity-modify':
+                $form = GroupActivityType::class;
+                break;
             case 'location-create':
             case 'location-modify':
                 $form = LocationType::class;
@@ -75,6 +79,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'pickup-modify':
                 $form = PickupType::class;
                 break;
+            case 'pickup-activity-create':
+            case 'pickup-activity-modify':
+                $form = PickupActivityType::class;
+                break;
             case 'product-create':
             case 'product-modify':
                 $form = ProductType::class;
@@ -85,7 +93,7 @@ class AppFormFactory implements AppFormFactoryInterface
                 break;
             case 'ride-create':
             case 'ride-modify':
-                $form = RideType::class;
+                $form = GroupActivityType::class;
                 break;
             case 'season-create':
             case 'season-modify':
