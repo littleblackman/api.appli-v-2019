@@ -93,7 +93,7 @@ class AppFormFactory implements AppFormFactoryInterface
                 break;
             case 'ride-create':
             case 'ride-modify':
-                $form = GroupActivityType::class;
+                $form = RideType::class;
                 break;
             case 'season-create':
             case 'season-modify':
