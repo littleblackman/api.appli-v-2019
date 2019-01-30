@@ -22,14 +22,12 @@ class ChildPresenceService implements ChildPresenceServiceInterface
     public function __construct(
         EntityManagerInterface $em,
         ChildServiceInterface $childService,
-        MainServiceInterface $mainService,
-        PersonServiceInterface $personService
+        MainServiceInterface $mainService
     )
     {
         $this->em = $em;
         $this->childService = $childService;
         $this->mainService = $mainService;
-        $this->personService = $personService;
     }
 
     /**

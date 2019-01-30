@@ -89,6 +89,14 @@ class StaffService implements StaffServiceInterface
             }
         }
 
+        //Removes links for groupActivity
+        $links = $object->getGroupActivities();
+        if (null !== $links && !empty($links)) {
+            foreach ($links as $link) {
+                $this->em->remove($link);
+            }
+        }
+
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);

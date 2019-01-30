@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-
 /**
  * DriverPriority
  *
@@ -25,7 +24,7 @@ class DriverPriority
         return $this->staff;
     }
 
-    public function setStaff(?Staff $driver): self
+    public function setStaff(?Staff $staff): self
     {
         $this->staff = $staff;
 

@@ -28,7 +28,7 @@ class MealService implements MealServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds link between Meal and Food
      */
     public function addLink(int $foodId, Meal $object)
     {

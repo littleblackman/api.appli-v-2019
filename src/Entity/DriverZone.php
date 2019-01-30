@@ -33,8 +33,10 @@ class DriverZone
     /**
      * @var Staff
      *
-     * @ORM\OneToOne(targetEntity="Staff")
-     * @ORM\JoinColumn(name="staff_id", referencedColumnName="staff_id")
+     * @ORM\ManyToOne(targetEntity="Staff", inversedBy="driverZones")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="staff_id", referencedColumnName="staff_id")
+     * })
      */
     private $staff;
 

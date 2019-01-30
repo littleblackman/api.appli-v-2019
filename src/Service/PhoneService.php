@@ -28,7 +28,7 @@ class PhoneService implements PhoneServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds link between Person and Phone
      */
     public function addLink(int $personId, Phone $object)
     {

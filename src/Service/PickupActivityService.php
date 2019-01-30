@@ -32,7 +32,7 @@ class PickupActivityService implements PickupActivityServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds link between PickupActivity and GroupActivity
      */
     public function addLink(int $groupActivityId, PickupActivity $object)
     {

@@ -3,8 +3,10 @@
 namespace App\Service;
 
 use App\Entity\GroupActivity;
+use App\Entity\GroupActivityStaffLink;
 use App\Entity\PickupActivity;
 use App\Entity\PickupActivityGroupActivityLink;
+use App\Entity\Staff;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -29,7 +31,7 @@ class GroupActivityService implements GroupActivityServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds link between PickupActivity and GroupActivity
      */
     public function addLink(int $pickupActivityId, GroupActivity $object)
     {
@@ -41,6 +43,22 @@ class GroupActivityService implements GroupActivityServiceInterface
                 ->setGroupActivity($object)
             ;
             $this->em->persist($pickupActivityGroupActivityLink);
+        }
+    }
+
+    /**
+     * Adds link betwwen GroupActivity and Staff
+     */
+    public function addStaff(int $staffId, GroupActivity $object)
+    {
+        $staff = $this->em->getRepository('App:Staff')->findOneById($staffId);
+        if ($staff instanceof Staff && !$staff->getSuppressed()) {
+            $groupActivityStaffLink = new GroupActivityStaffLink();
+            $groupActivityStaffLink
+                ->setGroupActivity($object)
+                ->setStaff($staff)
+            ;
+            $this->em->persist($groupActivityStaffLink);
         }
     }
 
@@ -80,6 +98,16 @@ class GroupActivityService implements GroupActivityServiceInterface
             if (null !== $links && is_array($links) && !empty($links)) {
                 foreach ($links as $link) {
                     $this->addLink((int) $link['pickupActivityId'], $object);
+                }
+            }
+        }
+
+        //Adds links from groupActivity to staff
+        if (array_key_exists('staff', $data)) {
+            $staff = $data['staff'];
+            if (null !== $staff && is_array($staff) && !empty($staff)) {
+                foreach ($staff as $staffData) {
+                    $this->addStaff((int) $staffData['staffId'], $object);
                 }
             }
         }
@@ -139,6 +167,14 @@ class GroupActivityService implements GroupActivityServiceInterface
         foreach ($objectPickupActivityLinks as $objectPickupActivityLink) {
             if ($objectPickupActivityLink instanceof PickupActivityGroupActivityLink) {
                 $this->em->remove($objectPickupActivityLink);
+            }
+        }
+
+        //Removes links from groupActivity to staff
+        $objectStaffLinks = $this->em->getRepository('App:GroupActivityStaffLink')->findByGroupActivity($object);
+        foreach ($objectStaffLinks as $objectStaffLink) {
+            if ($objectStaffLink instanceof GroupActivityStaffLink) {
+                $this->em->remove($objectStaffLink);
             }
         }
 
@@ -239,6 +275,17 @@ class GroupActivityService implements GroupActivityServiceInterface
                 }
             }
             $objectArray['pickupActivities'] = $pickupActivities;
+        }
+
+        //Gets related staff
+        if (null !== $object->getStaff()) {
+            $staff = array();
+            foreach($object->getStaff() as $groupActivityStaffLink) {
+                if (!$groupActivityStaffLink->getStaff()->getSuppressed()) {
+                    $staff[] = $this->mainService->toArray($groupActivityStaffLink->getStaff()->toArray());
+                }
+            }
+            $objectArray['staff'] = $staff;
         }
 
         return $objectArray;

@@ -28,7 +28,7 @@ class AddressService implements AddressServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds link between Address and Person
      */
     public function addLink(int $personId, Address $object)
     {

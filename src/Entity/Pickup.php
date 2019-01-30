@@ -135,7 +135,7 @@ class Pickup
     /**
      * @var Ride
      *
-     * @ORM\ManyToOne(targetEntity="Ride")
+     * @ORM\ManyToOne(targetEntity="Ride", inversedBy="pickups")
      * @ORM\JoinColumn(name="ride_id", referencedColumnName="ride_id")
      */
     private $ride;

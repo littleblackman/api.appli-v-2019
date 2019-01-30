@@ -100,9 +100,16 @@ class GroupActivity
      */
     private $pickupActivities;
 
+    /**
+     * @ORM\OneToMany(targetEntity="GroupActivityStaffLink", mappedBy="groupActivity")
+     * @SWG\Property(ref=@Model(type=Staff::class))
+     */
+    private $staff;
+
     public function __construct()
     {
         $this->pickupActivities = new ArrayCollection();
+        $this->staff = new ArrayCollection();
     }
 
     /**
@@ -252,6 +259,37 @@ class GroupActivity
             // set the owning side to null (unless already changed)
             if ($pickupActivity->getGroupActivity() === $this) {
                 $pickupActivity->setGroupActivity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupActivityStaffLink[]
+     */
+    public function getStaff(): Collection
+    {
+        return $this->staff;
+    }
+
+    public function addStaff(GroupActivityStaffLink $staff): self
+    {
+        if (!$this->staff->contains($staff)) {
+            $this->staff[] = $staff;
+            $staff->setStaff($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStaff(GroupActivityStaffLink $staff): self
+    {
+        if ($this->staff->contains($staff)) {
+            $this->staff->removeElement($staff);
+            // set the owning side to null (unless already changed)
+            if ($staff->getStaff() === $this) {
+                $staff->setStaff(null);
             }
         }
 

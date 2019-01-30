@@ -24,16 +24,6 @@ class PersonAddressLink
     private $personAddressLinkId;
 
     /**
-     * @var Address
-     *
-     * @ORM\ManyToOne(targetEntity="Address", inversedBy="persons")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="address_id", referencedColumnName="address_id")
-     * })
-     */
-    private $address;
-
-    /**
      * @var Person
      *
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="addresses")
@@ -43,21 +33,19 @@ class PersonAddressLink
      */
     private $person;
 
+    /**
+     * @var Address
+     *
+     * @ORM\ManyToOne(targetEntity="Address", inversedBy="persons")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="address_id", referencedColumnName="address_id")
+     * })
+     */
+    private $address;
+
     public function getPersonAddressLinkId(): ?int
     {
         return $this->personAddressLinkId;
-    }
-
-    public function getAddress(): ?Address
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?Address $address): self
-    {
-        $this->address = $address;
-
-        return $this;
     }
 
     public function getPerson(): ?Person
@@ -68,6 +56,18 @@ class PersonAddressLink
     public function setPerson(?Person $person): self
     {
         $this->person = $person;
+
+        return $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }

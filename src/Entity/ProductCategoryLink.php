@@ -36,7 +36,7 @@ class ProductCategoryLink
     /**
      * @var Product
      *
-     * @ORM\ManyToOne(targetEntity="Product", inversedBy="categorys")
+     * @ORM\ManyToOne(targetEntity="Product", inversedBy="categories")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="product_id", referencedColumnName="product_id")
      * })

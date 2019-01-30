@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.24.3
+- Ajout des liens entre GroupActivity et Staff (30/01/2019)
+- Corrections phpstan (30/01/2019)
+- Corrections liens sur entités (30/01/2019)
+
 v0.24.2
 - Ajout des liens entre PickupActivity et GroupActivity (30/01/2019)
 

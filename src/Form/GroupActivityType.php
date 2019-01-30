@@ -60,6 +60,12 @@ class GroupActivityType extends AbstractType
                 'mapped' => false,
                 'allow_extra_fields' => true,
                 ))
+            ->add('staff', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => GroupActivityStaffLinkType::class,
+                'mapped' => false,
+                'allow_extra_fields' => true,
+                ))
         ;
     }
 

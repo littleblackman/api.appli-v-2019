@@ -8,6 +8,8 @@ use App\Entity\Traits\UpdateTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 /**
  * Staff
@@ -79,12 +81,20 @@ class Staff
 
     /**
      * @ORM\OneToMany(targetEntity="DriverZone", mappedBy="staff", cascade={"persist"})
+     * @SWG\Property(ref=@Model(type=DriverZone::class))
      */
     private $driverZones;
+
+    /**
+     * @ORM\OneToMany(targetEntity="GroupActivityStaffLink", mappedBy="staff", cascade={"persist"})
+     * @SWG\Property(ref=@Model(type=GroupActivity::class))
+     */
+    private $groupActivities;
 
     public function __construct()
     {
         $this->driverZones = new ArrayCollection();
+        $this->groupActivities = new ArrayCollection();
     }
 
     /**
@@ -202,6 +212,37 @@ class Staff
             // set the owning side to null (unless already changed)
             if ($driverZone->getStaff() === $this) {
                 $driverZone->setStaff(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupActivityStaffLink[]
+     */
+    public function getGroupActivities(): Collection
+    {
+        return $this->groupActivities;
+    }
+
+    public function addGroupActivity(GroupActivityStaffLink $groupActivity): self
+    {
+        if (!$this->groupActivities->contains($groupActivity)) {
+            $this->groupActivities[] = $groupActivity;
+            $groupActivity->setStaff($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupActivity(GroupActivityStaffLink $groupActivity): self
+    {
+        if ($this->groupActivities->contains($groupActivity)) {
+            $this->groupActivities->removeElement($groupActivity);
+            // set the owning side to null (unless already changed)
+            if ($groupActivity->getStaff() === $this) {
+                $groupActivity->setStaff(null);
             }
         }
 
