@@ -48,15 +48,10 @@ class PickupActivityService implements PickupActivityServiceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Adds specific data that could not be added via generic method
      */
-    public function create(string $data, $return = true)
+    public function addSpecificData(PickupActivity $object, array $data)
     {
-        //Submits data
-        $object = new PickupActivity();
-        $this->mainService->create($object);
-        $data = $this->mainService->submit($object, 'pickup-activity-create', $data);
-
         //Adds links from PickupActivity to GroupActivity
         if (array_key_exists('links', $data)) {
             $links = $data['links'];
@@ -66,6 +61,18 @@ class PickupActivityService implements PickupActivityServiceInterface
                 }
             }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create(string $data, $return = true)
+    {
+        //Submits data
+        $object = new PickupActivity();
+        $this->mainService->create($object);
+        $data = $this->mainService->submit($object, 'pickup-activity-create', $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -187,6 +194,7 @@ class PickupActivityService implements PickupActivityServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'pickup-activity-modify', $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);

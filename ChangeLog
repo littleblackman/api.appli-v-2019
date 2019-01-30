@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.24.6
+- Prise en compte des links pour les modify de PickupActivity et GroupActivity (30/01/2019)
+
 v0.24.5
 - Ajout de l'entité Television (30/01/2019)
 - Ajout des données de Person pour le Staff dans GroupActivity (30/01/2019)

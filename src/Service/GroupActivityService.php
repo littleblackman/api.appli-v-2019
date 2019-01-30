@@ -83,18 +83,6 @@ class GroupActivityService implements GroupActivityServiceInterface
         if (array_key_exists('lunch', $data)) {
             $object->setLunch((bool) $data['lunch']);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function create(string $data)
-    {
-        //Submits data
-        $object = new GroupActivity();
-        $this->mainService->create($object);
-        $data = $this->mainService->submit($object, 'group-activity-create', $data);
-        $this->addSpecificData($object, $data);
 
         //Adds links from pickupActivity to groupActivity
         if (array_key_exists('links', $data)) {
@@ -115,6 +103,18 @@ class GroupActivityService implements GroupActivityServiceInterface
                 }
             }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create(string $data)
+    {
+        //Submits data
+        $object = new GroupActivity();
+        $this->mainService->create($object);
+        $data = $this->mainService->submit($object, 'group-activity-create', $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
