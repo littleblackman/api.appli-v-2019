@@ -75,7 +75,7 @@ class ChildPresenceService implements ChildPresenceServiceInterface
             //Returns data
             return array(
                 'status' => true,
-                'message' => 'StaffPresence ajoutées',
+                'message' => 'ChildPresence ajoutées',
             );
         }
 
@@ -85,16 +85,18 @@ class ChildPresenceService implements ChildPresenceServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(ChildPresence $object)
+    public function delete(ChildPresence $object, $return = true)
     {
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
 
-        return array(
-            'status' => true,
-            'message' => 'ChildPresence supprimée',
-        );
+        if ($return) {
+            return array(
+                'status' => true,
+                'message' => 'ChildPresence supprimée',
+            );
+        }
     }
 
     /**
@@ -105,13 +107,7 @@ class ChildPresenceService implements ChildPresenceServiceInterface
         $data = json_decode($data, true);
         if (is_array($data) && !empty($data)) {
             foreach ($data as $childPresence) {
-                $object = $this->em->getRepository('App:ChildPresence')->findByData($childPresence);
-
-                //Submits data
-                if ($object instanceof ChildPresence) {
-                    $this->mainService->delete($object);
-                    $this->mainService->persist($object);
-                }
+                $this->delete($this->em->getRepository('App:ChildPresence')->findByData($childPresence), false);
             }
 
             return array(
@@ -131,8 +127,7 @@ class ChildPresenceService implements ChildPresenceServiceInterface
         $childPresences = $this->em->getRepository('App:ChildPresence')->findByRegistrationId($registrationId);
         if (!empty($childPresences)) {
             foreach ($childPresences as $childPresence) {
-                $this->mainService->delete($childPresence);
-                $this->mainService->persist($childPresence);
+                $this->delete($childPresence, false);
             }
 
             return array(

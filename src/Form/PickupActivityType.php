@@ -7,9 +7,8 @@ use App\Entity\Registration;
 use App\Entity\Sport;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -48,6 +47,12 @@ class PickupActivityType extends AbstractType
             ->add('sport', EntityType::class, array(
                 'required' => false,
                 'class' => Sport::class,
+                ))
+            ->add('links', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => PickupActivityGroupActivityLinkType::class,
+                'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

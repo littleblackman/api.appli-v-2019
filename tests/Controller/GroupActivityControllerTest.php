@@ -22,7 +22,7 @@ class GroupActivityControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2018-11-20", "name": "Name", "start": "08:00:00", "end": "09:00:00", "lunch": true, "comment": "Comment", "location": 1, "sport": 1}'
+            '{"date": "2018-11-20", "name": "Name", "start": "08:00:00", "end": "09:00:00", "lunch": true, "comment": "Comment", "location": 1, "sport": 1, "links": [{"pickupActivityId": 1}]}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);

@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.24.2
+- Ajout des liens entre PickupActivity et GroupActivity (30/01/2019)
+
 v0.24.1.1
 - Correction RideType (29/01/2019)
 

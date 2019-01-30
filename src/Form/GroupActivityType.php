@@ -7,6 +7,7 @@ use App\Entity\Sport;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -52,6 +53,12 @@ class GroupActivityType extends AbstractType
             ->add('sport', EntityType::class, array(
                 'required' => false,
                 'class' => Sport::class,
+                ))
+            ->add('links', CollectionType::class, array(
+                'required' => false,
+                'entry_type' => PickupActivityGroupActivityLinkType::class,
+                'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

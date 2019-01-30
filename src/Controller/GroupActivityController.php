@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\GroupActivity;
-use App\Entity\Staff;
 use App\Form\GroupActivityType;
 use App\Service\GroupActivityServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;

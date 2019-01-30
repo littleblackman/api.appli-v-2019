@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\PickupActivity;
-use App\Entity\Ride;
 use App\Form\PickupActivityType;
 use App\Service\PickupActivityServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;

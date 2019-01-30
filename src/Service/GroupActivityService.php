@@ -2,8 +2,9 @@
 
 namespace App\Service;
 
-use App\Entity\Person;
 use App\Entity\GroupActivity;
+use App\Entity\PickupActivity;
+use App\Entity\PickupActivityGroupActivityLink;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -25,6 +26,22 @@ class GroupActivityService implements GroupActivityServiceInterface
     {
         $this->em = $em;
         $this->mainService = $mainService;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addLink(int $pickupActivityId, GroupActivity $object)
+    {
+        $pickupActivity = $this->em->getRepository('App:PickupActivity')->findOneById($pickupActivityId);
+        if ($pickupActivity instanceof PickupActivity && !$pickupActivity->getSuppressed()) {
+            $pickupActivityGroupActivityLink = new PickupActivityGroupActivityLink();
+            $pickupActivityGroupActivityLink
+                ->setPickupActivity($pickupActivity)
+                ->setGroupActivity($object)
+            ;
+            $this->em->persist($pickupActivityGroupActivityLink);
+        }
     }
 
     /**
@@ -56,6 +73,16 @@ class GroupActivityService implements GroupActivityServiceInterface
         $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'group-activity-create', $data);
         $this->addSpecificData($object, $data);
+
+        //Adds links from pickupActivity to groupActivity
+        if (array_key_exists('links', $data)) {
+            $links = $data['links'];
+            if (null !== $links && is_array($links) && !empty($links)) {
+                foreach ($links as $link) {
+                    $this->addLink((int) $link['pickupActivityId'], $object);
+                }
+            }
+        }
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -107,6 +134,14 @@ class GroupActivityService implements GroupActivityServiceInterface
      */
     public function delete(GroupActivity $object)
     {
+        //Removes links from pickupActivity to groupActivity
+        $objectPickupActivityLinks = $this->em->getRepository('App:PickupActivityGroupActivityLink')->findByGroupActivity($object);
+        foreach ($objectPickupActivityLinks as $objectPickupActivityLink) {
+            if ($objectPickupActivityLink instanceof PickupActivityGroupActivityLink) {
+                $this->em->remove($objectPickupActivityLink);
+            }
+        }
+
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
@@ -193,6 +228,17 @@ class GroupActivityService implements GroupActivityServiceInterface
         //Gets related sport
         if (null !== $object->getSport() && !$object->getSport()->getSuppressed()) {
             $objectArray['sport'] = $this->mainService->toArray($object->getSport()->toArray());
+        }
+
+        //Gets related pickupActivities
+        if (null !== $object->getPickupActivities()) {
+            $pickupActivities = array();
+            foreach($object->getPickupActivities() as $pickupActivityLink) {
+                if (!$pickupActivityLink->getPickupActivity()->getSuppressed()) {
+                    $pickupActivities[] = $this->mainService->toArray($pickupActivityLink->getPickupActivity()->toArray());
+                }
+            }
+            $objectArray['pickupActivities'] = $pickupActivities;
         }
 
         return $objectArray;

@@ -282,16 +282,18 @@ class PickupService implements PickupServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(Pickup $object)
+    public function delete(Pickup $object, $return = true)
     {
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
 
-        return array(
-            'status' => true,
-            'message' => 'Pickup supprimé',
-        );
+        if ($return) {
+            return array(
+                'status' => true,
+                'message' => 'Pickup supprimé',
+            );
+        }
     }
 
     /**
@@ -302,8 +304,7 @@ class PickupService implements PickupServiceInterface
         $pickups = $this->em->getRepository('App:Pickup')->findByRegistrationId($registrationId);
         if (!empty($pickups)) {
             foreach ($pickups as $pickup) {
-                $this->mainService->delete($pickup);
-                $this->mainService->persist($pickup);
+                $this->delete($pickup, false);
             }
 
             return array(

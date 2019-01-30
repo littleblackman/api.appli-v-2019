@@ -10,6 +10,8 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 /**
  * GroupActivity
@@ -91,6 +93,17 @@ class GroupActivity
      * @ORM\JoinColumn(name="sport_id", referencedColumnName="sport_id")
      */
     private $sport;
+
+    /**
+     * @ORM\OneToMany(targetEntity="PickupActivityGroupActivityLink", mappedBy="groupActivity")
+     * @SWG\Property(ref=@Model(type=PickupActivity::class))
+     */
+    private $pickupActivities;
+
+    public function __construct()
+    {
+        $this->pickupActivities = new ArrayCollection();
+    }
 
     /**
      * Converts the entity in an array
@@ -210,6 +223,37 @@ class GroupActivity
     public function setSport(?Sport $sport): self
     {
         $this->sport = $sport;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PickupActivityGroupActivityLink[]
+     */
+    public function getPickupActivities(): Collection
+    {
+        return $this->pickupActivities;
+    }
+
+    public function addPickupActivity(PickupActivityGroupActivityLink $pickupActivity): self
+    {
+        if (!$this->pickupActivities->contains($pickupActivity)) {
+            $this->pickupActivities[] = $pickupActivity;
+            $pickupActivity->setGroupActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removePickupActivity(PickupActivityGroupActivityLink $pickupActivity): self
+    {
+        if ($this->pickupActivities->contains($pickupActivity)) {
+            $this->pickupActivities->removeElement($pickupActivity);
+            // set the owning side to null (unless already changed)
+            if ($pickupActivity->getGroupActivity() === $this) {
+                $pickupActivity->setGroupActivity(null);
+            }
+        }
 
         return $this;
     }

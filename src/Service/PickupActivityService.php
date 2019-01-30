@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\GroupActivity;
 use App\Entity\PickupActivity;
-use App\Entity\Ride;
-use DateTime;
+use App\Entity\PickupActivityGroupActivityLink;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -34,12 +34,38 @@ class PickupActivityService implements PickupActivityServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function addLink(int $groupActivityId, PickupActivity $object)
+    {
+        $groupActivity = $this->em->getRepository('App:GroupActivity')->findOneById($groupActivityId);
+        if ($groupActivity instanceof GroupActivity && !$groupActivity->getSuppressed()) {
+            $pickupActivityGroupActivityLink = new PickupActivityGroupActivityLink();
+            $pickupActivityGroupActivityLink
+                ->setPickupActivity($object)
+                ->setGroupActivity($groupActivity)
+            ;
+            $this->em->persist($pickupActivityGroupActivityLink);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function create(string $data, $return = true)
     {
         //Submits data
         $object = new PickupActivity();
         $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'pickup-activity-create', $data);
+
+        //Adds links from PickupActivity to GroupActivity
+        if (array_key_exists('links', $data)) {
+            $links = $data['links'];
+            if (null !== $links && is_array($links) && !empty($links)) {
+                foreach ($links as $link) {
+                    $this->addLink((int) $link['groupActivityId'], $object);
+                }
+            }
+        }
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -81,16 +107,26 @@ class PickupActivityService implements PickupActivityServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(PickupActivity $object)
+    public function delete(PickupActivity $object, $return = true)
     {
+        //Removes links from pickupActivity to groupActivity
+        $objectGroupActivityLinks = $this->em->getRepository('App:PickupActivityGroupActivityLink')->findByPickupActivity($object);
+        foreach ($objectGroupActivityLinks as $objectGroupActivityLink) {
+            if ($objectGroupActivityLink instanceof PickupActivityGroupActivityLink) {
+                $this->em->remove($objectGroupActivityLink);
+            }
+        }
+
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
 
-        return array(
-            'status' => true,
-            'message' => 'PickupActivity supprimé',
-        );
+        if ($return) {
+            return array(
+                'status' => true,
+                'message' => 'PickupActivity supprimé',
+            );
+        }
     }
 
     /**
@@ -101,8 +137,7 @@ class PickupActivityService implements PickupActivityServiceInterface
         $pickupActivities = $this->em->getRepository('App:PickupActivity')->findByRegistrationId($registrationId);
         if (!empty($pickupActivities)) {
             foreach ($pickupActivities as $pickupActivity) {
-                $this->mainService->delete($pickupActivity);
-                $this->mainService->persist($pickupActivity);
+                $this->delete($pickupActivity, false);
             }
 
             return array(
@@ -189,6 +224,17 @@ class PickupActivityService implements PickupActivityServiceInterface
         //Gets related sport
         if (null !== $object->getSport() && !$object->getSport()->getSuppressed()) {
             $objectArray['sport'] = $this->mainService->toArray($object->getSport()->toArray());
+        }
+
+        //Gets related groupActivities
+        if (null !== $object->getGroupActivities()) {
+            $groupActivities = array();
+            foreach($object->getGroupActivities() as $groupActivityLink) {
+                if (!$groupActivityLink->getGroupActivity()->getSuppressed()) {
+                    $groupActivities[] = $this->mainService->toArray($groupActivityLink->getGroupActivity()->toArray());
+                }
+            }
+            $objectArray['groupActivities'] = $groupActivities;
         }
 
         return $objectArray;

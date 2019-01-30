@@ -22,7 +22,7 @@ class PickupActivityControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"registration": 1, "start": "2018-11-20 09:00:00", "status": "null", "statusChange": "2019-01-29 09:00:00", "validated": "validated", "child": "1", "sport": "1"}'
+            '{"registration": 1, "start": "2018-11-20 09:00:00", "status": "null", "statusChange": "2019-01-29 09:00:00", "validated": "validated", "child": "1", "sport": "1", "links": [{"groupActivityId": 1}]}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
