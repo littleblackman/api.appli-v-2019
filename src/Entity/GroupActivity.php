@@ -87,6 +87,13 @@ class GroupActivity
     private $location;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="area", type="string", length=32)
+     */
+    private $area;
+
+    /**
      * @var Sport
      *
      * @ORM\OneToOne(targetEntity="Sport")
@@ -218,6 +225,18 @@ class GroupActivity
     public function setLocation(?Location $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getArea(): ?string
+    {
+        return $this->area;
+    }
+
+    public function setArea(string $area): self
+    {
+        $this->area = $area;
 
         return $this;
     }

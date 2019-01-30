@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.24.4
+- Ajout de area dans GroupActivity (30/01/2019)
+
 v0.24.3
 - Ajout des liens entre GroupActivity et Staff (30/01/2019)
 - Corrections phpstan (30/01/2019)

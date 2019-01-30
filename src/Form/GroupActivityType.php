@@ -50,6 +50,9 @@ class GroupActivityType extends AbstractType
                 'required' => false,
                 'class' => Location::class,
                 ))
+            ->add('area', TextType::class, array(
+                'required' => false,
+                ))
             ->add('sport', EntityType::class, array(
                 'required' => false,
                 'class' => Sport::class,
