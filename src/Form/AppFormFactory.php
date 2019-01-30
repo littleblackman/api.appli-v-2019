@@ -111,6 +111,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'staff-presence-modify':
                 $form = StaffPresenceType::class;
                 break;
+            case 'television-create':
+            case 'television-modify':
+                $form = TelevisionType::class;
+                break;
             case 'vehicle-create':
             case 'vehicle-modify':
                 $form = VehicleType::class;

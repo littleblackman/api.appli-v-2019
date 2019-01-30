@@ -21,13 +21,17 @@ class GroupActivityService implements GroupActivityServiceInterface
 
     private $mainService;
 
+    private $staffService;
+
     public function __construct(
         EntityManagerInterface $em,
-        MainServiceInterface $mainService
+        MainServiceInterface $mainService,
+        StaffServiceInterface $staffService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
+        $this->staffService = $staffService;
     }
 
     /**
@@ -282,7 +286,7 @@ class GroupActivityService implements GroupActivityServiceInterface
             $staff = array();
             foreach($object->getStaff() as $groupActivityStaffLink) {
                 if (!$groupActivityStaffLink->getStaff()->getSuppressed()) {
-                    $staff[] = $this->mainService->toArray($groupActivityStaffLink->getStaff()->toArray());
+                    $staff[] = $this->staffService->toArray($groupActivityStaffLink->getStaff());
                 }
             }
             $objectArray['staff'] = $staff;

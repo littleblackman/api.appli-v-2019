@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.24.5
+- Ajout de l'entité Television (30/01/2019)
+- Ajout des données de Person pour le Staff dans GroupActivity (30/01/2019)
+
 v0.24.4
 - Ajout de area dans GroupActivity (30/01/2019)
 

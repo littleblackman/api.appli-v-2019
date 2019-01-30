@@ -2,17 +2,17 @@
 
 namespace App\Security;
 
-use App\Entity\ChildPresence;
+use App\Entity\Television;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * ChildPresenceVoter class
+ * TelevisionVoter class
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
-class ChildPresenceVoter extends Voter
+class TelevisionVoter extends Voter
 {
     /**
      * Stores Security
@@ -20,19 +20,22 @@ class ChildPresenceVoter extends Voter
      */
     private $security;
 
-    public const CHILD_PRESENCE_CREATE = 'childPresenceCreate';
+    public const TELEVISION_CREATE = 'televisionCreate';
 
-    public const CHILD_PRESENCE_DELETE = 'childPresenceDelete';
+    public const TELEVISION_DELETE = 'televisionDelete';
 
-    public const CHILD_PRESENCE_DISPLAY = 'childPresenceDisplay';
+    public const TELEVISION_DISPLAY = 'televisionDisplay';
 
-    public const CHILD_PRESENCE_LIST = 'childPresenceList';
+    public const TELEVISION_LIST = 'televisionList';
+
+    public const TELEVISION_MODIFY = 'televisionModify';
 
     private const ATTRIBUTES = array(
-        self::CHILD_PRESENCE_CREATE,
-        self::CHILD_PRESENCE_DELETE,
-        self::CHILD_PRESENCE_DISPLAY,
-        self::CHILD_PRESENCE_LIST,
+        self::TELEVISION_CREATE,
+        self::TELEVISION_DELETE,
+        self::TELEVISION_DISPLAY,
+        self::TELEVISION_LIST,
+        self::TELEVISION_MODIFY,
     );
 
     public function __construct(Security $security)
@@ -43,7 +46,7 @@ class ChildPresenceVoter extends Voter
     protected function supports($attribute, $subject)
     {
         if (null !== $subject) {
-            return $subject instanceof ChildPresence && in_array($attribute, self::ATTRIBUTES);
+            return $subject instanceof Television && in_array($attribute, self::ATTRIBUTES);
         }
 
         return in_array($attribute, self::ATTRIBUTES);
@@ -58,17 +61,20 @@ class ChildPresenceVoter extends Voter
 
         //Defines access rights
         switch ($attribute) {
-            case self::CHILD_PRESENCE_CREATE:
+            case self::TELEVISION_CREATE:
                 return $this->canCreate();
                 break;
-            case self::CHILD_PRESENCE_DELETE:
-                return $this->canDelete($token, $subject);
+            case self::TELEVISION_DELETE:
+                return $this->canDelete();
                 break;
-            case self::CHILD_PRESENCE_DISPLAY:
-                return $this->canDisplay($token, $subject);
+            case self::TELEVISION_DISPLAY:
+                return $this->canDisplay();
                 break;
-            case self::CHILD_PRESENCE_LIST:
+            case self::TELEVISION_LIST:
                 return $this->canList();
+                break;
+            case self::TELEVISION_MODIFY:
+                return $this->canModify();
                 break;
         }
 
@@ -80,13 +86,27 @@ class ChildPresenceVoter extends Voter
      */
     private function canCreate()
     {
-        return $this->security->isGranted('ROLE_USER');
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Checks if is allowed to delete
      */
-    private function canDelete($token, $subject)
+    private function canDelete()
     {
         //Checks roles allowed
         $roles = array(
@@ -102,13 +122,13 @@ class ChildPresenceVoter extends Voter
             }
         }
 
-        return $this->isLinked($token, $subject);
+        return false;
     }
 
     /**
      * Checks if is allowed to display
      */
-    private function canDisplay($token, $subject)
+    private function canDisplay()
     {
         //Checks roles allowed
         $roles = array(
@@ -124,7 +144,7 @@ class ChildPresenceVoter extends Voter
             }
         }
 
-        return $this->isLinked($token, $subject);
+        return false;
     }
 
     /**
@@ -150,12 +170,22 @@ class ChildPresenceVoter extends Voter
     }
 
     /**
-     * Checks if registration is linked to the user
+     * Checks if is allowed to modify
      */
-    public function isLinked($token, $subject)
+    private function canModify()
     {
-        if (null !== $token->getUser()->getUserPersonLink() && null !== $subject->getPerson()->getPersonId()) {
-            return($token->getUser()->getUserPersonLink()->getPerson()->getPersonId() === $subject->getPerson()->getPersonId());
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
         }
 
         return false;

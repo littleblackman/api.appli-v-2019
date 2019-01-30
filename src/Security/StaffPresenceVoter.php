@@ -28,14 +28,11 @@ class StaffPresenceVoter extends Voter
 
     public const STAFF_PRESENCE_LIST = 'staffPresenceList';
 
-    public const STAFF_PRESENCE_MODIFY = 'staffPresenceModify';
-
     private const ATTRIBUTES = array(
         self::STAFF_PRESENCE_CREATE,
         self::STAFF_PRESENCE_DELETE,
         self::STAFF_PRESENCE_DISPLAY,
         self::STAFF_PRESENCE_LIST,
-        self::STAFF_PRESENCE_MODIFY,
     );
 
     public function __construct(Security $security)
@@ -72,9 +69,6 @@ class StaffPresenceVoter extends Voter
                 break;
             case self::STAFF_PRESENCE_LIST:
                 return $this->canList();
-                break;
-            case self::STAFF_PRESENCE_MODIFY:
-                return $this->canModify();
                 break;
         }
 
@@ -148,27 +142,6 @@ class StaffPresenceVoter extends Voter
      * Checks if is allowed to list
      */
     private function canList()
-    {
-        //Checks roles allowed
-        $roles = array(
-            'ROLE_MANAGER',
-            'ROLE_LEADER',
-            'ROLE_ADMIN',
-        );
-
-        foreach ($roles as $role) {
-            if ($this->security->isGranted($role)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if is allowed to modify
-     */
-    private function canModify()
     {
         //Checks roles allowed
         $roles = array(
