@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.24.7
+- Ajout de l'affichage du niveau PickupActivity pour les GroupActivity (31/01/2019)
+- Ajout de la route `/group-activity/display/{date}/{staffId}` pour GroupActivity (31/01/2019)
+
 v0.24.6
 - Prise en compte des links pour les modify de PickupActivity et GroupActivity (30/01/2019)
 

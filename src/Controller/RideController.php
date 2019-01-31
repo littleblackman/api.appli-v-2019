@@ -27,12 +27,12 @@ class RideController extends AbstractController
     private $rideService;
 
     public function __construct(
-        StaffServiceInterface $staffService,
-        RideServiceInterface $rideService
+        RideServiceInterface $rideService,
+        StaffServiceInterface $staffService
     )
     {
-        $this->staffService = $staffService;
         $this->rideService = $rideService;
+        $this->staffService = $staffService;
     }
 
 //LIST
@@ -161,7 +161,7 @@ class RideController extends AbstractController
         return new JsonResponse($ridesArray);
     }
 
-//DISPLAY BY DATE AND DRIVERID
+//DISPLAY BY DATE AND STAFFID
 
     /**
      * Displays the rides for a specific date and staff

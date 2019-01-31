@@ -27,6 +27,25 @@ class GroupActivityRepository extends EntityRepository
     }
 
     /**
+     * Returns the groupActivities by date and staff
+     */
+    public function findAllByDateByStaff($date, $staff)
+    {
+        return $this->createQueryBuilder('ga')
+            ->addSelect('gas')
+            ->leftJoin('ga.staff', 'gas')
+            ->where('ga.date = :date')
+            ->andWhere('gas.staff = :staff')
+            ->andWhere('ga.suppressed = 0')
+            ->setParameter('date', $date)
+            ->setParameter('staff', $staff->getStaffId())
+            ->orderBy('ga.date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns the groupActivity if not suppressed
      */
     public function findOneById($groupActivityId)

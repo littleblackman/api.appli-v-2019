@@ -21,16 +21,20 @@ class GroupActivityService implements GroupActivityServiceInterface
 
     private $mainService;
 
+    private $pickupActivityService;
+
     private $staffService;
 
     public function __construct(
         EntityManagerInterface $em,
         MainServiceInterface $mainService,
+        PickupActivityServiceInterface $pickupActivityService,
         StaffServiceInterface $staffService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
+        $this->pickupActivityService = $pickupActivityService;
         $this->staffService = $staffService;
     }
 
@@ -205,6 +209,18 @@ class GroupActivityService implements GroupActivityServiceInterface
     }
 
     /**
+     * Returns the GroupActivities linked to date and staff
+     * @return array
+     */
+    public function findAllByDateByStaff(string $date, $staff)
+    {
+        return $this->em
+            ->getRepository('App:GroupActivity')
+            ->findAllByDateByStaff($date, $staff)
+        ;
+    }
+
+    /**
      * Returns the groupActivity correspoonding to groupActivityId
      * @return array
      */
@@ -275,7 +291,7 @@ class GroupActivityService implements GroupActivityServiceInterface
             $pickupActivities = array();
             foreach($object->getPickupActivities() as $pickupActivityLink) {
                 if (!$pickupActivityLink->getPickupActivity()->getSuppressed()) {
-                    $pickupActivities[] = $this->mainService->toArray($pickupActivityLink->getPickupActivity()->toArray());
+                    $pickupActivities[] = $this->pickupActivityService->toArray($pickupActivityLink->getPickupActivity());
                 }
             }
             $objectArray['pickupActivities'] = $pickupActivities;

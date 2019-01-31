@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\GroupActivity;
+use App\Entity\Staff;
 use App\Form\GroupActivityType;
 use App\Service\GroupActivityServiceInterface;
+use App\Service\StaffServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -22,11 +24,15 @@ class GroupActivityController extends AbstractController
 {
     private $groupActivityService;
 
+    private $staffService;
+
     public function __construct(
-        GroupActivityServiceInterface $groupActivityService
+        GroupActivityServiceInterface $groupActivityService,
+        StaffServiceInterface $staffService
     )
     {
         $this->groupActivityService = $groupActivityService;
+        $this->staffService = $staffService;
     }
 
 //LIST BY DATE
@@ -35,7 +41,7 @@ class GroupActivityController extends AbstractController
      * Lists all the groupActivities for a specific date
      *
      * @Route("/group-activity/list/{date}",
-     *    name="groupActivity_list_date",
+     *    name="group_activitylist_date",
      *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
      *    methods={"HEAD", "GET"})
      *
@@ -91,13 +97,68 @@ class GroupActivityController extends AbstractController
         return new JsonResponse($groupActivitiesArray);
     }
 
+//DISPLAY BY DATE AND STAFFID
+
+    /**
+     * Displays the groupActivity for a specific date and staff
+     *
+     * @Route("/group-activity/display/{date}/{staffId}",
+     *    name="group_activity_display_date_staff",
+     *    requirements={
+     *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
+     *        "staffId": "^([0-9]+)$"
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=GroupActivity::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the GroupActivity (YYYY-MM-DD)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="staffId",
+     *     in="path",
+     *     description="Id for the Staff",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Ride")
+     */
+    public function displayByDateAndStaff($date, $staffId)
+    {
+        $this->denyAccessUnlessGranted('groupActivityDisplay');
+
+        $groupActivitiesArray = array();
+        $staff = $this->staffService->findOneById($staffId);
+        if ($staff instanceof Staff && !$staff->getSuppressed()) {
+            $groupActivities = $this->groupActivityService->findAllByDateByStaff($date, $staff);
+            foreach ($groupActivities as $groupActivity) {
+                $groupActivitiesArray[] = $this->groupActivityService->toArray($groupActivity);
+            };
+        }
+
+        return new JsonResponse($groupActivitiesArray);
+    }
+
 //DISPLAY BY ID
 
     /**
      * Displays the groupActivity using its id
      *
      * @Route("/group-activity/display/{groupActivityId}",
-     *    name="groupActivity_list_id",
+     *    name="group_activitylist_id",
      *    requirements={"groupActivityId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("groupActivity", expr="repository.findOneById(groupActivityId)")
@@ -141,7 +202,7 @@ class GroupActivityController extends AbstractController
      * Creates a GroupActivity
      *
      * @Route("/group-activity/create",
-     *    name="groupActivity_create",
+     *    name="group_activitycreate",
      *    methods={"HEAD", "POST"})
      *
      * @SWG\Response(
@@ -181,7 +242,7 @@ class GroupActivityController extends AbstractController
      * Creates multiples GroupActivitys
      *
      * @Route("/group-activity/create-multiple",
-     *    name="groupActivity_create_multiple",
+     *    name="group_activitycreate_multiple",
      *    methods={"HEAD", "POST"})
      *
      * @SWG\Response(
@@ -223,7 +284,7 @@ class GroupActivityController extends AbstractController
      * Modifies groupActivity
      *
      * @Route("/group-activity/modify/{groupActivityId}",
-     *    name="groupActivity_modify",
+     *    name="group_activitymodify",
      *    requirements={"groupActivityId": "^([0-9]+)"},
      *    methods={"HEAD", "PUT"})
      * @Entity("groupActivity", expr="repository.findOneById(groupActivityId)")
@@ -276,7 +337,7 @@ class GroupActivityController extends AbstractController
      * Deletes groupActivity and moves all the pickups as "Non pris en charge"
      *
      * @Route("/group-activity/delete/{groupActivityId}",
-     *    name="groupActivity_delete",
+     *    name="group_activitydelete",
      *    requirements={"groupActivityId": "^([0-9]+)"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("groupActivity", expr="repository.findOneById(groupActivityId)")
