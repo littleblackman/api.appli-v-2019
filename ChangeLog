@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.24.8
+- Ajout du script pour la backup via rClone (31/01/2019)
+
 v0.24.7
 - Ajout de l'affichage du niveau PickupActivity pour les GroupActivity (31/01/2019)
 - Ajout de la route `/group-activity/display/{date}/{staffId}` pour GroupActivity (31/01/2019)
