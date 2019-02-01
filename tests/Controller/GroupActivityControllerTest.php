@@ -49,7 +49,13 @@ class GroupActivityControllerTest extends WebTestCase
      */
     public function testDisplay()
     {
+        //Tests by id
         $this->clientAuthenticated->request('GET', '/group-activity/display/' . self::$objectId);
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests by date and staffId
+        $this->clientAuthenticated->request('GET', '/group-activity/display/2018-11-20/1');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }

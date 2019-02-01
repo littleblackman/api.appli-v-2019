@@ -34,6 +34,9 @@ class PickupType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text',
                 ))
+            ->add('phone', TextType::class, array(
+                'required' => false,
+                ))
             ->add('postal', TextType::class, array(
                 'required' => false,
                 ))

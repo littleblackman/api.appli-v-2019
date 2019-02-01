@@ -57,6 +57,13 @@ class Pickup
     /**
      * @var string|null
      *
+     * @ORM\Column(name="phone", type="string", length=35, nullable=true)
+     */
+    private $phone;
+
+    /**
+     * @var string|null
+     *
      * @ORM\Column(name="postal", type="string", length=10, nullable=true)
      */
     private $postal;
@@ -195,6 +202,18 @@ class Pickup
     public function setStart(?DateTimeInterface $start): self
     {
         $this->start = $start;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
 
         return $this;
     }
