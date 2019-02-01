@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.24.10
+- Modification du traitement de links pour PickupActivity et GroupActivity et de staff pour GroupActivity, ils sont effacés avant d'être re-créés (01/02/2019)
+
 v0.24.9
 - Ajout du champ phone sur Pickup (01/02/2019)
 - Mise à jour des bundles (01/02/2019)

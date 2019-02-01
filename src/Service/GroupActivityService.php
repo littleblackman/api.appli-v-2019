@@ -90,6 +90,15 @@ class GroupActivityService implements GroupActivityServiceInterface
 
         //Adds links from pickupActivity to groupActivity
         if (array_key_exists('links', $data)) {
+            //Deletes old links
+            $oldLinks = $object->getPickupActivities();
+            if (null !== $oldLinks && !empty($oldLinks)) {
+                foreach ($oldLinks as $oldLink) {
+                    $this->em->remove($oldLink);
+                }
+            }
+
+            //Adds new links
             $links = $data['links'];
             if (null !== $links && is_array($links) && !empty($links)) {
                 foreach ($links as $link) {
@@ -100,6 +109,15 @@ class GroupActivityService implements GroupActivityServiceInterface
 
         //Adds links from groupActivity to staff
         if (array_key_exists('staff', $data)) {
+            //Deletes old links
+            $oldLinks = $object->getStaff();
+            if (null !== $oldLinks && !empty($oldLinks)) {
+                foreach ($oldLinks as $oldLink) {
+                    $this->em->remove($oldLink);
+                }
+            }
+
+            //Adds new links
             $staff = $data['staff'];
             if (null !== $staff && is_array($staff) && !empty($staff)) {
                 foreach ($staff as $staffData) {

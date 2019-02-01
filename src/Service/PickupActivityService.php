@@ -54,6 +54,15 @@ class PickupActivityService implements PickupActivityServiceInterface
     {
         //Adds links from PickupActivity to GroupActivity
         if (array_key_exists('links', $data)) {
+            //Deletes old links
+            $oldLinks = $object->getGroupActivities();
+            if (null !== $oldLinks && !empty($oldLinks)) {
+                foreach ($oldLinks as $oldLink) {
+                    $this->em->remove($oldLink);
+                }
+            }
+
+            //Adds new links
             $links = $data['links'];
             if (null !== $links && is_array($links) && !empty($links)) {
                 foreach ($links as $link) {
