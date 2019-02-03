@@ -16,14 +16,14 @@ class PickupActivityRepository extends EntityRepository
     public function findAllByDate($date, $kind)
     {
         return $this->createQueryBuilder('p')
-            ->where('p.start LIKE :date')
+            ->where('p.date LIKE :date')
             ->andWhere('p.kind = :kind')
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
             ->setParameter('kind', $kind)
             ->orderBy('p.postal', 'ASC')
+            ->addOrderBy('p.date', 'ASC')
             ->addOrderBy('p.start', 'ASC')
-            ->addOrderBy('p.address', 'ASC')
             ->addOrderBy('p.pickupActivityId', 'ASC')
             ->getQuery()
             ->getResult()
@@ -39,9 +39,10 @@ class PickupActivityRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('p')
             ->where($statusCondition)
-            ->andWhere('p.start LIKE :date')
+            ->andWhere('p.date LIKE :date')
             ->andWhere('p.suppressed = 0')
-            ->orderBy('p.start', 'ASC')
+            ->orderBy('p.date', 'ASC')
+            ->addOrderBy('p.start', 'ASC')
             ->setParameter('date', $date . '%')
         ;
 
