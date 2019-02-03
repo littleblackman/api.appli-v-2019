@@ -45,11 +45,25 @@ class PickupActivity
     private $registration;
 
     /**
-     * @var DateTime
+     * @var DateTime|null
      *
-     * @ORM\Column(name="start", type="datetime")
+     * @ORM\Column(name="date", type="date")
+     */
+    private $date;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="start", type="time")
      */
     private $start;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="end", type="time")
+     */
+    private $end;
 
     /**
      * @var string
@@ -107,8 +121,14 @@ class PickupActivity
         $objectArray = get_object_vars($this);
 
         //Specific data
+        if (null !== $objectArray['date']) {
+            $objectArray['date'] = $objectArray['date']->format('Y-m-d');
+        }
         if (null !== $objectArray['start']) {
-            $objectArray['start'] = $objectArray['start']->format('Y-m-d H:i');
+            $objectArray['start'] = $objectArray['start']->format('H:i:s');
+        }
+        if (null !== $objectArray['end']) {
+            $objectArray['end'] = $objectArray['end']->format('H:i:s');
         }
         if (null !== $objectArray['statusChange']) {
             $objectArray['statusChange'] = $objectArray['statusChange']->format('Y-m-d H:i:s');
@@ -134,6 +154,19 @@ class PickupActivity
         return $this;
     }
 
+
+    public function getDate(): ?DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(?DateTimeInterface $date): self
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
     public function getStart(): ?DateTimeInterface
     {
         return $this->start;
@@ -142,6 +175,18 @@ class PickupActivity
     public function setStart(?DateTimeInterface $start): self
     {
         $this->start = $start;
+
+        return $this;
+    }
+
+    public function getEnd(): ?DateTimeInterface
+    {
+        return $this->end;
+    }
+
+    public function setEnd(?DateTimeInterface $end): self
+    {
+        $this->end = $end;
 
         return $this;
     }

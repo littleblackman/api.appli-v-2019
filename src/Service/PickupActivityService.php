@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\GroupActivity;
 use App\Entity\PickupActivity;
 use App\Entity\PickupActivityGroupActivityLink;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -52,7 +53,15 @@ class PickupActivityService implements PickupActivityServiceInterface
      */
     public function addSpecificData(PickupActivity $object, array $data)
     {
-        //Adds links from PickupActivity to GroupActivity
+        //Should be done from GroupActivityType but it returns null...
+        if (array_key_exists('start', $data)) {
+            $object->setStart(DateTime::createFromFormat('H:i:s', $data['start']));
+        }
+        if (array_key_exists('end', $data)) {
+            $object->setEnd(DateTime::createFromFormat('H:i:s', $data['end']));
+        }
+
+         //Adds links from PickupActivity to GroupActivity
         if (array_key_exists('links', $data)) {
             //Deletes old links
             $oldLinks = $object->getGroupActivities();
@@ -190,7 +199,7 @@ class PickupActivityService implements PickupActivityServiceInterface
      */
     public function isEntityFilled(PickupActivity $object)
     {
-        if (null === $object->getStart() ||
+        if (null === $object->getDate() ||
             null === $object->getChild()) {
             throw new UnprocessableEntityHttpException('Missing data for PickupActivity -> ' . json_encode($object->toArray()));
         }
