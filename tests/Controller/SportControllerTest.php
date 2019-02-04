@@ -64,9 +64,13 @@ class SportControllerTest extends WebTestCase
      */
     public function testList()
     {
+        //Tests list
         $this->clientAuthenticated->request('GET', '/sport/list');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('sportId', $first);
     }
 
     /**
@@ -74,9 +78,12 @@ class SportControllerTest extends WebTestCase
      */
     public function testSearch()
     {
-        $this->clientAuthenticated->request('GET', '/sport/search/amil');
+        $this->clientAuthenticated->request('GET', '/sport/search/modi');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('sportId', $first);
     }
 
     /**

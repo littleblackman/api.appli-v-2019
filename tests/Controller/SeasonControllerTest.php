@@ -76,9 +76,13 @@ class SeasonControllerTest extends WebTestCase
      */
     public function testList()
     {
+        //Tests list
         $this->clientAuthenticated->request('GET', '/season/list');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('seasonId', $first);
     }
 
     /**

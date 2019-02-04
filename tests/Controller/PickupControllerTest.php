@@ -22,7 +22,7 @@ class PickupControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"registration": 1, "kind": "Kind", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}'
+            '{"registration": 1, "kind": "dropin", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -38,7 +38,7 @@ class PickupControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '[{"registration": 1, "kind": "Kind", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}, {"registration": 1, "kind": "Kind", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}]'
+            '[{"registration": 1, "kind": "dropin", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address", "sortOrder": 1, "status": "absent", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}, {"registration": 1, "kind": "dropin", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address", "sortOrder": 1, "status": "supported", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}, {"registration": 1, "kind": "dropin", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address", "sortOrder": 1, "status": "supported", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1"}, {"registration": 1, "kind": "dropoff", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address", "sortOrder": 1, "status": "supported", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1"}]'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -67,7 +67,7 @@ class PickupControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"registration": 1, "kind": "Kind", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address modifiée", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}'
+            '{"registration": 1, "kind": "dropin", "start": "2018-11-20 08:00:00", "phone": "0123456789", "postal": "75016", "address": "Address modifiée", "sortOrder": 1, "status": "null", "statusChange": "2018-11-20 08:00:01", "places": 1, "comment": "Comment", "validated": "validated", "child": "1", "ride": "1"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -95,27 +95,42 @@ class PickupControllerTest extends WebTestCase
         //Tests with date
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('pickupId', $first);
 
         //Tests with date and status
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/absent');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('pickupId', $first);
 
         //Tests with date and status
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/supported');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('pickupId', $first);
 
         //Tests with date for unaffected dropin
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/unaffected/dropin');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('pickupId', $first);
 
         //Tests with date for unaffected dropoff
         $this->clientAuthenticated->request('GET', '/pickup/list/2018-11-20/unaffected/dropoff');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('pickupId', $first);
     }
 
     /**
@@ -215,5 +230,7 @@ class PickupControllerTest extends WebTestCase
         $this->deleteEntity('Pickup', 'pickupId', self::$objectId);
         $this->deleteEntity('Pickup', 'pickupId', self::$objectId + 1);
         $this->deleteEntity('Pickup', 'pickupId', self::$objectId + 2);
+        $this->deleteEntity('Pickup', 'pickupId', self::$objectId + 3);
+        $this->deleteEntity('Pickup', 'pickupId', self::$objectId + 4);
     }
 }

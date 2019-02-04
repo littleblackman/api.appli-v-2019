@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.24.12
+- Amélioration des tests pour vérifier que les list renvoient bien quelque chose (04/02/2019)
+- Mise à jour bundles (SF 4.2.3) (04/02/2019)
+
 v0.24.11.1
 - Correction list PickupActivity (03/02/2019)
 

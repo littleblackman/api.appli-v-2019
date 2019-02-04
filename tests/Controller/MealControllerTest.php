@@ -76,9 +76,13 @@ class MealControllerTest extends WebTestCase
      */
     public function testList()
     {
+        //Tests list
         $this->clientAuthenticated->request('GET', '/meal/list/2018-11-20');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('mealId', $first);
     }
 
     /**

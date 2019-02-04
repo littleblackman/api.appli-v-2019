@@ -76,9 +76,13 @@ class WeekControllerTest extends WebTestCase
      */
     public function testList()
     {
+        //Tests list
         $this->clientAuthenticated->request('GET', '/week/list');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('weekId', $first);
     }
 
     /**
@@ -86,9 +90,12 @@ class WeekControllerTest extends WebTestCase
      */
     public function testSearch()
     {
-        $this->clientAuthenticated->request('GET', '/child/search/name');
+        $this->clientAuthenticated->request('GET', '/week/search/semain');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('weekId', $first);
     }
 
     /**

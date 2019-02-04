@@ -38,7 +38,7 @@ class PickupActivityControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '[{"registration": 1, "date": "2018-11-20", "start": "08:00:00", "end": "09:00:00", "status": "null", "statusChange": "2019-01-29 09:00:00", "validated": "validated", "child": "1", "sport": "1"}, {"registration": 1, "date": "2018-11-20", "start": "08:00:00", "end": "09:00:00", "status": "null", "statusChange": "2019-01-29 09:00:00", "validated": "validated", "child": "1", "sport": "1"}]'
+            '[{"registration": 1, "date": "2018-11-20", "start": "08:00:00", "end": "09:00:00", "status": "null", "statusChange": "2019-01-29 09:00:00", "validated": "validated", "child": "1", "sport": "1"}, {"registration": 1, "date": "2018-11-20", "start": "08:00:00", "end": "09:00:00", "status": "supported", "statusChange": "2019-01-29 09:00:00", "validated": "validated", "child": "1", "sport": "1"}]'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -67,7 +67,7 @@ class PickupActivityControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"registration": 1, "date": "2018-11-20", "start": "08:00:00", "end": "09:00:00", "status": "absent", "statusChange": "2019-01-29 10:00:00", "validated": "validated", "child": "1", "sport": "1"}'
+            '{"registration": 1, "date": "2018-11-20", "start": "08:00:00", "end": "09:00:00", "status": "null", "statusChange": "2019-01-29 10:00:00", "validated": "validated", "child": "1", "sport": "1"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -80,7 +80,7 @@ class PickupActivityControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"status": "supported"}'
+            '{"status": "absent"}'
         );
 
         $response = $this->clientAuthenticated->getResponse();
@@ -95,17 +95,26 @@ class PickupActivityControllerTest extends WebTestCase
         //Tests with date
         $this->clientAuthenticated->request('GET', '/pickup-activity/list/2018-11-20');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('pickupActivityId', $first);
 
         //Tests with date and status
         $this->clientAuthenticated->request('GET', '/pickup-activity/list/2018-11-20/absent');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('pickupActivityId', $first);
 
         //Tests with date and status
         $this->clientAuthenticated->request('GET', '/pickup-activity/list/2018-11-20/supported');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('pickupActivityId', $first);
     }
 
     /**

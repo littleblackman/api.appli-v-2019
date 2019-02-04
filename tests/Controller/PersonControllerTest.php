@@ -76,9 +76,14 @@ class PersonControllerTest extends WebTestCase
      */
     public function testList()
     {
+        //Tests list
         $this->clientAuthenticated->request('GET', '/person/list');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('personId', $first);
     }
 
     /**
@@ -88,7 +93,10 @@ class PersonControllerTest extends WebTestCase
     {
         $this->clientAuthenticated->request('GET', '/person/search/name');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('personId', $first);
     }
 
     /**

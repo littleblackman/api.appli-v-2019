@@ -551,9 +551,6 @@
     "symplify/token-runner": {
         "version": "v5.2.18"
     },
-    "thecodingmachine/safe": {
-        "version": "v0.1.8"
-    },
     "twig/extensions": {
         "version": "1.0",
         "recipe": {

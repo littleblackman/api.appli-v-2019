@@ -79,12 +79,18 @@ class ProductControllerTest extends WebTestCase
         //Tests all products
         $this->clientAuthenticated->request('GET', '/product/list');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('productId', $first);
 
         //Tests all products linked to a child
         $this->clientAuthenticated->request('GET', '/product/list/child/1');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('productId', $first);
     }
 
     /**

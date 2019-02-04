@@ -47,17 +47,26 @@ class StaffPresenceControllerTest extends WebTestCase
         //Tests for a day
         $this->clientAuthenticated->request('GET', '/staff/presence/list/driver/2019-01-20');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('staffPresenceId', $first);
 
         //Tests for a month
         $this->clientAuthenticated->request('GET', '/staff/presence/list/driver/2019-01');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('staffPresenceId', $first);
 
         //Tests for totals
         $this->clientAuthenticated->request('GET', '/staff/presence/total/1');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('staffId', $first);
     }
 
     /**

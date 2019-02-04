@@ -105,7 +105,10 @@ class ChildPresenceService implements ChildPresenceServiceInterface
         $data = json_decode($data, true);
         if (is_array($data) && !empty($data)) {
             foreach ($data as $childPresence) {
-                $this->delete($this->em->getRepository('App:ChildPresence')->findByData($childPresence), false);
+                $childPresence = $this->em->getRepository('App:ChildPresence')->findByData($childPresence);
+                if ($childPresence instanceof ChildPresence) {
+                    $this->delete($childPresence, false);
+                }
             }
 
             return array(

@@ -66,7 +66,10 @@ class CategoryControllerTest extends WebTestCase
     {
         $this->clientAuthenticated->request('GET', '/category/list');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('categoryId', $first);
     }
 
     /**

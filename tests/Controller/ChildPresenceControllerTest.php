@@ -66,12 +66,18 @@ class ChildPresenceControllerTest extends WebTestCase
         //Tests for a day
         $this->clientAuthenticated->request('GET', '/child/presence/list/2019-01-20');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('childPresenceId', $first);
 
         //Tests for a month
         $this->clientAuthenticated->request('GET', '/child/presence/list/2019-01');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('childPresenceId', $first);
     }
 
     /**
