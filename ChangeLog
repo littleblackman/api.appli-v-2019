@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.25
+- Ajout des Invoice (04/02/2019)
+
 v0.24.12
 - Amélioration des tests pour vérifier que les list renvoient bien quelque chose (04/02/2019)
 - Mise à jour bundles (SF 4.2.3) (04/02/2019)
@@ -335,7 +338,7 @@ v0.16.3.2
 - Correction refresh après driver/modify (13/12/2018)
 
 v0.16.3.1
-- Correction oubli photo pour ProdcutType et ComponentType (13/12/2018)
+- Correction oubli photo pour ProductType et ComponentType (13/12/2018)
 
 v0.16.3
 - Ajout dune Route search pour Component (13/12/2018)

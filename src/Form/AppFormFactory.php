@@ -59,6 +59,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'group-activity-modify':
                 $form = GroupActivityType::class;
                 break;
+            case 'invoice-create':
+            case 'invoice-modify':
+                $form = InvoiceType::class;
+                break;
             case 'location-create':
             case 'location-modify':
                 $form = LocationType::class;

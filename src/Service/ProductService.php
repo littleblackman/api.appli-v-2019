@@ -432,7 +432,7 @@ class ProductService implements ProductServiceInterface
 
         //Gets related child
         if (null !== $object->getChild() && !$object->getChild()->getSuppressed()) {
-            $objectArray['season'] = $this->mainService->toArray($object->getChild()->toArray());
+            $objectArray['child'] = $this->mainService->toArray($object->getChild()->toArray());
         }
 
         //Gets related links

@@ -94,7 +94,7 @@ class ProductControllerTest extends WebTestCase
     }
 
     /**
-     * Tests search of Person
+     * Tests search of Product
      */
     public function testSearch()
     {
