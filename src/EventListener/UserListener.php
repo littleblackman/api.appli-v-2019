@@ -11,6 +11,8 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 class UserListener implements EventSubscriberInterface
 {
+    private $mainService;
+
     private $personService;
 
     public function __construct(

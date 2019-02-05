@@ -112,9 +112,21 @@ class InvoiceProduct
         return $objectArray;
     }
 
-    public function getInvoiceId(): ?int
+    public function getInvoiceProductId(): ?int
     {
-        return $this->invoiceId;
+        return $this->invoiceProductId;
+    }
+
+    public function getInvoice(): ?Invoice
+    {
+        return $this->invoice;
+    }
+
+    public function setInvoice(?Invoice $invoice): self
+    {
+        $this->invoice = $invoice;
+
+        return $this;
     }
 
     public function getNameFr(): ?string
@@ -185,54 +197,6 @@ class InvoiceProduct
     public function setPrices(?array $prices): self
     {
         $this->prices = serialize($prices);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|InvoiceComponent[]
-     */
-    public function getComponents()
-    {
-        return $this->components;
-    }
-
-    public function addComponent(InvoiceComponent $component): self
-    {
-        if (!$this->components->contains($component)) {
-            $this->components[] = $component;
-            $component->setInvoice($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComponent(InvoiceComponent $component): self
-    {
-        if ($this->components->contains($component)) {
-            $this->components->removeElement($component);
-            // set the owning side to null (unless already changed)
-            if ($component->getInvoice() === $this) {
-                $component->setInvoice(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getInvoiceProductId(): ?int
-    {
-        return $this->invoiceProductId;
-    }
-
-    public function getInvoice(): ?Invoice
-    {
-        return $this->invoice;
-    }
-
-    public function setInvoice(?Invoice $invoice): self
-    {
-        $this->invoice = $invoice;
 
         return $this;
     }
