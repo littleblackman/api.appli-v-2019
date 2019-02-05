@@ -35,6 +35,6 @@ class HomeController extends AbstractController
      */
     public function home()
     {
-        return new JsonResponse(true);
+        return new JsonResponse('You have to be authenticated to use this API');
     }
 }
