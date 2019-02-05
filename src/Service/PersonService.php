@@ -77,7 +77,6 @@ class PersonService implements PersonServiceInterface
         $object = new Person();
         $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'person-create', $data);
-        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);

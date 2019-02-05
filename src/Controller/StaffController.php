@@ -164,7 +164,7 @@ class StaffController extends AbstractController
      *
      * @Route("/staff/display/{staffId}",
      *    name="staff_display",
-     *    requirements={"staffId": "^([0-9]+)"},
+     *    requirements={"staffId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("staff", expr="repository.findOneById(staffId)")
      *
@@ -249,7 +249,7 @@ class StaffController extends AbstractController
      *
      * @Route("/staff/modify/{staffId}",
      *    name="staff_modify",
-     *    requirements={"staffId": "^([0-9]+)"},
+     *    requirements={"staffId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("staff", expr="repository.findOneById(staffId)")
      *
@@ -302,7 +302,7 @@ class StaffController extends AbstractController
      *
      * @Route("/staff/delete/{staffId}",
      *    name="staff_delete",
-     *    requirements={"staffId": "^([0-9]+)"},
+     *    requirements={"staffId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("staff", expr="repository.findOneById(staffId)")
      *

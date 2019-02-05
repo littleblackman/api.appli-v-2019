@@ -105,7 +105,7 @@ class PickupActivityController extends AbstractController
      *
      * @Route("/pickup-activity/display/{pickupActivityId}",
      *    name="pickup_activity_display",
-     *    requirements={"pickupActivityId": "^([0-9]+)"},
+     *    requirements={"pickupActivityId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("pickupActivity", expr="repository.findOneById(pickupActivityId)")
      *
@@ -230,7 +230,7 @@ class PickupActivityController extends AbstractController
      *
      * @Route("/pickup-activity/modify/{pickupActivityId}",
      *    name="pickup_activity_modify",
-     *    requirements={"pickupActivityId": "^([0-9]+)"},
+     *    requirements={"pickupActivityId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("pickupActivity", expr="repository.findOneById(pickupActivityId)")
      *
@@ -283,7 +283,7 @@ class PickupActivityController extends AbstractController
      *
      * @Route("/pickup-activity/delete/{pickupActivityId}",
      *    name="pickup_activity_delete",
-     *    requirements={"pickupActivityId": "^([0-9]+)"},
+     *    requirements={"pickupActivityId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("pickupActivity", expr="repository.findOneById(pickupActivityId)")
      *
@@ -328,7 +328,7 @@ class PickupActivityController extends AbstractController
      *
      * @Route("/pickup-activity/delete-registration/{registrationId}",
      *    name="pickup_activity_delete_by_registration",
-     *    requirements={"registrationId": "^([0-9]+)"},
+     *    requirements={"registrationId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      *
      * @SWG\Response(

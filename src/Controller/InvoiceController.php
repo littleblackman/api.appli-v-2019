@@ -156,7 +156,7 @@ class InvoiceController extends AbstractController
      *
      * @Route("/invoice/display/{invoiceId}",
      *    name="invoice_display",
-     *    requirements={"invoiceId": "^([0-9]+)"},
+     *    requirements={"invoiceId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("invoice", expr="repository.findOneById(invoiceId)")
      *
@@ -237,7 +237,7 @@ class InvoiceController extends AbstractController
      *
      * @Route("/invoice/modify/{invoiceId}",
      *    name="invoice_modify",
-     *    requirements={"invoiceId": "^([0-9]+)"},
+     *    requirements={"invoiceId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("invoice", expr="repository.findOneById(invoiceId)")
      *
@@ -290,7 +290,7 @@ class InvoiceController extends AbstractController
      *
      * @Route("/invoice/delete/{invoiceId}",
      *    name="invoice_delete",
-     *    requirements={"invoiceId": "^([0-9]+)"},
+     *    requirements={"invoiceId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("invoice", expr="repository.findOneById(invoiceId)")
      *

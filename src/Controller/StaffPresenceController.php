@@ -164,7 +164,7 @@ class StaffPresenceController extends AbstractController
      *
      * @Route("/staff/presence/total/{seasonId}",
      *    name="staff_presence__total",
-     *    requirements={"seasonId": "^([0-9]+)"},
+     *    requirements={"seasonId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -250,7 +250,7 @@ class StaffPresenceController extends AbstractController
      *
      * @Route("/staff/presence/delete/{staffPresenceId}",
      *    name="staff_presence_delete",
-     *    requirements={"staffPresenceId": "^([0-9]+)"},
+     *    requirements={"staffPresenceId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("component", expr="repository.findOneById(staffPresenceId)")
      *

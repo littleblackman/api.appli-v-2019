@@ -285,7 +285,7 @@ class GroupActivityController extends AbstractController
      *
      * @Route("/group-activity/modify/{groupActivityId}",
      *    name="group_activitymodify",
-     *    requirements={"groupActivityId": "^([0-9]+)"},
+     *    requirements={"groupActivityId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("groupActivity", expr="repository.findOneById(groupActivityId)")
      *
@@ -338,7 +338,7 @@ class GroupActivityController extends AbstractController
      *
      * @Route("/group-activity/delete/{groupActivityId}",
      *    name="group_activitydelete",
-     *    requirements={"groupActivityId": "^([0-9]+)"},
+     *    requirements={"groupActivityId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("groupActivity", expr="repository.findOneById(groupActivityId)")
      *

@@ -211,7 +211,7 @@ class ProductController extends AbstractController
      *
      * @Route("/product/display/{productId}",
      *    name="product_display",
-     *    requirements={"productId": "^([0-9]+)"},
+     *    requirements={"productId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("product", expr="repository.findOneById(productId)")
      *
@@ -292,7 +292,7 @@ class ProductController extends AbstractController
      *
      * @Route("/product/modify/{productId}",
      *    name="product_modify",
-     *    requirements={"productId": "^([0-9]+)"},
+     *    requirements={"productId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("product", expr="repository.findOneById(productId)")
      *
@@ -345,7 +345,7 @@ class ProductController extends AbstractController
      *
      * @Route("/product/delete/{productId}",
      *    name="product_delete",
-     *    requirements={"productId": "^([0-9]+)"},
+     *    requirements={"productId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("product", expr="repository.findOneById(productId)")
      *

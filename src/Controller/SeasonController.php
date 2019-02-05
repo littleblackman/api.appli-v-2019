@@ -100,7 +100,7 @@ class SeasonController extends AbstractController
      *
      * @Route("/season/display/{seasonId}",
      *    name="season_display",
-     *    requirements={"seasonId": "^([0-9]+)"},
+     *    requirements={"seasonId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("season", expr="repository.findOneById(seasonId)")
      *
@@ -182,7 +182,7 @@ class SeasonController extends AbstractController
      *
      * @Route("/season/modify/{seasonId}",
      *    name="season_modify",
-     *    requirements={"seasonId": "^([0-9]+)"},
+     *    requirements={"seasonId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("season", expr="repository.findOneById(seasonId)")
      *
@@ -235,7 +235,7 @@ class SeasonController extends AbstractController
      *
      * @Route("/season/delete/{seasonId}",
      *    name="season_delete",
-     *    requirements={"seasonId": "^([0-9]+)"},
+     *    requirements={"seasonId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("season", expr="repository.findOneById(seasonId)")
      *

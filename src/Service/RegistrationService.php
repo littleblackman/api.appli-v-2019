@@ -85,13 +85,24 @@ class RegistrationService implements RegistrationServiceInterface
     }
 
     /**
-     * Returns the list of all registrations in the array format
+     * Returns the list of all registrations related to status in the array format
      */
-    public function findAll()
+    public function findAllByStatus($status)
     {
         return $this->em
             ->getRepository('App:Registration')
-            ->findAll()
+            ->findAllByStatus($status)
+        ;
+    }
+
+    /**
+     * Returns the list of all registrations related to person and status in the array format
+     */
+    public function findAllByPersonAndStatus($personId, $status)
+    {
+        return $this->em
+            ->getRepository('App:Registration')
+            ->findAllByPersonAndStatus($personId, $status)
         ;
     }
 

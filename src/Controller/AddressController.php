@@ -33,7 +33,7 @@ class AddressController extends AbstractController
      *
      * @Route("/address/display/{addressId}",
      *    name="address_display",
-     *    requirements={"addressId": "^([0-9]+)"},
+     *    requirements={"addressId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("address", expr="repository.findOneById(addressId)")
      *
@@ -114,7 +114,7 @@ class AddressController extends AbstractController
      *
      * @Route("/address/modify/{addressId}",
      *    name="address_modify",
-     *    requirements={"addressId": "^([0-9]+)"},
+     *    requirements={"addressId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("address", expr="repository.findOneById(addressId)")
      *
@@ -167,7 +167,7 @@ class AddressController extends AbstractController
      *
      * @Route("/address/delete/{addressId}",
      *    name="address_delete",
-     *    requirements={"addressId": "^([0-9]+)"},
+     *    requirements={"addressId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("address", expr="repository.findOneById(addressId)")
      *

@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\Registration;
+use App\Entity\User;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -46,7 +47,7 @@ class RegistrationVoter extends Voter
     protected function supports($attribute, $subject)
     {
         if (null !== $subject) {
-            return $subject instanceof Registration && in_array($attribute, self::ATTRIBUTES);
+            return (is_int($subject) || $subject instanceof Registration) && in_array($attribute, self::ATTRIBUTES);
         }
 
         return in_array($attribute, self::ATTRIBUTES);
@@ -71,7 +72,7 @@ class RegistrationVoter extends Voter
                 return $this->canDisplay($token, $subject);
                 break;
             case self::REGISTRATION_LIST:
-                return $this->canList();
+                return $this->canList($token, $subject);
                 break;
             case self::REGISTRATION_MODIFY:
                 return $this->canModify($token, $subject);
@@ -108,7 +109,7 @@ class RegistrationVoter extends Voter
             }
         }
 
-        return $this->isLinked($token, $subject);
+        return 'cart' === $subject->getStatus() && $this->isLinked($token, $subject);
     }
 
     /**
@@ -136,7 +137,7 @@ class RegistrationVoter extends Voter
     /**
      * Checks if is allowed to list
      */
-    private function canList()
+    private function canList($token, $subject)
     {
         //Checks roles allowed
         $roles = array(
@@ -152,7 +153,7 @@ class RegistrationVoter extends Voter
             }
         }
 
-        return false;
+        return ($subject === $token->getUser()->getUserPersonLink()->getPerson()->getPersonId());
     }
 
     /**
@@ -174,7 +175,7 @@ class RegistrationVoter extends Voter
             }
         }
 
-        return $this->isLinked($token, $subject);
+        return 'cart' === $subject->getStatus() && $this->isLinked($token, $subject);
     }
 
     /**

@@ -156,7 +156,7 @@ class CategoryController extends AbstractController
      *
      * @Route("/category/display/{categoryId}",
      *    name="category_display",
-     *    requirements={"categoryId": "^([0-9]+)"},
+     *    requirements={"categoryId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("category", expr="repository.findOneById(categoryId)")
      *
@@ -237,7 +237,7 @@ class CategoryController extends AbstractController
      *
      * @Route("/category/modify/{categoryId}",
      *    name="category_modify",
-     *    requirements={"categoryId": "^([0-9]+)"},
+     *    requirements={"categoryId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("category", expr="repository.findOneById(categoryId)")
      *
@@ -290,7 +290,7 @@ class CategoryController extends AbstractController
      *
      * @Route("/category/delete/{categoryId}",
      *    name="category_delete",
-     *    requirements={"categoryId": "^([0-9]+)"},
+     *    requirements={"categoryId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("category", expr="repository.findOneById(categoryId)")
      *

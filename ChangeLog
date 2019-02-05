@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.25.4
+- Suppression de la possibilité d'ajouter des relations dans PersonService->create() car uniquement dans modify (05/02/2019)
+- Ajout de routes pour registration (05/02/2019)
+- Mise à jour du Fichier de backup (05/02/2019)
+
 v0.25.3
 - Ajout de la possibilité d'ajouter des relations dans PersonService->create() (05/02/2019)
 

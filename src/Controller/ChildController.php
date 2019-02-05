@@ -156,7 +156,7 @@ class ChildController extends AbstractController
      *
      * @Route("/child/display/{childId}",
      *    name="child_display",
-     *    requirements={"childId": "^([0-9]+)"},
+     *    requirements={"childId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("child", expr="repository.findOneById(childId)")
      *
@@ -238,7 +238,7 @@ class ChildController extends AbstractController
      *
      * @Route("/child/modify/{childId}",
      *    name="child_modify",
-     *    requirements={"childId": "^([0-9]+)"},
+     *    requirements={"childId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("child", expr="repository.findOneById(childId)")
      *
@@ -291,7 +291,7 @@ class ChildController extends AbstractController
      *
      * @Route("/child/delete/{childId}",
      *    name="child_delete",
-     *    requirements={"childId": "^([0-9]+)"},
+     *    requirements={"childId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("child", expr="repository.findOneById(childId)")
      *

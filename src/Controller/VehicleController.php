@@ -168,7 +168,7 @@ class VehicleController extends AbstractController
      *
      * @Route("/vehicle/modify/{vehicleId}",
      *    name="vehicle_modify",
-     *    requirements={"vehicleId": "^([0-9]+)"},
+     *    requirements={"vehicleId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("vehicle", expr="repository.findOneById(vehicleId)")
      *
@@ -221,7 +221,7 @@ class VehicleController extends AbstractController
      *
      * @Route("/vehicle/delete/{vehicleId}",
      *    name="vehicle_delete",
-     *    requirements={"vehicleId": "^([0-9]+)"},
+     *    requirements={"vehicleId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("vehicle", expr="repository.findOneById(vehicleId)")
      *

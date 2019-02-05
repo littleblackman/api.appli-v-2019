@@ -230,7 +230,7 @@ class MealController extends AbstractController
      *
      * @Route("/meal/modify/{mealId}",
      *    name="meal_modify",
-     *    requirements={"mealId": "^([0-9]+)"},
+     *    requirements={"mealId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("meal", expr="repository.findOneById(mealId)")
      *
@@ -283,7 +283,7 @@ class MealController extends AbstractController
      *
      * @Route("/meal/delete/{mealId}",
      *    name="meal_delete",
-     *    requirements={"mealId": "^([0-9]+)"},
+     *    requirements={"mealId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("meal", expr="repository.findOneById(mealId)")
      *

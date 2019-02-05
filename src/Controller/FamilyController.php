@@ -156,7 +156,7 @@ class FamilyController extends AbstractController
      *
      * @Route("/family/display/{familyId}",
      *    name="family_display",
-     *    requirements={"familyId": "^([0-9]+)"},
+     *    requirements={"familyId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("family", expr="repository.findOneById(familyId)")
      *
@@ -237,7 +237,7 @@ class FamilyController extends AbstractController
      *
      * @Route("/family/modify/{familyId}",
      *    name="family_modify",
-     *    requirements={"familyId": "^([0-9]+)"},
+     *    requirements={"familyId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("family", expr="repository.findOneById(familyId)")
      *
@@ -290,7 +290,7 @@ class FamilyController extends AbstractController
      *
      * @Route("/family/delete/{familyId}",
      *    name="family_delete",
-     *    requirements={"familyId": "^([0-9]+)"},
+     *    requirements={"familyId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("family", expr="repository.findOneById(familyId)")
      *

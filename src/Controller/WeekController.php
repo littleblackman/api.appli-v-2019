@@ -156,7 +156,7 @@ class WeekController extends AbstractController
      *
      * @Route("/week/display/{weekId}",
      *    name="week_display",
-     *    requirements={"weekId": "^([0-9]+)"},
+     *    requirements={"weekId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("week", expr="repository.findOneById(weekId)")
      *
@@ -237,7 +237,7 @@ class WeekController extends AbstractController
      *
      * @Route("/week/modify/{weekId}",
      *    name="week_modify",
-     *    requirements={"weekId": "^([0-9]+)"},
+     *    requirements={"weekId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("week", expr="repository.findOneById(weekId)")
      *
@@ -290,7 +290,7 @@ class WeekController extends AbstractController
      *
      * @Route("/week/delete/{weekId}",
      *    name="week_delete",
-     *    requirements={"weekId": "^([0-9]+)"},
+     *    requirements={"weekId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("week", expr="repository.findOneById(weekId)")
      *

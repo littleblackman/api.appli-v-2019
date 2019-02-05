@@ -156,7 +156,7 @@ class SportController extends AbstractController
      *
      * @Route("/sport/display/{sportId}",
      *    name="sport_display",
-     *    requirements={"sportId": "^([0-9]+)"},
+     *    requirements={"sportId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("sport", expr="repository.findOneById(sportId)")
      *
@@ -237,7 +237,7 @@ class SportController extends AbstractController
      *
      * @Route("/sport/modify/{sportId}",
      *    name="sport_modify",
-     *    requirements={"sportId": "^([0-9]+)"},
+     *    requirements={"sportId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("sport", expr="repository.findOneById(sportId)")
      *
@@ -290,7 +290,7 @@ class SportController extends AbstractController
      *
      * @Route("/sport/delete/{sportId}",
      *    name="sport_delete",
-     *    requirements={"sportId": "^([0-9]+)"},
+     *    requirements={"sportId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("sport", expr="repository.findOneById(sportId)")
      *

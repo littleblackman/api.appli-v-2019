@@ -349,7 +349,7 @@ class RideController extends AbstractController
      *
      * @Route("/ride/modify/{rideId}",
      *    name="ride_modify",
-     *    requirements={"rideId": "^([0-9]+)"},
+     *    requirements={"rideId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("ride", expr="repository.findOneById(rideId)")
      *
@@ -402,7 +402,7 @@ class RideController extends AbstractController
      *
      * @Route("/ride/delete/{rideId}",
      *    name="ride_delete",
-     *    requirements={"rideId": "^([0-9]+)"},
+     *    requirements={"rideId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("ride", expr="repository.findOneById(rideId)")
      *

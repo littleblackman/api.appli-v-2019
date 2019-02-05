@@ -196,7 +196,7 @@ class ChildPresenceController extends AbstractController
      *
      * @Route("/child/presence/delete/{childPresenceId}",
      *    name="child_presence_delete",
-     *    requirements={"childPresenceId": "^([0-9]+)"},
+     *    requirements={"childPresenceId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("childPresence", expr="repository.findOneById(childPresenceId)")
      *
@@ -283,7 +283,7 @@ class ChildPresenceController extends AbstractController
      *
      * @Route("/child/presence/delete-registration/{registrationId}",
      *    name="child_presence_delete_by_registration",
-     *    requirements={"registrationId": "^([0-9]+)"},
+     *    requirements={"registrationId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      *
      * @SWG\Response(

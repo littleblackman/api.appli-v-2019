@@ -156,7 +156,7 @@ class PersonController extends AbstractController
      *
      * @Route("/person/display/{personId}",
      *    name="person_display",
-     *    requirements={"personId": "^([0-9]+)"},
+     *    requirements={"personId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("person", expr="repository.findOneById(personId)")
      *
@@ -286,7 +286,7 @@ class PersonController extends AbstractController
      *
      * @Route("/person/modify/{personId}",
      *    name="person_modify",
-     *    requirements={"personId": "^([0-9]+)"},
+     *    requirements={"personId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("person", expr="repository.findOneById(personId)")
      *
@@ -339,7 +339,7 @@ class PersonController extends AbstractController
      *
      * @Route("/person/delete/{personId}",
      *    name="person_delete",
-     *    requirements={"personId": "^([0-9]+)"},
+     *    requirements={"personId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("person", expr="repository.findOneById(personId)")
      *

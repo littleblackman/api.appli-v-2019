@@ -27,13 +27,15 @@ class RegistrationController extends AbstractController
         $this->registrationService = $registrationService;
     }
 
-//LIST
+//LIST BY STATUS
 
     /**
      * Lists all the registrations
      *
-     * @Route("/registration/list",
+     * @Route("/registration/list/{status}",
      *    name="registration_list",
+     *    requirements={"status": "^(cart|in-progress|paid)$"},
+     *    defaults={"status": "null"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -47,6 +49,13 @@ class RegistrationController extends AbstractController
      * @SWG\Response(
      *     response=403,
      *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="status",
+     *     in="path",
+     *     description="null|cart|in-progress|paid registrations",
+     *     type="string",
+     *     default="null",
      * )
      * @SWG\Parameter(
      *     name="page",
@@ -64,12 +73,86 @@ class RegistrationController extends AbstractController
      * )
      * @SWG\Tag(name="Registration")
      */
-    public function listAll(Request $request, PaginatorInterface $paginator)
+    public function listAll(Request $request, $status, PaginatorInterface $paginator)
     {
         $this->denyAccessUnlessGranted('registrationList');
 
         $registrations = $paginator->paginate(
-            $this->registrationService->findAll(),
+            $this->registrationService->findAllByStatus($status),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $registrationsArray = array();
+        foreach ($registrations->getItems() as $registration) {
+            $registrationsArray[] = $this->registrationService->toArray($registration);
+        };
+
+        return new JsonResponse($registrationsArray);
+    }
+
+//LIST BY PERSONID AND STATUS
+
+    /**
+     * Lists all the registrations
+     *
+     * @Route("/registration/list/{personId}/{status}",
+     *    name="registration_list_person_status",
+     *    requirements={
+     *        "personId": "^([0-9]+)$",
+     *        "status": "^(cart|in-progress|paid)$"
+     *    },
+     *    defaults={"status": "null"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Registration::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="personId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the person",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="status",
+     *     in="path",
+     *     description="null|cart|in-progress|paid registrations",
+     *     type="string",
+     *     default="null",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Registration")
+     */
+    public function listByPersonStatus(Request $request, int $personId, $status, PaginatorInterface $paginator)
+    {
+        $this->denyAccessUnlessGranted('registrationList', $personId);
+
+        $registrations = $paginator->paginate(
+            $this->registrationService->findAllByPersonAndStatus($personId, $status),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
@@ -89,7 +172,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/registration/display/{registrationId}",
      *    name="registration_display",
-     *    requirements={"registrationId": "^([0-9]+)"},
+     *    requirements={"registrationId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("registration", expr="repository.findOneById(registrationId)")
      *
@@ -171,7 +254,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/registration/modify/{registrationId}",
      *    name="registration_modify",
-     *    requirements={"registrationId": "^([0-9]+)"},
+     *    requirements={"registrationId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("registration", expr="repository.findOneById(registrationId)")
      *
@@ -224,7 +307,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/registration/delete/{registrationId}",
      *    name="registration_delete",
-     *    requirements={"registrationId": "^([0-9]+)"},
+     *    requirements={"registrationId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("registration", expr="repository.findOneById(registrationId)")
      *

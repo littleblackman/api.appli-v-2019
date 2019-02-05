@@ -33,7 +33,7 @@ class PhoneController extends AbstractController
      *
      * @Route("/phone/display/{phoneId}",
      *    name="phone_display",
-     *    requirements={"phoneId": "^([0-9]+)"},
+     *    requirements={"phoneId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("phone", expr="repository.findOneById(phoneId)")
      *
@@ -114,7 +114,7 @@ class PhoneController extends AbstractController
      *
      * @Route("/phone/modify/{phoneId}",
      *    name="phone_modify",
-     *    requirements={"phoneId": "^([0-9]+)"},
+     *    requirements={"phoneId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("phone", expr="repository.findOneById(phoneId)")
      *
@@ -167,7 +167,7 @@ class PhoneController extends AbstractController
      *
      * @Route("/phone/delete/{phoneId}",
      *    name="phone_delete",
-     *    requirements={"phoneId": "^([0-9]+)"},
+     *    requirements={"phoneId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("phone", expr="repository.findOneById(phoneId)")
      *

@@ -89,7 +89,7 @@ class TelevisionController extends AbstractController
      *
      * @Route("/television/display/{televisionId}",
      *    name="television_display",
-     *    requirements={"televisionId": "^([0-9]+)"},
+     *    requirements={"televisionId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("television", expr="repository.findOneById(televisionId)")
      *
@@ -176,7 +176,7 @@ class TelevisionController extends AbstractController
      *
      * @Route("/television/modify/{televisionId}",
      *    name="television_modify",
-     *    requirements={"televisionId": "^([0-9]+)"},
+     *    requirements={"televisionId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("television", expr="repository.findOneById(televisionId)")
      *
@@ -229,7 +229,7 @@ class TelevisionController extends AbstractController
      *
      * @Route("/television/delete/{televisionId}",
      *    name="television_delete",
-     *    requirements={"televisionId": "^([0-9]+)"},
+     *    requirements={"televisionId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("component", expr="repository.findOneById(televisionId)")
      *

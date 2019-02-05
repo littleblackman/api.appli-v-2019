@@ -156,7 +156,7 @@ class ComponentController extends AbstractController
      *
      * @Route("/component/display/{componentId}",
      *    name="component_display",
-     *    requirements={"componentId": "^([0-9]+)"},
+     *    requirements={"componentId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("component", expr="repository.findOneById(componentId)")
      *
@@ -237,7 +237,7 @@ class ComponentController extends AbstractController
      *
      * @Route("/component/modify/{componentId}",
      *    name="component_modify",
-     *    requirements={"componentId": "^([0-9]+)"},
+     *    requirements={"componentId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("component", expr="repository.findOneById(componentId)")
      *
@@ -290,7 +290,7 @@ class ComponentController extends AbstractController
      *
      * @Route("/component/delete/{componentId}",
      *    name="component_delete",
-     *    requirements={"componentId": "^([0-9]+)"},
+     *    requirements={"componentId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("component", expr="repository.findOneById(componentId)")
      *

@@ -22,7 +22,7 @@ class RegistrationControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"child": "1", "person": "1", "product": "1", "invoice": 1, "payed": "100.50", "status": "Status", "sessions": [{"date": "2018-01-20", "start": "09:00:00", "end": "18:00:00"}, {"date": "2018-01-20", "start": "09:00:00", "end": "18:00:00"}], "location": 1, "sport": 1}'
+            '{"child": "1", "person": "1", "product": "1", "invoice": 1, "payed": "100.50", "status": "cart", "sessions": [{"date": "2018-01-20", "start": "09:00:00", "end": "18:00:00"}, {"date": "2018-01-20", "start": "09:00:00", "end": "18:00:00"}], "location": 1, "sport": 1}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
@@ -78,6 +78,22 @@ class RegistrationControllerTest extends WebTestCase
     {
         //Tests list
         $this->clientAuthenticated->request('GET', '/registration/list');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('registrationId', $first);
+
+        //Tests list with status
+        $this->clientAuthenticated->request('GET', '/registration/list/cart');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('registrationId', $first);
+
+        //Tests list with personId and status
+        $this->clientAuthenticated->request('GET', '/registration/list/1/cart');
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
         $this->assertInternalType('array', $content);

@@ -89,7 +89,7 @@ class LocationController extends AbstractController
      *
      * @Route("/location/display/{locationId}",
      *    name="location_display",
-     *    requirements={"locationId": "^([0-9]+)"},
+     *    requirements={"locationId": "^([0-9]+)$"},
      *    methods={"HEAD", "GET"})
      * @Entity("location", expr="repository.findOneById(locationId)")
      *
@@ -171,7 +171,7 @@ class LocationController extends AbstractController
      *
      * @Route("/location/modify/{locationId}",
      *    name="location_modify",
-     *    requirements={"locationId": "^([0-9]+)"},
+     *    requirements={"locationId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("location", expr="repository.findOneById(locationId)")
      *
@@ -224,7 +224,7 @@ class LocationController extends AbstractController
      *
      * @Route("/location/delete/{locationId}",
      *    name="location_delete",
-     *    requirements={"locationId": "^([0-9]+)"},
+     *    requirements={"locationId": "^([0-9]+)$"},
      *    methods={"HEAD", "DELETE"})
      * @Entity("location", expr="repository.findOneById(locationId)")
      *
