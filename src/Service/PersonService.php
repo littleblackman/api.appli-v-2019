@@ -56,6 +56,19 @@ class PersonService implements PersonServiceInterface
     }
 
     /**
+     * Adds specific data that could not be added via generic method
+     */
+    public function addSpecificData(Person $object, array $data)
+    {
+        //Adds relations
+        if (array_key_exists('relations', $data)) {
+            foreach ($data['relations'] as $relation) {
+                $this->addRelation($relation['related'], $relation['relation'], $object);
+            }
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create(string $data)
@@ -64,6 +77,7 @@ class PersonService implements PersonServiceInterface
         $object = new Person();
         $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'person-create', $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -201,16 +215,10 @@ class PersonService implements PersonServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'person-modify', $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
-
-        //Adds relations
-        if (array_key_exists('relations', $data)) {
-            foreach ($data['relations'] as $relation) {
-                $this->addRelation($relation['related'], $relation['relation'], $object);
-            }
-        }
 
         //Persists data
         $this->mainService->modify($object);

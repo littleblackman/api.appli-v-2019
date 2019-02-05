@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.25.3
+- Ajout de la possibilité d'ajouter des relations dans PersonService->create() (05/02/2019)
+
 v0.25.2.1
 - Mise à jour de UserBundle (05/02/2019)
 - Modification du message sur la homepage (05/02/2019)
