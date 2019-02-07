@@ -81,6 +81,13 @@ class Product
     private $descriptionEn;
 
     /**
+     * @var int|null
+     *
+     * @ORM\Column(name="quantity", type="integer", nullable=true)
+     */
+    private $quantity;
+
+    /**
      * @var float|null
      *
      * @ORM\Column(name="price_ttc", type="float", nullable=true)
@@ -310,6 +317,18 @@ class Product
     public function setDescriptionEn(?string $descriptionEn): self
     {
         $this->descriptionEn = $descriptionEn;
+
+        return $this;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(?int $quantity): self
+    {
+        $this->quantity = $quantity;
 
         return $this;
     }

@@ -1,9 +1,12 @@
 ChangeLog
 
+v0.25.6
+- Ajout de `quantity` à Product (07/02/2019)
+
 v0.25.5
 - Ajout de `vat` à InvoiceComponent (07/02/2019)
 - Correction de InvoiceComponentType (07/02/2019)
-- Modification du persist des Invoice afin que tout (+InvoiceProduct et InvoiceComponent) soi enregistré dans la même transaction (07/02/2019)
+- Modification du persist des Invoice afin que tout (+InvoiceProduct et InvoiceComponent) soit enregistré dans la même transaction (07/02/2019)
 
 v0.25.4
 - Suppression de la possibilité d'ajouter des relations dans PersonService->create() car uniquement dans modify (05/02/2019)
