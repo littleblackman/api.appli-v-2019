@@ -33,10 +33,37 @@ class StaffPresenceControllerTest extends WebTestCase
      */
     public function testDisplay()
     {
-        //Test for a day
+        //Tests for a staff for a day
         $this->clientAuthenticated->request('GET', '/staff/presence/display/1/2019-01-20');
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('staffPresenceId', $first);
+
+        //Tests for a staff for a month
+        $this->clientAuthenticated->request('GET', '/staff/presence/display/1/2019-01');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('staffPresenceId', $first);
+
+        //Tests for a staff for a year
+        $this->clientAuthenticated->request('GET', '/staff/presence/display/1/2019');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('staffPresenceId', $first);
+
+        //Tests for a staff for all
+        $this->clientAuthenticated->request('GET', '/staff/presence/display/1');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('staffPresenceId', $first);
     }
 
     /**

@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.25.9.1
+- Correction staffPresenceRepository (07/02/2019)
+
 v0.25.9
 - Modification script backup (07/02/2019)
 - Ajout de `preferences` dans Registration (07/02/2019)

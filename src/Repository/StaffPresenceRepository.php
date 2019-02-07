@@ -102,7 +102,7 @@ class StaffPresenceRepository extends EntityRepository
      */
     public function findByStaff($staffId, $date)
     {
-        $dateCriteria = null !== $date ? 'pr.date LIKE :date' : ' 1 = 1';
+        $dateCriteria = 'all' !== $date ? 'pr.date LIKE :date' : ' 1 = 1';
 
         $qb = $this->createQueryBuilder('pr')
             ->addSelect('s, z')
@@ -118,7 +118,7 @@ class StaffPresenceRepository extends EntityRepository
             ->setParameter('staffId', $staffId)
         ;
 
-        if (null !== $date) {
+        if ('all' !== $date) {
             $qb->setParameter('date', $date . '%');
         }
 
