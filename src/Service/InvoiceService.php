@@ -33,20 +33,14 @@ class InvoiceService implements InvoiceServiceInterface
      */
     public function addInvoiceProduct($data, Invoice $object)
     {
+        //Submits data
         $invoiceProduct = new InvoiceProduct();
         $this->mainService->create($invoiceProduct);
-        $invoiceProduct
-            ->setInvoice($object)
-            ->setNameFr(array_key_exists('nameFr', $data) ? $data['nameFr'] : null)
-            ->setNameEn(array_key_exists('nameEn', $data) ? $data['nameEn'] : null)
-            ->setDescriptionFr(array_key_exists('descriptionFr', $data) ? $data['descriptionFr'] : null)
-            ->setDescriptionEn(array_key_exists('descriptionEn', $data) ? $data['descriptionEn'] : null)
-            ->setPriceTtc(array_key_exists('priceTtc', $data) ? $data['priceTtc'] : null)
-            ->setPrices(array_key_exists('prices', $data) ? $data['prices'] : null)
-        ;
+        $this->mainService->submit($invoiceProduct, 'invoice-product-create', $data);
+        $invoiceProduct->setInvoice($object);
 
         //Persists data
-        $this->mainService->persist($invoiceProduct);
+        $this->em->persist($invoiceProduct);
 
         if (array_key_exists('invoiceComponents', $data)) {
             foreach ($data['invoiceComponents'] as $invoiceComponent) {
@@ -61,23 +55,14 @@ class InvoiceService implements InvoiceServiceInterface
      */
     public function addInvoiceComponent($data, InvoiceProduct $object)
     {
+        //Submits data
         $invoiceComponent = new InvoiceComponent();
         $this->mainService->create($invoiceComponent);
-        $invoiceComponent
-            ->setInvoiceProduct($object)
-            ->setNameFr(array_key_exists('nameFr', $data) ? $data['nameFr'] : null)
-            ->setNameEn(array_key_exists('nameEn', $data) ? $data['nameEn'] : null)
-            ->setPriceHt(array_key_exists('priceHt', $data) ? $data['priceHt'] : null)
-            ->setPriceVat(array_key_exists('priceVat', $data) ? $data['priceVat'] : null)
-            ->setPriceTtc(array_key_exists('priceTtc', $data) ? $data['priceTtc'] : null)
-            ->setQuantity(array_key_exists('quantity', $data) ? $data['quantity'] : null)
-            ->setTotalHt(array_key_exists('totalHt', $data) ? $data['totalHt'] : null)
-            ->setTotalVat(array_key_exists('totalVat', $data) ? $data['totalVat'] : null)
-            ->setTotalTtc(array_key_exists('totalTtc', $data) ? $data['totalTtc'] : null)
-        ;
+        $this->mainService->submit($invoiceComponent, 'invoice-component-create', $data);
+        $invoiceComponent->setInvoiceProduct($object);
 
         //Persists data
-        $this->mainService->persist($invoiceComponent);
+        $this->em->persist($invoiceComponent);
     }
 
     /**
@@ -215,11 +200,11 @@ class InvoiceService implements InvoiceServiceInterface
                 if (null !== $invoiceComponents && !empty($invoiceComponents)) {
                     foreach ($invoiceComponents as $invoiceComponent) {
                         $this->mainService->delete($invoiceComponent);
-                        $this->mainService->persist($invoiceComponent);
+                        $this->em->persist($invoiceComponent);
                     }
                 }
                 $this->mainService->delete($invoiceProduct);
-                $this->mainService->persist($invoiceProduct);
+                $this->em->persist($invoiceProduct);
             }
         }
     }

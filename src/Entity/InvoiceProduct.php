@@ -191,7 +191,7 @@ class InvoiceProduct
 
     public function getPrices(): ?array
     {
-        return unserialize($this->prices);
+        return null !== $this->prices ? unserialize($this->prices) : null;
     }
 
     public function setPrices(?array $prices): self

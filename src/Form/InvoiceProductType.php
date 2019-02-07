@@ -40,7 +40,10 @@ class InvoiceProductType extends AbstractType
                 'required' => false,
                 'scale' => 2,
                 ))
-            ->add('invoicesComponents', CollectionType::class, array(
+            ->add('prices', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('invoiceComponents', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => InvoiceComponentType::class,
                 'mapped' => false,
@@ -52,8 +55,8 @@ class InvoiceProductType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'App\Entity\Invoice',
-            'intention' => 'InvoiceForm',
+            'data_class' => 'App\Entity\InvoiceProduct',
+            'intention' => 'InvoiceProductForm',
         ));
     }
 }

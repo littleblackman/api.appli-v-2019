@@ -30,7 +30,19 @@ class InvoiceComponentType extends AbstractType
             ->add('nameEn', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('vat', NumberType::class, array(
+                'required' => false,
+                'scale' => 2,
+                ))
             ->add('priceHt', NumberType::class, array(
+                'required' => false,
+                'scale' => 2,
+                ))
+            ->add('priceVat', NumberType::class, array(
+                'required' => false,
+                'scale' => 2,
+                ))
+            ->add('priceTtc', NumberType::class, array(
                 'required' => false,
                 'scale' => 2,
                 ))
@@ -38,7 +50,15 @@ class InvoiceComponentType extends AbstractType
                 'required' => false,
                 'scale' => 2,
                 ))
-            ->add('vat', NumberType::class, array(
+            ->add('totalHt', NumberType::class, array(
+                'required' => false,
+                'scale' => 2,
+                ))
+            ->add('totalVat', NumberType::class, array(
+                'required' => false,
+                'scale' => 2,
+                ))
+            ->add('totalTtc', NumberType::class, array(
                 'required' => false,
                 'scale' => 2,
                 ))

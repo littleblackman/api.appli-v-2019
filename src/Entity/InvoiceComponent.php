@@ -57,6 +57,13 @@ class InvoiceComponent
     /**
      * @var float|null
      *
+     * @ORM\Column(name="vat", type="float", nullable=true)
+     */
+    private $vat;
+
+    /**
+     * @var float|null
+     *
      * @ORM\Column(name="price_ht", type="float", nullable=true)
      */
     private $priceHt;
@@ -138,6 +145,18 @@ class InvoiceComponent
     public function setNameEn(?string $nameEn): self
     {
         $this->nameEn = $nameEn;
+
+        return $this;
+    }
+
+    public function getVat(): ?float
+    {
+        return $this->vat;
+    }
+
+    public function setVat(?float $vat): self
+    {
+        $this->vat = $vat;
 
         return $this;
     }

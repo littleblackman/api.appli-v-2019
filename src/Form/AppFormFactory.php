@@ -63,6 +63,12 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'invoice-modify':
                 $form = InvoiceType::class;
                 break;
+            case 'invoice-product-create':
+                $form = InvoiceProductType::class;
+                break;
+            case 'invoice-component-create':
+                $form = InvoiceComponentType::class;
+                break;
             case 'location-create':
             case 'location-modify':
                 $form = LocationType::class;

@@ -26,8 +26,8 @@ class InvoiceControllerTest extends WebTestCase
             "invoiceProducts": [
                 {"nameFr": "nom produit fr", "nameEn": "name product en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceTtc": 480.00,
                     "invoiceComponents": [
-                        {"nameFr": "nom composant fr", "nameEn": "name component en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totaltHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00},
-                        {"nameFr": "nom composant 2 fr", "nameEn": "name component 2 en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totaltHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00}
+                        {"nameFr": "nom composant fr", "nameEn": "name component en", "vat": "10.00", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00},
+                        {"nameFr": "nom composant 2 fr", "nameEn": "name component 2 en", "vat": "20.00", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00}
                     ]},
                 {"nameFr": "nom produit 2 fr", "nameEn": "name product 2 en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceTtc": 500.00}
             ]}'
@@ -65,8 +65,8 @@ class InvoiceControllerTest extends WebTestCase
             "invoiceProducts": [
                 {"nameFr": "nom produit fr", "nameEn": "name product en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceTtc": 480.00,
                     "invoiceComponents": [
-                        {"nameFr": "nom composant fr", "nameEn": "name component en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totaltHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00},
-                        {"nameFr": "nom composant 2 fr", "nameEn": "name component 2 en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totaltHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00}
+                        {"nameFr": "nom composant fr", "nameEn": "name component en", "vat": "10.00", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00},
+                        {"nameFr": "nom composant 2 fr", "nameEn": "name component 2 en", "vat": "20.00", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00}
                     ]},
                 {"nameFr": "nom produit 2 fr", "nameEn": "name product 2 en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceTtc": 500.00}
             ]}'
