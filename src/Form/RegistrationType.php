@@ -51,6 +51,9 @@ class RegistrationType extends AbstractType
             ->add('status', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('preferences', TextType::class, array(
+                'required' => false,
+                ))
             ->add('sessions', TextType::class, array(
                 'required' => false,
                 ))

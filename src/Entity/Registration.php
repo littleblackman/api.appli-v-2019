@@ -87,6 +87,13 @@ class Registration
     /**
      * @var string|null
      *
+     * @ORM\Column(name="preferences", type="string", nullable=true)
+     */
+    private $preferences;
+
+    /**
+     * @var string|null
+     *
      * @ORM\Column(name="sessions", type="string", nullable=true)
      */
     private $sessions;
@@ -117,6 +124,9 @@ class Registration
         //Specific data
         if (null !== $objectArray['registration']) {
             $objectArray['registration'] = $objectArray['registration']->format('Y-m-d');
+        }
+        if (null !== $objectArray['preferences']) {
+            $objectArray['preferences'] = unserialize($objectArray['preferences']);
         }
         if (null !== $objectArray['sessions']) {
             $objectArray['sessions'] = unserialize($objectArray['sessions']);
@@ -214,9 +224,21 @@ class Registration
         return $this;
     }
 
+    public function getPreferences(): ?string
+    {
+        return null !== $this->preferences ? unserialize($this->preferences) : null;
+    }
+
+    public function setPreferences(?string $preferences): self
+    {
+        $this->preferences = $preferences;
+
+        return $this;
+    }
+
     public function getSessions()
     {
-        return unserialize($this->sessions);
+        return null !== $this->sessions ? unserialize($this->sessions) : null;
     }
 
     public function setSessions($sessions): self
