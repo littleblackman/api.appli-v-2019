@@ -54,6 +54,15 @@ class InvoiceType extends AbstractType
             ->add('prices', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('address', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('postal', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('town', TextType::class, array(
+                'required' => false,
+                ))
             ->add('invoiceProducts', CollectionType::class, array(
                 'required' => false,
                 'entry_type' => InvoiceProductType::class,

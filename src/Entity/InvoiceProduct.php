@@ -73,11 +73,11 @@ class InvoiceProduct
     private $descriptionEn;
 
     /**
-     * @var int|null
+     * @var float|null
      *
-     * @ORM\Column(name="quantity", type="integer", nullable=true)
+     * @ORM\Column(name="price_ht", type="float", nullable=true)
      */
-    private $quantity;
+    private $priceHt;
 
     /**
      * @var float|null
@@ -87,11 +87,25 @@ class InvoiceProduct
     private $priceTtc;
 
     /**
-     * @var string|null
+     * @var int|null
      *
-     * @ORM\Column(name="prices", type="string", nullable=true)
+     * @ORM\Column(name="quantity", type="integer", nullable=true)
      */
-    private $prices;
+    private $quantity;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(name="total_ht", type="float", nullable=true)
+     */
+    private $totalHt;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(name="total_ttc", type="float", nullable=true)
+     */
+    private $totalTtc;
 
     /**
      * @ORM\OneToMany(targetEntity="InvoiceComponent", mappedBy="invoiceProduct")
@@ -110,11 +124,6 @@ class InvoiceProduct
     public function toArray()
     {
         $objectArray = get_object_vars($this);
-
-        //Specific data
-        if (null !== $objectArray['prices']) {
-            $objectArray['prices'] = $this->getPrices();
-        }
 
         return $objectArray;
     }
@@ -184,14 +193,14 @@ class InvoiceProduct
         return $this;
     }
 
-    public function getQuantity(): ?int
+    public function getPriceHt(): ?float
     {
-        return $this->quantity;
+        return $this->priceHt;
     }
 
-    public function setQuantity(?int $quantity): self
+    public function setPriceHt(?float $priceHt): self
     {
-        $this->quantity = $quantity;
+        $this->priceHt = $priceHt;
 
         return $this;
     }
@@ -208,14 +217,38 @@ class InvoiceProduct
         return $this;
     }
 
-    public function getPrices(): ?array
+    public function getQuantity(): ?int
     {
-        return null !== $this->prices ? unserialize($this->prices) : null;
+        return $this->quantity;
     }
 
-    public function setPrices(?array $prices): self
+    public function setQuantity(?int $quantity): self
     {
-        $this->prices = serialize($prices);
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getTotalHt(): ?float
+    {
+        return $this->totalHt;
+    }
+
+    public function setTotalHt(?float $totalHt): self
+    {
+        $this->totalHt = $totalHt;
+
+        return $this;
+    }
+
+    public function getTotalTtc(): ?float
+    {
+        return $this->totalTtc;
+    }
+
+    public function setTotalTtc(?float $totalTtc): self
+    {
+        $this->totalTtc = $totalTtc;
 
         return $this;
     }

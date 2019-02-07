@@ -37,15 +37,25 @@ class InvoiceProductType extends AbstractType
             ->add('descriptionEn', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('quantity', IntegerType::class, array(
+            ->add('priceHt', NumberType::class, array(
                 'required' => false,
+                'scale' => 2,
                 ))
             ->add('priceTtc', NumberType::class, array(
                 'required' => false,
                 'scale' => 2,
                 ))
-            ->add('prices', TextType::class, array(
+            ->add('quantity', IntegerType::class, array(
                 'required' => false,
+                'scale' => 2,
+                ))
+            ->add('totalHt', NumberType::class, array(
+                'required' => false,
+                'scale' => 2,
+                ))
+            ->add('totalTtc', NumberType::class, array(
+                'required' => false,
+                'scale' => 2,
                 ))
             ->add('invoiceComponents', CollectionType::class, array(
                 'required' => false,

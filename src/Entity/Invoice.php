@@ -108,6 +108,27 @@ class Invoice
     private $prices;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="address", type="string", length=256, nullable=true)
+     */
+    private $address;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="postal", type="string", length=10, nullable=true)
+     */
+    private $postal;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="town", type="string", length=64, nullable=true)
+     */
+    private $town;
+
+    /**
      * @ORM\OneToMany(targetEntity="InvoiceProduct", mappedBy="invoice")
      * @SWG\Property(ref=@Model(type=InvoiceProduct::class))
      */
@@ -139,6 +160,18 @@ class Invoice
     public function getInvoiceId(): ?int
     {
         return $this->invoiceId;
+    }
+
+    public function getChild(): ?Child
+    {
+        return $this->child;
+    }
+
+    public function setChild(?Child $child): self
+    {
+        $this->child = $child;
+
+        return $this;
     }
 
     public function getNameFr(): ?string
@@ -249,14 +282,38 @@ class Invoice
         return $this;
     }
 
-    public function getChild(): ?Child
+    public function getAddress(): ?string
     {
-        return $this->child;
+        return $this->address;
     }
 
-    public function setChild(?Child $child): self
+    public function setAddress(?string $address): self
     {
-        $this->child = $child;
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getPostal(): ?string
+    {
+        return $this->postal;
+    }
+
+    public function setPostal(?string $postal): self
+    {
+        $this->postal = $postal;
+
+        return $this;
+    }
+
+    public function getTown(): ?string
+    {
+        return $this->town;
+    }
+
+    public function setTown(?string $town): self
+    {
+        $this->town = $town;
 
         return $this;
     }

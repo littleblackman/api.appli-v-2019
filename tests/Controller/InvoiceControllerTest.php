@@ -22,14 +22,14 @@ class InvoiceControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"child": 1, "nameFr": "nom français", "nameEn": "name english", "descriptionFr": "Description fr", "descriptionEn": "Description english", "date": "2018-01-20 18:00:00", "number": "1", "paymentMethod": "card", "priceTtc": 980.00,
+            '{"child": 1, "nameFr": "nom français", "nameEn": "name english", "descriptionFr": "Description fr", "descriptionEn": "Description english", "date": "2018-01-20 18:00:00", "number": "1", "paymentMethod": "card", "priceTtc": 980.00, "address": "adresse", "postal": "74800", "town": "Amancy",
             "invoiceProducts": [
-                {"nameFr": "nom produit fr", "nameEn": "name product en", "descriptionFr": "description fr", "descriptionEn": "description en", "quantity": 2, "priceTtc": 480.00,
+                {"nameFr": "nom produit fr", "nameEn": "name product en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceHt": 100.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalTtc": 240.00,
                     "invoiceComponents": [
                         {"nameFr": "nom composant fr", "nameEn": "name component en", "vat": "10.00", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00},
                         {"nameFr": "nom composant 2 fr", "nameEn": "name component 2 en", "vat": "20.00", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00}
                     ]},
-                {"nameFr": "nom produit 2 fr", "nameEn": "name product 2 en", "descriptionFr": "description fr", "descriptionEn": "description en", "quantity": 2, "priceTtc": 500.00}
+                {"nameFr": "nom produit 2 fr", "nameEn": "name product 2 en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceHt": 100.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalTtc": 240.00}
             ]}'
         );
         $response = $this->clientAuthenticated->getResponse();
@@ -61,14 +61,14 @@ class InvoiceControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"child": 1, "nameFr": "nom français modifié", "nameEn": "name english modified", "descriptionFr": "Description fr modifiée", "descriptionEn": "Description english modified", "date": "2018-01-20 19:00:00", "number": "1", "paymentMethod": "check", "priceTtc": 980.00,
+            '{"child": 1, "nameFr": "nom français modifié", "nameEn": "name english modified", "descriptionFr": "Description fr modifiée", "descriptionEn": "Description english modified", "date": "2018-01-20 19:00:00", "number": "1", "paymentMethod": "check", "priceTtc": 980.00, "address": "adresse", "postal": "74800", "town": "Amancy",
             "invoiceProducts": [
-                {"nameFr": "nom produit fr", "nameEn": "name product en", "descriptionFr": "description fr", "descriptionEn": "description en", "quantity": 2, "priceTtc": 480.00,
+                {"nameFr": "nom produit fr", "nameEn": "name product en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceHt": 100.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalTtc": 240.00,
                     "invoiceComponents": [
                         {"nameFr": "nom composant fr", "nameEn": "name component en", "vat": "10.00", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00},
                         {"nameFr": "nom composant 2 fr", "nameEn": "name component 2 en", "vat": "20.00", "priceHt": 100.00, "priceVat": 20.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalVat": 40.00, "totalTtc": 240.00}
                     ]},
-                {"nameFr": "nom produit 2 fr", "nameEn": "name product 2 en", "descriptionFr": "description fr", "descriptionEn": "description en", "quantity": 2, "priceTtc": 500.00}
+                {"nameFr": "nom produit 2 fr", "nameEn": "name product 2 en", "descriptionFr": "description fr", "descriptionEn": "description en", "priceHt": 100.00, "priceTtc": 120.00, "quantity": 1, "totalHt": 200.00, "totalTtc": 240.00}
             ]}'
         );
         $response = $this->clientAuthenticated->getResponse();
