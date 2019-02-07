@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.25.7
+- Suppression de quantity dans Product et ajout dans InvoiceProduct (07/02/2019)
+
 v0.25.6
 - Ajout de `quantity` à Product (07/02/2019)
 

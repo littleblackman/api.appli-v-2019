@@ -9,7 +9,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -43,9 +42,6 @@ class ProductType extends AbstractType
                 'required' => false,
                 ))
             ->add('descriptionEn', TextType::class, array(
-                'required' => false,
-                ))
-            ->add('quantity', IntegerType::class, array(
                 'required' => false,
                 ))
             ->add('priceTtc', NumberType::class, array(
