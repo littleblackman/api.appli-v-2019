@@ -231,12 +231,12 @@ class Registration
         return $this;
     }
 
-    public function getPreferences(): ?string
+    public function getPreferences()
     {
         return null !== $this->preferences ? unserialize($this->preferences) : null;
     }
 
-    public function setPreferences(?string $preferences): self
+    public function setPreferences($preferences): self
     {
         $this->preferences = $preferences;
 

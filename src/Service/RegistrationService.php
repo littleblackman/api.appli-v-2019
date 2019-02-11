@@ -40,6 +40,11 @@ class RegistrationService implements RegistrationServiceInterface
         //Adds registration datetime
         $object->setRegistration(new DateTime());
 
+        //Adds preferences
+        if (array_key_exists('preferences', $data)) {
+            $object->setPreferences(serialize($data['preferences']));
+        }
+
         //Adds sessions
         if (array_key_exists('sessions', $data)) {
             $object->setSessions(serialize($data['sessions']));

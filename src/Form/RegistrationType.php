@@ -9,6 +9,7 @@ use App\Entity\Product;
 use App\Entity\RegistrationSportLink;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -61,9 +62,11 @@ class RegistrationType extends AbstractType
                 'required' => false,
                 'class' => Location::class,
                 ))
-            ->add('sports', EntityType::class, array(
+            ->add('sports', CollectionType::class, array(
                 'required' => false,
-                'class' => RegistrationSportLink::class,
+                'entry_type' => RegistrationSportLinkType::class,
+                'mapped' => false,
+                'allow_extra_fields' => true,
                 ))
         ;
     }

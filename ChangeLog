@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.25.11.1
+- Correction field `sports` pour RegistrationType (11/02/2019)
+- Correction de l'ajout du champ `peferences` sur Registration (11/02/2019)
+
 v0.25.11
 - Modification de `sport` sur Registration en array avec table de liens (11/02/2019)
 
