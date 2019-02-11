@@ -7,7 +7,11 @@ use App\Entity\Traits\SuppressionTrait;
 use App\Entity\Traits\UpdateTrait;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 /**
  * Registration
@@ -99,7 +103,7 @@ class Registration
     private $sessions;
 
     /**
-     * @var Product
+     * @var Location
      *
      * @ORM\OneToOne(targetEntity="Location")
      * @ORM\JoinColumn(name="location_id", referencedColumnName="location_id")
@@ -107,12 +111,15 @@ class Registration
     private $location;
 
     /**
-     * @var Product
-     *
-     * @ORM\OneToOne(targetEntity="Sport")
-     * @ORM\JoinColumn(name="sport_id", referencedColumnName="sport_id")
+     * @ORM\OneToMany(targetEntity="RegistrationSportLink", mappedBy="registration")
+     * @SWG\Property(ref=@Model(type=Sport::class))
      */
-    private $sport;
+    private $sports;
+
+    public function __construct()
+    {
+        $this->sports = new ArrayCollection();
+    }
 
     /**
      * Converts the entity in an array
@@ -260,14 +267,33 @@ class Registration
         return $this;
     }
 
-    public function getSport(): ?Sport
+    /**
+     * @return Collection|RegistrationSportLink[]
+     */
+    public function getSports(): Collection
     {
-        return $this->sport;
+        return $this->sports;
     }
 
-    public function setSport(?Sport $sport): self
+    public function addSport(RegistrationSportLink $sport): self
     {
-        $this->sport = $sport;
+        if (!$this->sports->contains($sport)) {
+            $this->sports[] = $sport;
+            $sport->setRegistration($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSport(RegistrationSportLink $sport): self
+    {
+        if ($this->sports->contains($sport)) {
+            $this->sports->removeElement($sport);
+            // set the owning side to null (unless already changed)
+            if ($sport->getRegistration() === $this) {
+                $sport->setRegistration(null);
+            }
+        }
 
         return $this;
     }

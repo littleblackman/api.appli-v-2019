@@ -6,7 +6,7 @@ use App\Entity\Child;
 use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Product;
-use App\Entity\Sport;
+use App\Entity\RegistrationSportLink;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -61,9 +61,9 @@ class RegistrationType extends AbstractType
                 'required' => false,
                 'class' => Location::class,
                 ))
-            ->add('sport', EntityType::class, array(
+            ->add('sports', EntityType::class, array(
                 'required' => false,
-                'class' => Sport::class,
+                'class' => RegistrationSportLink::class,
                 ))
         ;
     }

@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Registration;
+use App\Entity\RegistrationSportLink;
+use App\Entity\Sport;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -42,6 +44,33 @@ class RegistrationService implements RegistrationServiceInterface
         if (array_key_exists('sessions', $data)) {
             $object->setSessions(serialize($data['sessions']));
         }
+
+        //Adds sports
+        if (array_key_exists('sports', $data)) {
+            //Removes old links
+            $this->removeSportsLinks($object);
+
+            //Adds new links
+            foreach ($data['sports'] as $sport) {
+                $this->addSportLink($sport['sportId'], $object);
+            }
+        }
+    }
+
+    /**
+     * Adds link between Registration and Sport
+     */
+    public function addSportLink(int $sportId, Registration $object)
+    {
+        $sport = $this->em->getRepository('App:Sport')->findOneById($sportId);
+        if ($sport instanceof Sport && !$sport->getSuppressed()) {
+            $registrationSportLink = new RegistrationSportLink();
+            $registrationSportLink
+                ->setRegistration($object)
+                ->setSport($sport)
+            ;
+            $this->em->persist($registrationSportLink);
+        }
     }
 
     /**
@@ -77,6 +106,9 @@ class RegistrationService implements RegistrationServiceInterface
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
+
+        //Deletes links to sports
+        $this->removeSportsLinks($object);
 
         return array(
             'status' => true,
@@ -142,6 +174,19 @@ class RegistrationService implements RegistrationServiceInterface
     }
 
     /**
+     * Removes links from Registration
+     */
+    public function removeSportsLinks(Registration $object)
+    {
+        $links = $object->getSports();
+        if (null !== $links && !empty($links)) {
+            foreach ($links as $link) {
+                $this->em->remove($link);
+            }
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray(Registration $object)
@@ -169,9 +214,15 @@ class RegistrationService implements RegistrationServiceInterface
             $objectArray['location'] = $this->mainService->toArray($object->getLocation()->toArray());
         }
 
-        //Gets related sport
-        if (null !== $object->getSport() && !$object->getSport()->getSuppressed()) {
-            $objectArray['sport'] = $this->mainService->toArray($object->getSport()->toArray());
+        //Gets related sports
+        if (null !== $object->getSports()) {
+            $sports = array();
+            foreach($object->getSports() as $sport) {
+                if (!$sport->getSport()->getSuppressed()) {
+                    $sports[] = $this->mainService->toArray($sport->getSport()->toArray());
+                }
+            }
+            $objectArray['sports'] = $sports;
         }
 
         return $objectArray;

@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.25.11
+- Modification de `sport` sur Registration en array avec table de liens (11/02/2019)
+
 v0.25.10
 - Mise à jour bundles (08/02/2019)
 
