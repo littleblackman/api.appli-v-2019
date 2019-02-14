@@ -31,6 +31,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'address-modify':
                 $form = AddressType::class;
                 break;
+            case 'blog-create':
+            case 'blog-modify':
+                $form = BlogType::class;
+                break;
             case 'category-create':
             case 'category-modify':
                 $form = CategoryType::class;
@@ -72,6 +76,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'location-create':
             case 'location-modify':
                 $form = LocationType::class;
+                break;
+            case 'mail-create':
+            case 'mail-modify':
+                $form = MailType::class;
                 break;
             case 'meal-create':
             case 'meal-modify':
