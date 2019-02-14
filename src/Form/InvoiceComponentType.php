@@ -48,7 +48,6 @@ class InvoiceComponentType extends AbstractType
                 ))
             ->add('quantity', IntegerType::class, array(
                 'required' => false,
-                'scale' => 2,
                 ))
             ->add('totalHt', NumberType::class, array(
                 'required' => false,

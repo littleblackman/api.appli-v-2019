@@ -10,10 +10,11 @@ trait TestTrait
 
     public function setUp()
     {
-        self::bootKernel();
+        $kernel = self::bootKernel();
 
-        $container = self::$kernel->getContainer();
-        $this->em = self::$container->get('doctrine')->getManager();
+        $this->em = $kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
 
         $this->clientAuthenticated = $this->createAuthenticatedClient($_ENV['ADMIN_USER'], $_ENV['ADMIN_PASSWORD']);
     }

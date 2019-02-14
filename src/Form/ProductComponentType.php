@@ -36,7 +36,6 @@ class ProductComponentType extends AbstractType
                 ))
             ->add('quantity', IntegerType::class, array(
                 'required' => false,
-                'scale' => 2,
                 ))
             ->add('vat', NumberType::class, array(
                 'required' => false,
