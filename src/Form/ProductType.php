@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Child;
 use App\Entity\Family;
+use App\Entity\Mail;
 use App\Entity\Season;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -60,6 +61,10 @@ class ProductType extends AbstractType
                 ))
             ->add('photo', TextType::class, array(
                 'required' => false,
+                ))
+            ->add('mail', EntityType::class, array(
+                'required' => false,
+                'class' => Mail::class,
                 ))
             ->add('isLocationSelectable', CheckboxType::class, array(
                 'required' => false,

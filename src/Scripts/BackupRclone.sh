@@ -10,34 +10,40 @@ Hosts="/var/www/vhosts";
 Rclone="sb_project_SBI-LM966748:default";
 
 #Synchronizes the appli-v.net folder
-rclone sync \
-    $Hosts/appli-v.net \
-    $Rclone/appli-v.net \
+rclone \
     --skip-links \
-    --tpslimit 18 \
-    --tpslimit-burst 1 \
+    --tpslimit 20 \
+    --tpslimit-burst 2 \
     --exclude cache/ \
     --exclude backup/ \
     --exclude dev/ \
-    --delete-excluded;
+    --delete-excluded \
+    --local-no-check-updated \
+    sync \
+    $Hosts/appli-v.net \
+    $Rclone/appli-v.net;
 
 #Synchronizes the energykidsacademy.net folder
-rclone sync \
-    $Hosts/energykidsacademy.net \
-    $Rclone/energykidsacademy.net \
+rclone \
     --skip-links \
-    --tpslimit 18 \
-    --tpslimit-burst 1 \
+    --tpslimit 20 \
+    --tpslimit-burst 2 \
     --exclude cache/ \
     --exclude dev/ \
-    --delete-excluded;
+    --delete-excluded \
+    --local-no-check-updated \
+    sync \
+    $Hosts/energykidsacademy.net \
+    $Rclone/energykidsacademy.net;
 
 #Copies the backup files (original are still on the server)
-rclone copy \
+rclone \
+    --tpslimit 20 \
+    --tpslimit-burst 2 \
+    --local-no-check-updated \
+    copy \
     $Hosts/appli-v.net/api.appli-v.net/var/backup \
-    $Rclone/backup \
-    --tpslimit 18 \
-    --tpslimit-burst 1;
+    $Rclone/backup;
 
 ######################################### Restore ###############################################
 # The computer has to have a copy of the config file located in /root/.config/rclone/rclone.conf

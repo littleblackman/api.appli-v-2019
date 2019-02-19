@@ -124,6 +124,14 @@ class Product
     private $photo;
 
     /**
+     * @var Child
+     *
+     * @ORM\OneToOne(targetEntity="Mail")
+     * @ORM\JoinColumn(name="mail_id", referencedColumnName="mail_id")
+     */
+    private $mail;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="is_location_selectable", type="boolean")
@@ -382,6 +390,18 @@ class Product
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getMail(): ?Mail
+    {
+        return $this->mail;
+    }
+
+    public function setMail(?Mail $mail): self
+    {
+        $this->mail = $mail;
 
         return $this;
     }

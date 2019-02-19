@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.26.1
+- Mise à jour du script de backup (15/02/2019)
+- Ajout de Mail sur Product (19/02/2019)
+
 v0.26
 - Ajout de l'entité Blog (14/02/2019)
 - Ajout de l'entité Mail (14/02/2019)

@@ -435,6 +435,11 @@ class ProductService implements ProductServiceInterface
             $objectArray['child'] = $this->mainService->toArray($object->getChild()->toArray());
         }
 
+        //Gets related mail
+        if (null !== $object->getMail() && !$object->getMail()->getSuppressed()) {
+            $objectArray['mail'] = $this->mainService->toArray($object->getMail()->toArray());
+        }
+
         //Gets related links
         $linksArray = array(
             'categories' => 'category',

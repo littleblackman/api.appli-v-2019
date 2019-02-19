@@ -67,16 +67,16 @@
         },
         {
             "name": "c975l/email-bundle",
-            "version": "v2.1.2.2",
+            "version": "v2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/EmailBundle.git",
-                "reference": "0b54b9860e2fefbdfb202ac3b4f42df4b6f05df2"
+                "reference": "8c1130fe9c70d117c0702d74b0bcc078fcaa91ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/EmailBundle/zipball/0b54b9860e2fefbdfb202ac3b4f42df4b6f05df2",
-                "reference": "0b54b9860e2fefbdfb202ac3b4f42df4b6f05df2",
+                "url": "https://api.github.com/repos/975L/EmailBundle/zipball/8c1130fe9c70d117c0702d74b0bcc078fcaa91ff",
+                "reference": "8c1130fe9c70d117c0702d74b0bcc078fcaa91ff",
                 "shasum": ""
             },
             "require": {
@@ -126,7 +126,7 @@
                 "bundle",
                 "symfony"
             ],
-            "time": "2019-02-14T09:32:21+00:00"
+            "time": "2019-02-15T09:47:42+00:00"
         },
         {
             "name": "c975l/includelibrary-bundle",
@@ -296,16 +296,16 @@
         },
         {
             "name": "c975l/user-bundle",
-            "version": "v2.4",
+            "version": "v2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/UserBundle.git",
-                "reference": "0d3b02174cd01b3ce7d235f4e03d6919d7ad71c6"
+                "reference": "5368fe4c7d657f94da63e59099c51fab9fa49609"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/UserBundle/zipball/0d3b02174cd01b3ce7d235f4e03d6919d7ad71c6",
-                "reference": "0d3b02174cd01b3ce7d235f4e03d6919d7ad71c6",
+                "url": "https://api.github.com/repos/975L/UserBundle/zipball/5368fe4c7d657f94da63e59099c51fab9fa49609",
+                "reference": "5368fe4c7d657f94da63e59099c51fab9fa49609",
                 "shasum": ""
             },
             "require": {
@@ -358,7 +358,7 @@
                 "symfony",
                 "user"
             ],
-            "time": "2019-02-14T09:29:32+00:00"
+            "time": "2019-02-15T14:16:37+00:00"
         },
         {
             "name": "cocur/slugify",
