@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.26.2
+- Ajout d'un search sur les dates des Invoice (20/02/2019)
+- Autorisation des number === null sur Invoice (20/02/2019)
+- Suppression deu contenu de InvoiceProductRepository car non utilisé (20/02/2019)
+
 v0.26.1
 - Mise à jour du script de backup (15/02/2019)
 - Ajout de Mail sur Product (19/02/2019)

@@ -106,7 +106,18 @@ class InvoiceControllerTest extends WebTestCase
      */
     public function testSearch()
     {
+        //Search on name
         $this->clientAuthenticated->request('GET', '/invoice/search/name');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Search with dateStart
+        $this->clientAuthenticated->request('GET', '/invoice/search/2018-01-20');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Search with dateStart & dateEnd
+        $this->clientAuthenticated->request('GET', '/invoice/search/2018-01-20/2018-01-21');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }

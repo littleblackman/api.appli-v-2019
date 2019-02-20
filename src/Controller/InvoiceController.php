@@ -149,6 +149,82 @@ class InvoiceController extends AbstractController
         return new JsonResponse($invoicesArray);
     }
 
+//SEARCH BY DATES
+
+    /**
+     * Searches by dates of invoices
+     *
+     * @Route("/invoice/search/{dateStart}/{dateEnd}",
+     *    name="invoice_search_by_dates",
+     *    requirements={
+     *        "dateStart": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$",
+     *        "dateEnd": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"
+     *    },
+     *    defaults={"dateEnd": "null"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Invoice::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="dateStart",
+     *     in="path",
+     *     description="Date start for the invoices (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="dateEnd",
+     *     in="path",
+     *     description="Date for the invoices (YYYY-MM-DD | YYYY-MM | null)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Invoice")
+     */
+    public function searchByDates(Request $request, PaginatorInterface $paginator, string $dateStart, string $dateEnd)
+    {
+        $this->denyAccessUnlessGranted('invoiceList');
+
+        $invoices = $paginator->paginate(
+            $this->invoiceService->findAllSearchByDates($dateStart, $dateEnd),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $invoicesArray = array();
+        foreach ($invoices->getItems() as $invoice) {
+            $invoicesArray[] = $this->invoiceService->toArray($invoice);
+        };
+
+        return new JsonResponse($invoicesArray);
+    }
+
 //DISPLAY
 
     /**

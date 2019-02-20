@@ -37,6 +37,29 @@ class InvoiceRepository extends EntityRepository
     }
 
     /**
+     * Returns all the invoices with dates between those provided
+     */
+    public function findAllSearchByDates(string $dateStart, string $dateEnd)
+    {
+        $dateCondition = 'null' === $dateEnd ? 'i.date >= :dateStart' : 'i.date BETWEEN :dateStart AND :dateEnd';
+
+        $qb = $this->createQueryBuilder('i')
+            ->where($dateCondition)
+            ->andWhere('i.suppressed = 0')
+            ->orderBy('i.nameFr', 'ASC')
+            ->setParameter('dateStart', $dateStart);
+        ;
+
+        if ('null' !== $dateEnd) {
+            $qb->setParameter('dateEnd', $dateEnd);
+        }
+
+        return $qb
+            ->getQuery()
+        ;
+    }
+
+    /**
      * Returns the invoice if not suppressed
      */
     public function findOneById($invoiceId)

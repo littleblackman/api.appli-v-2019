@@ -153,12 +153,23 @@ class InvoiceService implements InvoiceServiceInterface
     }
 
     /**
+     * Searches the invoices between two dates in the Invoice collection
+     * @return array
+     */
+    public function findAllSearchByDates(string $dateStart, string $dateEnd)
+    {
+        return $this->em
+            ->getRepository('App:Invoice')
+            ->findAllSearchByDates($dateStart, $dateEnd)
+        ;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Invoice $object)
     {
-        if (null === $object->getNameFr() ||
-            null === $object->getNumber()) {
+        if (null === $object->getNameFr()) {
             throw new UnprocessableEntityHttpException('Missing data for Invoice -> ' . json_encode($object->toArray()));
         }
     }
