@@ -16,10 +16,9 @@ class GroupActivityRepository extends EntityRepository
     public function findAllByDate($date)
     {
         return $this->createQueryBuilder('ga')
-            ->where('ga.date LIKE :date')
+            ->where('ga.date = :date')
             ->andWhere('ga.suppressed = 0')
-            ->setParameter('date', $date . '%')
-            ->orderBy('ga.date', 'ASC')
+            ->setParameter('date', $date)
             ->addOrderBy('ga.start', 'ASC')
             ->getQuery()
             ->getResult()
@@ -56,6 +55,26 @@ class GroupActivityRepository extends EntityRepository
             ->setParameter('groupActivityId', $groupActivityId)
             ->getQuery()
             ->getOneOrNullResult()
+        ;
+    }
+
+    /**
+     * Returns the groupActivity specified by criteria
+     */
+    public function findAllByDateStartEndSport($date, $start, $end, $sportId)
+    {
+        return $this->createQueryBuilder('ga')
+            ->where('ga.date = :date')
+            ->andWhere('ga.start <= :start')
+            ->andWhere('ga.end >= :end')
+            ->andWhere('ga.sport = :sport')
+            ->andWhere('ga.suppressed = 0')
+            ->setParameter('date', $date)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->setParameter('sport', $sportId)
+            ->getQuery()
+            ->getResult()
         ;
     }
 }

@@ -81,9 +81,8 @@ class PhoneService implements PhoneServiceInterface
     public function delete(Phone $object)
     {
         //Removes links from person/s to phone
-        $links = $object->getPersons();
-        if (null !== $links && !empty($links)) {
-            foreach ($links as $link) {
+        if (!$object->getPersons()->isEmpty()) {
+            foreach ($object->getPersons() as $link) {
                 $personPhoneLink = $this->em->getRepository('App:PersonPhoneLink')->findOneBy(array('person' => $link->getPerson(), 'phone' => $object));
                 $this->em->remove($personPhoneLink);
             }

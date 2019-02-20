@@ -98,6 +98,92 @@ class PickupActivityController extends AbstractController
         return new JsonResponse($pickupActivitiesArray);
     }
 
+//AFFECT
+
+    /**
+     * Affects all the Pickups to the GroupActivity
+     *
+     * @Route("/pickup-activity/affect/{date}/{force}",
+     *    name="pickup_activity_affect",
+     *    requirements={
+     *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
+     *        "force": "^(true|false)$"
+     *    },
+     *    defaults={"force": false},
+     *    methods={"HEAD", "PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the pickups Activity (YYYY-MM-DD)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="force",
+     *     in="path",
+     *     description="To force the rewrite of pickups Activity (true|false(default))",
+     *     type="boolean",
+     * )
+     * @SWG\Tag(name="PickupActivity")
+     */
+    public function affect($date, bool $force)
+    {
+        $this->denyAccessUnlessGranted('pickupActivityModify', null);
+
+        $this->pickupActivityService->affect($date, $force);
+
+        return new JsonResponse(array('status' => true));
+    }
+
+//UNAFFECT
+
+    /**
+     * Unaffects all the Pickups to the GroupActivity
+     *
+     * @Route("/pickup-activity/unaffect/{date}",
+     *    name="pickup_activity_unaffect",
+     *    requirements={"date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"},
+     *    methods={"HEAD", "PUT"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the pickups (YYYY-MM-DD)",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="PickupActivity")
+     */
+    public function unaffect($date)
+    {
+        $this->denyAccessUnlessGranted('pickupActivityModify', null);
+
+        $this->pickupActivityService->unaffect($date);
+
+        return new JsonResponse(array('status' => true));
+    }
+
 //DISPLAY
 
     /**

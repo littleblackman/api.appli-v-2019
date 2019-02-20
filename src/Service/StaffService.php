@@ -82,17 +82,15 @@ class StaffService implements StaffServiceInterface
     public function delete(Staff $object)
     {
         //Removes links for zones
-        $links = $object->getDriverZones();
-        if (null !== $links && !empty($links)) {
-            foreach ($links as $link) {
+        if (!$object->getDriverZones()->isEmpty()) {
+            foreach ($object->getDriverZones() as $link) {
                 $this->em->remove($link);
             }
         }
 
         //Removes links for groupActivity
-        $links = $object->getGroupActivities();
-        if (null !== $links && !empty($links)) {
-            foreach ($links as $link) {
+        if (!$object->getGroupActivities()->isEmpty()) {
+            foreach ($object->getGroupActivities() as $link) {
                 $this->em->remove($link);
             }
         }

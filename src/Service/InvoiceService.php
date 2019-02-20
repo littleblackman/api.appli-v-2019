@@ -203,13 +203,12 @@ class InvoiceService implements InvoiceServiceInterface
      */
     public function removeInvoiceProducts(Invoice $object)
     {
-        $invoiceProducts = $object->getInvoiceProducts();
-        if (null !== $invoiceProducts && !empty($invoiceProducts)) {
-            foreach ($invoiceProducts as $invoiceProduct) {
+        //Removes links to InvoiceProducts
+        if (!$object->getInvoiceProducts()->isEmpty()) {
+            foreach ($object->getInvoiceProducts() as $invoiceProduct) {
                 //Removes links to invoiceComponents
-                $invoiceComponents = $invoiceProduct->getInvoiceComponents();
-                if (null !== $invoiceComponents && !empty($invoiceComponents)) {
-                    foreach ($invoiceComponents as $invoiceComponent) {
+                if (!$invoiceProduct->getInvoiceComponents()->isEmpty()) {
+                    foreach ($invoiceProduct->getInvoiceComponents() as $invoiceComponent) {
                         $this->mainService->delete($invoiceComponent);
                         $this->em->persist($invoiceComponent);
                     }

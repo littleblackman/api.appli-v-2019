@@ -59,9 +59,8 @@ class CategoryService implements CategoryServiceInterface
     public function delete(Category $object)
     {
         //Removes links to products
-        $products = $object->getProducts();
-        if (null !== $products && !empty($products)) {
-            foreach ($products as $productLink) {
+        if (!$object->getProducts()->isEmpty()) {
+            foreach ($object->getProducts() as $productLink) {
                 $this->em->remove($productLink);
             }
         }

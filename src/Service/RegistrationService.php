@@ -183,9 +183,9 @@ class RegistrationService implements RegistrationServiceInterface
      */
     public function removeSportsLinks(Registration $object)
     {
-        $links = $object->getSports();
-        if (null !== $links && !empty($links)) {
-            foreach ($links as $link) {
+        //Removes links to sports
+        if (!$object->getSports()->isEmpty()) {
+            foreach ($object->getSports() as $link) {
                 $this->em->remove($link);
             }
         }

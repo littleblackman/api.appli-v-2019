@@ -82,6 +82,85 @@ class PickupActivityService implements PickupActivityServiceInterface
     }
 
     /**
+     * Affects the PickupsActivity to GroupActivity for a specific date
+     */
+    public function affect($date, bool $force)
+    {
+        //Unaffects PickupsActivity if force is requested
+        if($force) {
+            $this->unaffect($date);
+        }
+
+        //Defines PickupsActivity to use
+        $pickupsActivity = $this->findAllByDate($date);
+        $pickupsActivityFinal = array();
+        foreach ($pickupsActivity as $pickupActivity) {
+            //If there are no links with GroupActivity adds the PickupActivity with its age group and sport
+            if ($pickupActivity->getGroupActivities()->isEmpty()) {
+                $age = $pickupActivity->getChild()->getBirthdate()->diff(new DateTime())->y;
+                switch (true) {
+                    case $age < 7:
+                        $ageGroup = 'group-1';
+                        break;
+
+                    case $age < 10:
+                        $ageGroup = 'group-2';
+                        break;
+
+                    case $age < 13:
+                        $ageGroup = 'group-3';
+                        break;
+
+                    default:
+                        $ageGroup = 'group-4';
+                        break;
+                }
+
+                $sport = 'sport-' . $pickupActivity->getSport()->getSportId();
+                $pickupsActivityFinal[$sport][$ageGroup][] = $pickupActivity;
+            }
+        }
+        unset($pickupsActivity);
+
+        //Affects PickupActivity to GroupActivity
+        if (!empty($pickupsActivityFinal)) {
+            $maxByGroup = 4;
+            $maxByGroupAge13 = 8;
+
+            foreach ($pickupsActivityFinal as $sport => $pickupActivitiesGroup) {
+                foreach ($pickupActivitiesGroup as $group => $pickupActivities) {
+                    foreach ($pickupActivities as $pickupActivity) {
+                        //Gets GroupActivities
+                        $sportId = str_replace('sport-', '', $sport);
+                        $start = $pickupActivity->getStart();
+                        $end = $pickupActivity->getEnd();
+                        $groupActivities = $this->em->getRepository('App:GroupActivity')->findAllByDateStartEndSport($date, $start, $end, $sportId);
+
+                        //Affects PickupActivity to GroupActivity if not full
+                        if (null !== $groupActivities) {
+                            foreach ($groupActivities as $groupActivity) {
+                                if ($groupActivity->getPickupActivities()->count() < $maxByGroup) {
+                                    $pickupActivityGroupActivityLink = new PickupActivityGroupActivityLink();
+                                    $pickupActivityGroupActivityLink
+                                        ->setPickupActivity($pickupActivity)
+                                        ->setGroupActivity($groupActivity)
+                                    ;
+
+                                    //Persists data
+                                    $this->em->persist($pickupActivityGroupActivityLink);
+                                    $this->em->flush();
+                                    $this->em->refresh($groupActivity);
+                                    $this->em->refresh($pickupActivity);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create(string $data, $return = true)
@@ -135,10 +214,9 @@ class PickupActivityService implements PickupActivityServiceInterface
     public function delete(PickupActivity $object, $return = true)
     {
         //Removes links from pickupActivity to groupActivity
-        $objectGroupActivityLinks = $this->em->getRepository('App:PickupActivityGroupActivityLink')->findByPickupActivity($object);
-        foreach ($objectGroupActivityLinks as $objectGroupActivityLink) {
-            if ($objectGroupActivityLink instanceof PickupActivityGroupActivityLink) {
-                $this->em->remove($objectGroupActivityLink);
+        if (!$object->getGroupActivities()->isEmpty()) {
+            foreach ($object->getGroupActivities() as $groupActivity) {
+                $this->em->remove($groupActivity);
             }
         }
 
@@ -175,11 +253,11 @@ class PickupActivityService implements PickupActivityServiceInterface
     /**
      * Gets all the PickupActivities by date
      */
-    public function findAllByDate(string $date, string $kind)
+    public function findAllByDate(string $date)
     {
         return $this->em
             ->getRepository('App:PickupActivity')
-            ->findAllByDate($date, $kind)
+            ->findAllByDate($date)
         ;
     }
 
@@ -264,5 +342,32 @@ class PickupActivityService implements PickupActivityServiceInterface
         }
 
         return $objectArray;
+    }
+
+    /**
+     * Unaffects all the PickupActivity from GroupActivity for a specific date
+     */
+    public function unaffect($date)
+    {
+        $counter = 0;
+        $pickupsActivity = $this->findAllByDate($date);
+        if (!empty($pickupsActivity)) {
+            foreach ($pickupsActivity as $pickupActivity) {
+                //Unaffects PïckupActivity
+                if (!$pickupActivity->getGroupActivities()->isEmpty()) {
+                    foreach ($pickupActivity->getGroupActivities() as $groupActivity) {
+                        $this->em->remove($groupActivity);
+                    }
+
+                    $counter++;
+                    if (20 === $counter) {
+                        $this->em->flush();
+                        $counter = 0;
+                    }
+                }
+            }
+        }
+
+        $this->em->flush();
     }
 }

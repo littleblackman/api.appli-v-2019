@@ -118,6 +118,29 @@ class PickupActivityControllerTest extends WebTestCase
     }
 
     /**
+     * Tests affect
+     */
+    public function testAffect()
+    {
+        $this->clientAuthenticated->request('PUT', '/pickup-activity/affect/2018-11-20');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+        $this->clientAuthenticated->request('PUT', '/pickup-activity/affect/2018-11-20/true');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
+     * Tests unaffect
+     */
+    public function testUnaffect()
+    {
+        $this->clientAuthenticated->request('PUT', '/pickup-activity/unaffect/2018-11-20');
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
      * Tests delete PickupActivity AND physically deletes it
      */
     public function testDelete()

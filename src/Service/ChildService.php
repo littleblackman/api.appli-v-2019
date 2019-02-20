@@ -193,9 +193,8 @@ class ChildService implements ChildServiceInterface
      */
     public function removeLinks(Child $object)
     {
-        $links = $object->getPersons();
-        if (null !== $links && !empty($links)) {
-            foreach ($links as $link) {
+        if (!$object->getPersons()->isEmpty()) {
+            foreach ($object->getPersons() as $link) {
                 $this->em->remove($link);
             }
         }
@@ -206,9 +205,8 @@ class ChildService implements ChildServiceInterface
      */
     public function removeSiblings(Child $object)
     {
-        $siblings = $object->getSiblings();
-        if (null !== $siblings && !empty($siblings)) {
-            foreach ($siblings as $sibling) {
+        if (!$object->getSiblings()->isEmpty()) {
+            foreach ($object->getSiblings() as $sibling) {
                 $this->em->remove($sibling);
             }
         }

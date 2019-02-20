@@ -403,9 +403,8 @@ class ProductService implements ProductServiceInterface
     {
         foreach ($data as $field) {
             $method = 'get' . ucfirst($field);
-            $links = $object->$method();
-            if (null !== $links && !empty($links)) {
-                foreach ($links as $link) {
+            if (!$object->$method()->isEmpty()) {
+                foreach ($object->$method() as $link) {
                     $this->em->remove($link);
                 }
             }

@@ -84,9 +84,8 @@ class AddressService implements AddressServiceInterface
     public function delete(Address $object)
     {
         //Removes links from person/s to address
-        $links = $object->getPersons();
-        if (null !== $links && !empty($links)) {
-            foreach ($links as $link) {
+        if (!$object->getPersons()->isEmpty()) {
+            foreach ($object->getPersons() as $link) {
                 $personAddressLink = $this->em->getRepository('App:PersonAddressLink')->findOneBy(array('person' => $link->getPerson(), 'address' => $object));
                 $this->em->remove($personAddressLink);
             }

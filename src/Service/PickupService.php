@@ -500,7 +500,7 @@ class PickupService implements PickupServiceInterface
             $pickups = $this->findAllByDate($date, $kind);
             if (!empty($pickups)) {
                 foreach ($pickups as $pickup) {
-                    //Unaffects ïckup if it's ride is NOT locked
+                    //Unaffects Pïckup if it's Ride is NOT locked
                     if (null !== $pickup->getRide() && !$pickup->getRide()->getLocked()) {
                         $pickup
                             ->setRide(null)

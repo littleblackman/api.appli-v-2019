@@ -13,18 +13,13 @@ class PickupActivityRepository extends EntityRepository
     /**
      * Returns all the pickupActivities by date
      */
-    public function findAllByDate($date, $kind)
+    public function findAllByDate($date)
     {
-        return $this->createQueryBuilder('p')
-            ->where('p.date LIKE :date')
-            ->andWhere('p.kind = :kind')
-            ->andWhere('p.suppressed = 0')
-            ->setParameter('date', $date . '%')
-            ->setParameter('kind', $kind)
-            ->orderBy('p.postal', 'ASC')
-            ->addOrderBy('p.date', 'ASC')
-            ->addOrderBy('p.start', 'ASC')
-            ->addOrderBy('p.pickupActivityId', 'ASC')
+        return $this->createQueryBuilder('pa')
+            ->where('pa.date = :date')
+            ->andWhere('pa.suppressed = 0')
+            ->setParameter('date', $date)
+            ->orderBy('pa.start', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -35,14 +30,14 @@ class PickupActivityRepository extends EntityRepository
      */
     public function findAllByStatus($date, $status)
     {
-        $statusCondition = 'null' === $status ? 'p.status IS NULL' : 'p.status = :status';
+        $statusCondition = 'null' === $status ? 'pa.status IS NULL' : 'pa.status = :status';
 
-        $qb = $this->createQueryBuilder('p')
+        $qb = $this->createQueryBuilder('pa')
             ->where($statusCondition)
-            ->andWhere('p.date LIKE :date')
-            ->andWhere('p.suppressed = 0')
-            ->orderBy('p.date', 'ASC')
-            ->addOrderBy('p.start', 'ASC')
+            ->andWhere('pa.date LIKE :date')
+            ->andWhere('pa.suppressed = 0')
+            ->orderBy('pa.date', 'ASC')
+            ->addOrderBy('pa.start', 'ASC')
             ->setParameter('date', $date . '%')
         ;
 
@@ -61,8 +56,8 @@ class PickupActivityRepository extends EntityRepository
      */
     public function findByRegistrationId($registrationId)
     {
-        return $this->createQueryBuilder('p')
-            ->where('p.registration = :registrationId')
+        return $this->createQueryBuilder('pa')
+            ->where('pa.registration = :registrationId')
             ->setParameter('registrationId', $registrationId)
             ->getQuery()
             ->getResult()
@@ -74,11 +69,11 @@ class PickupActivityRepository extends EntityRepository
      */
     public function findOneById($pickupActivityId)
     {
-        return $this->createQueryBuilder('p')
+        return $this->createQueryBuilder('pa')
             ->addSelect('c')
-            ->leftJoin('p.child', 'c')
-            ->where('p.pickupActivityId = :pickupActivityId')
-            ->andWhere('p.suppressed = 0')
+            ->leftJoin('pa.child', 'c')
+            ->where('pa.pickupActivityId = :pickupActivityId')
+            ->andWhere('pa.suppressed = 0')
             ->setParameter('pickupActivityId', $pickupActivityId)
             ->getQuery()
             ->getOneOrNullResult()

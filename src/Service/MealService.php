@@ -84,9 +84,8 @@ class MealService implements MealServiceInterface
     public function delete(Meal $object)
     {
         //Removes links from meal to food
-        $links = $object->getFoods();
-        if (null !== $links && !empty($links)) {
-            foreach ($links as $link) {
+        if (!$object->getFoods()->isEmpty()) {
+            foreach ($object->getFoods() as $link) {
                 $this->em->remove($link);
             }
         }
