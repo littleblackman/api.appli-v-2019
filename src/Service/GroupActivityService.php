@@ -256,7 +256,6 @@ class GroupActivityService implements GroupActivityServiceInterface
     public function isEntityFilled(GroupActivity $object)
     {
         if (null === $object->getDate() ||
-            null === $object->getName() ||
             null === $object->getStart()) {
             throw new UnprocessableEntityHttpException('Missing data for GroupActivity -> ' . json_encode($object->toArray()));
         }

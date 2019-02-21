@@ -98,6 +98,76 @@ class PickupActivityController extends AbstractController
         return new JsonResponse($pickupActivitiesArray);
     }
 
+//LIST BY ChildId AND DATE
+
+    /**
+     * Lists all the pickupActivity by childId and date
+     *
+     * @Route("/pickup-activity/list/{childId}/{date}",
+     *    name="pickup_activity_list_child",
+     *    requirements={
+     *        "childId": "^([0-9]+)$",
+     *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=PickupActivity::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="childId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the child",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the pickupActivity (YYYY-MM-DD)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="PickupActivity")
+     */
+    public function listByChildDate(Request $request, PaginatorInterface $paginator, $date, $childId)
+    {
+        $this->denyAccessUnlessGranted('pickupActivityList');
+
+        $pickupActivities = $paginator->paginate(
+            $this->pickupActivityService->findAllByChildDate($childId, $date),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $pickupActivitiesArray = array();
+        foreach ($pickupActivities->getItems() as $pickupActivity) {
+            $pickupActivitiesArray[] = $this->pickupActivityService->toArray($pickupActivity);
+        };
+
+        return new JsonResponse($pickupActivitiesArray);
+    }
+
 //AFFECT
 
     /**

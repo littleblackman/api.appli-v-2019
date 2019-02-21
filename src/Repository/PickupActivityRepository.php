@@ -11,6 +11,22 @@ use Doctrine\ORM\EntityRepository;
 class PickupActivityRepository extends EntityRepository
 {
     /**
+     * Returns all the pickupActivities by child and date
+     */
+    public function findAllByChildDate($childId, $date)
+    {
+        return $this->createQueryBuilder('pa')
+            ->where('pa.child = :child')
+            ->andWhere('pa.date = :date')
+            ->andWhere('pa.suppressed = 0')
+            ->setParameter('child', $childId)
+            ->setParameter('date', $date)
+            ->orderBy('pa.start', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    /**
      * Returns all the pickupActivities by date
      */
     public function findAllByDate($date)

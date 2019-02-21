@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.27.2
+- Possibilité de Name bull pour GroupActivity (21/02/2019)
+- Ajout de la Route `pickup_activity_list_child` (21/02/2019)
+
 v0.27.1
 - Modification du ChangeLog (21/02/2019)
 

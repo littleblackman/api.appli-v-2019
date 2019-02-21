@@ -115,6 +115,14 @@ class PickupActivityControllerTest extends WebTestCase
         $this->assertInternalType('array', $content);
         $first = $content[0];
         $this->assertArrayHasKey('pickupActivityId', $first);
+
+        //Tests with child and date
+        $this->clientAuthenticated->request('GET', '/pickup-activity/list/1/2018-11-20');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('pickupActivityId', $first);
     }
 
     /**

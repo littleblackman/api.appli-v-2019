@@ -251,6 +251,17 @@ class PickupActivityService implements PickupActivityServiceInterface
     }
 
     /**
+     * Gets all the PickupActivities by child and date
+     */
+    public function findAllByChildDate(int $childId, string $date)
+    {
+        return $this->em
+            ->getRepository('App:PickupActivity')
+            ->findAllByChildDate($childId, $date)
+        ;
+    }
+
+    /**
      * Gets all the PickupActivities by date
      */
     public function findAllByDate(string $date)
