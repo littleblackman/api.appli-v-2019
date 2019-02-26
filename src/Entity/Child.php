@@ -39,6 +39,13 @@ class Child
     /**
      * @var string
      *
+     * @ORM\Column(name="gender", type="string", length=1, nullable=false)
+     */
+    private $gender;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="firstname", type="string", length=64, nullable=false)
      */
     private $firstname;
@@ -114,6 +121,18 @@ class Child
     public function getChildId(): ?int
     {
         return $this->childId;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?string $gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
     }
 
     public function getFirstname(): ?string

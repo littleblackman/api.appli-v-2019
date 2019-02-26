@@ -21,6 +21,9 @@ class ChildType extends AbstractType
             ->add('firstname', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('gender', TextType::class, array(
+                'required' => false,
+                ))
             ->add('lastname', TextType::class, array(
                 'required' => false,
                 ))

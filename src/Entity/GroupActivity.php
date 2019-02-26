@@ -51,6 +51,13 @@ class GroupActivity
     private $name;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="locked", type="boolean")
+     */
+    private $locked;
+
+    /**
      * @var DateTime|null
      *
      * @ORM\Column(name="start", type="time")
@@ -153,6 +160,18 @@ class GroupActivity
     public function setDate(?DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getLocked(): ?bool
+    {
+        return $this->locked;
+    }
+
+    public function setLocked(?bool $locked): self
+    {
+        $this->locked = $locked;
 
         return $this;
     }

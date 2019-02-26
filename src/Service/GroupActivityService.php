@@ -87,6 +87,9 @@ class GroupActivityService implements GroupActivityServiceInterface
         if (array_key_exists('lunch', $data)) {
             $object->setLunch((bool) $data['lunch']);
         }
+        if (array_key_exists('locked', $data)) {
+            $object->setLocked((bool) $data['locked']);
+        }
 
         //Adds links from pickupActivity to groupActivity
         if (array_key_exists('links', $data)) {
