@@ -30,6 +30,9 @@ class GroupActivityType extends AbstractType
             ->add('name', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('age', TextType::class, array(
+                'required' => false,
+                ))
             ->add('locked', CheckboxType::class, array(
                 'required' => false,
                 ))

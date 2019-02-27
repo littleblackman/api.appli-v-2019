@@ -6,6 +6,8 @@ En cas de ré-installation il est nécessaire d'installer tous les bundles via `
 
 Un script bash de sauvegarde des bases de données est lancé par une crontab, ce script nécessite un fichier de configuration `/config/backup_config.cnf`, voir c975L/ServicesBundle (https://github.com/975L/ServicesBundle/tree/master/Scripts)
 
+L'entité `Parameter` est liée à la table `parameter`. Elle n'a pas de CRUD et est donc uniquement modifiable en passant par le serveur MySql. On récupère les différents paramètres en passant par les méthodes de `ParameterRepository`.
+
 En cas de problème
 Contact
 Laurent Marquet

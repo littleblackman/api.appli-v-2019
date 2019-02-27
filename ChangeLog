@@ -1,5 +1,12 @@
 ChangeLog
 
+v0.27.4
+- Ajout de l'entity Parameter pour pouvoir changer certains paramètres (27/02/2019)
+- Modification de l'unaffect des PickupActivity qui  n'est plus autorisé si le GroupActivity est `locked` (27/02/2019)
+- Modification de l'affect des PickupActivity, ils ne sont plus pris en compte si validated == validated (27/02/2019)
+- Création des GroupActivity en fonction des besoins liés au PickupActivity et non en utilisant ceux qui sont déjà créés (21/02/2019)
+- Ajout du champ `age` sur GroupActivity (27/02/2019)
+
 v0.27.3
 - Ajout du ReadMe (25/02/2019)
 - Ajout de `locked` sur GroupActivity (26/02/2019)

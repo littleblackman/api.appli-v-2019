@@ -51,6 +51,13 @@ class GroupActivity
     private $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="age", type="string", length=8)
+     */
+    private $age;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="locked", type="boolean")
@@ -184,6 +191,18 @@ class GroupActivity
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getAge(): ?string
+    {
+        return $this->age;
+    }
+
+    public function setAge(?string $age): self
+    {
+        $this->age = $age;
 
         return $this;
     }
