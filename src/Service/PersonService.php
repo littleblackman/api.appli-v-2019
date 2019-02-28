@@ -44,7 +44,7 @@ class PersonService implements PersonServiceInterface
     public function addRelation(int $relationId, string $relation, Person $object)
     {
         $related = $this->em->getRepository('App:Person')->findOneByPersonId($relationId);
-        if ($related instanceof Person) {
+        if ($related instanceof Person && $object !== $related) {
             $personPersonLink = new PersonPersonLink();
             $personPersonLink
                 ->setPerson($object)
@@ -52,6 +52,9 @@ class PersonService implements PersonServiceInterface
                 ->setRelation($relation)
             ;
             $this->em->persist($personPersonLink);
+        //Bad PersonId
+        } else {
+            throw new UnprocessableEntityHttpException('Submitted related Person with PersonId: "' . $relationId.'" cannot be added as relation to Person with PersonId: "' . $object->getPersonId() . '"');
         }
     }
 
