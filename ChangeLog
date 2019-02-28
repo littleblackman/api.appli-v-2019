@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.27.5
+- Ré-ajout de la possibilité d'ajouter des relations dans PersonService->create() en faisant un persist du Person avant (05/02/2019)
+
 v0.27.4
 - Ajout de l'entity Parameter pour pouvoir changer certains paramètres (27/02/2019)
 - Modification de l'unaffect des PickupActivity qui  n'est plus autorisé si le GroupActivity est `locked` (27/02/2019)
@@ -13,7 +16,7 @@ v0.27.3
 - Ajout de gender sur child (26/02/2019)
 
 v0.27.2
-- Possibilité de Name bull pour GroupActivity (21/02/2019)
+- Possibilité de Name null pour GroupActivity (21/02/2019)
 - Ajout de la Route `pickup_activity_list_child` (21/02/2019)
 
 v0.27.1

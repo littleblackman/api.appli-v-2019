@@ -95,6 +95,11 @@ class PersonService implements PersonServiceInterface
         //Persists data
         $this->mainService->persist($object);
 
+        //Adds relations that must be added after the creation of the Person
+        $this->em->refresh($object);
+        $this->addSpecificData($object, $data);
+        $this->em->flush();
+
         //Returns data
         return array(
             'status' => true,
