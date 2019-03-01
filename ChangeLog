@@ -1,5 +1,8 @@
 ChangeLog
 
+0.27.6.2
+- Correction du regroupement de l'auto-affect des PickupActivity qui créait trop de groupes (01/03/2019)
+
 v0.27.6.1
 - Séparation en plusieurs méthodes de `PickupActivity > affect()` (01/03/2019)
 - Correction de l'unaffect des PickupActivity pour supprimer les GroupActivity qui ne l'étaient pas (01/03/2019)
@@ -10,7 +13,7 @@ v0.27.6
 
 v0.27.5.2
 - Ajout de https://energykidsacademy.net/ aux CORS (01/03/2019)
-- Ajout d'une location par défaut pour les GroupActivity créés via l'auto-affect des Pickups (01/03/2019)
+- Ajout d'une location par défaut pour les GroupActivity créés via l'auto-affect des PickupActivity (01/03/2019)
 
 v0.27.5.1
 - Ajout d'une protection pour ne pas pouvoir lier un Person à lui même (28/02/2019)
