@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.27.6.1
+- Séparation en plusieurs méthodes de `PickupActivity > affect()` (01/03/2019)
+- Correction de l'unaffect des PickupActivity pour supprimer les GroupActivity qui ne l'étaient pas (01/03/2019)
+- Correction de l'affect des PickupActivity pour grouper les enfants (01/03/2019)
+
 v0.27.6
 - Ajout de la possibilité d'affecter un PickupActivity à 2 GroupActivity si les horaires couvrent la journée (01/03/2019)
 

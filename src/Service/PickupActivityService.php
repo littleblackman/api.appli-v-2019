@@ -87,56 +87,26 @@ class PickupActivityService implements PickupActivityServiceInterface
             $this->unaffect($date);
         }
 
-        //Gets GroupsAge
-        $groupAge = $this->getGroupAge();
-
         //Defines PickupsActivity to use
-        $pickupsActivity = $this->findAllByDate($date);
-        $pickupsActivityFinal = array();
-        foreach ($pickupsActivity as $pickupActivity) {
-            //If there are no links with GroupActivity AND that PickupActivity is not validated, then adds the PickupActivity with its age group and sport
-            if ($pickupActivity->getGroupActivities()->isEmpty() && 'validated' !== $pickupActivity->getValidated()) {
-                $age = $pickupActivity->getChild()->getBirthdate()->diff(new DateTime())->y;
-                switch (true) {
-                    case $age < $groupAge[0]:
-                        $ageGroup = (string) $groupAge[0];
-                        break;
-
-                    case $age < $groupAge[1]:
-                        $ageGroup = (string) $groupAge[1];
-                        break;
-
-                    case $age < $groupAge[2]:
-                        $ageGroup = (string) $groupAge[2];
-                        break;
-
-                    default:
-                        $ageGroup = (string) $groupAge[2] . '+';
-                        break;
-                }
-
-                $sport = 'sport-' . $pickupActivity->getSport()->getSportId();
-                $pickupsActivityFinal[$sport][$ageGroup][] = $pickupActivity;
-            }
-        }
-        unset($pickupsActivity);
+        $pickupActivities = $this->getPickupActivities($date);
 
         //Creates GroupActivities and affects PickupActivity to them
-        if (!empty($pickupsActivityFinal)) {
+        if (!empty($pickupActivities)) {
             //Defines the maximum number of children per GroupActivity
             $maxGroupAgeUnderMax = (int) $this->em->getRepository('App:Parameter')->findOneByName('MaxGroupAgeUnderMax')->getValue();
             $maxGroupAgeOverMax = (int) $this->em->getRepository('App:Parameter')->findOneByName('MaxGroupAgeOverMax')->getValue();
 
-            foreach ($pickupsActivityFinal as $sport => $pickupActivitiesGroup) {
+            //Defines start & end for GroupActivity (hours are taken from table parameter)
+            $groupActivityMorningStart = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityMorningStart')->getValue());
+            $groupActivityMorningEnd = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityMorningEnd')->getValue());
+            $groupActivityAfternoonStart = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityAfternoonStart')->getValue());
+            $groupActivityAfternoonEnd = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityAfternoonEnd')->getValue());
+
+            //Affects PickupActivity to GroupActivity
+            foreach ($pickupActivities as $sport => $pickupActivitiesGroup) {
                 foreach ($pickupActivitiesGroup as $ageGroup => $pickupActivities) {
                     $maxGroupAge = false !== strpos($ageGroup, '+') ? $maxGroupAgeOverMax : $maxGroupAgeUnderMax;
                     foreach ($pickupActivities as $pickupActivity) {
-                        //Defines start & end for GroupActivity (hours are taken from table parameter)
-                        $groupActivityMorningStart = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityMorningStart')->getValue());
-                        $groupActivityMorningEnd = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityMorningEnd')->getValue());
-                        $groupActivityAfternoonStart = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityAfternoonStart')->getValue());
-                        $groupActivityAfternoonEnd = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityAfternoonEnd')->getValue());
-
                         //Defines data related to PickupActivity
                         $start = $pickupActivity->getStart();
                         $end = $pickupActivity->getEnd();
@@ -144,10 +114,12 @@ class PickupActivityService implements PickupActivityServiceInterface
 
                         //Defines if the PickupActivity covers the whole day, to be added in 2 GroupActivity
                         for ($i = 0; $i < $pickupActivityNumber; $i++) {
-                            //Gets GroupActivities
-                            $sportId = (int) str_replace('sport-', '', $sport);
+                            //Use the start/end of PickupActivity if for half-day otherwise (whole day) use the start/end by default
                             $start = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 0 === $i) ? $pickupActivity->getStart() : $groupActivityAfternoonStart;
                             $end = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 1 === $i) ? $pickupActivity->getEnd() : $groupActivityMorningEnd;
+
+                            //Gets GroupActivities
+                            $sportId = (int) str_replace('sport-', '', $sport);
                             $groupActivities = $this->em->getRepository('App:GroupActivity')->findAllByDateAgeStartEndSport($date, $ageGroup, $start, $end, $sportId);
 
                             //Morning group
@@ -165,10 +137,12 @@ class PickupActivityService implements PickupActivityServiceInterface
                                 foreach ($groupActivities as $groupActivity) {
                                     if ($groupActivity->getPickupActivities()->count() < $maxGroupAge) {
                                         $this->affectToGroupActivity($pickupActivity, $groupActivity);
+                                        break;
                                     //Creates GroupActivity if full
                                     } else {
                                         $groupActivity = $this->createGroupActivity($date, $ageGroup, $groupActivityStart, $groupActivityEnd, $sportId);
                                         $this->affectToGroupActivity($pickupActivity, $groupActivity);
+                                        break;
                                     }
                                 }
                             //Creates GroupActivity if none has been found
@@ -364,6 +338,47 @@ class PickupActivityService implements PickupActivityServiceInterface
     }
 
     /**
+     * Returns the PickupActivities for a specific date
+     */
+    public function getPickupActivities($date)
+    {
+        //Gets GroupsAge
+        $groupAge = $this->getGroupAge();
+
+        //Defines PickupActivities
+        $pickupActivities = $this->findAllByDate($date);
+        $pickupsActivityFinal = array();
+        foreach ($pickupActivities as $pickupActivity) {
+            //If there are no links with GroupActivity AND that PickupActivity is not validated, then adds the PickupActivity with its age group and sport
+            if ($pickupActivity->getGroupActivities()->isEmpty() && 'validated' !== $pickupActivity->getValidated()) {
+                $age = $pickupActivity->getChild()->getBirthdate()->diff(new DateTime())->y;
+                switch (true) {
+                    case $age < $groupAge[0]:
+                        $ageGroup = (string) $groupAge[0];
+                        break;
+
+                    case $age < $groupAge[1]:
+                        $ageGroup = (string) $groupAge[1];
+                        break;
+
+                    case $age < $groupAge[2]:
+                        $ageGroup = (string) $groupAge[2];
+                        break;
+
+                    default:
+                        $ageGroup = (string) $groupAge[2] . '+';
+                        break;
+                }
+
+                $sport = 'sport-' . $pickupActivity->getSport()->getSportId();
+                $pickupsActivityFinal[$sport][$ageGroup][] = $pickupActivity;
+            }
+        }
+
+        return $pickupsActivityFinal;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(PickupActivity $object)
@@ -405,7 +420,7 @@ class PickupActivityService implements PickupActivityServiceInterface
     {
         $groupActivities = $this->em->getRepository('App:GroupActivity')->getAllNonLocked($date);
         foreach ($groupActivities as $groupActivity) {
-            if (null === $groupActivity->getStaff() && $groupActivity->getPickupActivities()->isEmpty()) {
+            if ($groupActivity->getStaff()->isEmpty() && $groupActivity->getPickupActivities()->isEmpty()) {
                 $this->em->remove($groupActivity);
             }
         }

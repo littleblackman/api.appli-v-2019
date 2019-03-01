@@ -36,6 +36,7 @@ class PickupActivityRepository extends EntityRepository
             ->andWhere('pa.suppressed = 0')
             ->setParameter('date', $date)
             ->orderBy('pa.start', 'ASC')
+            ->addOrderBy('pa.pickupActivityId', 'ASC')
             ->getQuery()
             ->getResult()
         ;
