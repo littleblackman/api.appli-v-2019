@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.27.5.2
+- Ajout de https://energykidsacademy.net/ aux CORS (01/03/2019)
+- Ajout d'une location par défaut pour les GroupActivity créés via l'auto-affect des Pickups (01/03/2019)
+
 v0.27.5.1
 - Ajout d'une protection pour ne pas pouvoir lier un Person à lui même (28/02/2019)
 

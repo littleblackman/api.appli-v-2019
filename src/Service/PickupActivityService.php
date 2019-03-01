@@ -225,6 +225,10 @@ class PickupActivityService implements PickupActivityServiceInterface
             $groupActivityEnd = $groupActivityAfternoonEnd;
         }
 
+        //Gets default location
+        $locationId = (int) $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityDefaultLocation')->getValue();
+        $location = $this->em->getRepository('App:Location')->findOneByLocationId($locationId);
+
         //Creates GroupActivity
         $groupActivity = new GroupActivity();
         $this->mainService->create($groupActivity);
@@ -233,6 +237,7 @@ class PickupActivityService implements PickupActivityServiceInterface
             ->setAge($ageGroup)
             ->setStart($groupActivityStart)
             ->setEnd($groupActivityEnd)
+            ->setLocation($location)
             ->setSport($this->em->getRepository('App:Sport')->findOneById($sportId))
         ;
         $this->mainService->persist($groupActivity);
