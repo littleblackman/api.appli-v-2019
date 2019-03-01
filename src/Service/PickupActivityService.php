@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\GroupActivity;
+use App\Entity\Location;
 use App\Entity\PickupActivity;
 use App\Entity\PickupActivityGroupActivityLink;
 use DateTime;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 class PickupActivityService implements PickupActivityServiceInterface
 {
     private $em;
+
+    private $groupActivities = array();
 
     private $mainService;
 
@@ -118,10 +121,6 @@ class PickupActivityService implements PickupActivityServiceInterface
                             $start = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 0 === $i) ? $pickupActivity->getStart() : $groupActivityAfternoonStart;
                             $end = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 1 === $i) ? $pickupActivity->getEnd() : $groupActivityMorningEnd;
 
-                            //Gets GroupActivities
-                            $sportId = (int) str_replace('sport-', '', $sport);
-                            $groupActivities = $this->em->getRepository('App:GroupActivity')->findAllByDateAgeStartEndSport($date, $ageGroup, $start, $end, $sportId);
-
                             //Morning group
                             if ($start <= $groupActivityMorningStart && $end >= $groupActivityMorningEnd) {
                                 $groupActivityStart = $groupActivityMorningStart;
@@ -133,16 +132,25 @@ class PickupActivityService implements PickupActivityServiceInterface
                             }
 
                             //Defines data used to create GroupActivity
+                            $sportId = (int) str_replace('sport-', '', $sport);
+                            $location = $pickupActivity->getLocation();
+                            if (!$location instanceof Location) {
+                                $locationId = (int) $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityDefaultLocation')->getValue();
+                                $location = $this->em->getRepository('App:Location')->findOneByLocationId($locationId);
+                            }
                             $dataGroupActivity = array(
                                 'date' => $date,
                                 'ageGroup' => $ageGroup,
                                 'start' => $groupActivityStart,
                                 'end' => $groupActivityEnd,
                                 'sportId' => $sportId,
+                                'location' => $location,
                             );
 
                             //Uses existing GroupActivity
-                            if (!empty($groupActivities)) {
+                            $key = $location->getLocationId() . '-' . $groupActivityStart->format('Hi') . '-' . $sportId . '-' . $ageGroup;
+                            $groupActivities = array_key_exists($key, $this->groupActivities) ? $this->groupActivities[$key] : null;
+                            if (is_array($groupActivities)) {
                                 $this->affectToGroupActivities($groupActivities, $pickupActivity, $maxGroupAge, $dataGroupActivity);
                             //Creates GroupActivity if none has been found
                             } else {
@@ -228,10 +236,6 @@ class PickupActivityService implements PickupActivityServiceInterface
      */
     public function createGroupActivity($data)
     {
-        //Gets default location
-        $locationId = (int) $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityDefaultLocation')->getValue();
-        $location = $this->em->getRepository('App:Location')->findOneByLocationId($locationId);
-
         //Creates GroupActivity
         $groupActivity = new GroupActivity();
         $this->mainService->create($groupActivity);
@@ -240,10 +244,11 @@ class PickupActivityService implements PickupActivityServiceInterface
             ->setAge($data['ageGroup'])
             ->setStart($data['start'])
             ->setEnd($data['end'])
-            ->setLocation($location)
+            ->setLocation($data['location'])
             ->setSport($this->em->getRepository('App:Sport')->findOneById($data['sportId']))
         ;
         $this->mainService->persist($groupActivity);
+        $this->groupActivities[$data['location']->getLocationId() . '-' . $data['start']->format('Hi') . '-' . $data['sportId'] . '-' . $data['ageGroup']][] = $groupActivity;
 
         return $groupActivity;
     }
@@ -371,7 +376,7 @@ class PickupActivityService implements PickupActivityServiceInterface
         $pickupsActivityFinal = array();
         foreach ($pickupActivities as $pickupActivity) {
             //If there are no links with GroupActivity AND that PickupActivity is not validated, then adds the PickupActivity with its age group and sport
-            if ($pickupActivity->getGroupActivities()->isEmpty() && 'validated' !== $pickupActivity->getValidated()) {
+            if ($pickupActivity->getGroupActivities()->isEmpty() && 'validated' !== strtolower($pickupActivity->getValidated())) {
                 $age = $pickupActivity->getChild()->getBirthdate()->diff(new DateTime())->y;
                 switch (true) {
                     case $age < $groupAge[0]:
@@ -470,6 +475,11 @@ class PickupActivityService implements PickupActivityServiceInterface
         //Gets related sport
         if (null !== $object->getSport() && !$object->getSport()->getSuppressed()) {
             $objectArray['sport'] = $this->mainService->toArray($object->getSport()->toArray());
+        }
+
+        //Gets related location
+        if (null !== $object->getLocation() && !$object->getLocation()->getSuppressed()) {
+            $objectArray['location'] = $this->mainService->toArray($object->getLocation()->toArray());
         }
 
         //Gets related groupActivities

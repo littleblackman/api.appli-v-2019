@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Child;
+use App\Entity\Location;
 use App\Entity\Registration;
 use App\Entity\Sport;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -59,6 +60,10 @@ class PickupActivityType extends AbstractType
             ->add('sport', EntityType::class, array(
                 'required' => false,
                 'class' => Sport::class,
+                ))
+            ->add('location', EntityType::class, array(
+                'required' => false,
+                'class' => Location::class,
                 ))
             ->add('links', CollectionType::class, array(
                 'required' => false,

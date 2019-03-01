@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.27.7
+- Modification de l'auto-affect qui ne marchait pas en prod (01/03/2019)
+- Ajout de `location` sur PickupActivity (01/03/2019)
+
 0.27.6.2
 - Correction du regroupement de l'auto-affect des PickupActivity qui créait trop de groupes (01/03/2019)
 

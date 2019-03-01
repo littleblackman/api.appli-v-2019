@@ -59,28 +59,6 @@ class GroupActivityRepository extends EntityRepository
     }
 
     /**
-     * Returns the groupActivity specified by criteria
-     */
-    public function findAllByDateAgeStartEndSport($date, $age, $start, $end, $sportId)
-    {
-        return $this->createQueryBuilder('ga')
-            ->where('ga.date = :date')
-            ->andWhere('ga.age = :age')
-            ->andWhere('ga.start >= :start')
-            ->andWhere('ga.end <= :end')
-            ->andWhere('ga.sport = :sport')
-            ->andWhere('ga.suppressed = 0')
-            ->setParameter('date', $date)
-            ->setParameter('age', $age)
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
-            ->setParameter('sport', $sportId)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
      * Returns all the groupActivity non-locked for a date
      */
     public function getAllNonLocked($date)

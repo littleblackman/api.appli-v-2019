@@ -103,6 +103,14 @@ class PickupActivity
     private $sport;
 
     /**
+     * @var Location
+     *
+     * @ORM\OneToOne(targetEntity="Location")
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="location_id")
+     */
+    private $location;
+
+    /**
      * @ORM\OneToMany(targetEntity="PickupActivityGroupActivityLink", mappedBy="pickupActivity")
      * @SWG\Property(ref=@Model(type=GroupActivity::class))
      */
@@ -247,6 +255,18 @@ class PickupActivity
     public function setSport(?Sport $sport): self
     {
         $this->sport = $sport;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): self
+    {
+        $this->location = $location;
 
         return $this;
     }
