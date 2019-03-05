@@ -81,6 +81,20 @@ class ChildService implements ChildServiceInterface
     }
 
     /**
+     * Adds specific data that could not be added via generic method
+     */
+    public function addSpecificData(Child $object, array $data)
+    {
+        $this->addLinks($object, $data);
+        $this->addSiblings($object, $data);
+
+        //Converts to boolean
+        if (array_key_exists('franceResident', $data)) {
+            $object->setFranceResident((bool) $data['franceResident']);
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create(string $data)
@@ -89,13 +103,10 @@ class ChildService implements ChildServiceInterface
         $object = new Child();
         $this->mainService->create($object);
         $data = $this->mainService->submit($object, 'child-create', $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
-
-        //Adds links
-        $this->addLinks($object, $data);
-        $this->addSiblings($object, $data);
 
         //Persists data
         $this->mainService->persist($object);
@@ -168,10 +179,7 @@ class ChildService implements ChildServiceInterface
     {
         //Submits data
         $data = $this->mainService->submit($object, 'child-modify', $data);
-
-        //Adds links
-        $this->addLinks($object, $data);
-        $this->addSiblings($object, $data);
+        $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
@@ -219,6 +227,11 @@ class ChildService implements ChildServiceInterface
     {
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
+
+        //Gets related school
+        if (null !== $object->getSchool() && !$object->getSchool()->getSuppressed()) {
+            $objectArray['school'] = $this->mainService->toArray($object->getSchool());
+        }
 
         //Gets related persons
         if (null !== $object->getPersons()) {

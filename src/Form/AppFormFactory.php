@@ -113,6 +113,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'ride-modify':
                 $form = RideType::class;
                 break;
+            case 'school-create':
+            case 'school-modify':
+                $form = SchoolType::class;
+                break;
             case 'season-create':
             case 'season-modify':
                 $form = SeasonType::class;

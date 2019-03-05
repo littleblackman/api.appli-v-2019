@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.28
+- Ajout de l'entité School (05/03/2019)
+- Ajout du champ `school_id` sur `Child (05/03/2019)
+- Ajout du champ `franceResident` sur Child (05/03/2019)
+
 v0.27.7
 - Modification de l'auto-affect qui ne marchait pas en prod (01/03/2019)
 - Ajout de `location` sur PickupActivity (01/03/2019)

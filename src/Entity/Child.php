@@ -86,6 +86,21 @@ class Child
     private $photo;
 
     /**
+     * @var School
+     *
+     * @ORM\OneToOne(targetEntity="School")
+     * @ORM\JoinColumn(name="school_id", referencedColumnName="school_id")
+     */
+    private $school;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="france_resident", type="boolean")
+     */
+    private $franceResident;
+
+    /**
      * @ORM\OneToMany(targetEntity="ChildPersonLink", mappedBy="child")
      * @SWG\Property(ref=@Model(type=Person::class))
      */
@@ -207,6 +222,30 @@ class Child
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getSchool(): ?School
+    {
+        return $this->school;
+    }
+
+    public function setSchool(?School $school): self
+    {
+        $this->school = $school;
+
+        return $this;
+    }
+
+    public function getFranceResident(): ?bool
+    {
+        return $this->franceResident;
+    }
+
+    public function setFranceResident(?bool $franceResident): self
+    {
+        $this->franceResident = $franceResident;
 
         return $this;
     }
