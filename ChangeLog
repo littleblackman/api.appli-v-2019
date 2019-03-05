@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.28.1
+- Mise à jour des bundles (05/03/2019)
+- Correctif ChildController (05/03/2019)
+
 v0.28
 - Ajout de l'entité School (05/03/2019)
 - Ajout du champ `school_id` sur `Child (05/03/2019)

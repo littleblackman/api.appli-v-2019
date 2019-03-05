@@ -41,7 +41,7 @@ class SchoolController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Child::class))
+     *         @SWG\Items(ref=@Model(type=School::class))
      *     )
      * )
      * @SWG\Response(
@@ -62,7 +62,7 @@ class SchoolController extends AbstractController
      *     type="integer",
      *     default="50",
      * )
-     * @SWG\Tag(name="Child")
+     * @SWG\Tag(name="School")
      */
     public function listAll(Request $request, PaginatorInterface $paginator)
     {
@@ -85,7 +85,7 @@ class SchoolController extends AbstractController
 //SEARCH
 
     /**
-     * Searches for %{term}% in firstname|lastname for Child
+     * Searches for %{term}% in name for School
      *
      * @Route("/school/search/{term}",
      *    name="school_search",
@@ -97,7 +97,7 @@ class SchoolController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Child::class))
+     *         @SWG\Items(ref=@Model(type=School::class))
      *     )
      * )
      * @SWG\Response(
@@ -129,7 +129,7 @@ class SchoolController extends AbstractController
      *     type="integer",
      *     default="50",
      * )
-     * @SWG\Tag(name="Child")
+     * @SWG\Tag(name="School")
      */
     public function search(Request $request, PaginatorInterface $paginator, string $term)
     {

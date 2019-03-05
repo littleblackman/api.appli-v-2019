@@ -128,6 +128,12 @@
     "giggsey/locale": {
         "version": "1.6"
     },
+    "illuminate/contracts": {
+        "version": "v5.8.3"
+    },
+    "illuminate/support": {
+        "version": "v5.8.3"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -175,6 +181,9 @@
             "version": "1.5",
             "ref": "f0436fc35fca88eada758311f8de43bfb61f1980"
         }
+    },
+    "nesbot/carbon": {
+        "version": "2.14.2"
     },
     "nette/bootstrap": {
         "version": "v2.4.6"
@@ -546,9 +555,6 @@
         "version": "v5.2.18"
     },
     "symplify/package-builder": {
-        "version": "v5.2.18"
-    },
-    "symplify/token-runner": {
         "version": "v5.2.18"
     },
     "twig/extensions": {
