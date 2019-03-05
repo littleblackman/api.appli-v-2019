@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.29
+- Ajout de la possibilité de créer un Person si non authentifié (05/03/2019)
+- Ajout de la bijectivité des relations PersonPersonLink (05/03/2019)
+- Ajout de l'entité Transaction (05/03/2019)
+
 v0.28.1
 - Mise à jour des bundles (05/03/2019)
 - Correctif ChildController (05/03/2019)

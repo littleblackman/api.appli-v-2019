@@ -81,7 +81,7 @@ class TelevisionService implements TelevisionServiceInterface
     }
 
     /**
-     * Returns the list of all television by kind and date
+     * Returns the list of all television
      * @return array
      */
     public function findAll()
@@ -127,6 +127,7 @@ class TelevisionService implements TelevisionServiceInterface
             'television' => $this->toArray($object),
         );
     }
+
     /**
      * {@inheritdoc}
      */

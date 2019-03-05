@@ -78,14 +78,15 @@ class PersonService implements PersonServiceInterface
     {
         //Submits data
         $object = new Person();
-        $this->mainService->create($object);
+        $data = json_decode($data, true);
+        $user = array_key_exists('identifier', $data) ? $this->em->getRepository('App:User')->findOneByIdentifier($data['identifier']) : null;
+        $this->mainService->create($object, $user);
         $data = $this->mainService->submit($object, 'person-create', $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Adds links from user to person
-        $user = array_key_exists('identifier', $data) ? $this->em->getRepository('App:User')->findOneByIdentifier($data['identifier']) : null;
         if (null !== $user) {
             $userPersonLink = new UserPersonLink();
             $userPersonLink
@@ -292,7 +293,7 @@ class PersonService implements PersonServiceInterface
             $objectArray['children'] = $children;
         }
 
-        //Gets related persons
+        //Gets relations persons
         if (null !== $object->getRelations()) {
             $relations = array();
             foreach($object->getRelations() as $relationLink) {
@@ -303,6 +304,19 @@ class PersonService implements PersonServiceInterface
                 }
             }
             $objectArray['relations'] = $relations;
+        }
+
+        //Gets related persons
+        if (null !== $object->getRelated()) {
+            $related = array();
+            foreach($object->getRelated() as $relatedLink) {
+                if (!$relatedLink->getPerson()->getSuppressed()) {
+                    $relatedArray = $relatedLink->getPerson()->toArray();
+                    $relatedArray['related'] = $relatedLink->getRelation();
+                    $related[] = $relatedArray;
+                }
+            }
+            $objectArray['related'] = $related;
         }
 
         return $objectArray;

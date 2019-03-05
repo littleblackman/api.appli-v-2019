@@ -43,6 +43,36 @@ class TelevisionControllerTest extends WebTestCase
     }
 
     /**
+     * Tests modify Television
+     */
+    public function testModify()
+    {
+        //Tests with full data array
+        $this->clientAuthenticated->request(
+            'PUT',
+            '/television/modify/' . self::$objectId,
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '{"start": "09:00:00", "end": "12:00:00", "module": "Module"}'
+        );
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests with partial data array
+        $this->clientAuthenticated->request(
+            'PUT',
+            '/television/modify/' . self::$objectId,
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '{"start": "09:00:00"}'
+        );
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
      * Tests list of Television
      */
     public function testList()

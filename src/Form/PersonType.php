@@ -43,6 +43,7 @@ class PersonType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'App\Entity\Person',
             'intention' => 'PersonForm',
+            'allow_extra_fields' => true,
         ));
     }
 }

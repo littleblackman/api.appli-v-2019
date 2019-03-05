@@ -4,6 +4,9 @@ namespace App\Security;
 
 use App\Entity\Person;
 use LogicException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
@@ -14,6 +17,12 @@ use Symfony\Component\Security\Core\Security;
  */
 class PersonVoter extends Voter
 {
+    /**
+     * Stores curent Request
+     * @var Request
+     */
+    private $request;
+
     /**
      * Stores Security
      * @var Security
@@ -38,9 +47,13 @@ class PersonVoter extends Voter
         self::PERSON_MODIFY,
     );
 
-    public function __construct(Security $security)
+    public function __construct(
+        Security $security,
+        RequestStack $requestStack
+    )
     {
         $this->security = $security;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     protected function supports($attribute, $subject)
@@ -55,14 +68,14 @@ class PersonVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         //Checks current user
-        if (null === $token->getUser() || is_string($token->getUser())) {
+        if ('personCreate' !== $attribute && (null === $token->getUser() || is_string($token->getUser()))) {
             return false;
         }
 
         //Defines access rights
         switch ($attribute) {
             case self::PERSON_CREATE:
-                return $this->canCreate();
+                return $this->canCreate($token);
                 break;
             case self::PERSON_DELETE:
                 return $this->canDelete($token, $subject);
@@ -84,7 +97,7 @@ class PersonVoter extends Voter
     /**
      * Checks if is allowed to create
      */
-    private function canCreate()
+    private function canCreate($token)
     {
         //Checks roles allowed
         $roles = array(
@@ -98,26 +111,18 @@ class PersonVoter extends Voter
             }
         }
 
-        //Checks roles UNallowed
-        $roles = array(
-            'ROLE_TRAINEE',
-            'ROLE_COACH',
-            'ROLE_DRIVER',
-            'ROLE_ASSISTANT',
-            'ROLE_MANAGER',
-        );
-
-        foreach ($roles as $role) {
-            if ($this->security->isGranted($role)) {
-                return false;
+        //Tests if user is anon. (just after having been created) and that sha1 corresponds
+        if ($token instanceof AnonymousToken) {
+            $data = json_decode($this->request->getContent(), true);
+            if (array_key_exists('firstname', $data) &&
+                array_key_exists('key', $data) &&
+                array_key_exists('identifier', $data) &&
+                $data['key'] === sha1($data['firstname'])) {
+                return true;
             }
         }
 
-dump($this->security);
-dump('here');die;
-
-
-        return $this->security->isGranted('ROLE_USER');
+        return false;
     }
 
     /**

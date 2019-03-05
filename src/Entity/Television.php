@@ -45,6 +45,7 @@ class Television
      * @ORM\Column(name="end", type="time")
      */
     private $end;
+
     /**
      * @var string|null
      *

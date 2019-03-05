@@ -89,14 +89,16 @@ class MainService implements MainServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create($object)
+    public function create($object, $user = null)
     {
+        $userId = null !== $user ? $user->getId() : $this->user->getId();
+
         $object
             ->setCreatedAt(new DateTime())
-            ->setCreatedBy($this->user->getId())
+            ->setCreatedBy($userId)
             ->setSuppressed(false)
             ->setUpdatedAt(new DateTime())
-            ->setUpdatedBy($this->user->getId())
+            ->setUpdatedBy($userId)
         ;
     }
 
