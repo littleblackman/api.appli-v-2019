@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.29.2
+- Correction de PersonService -> getRelated() (06/03/2019)
+
 v0.29.1
 - Ajout d'un champ `transaction` sur Registration pour pouvoir lier les Registration à Transaction (06/03/2019)
 - Ajout d'un champ date sur Transaction pour pouvoir les filtrer (06/03/2019)

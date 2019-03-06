@@ -307,7 +307,7 @@ class PersonService implements PersonServiceInterface
         }
 
         //Gets related persons
-/*        if (null !== $object->getRelated()) {
+        if (null !== $object->getRelated()) {
             $related = array();
             foreach($object->getRelated() as $relatedLink) {
                 if (!$relatedLink->getPerson()->getSuppressed()) {
@@ -317,7 +317,7 @@ class PersonService implements PersonServiceInterface
                 }
             }
             $objectArray['related'] = $related;
-        }*/
+        }
 
         return $objectArray;
     }
