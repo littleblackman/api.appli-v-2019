@@ -184,12 +184,12 @@ class Pickup
 
     public function getKind(): ?string
     {
-        return $this->kind;
+        return null !== $this->kind ? strtolower($this->kind) : null;
     }
 
     public function setKind(?string $kind): self
     {
-        $this->kind = $kind;
+        $this->kind = !empty($kind) && 'null' !== $kind ? strtolower($kind) : null;
 
         return $this;
     }
@@ -286,12 +286,12 @@ class Pickup
 
     public function getStatus(): ?string
     {
-        return $this->status;
+        return null !== $this->status ? strtolower($this->status) : null;
     }
 
     public function setStatus(?string $status): self
     {
-        $this->status = $status;
+        $this->status = !empty($status) && 'null' !== $status ? strtolower($status) : null;
 
         return $this;
     }
@@ -334,12 +334,12 @@ class Pickup
 
     public function getValidated(): ?string
     {
-        return $this->validated;
+        return null !== $this->validated ? strtolower($this->validated) : null;
     }
 
     public function setValidated(?string $validated): self
     {
-        $this->validated = $validated;
+        $this->validated = !empty($validated) && 'null' !== $validated ? strtolower($validated) : null;
 
         return $this;
     }

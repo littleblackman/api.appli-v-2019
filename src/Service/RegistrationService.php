@@ -230,6 +230,11 @@ class RegistrationService implements RegistrationServiceInterface
             $objectArray['sports'] = $sports;
         }
 
+        //Gets related transaction
+        if (null !== $object->getTransaction() && !$object->getTransaction()->getSuppressed()) {
+            $objectArray['transaction'] = $this->mainService->toArray($object->getTransaction()->toArray());
+        }
+
         return $objectArray;
     }
 }

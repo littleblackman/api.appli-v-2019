@@ -7,6 +7,7 @@ use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Product;
 use App\Entity\RegistrationSportLink;
+use App\Entity\Transaction;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -67,6 +68,10 @@ class RegistrationType extends AbstractType
                 'entry_type' => RegistrationSportLinkType::class,
                 'mapped' => false,
                 'allow_extra_fields' => true,
+                ))
+            ->add('transaction', EntityType::class, array(
+                'required' => false,
+                'class' => Transaction::class,
                 ))
         ;
     }

@@ -22,7 +22,7 @@ class ChildControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"gender": "F", "firstname": "Firstname", "lastname": "Lastname", "phone": "0123456789", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo", "school": "1", "franceResident": true, "links": [{"personId": "1", "relation": "Relation"}], "siblings": [{"siblingId": "1", "relation": "Relation"}]}'
+            '{"gender": "m", "firstname": "Melvin", "lastname": "Marquet", "phone": "0123456789", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo", "school": "1", "franceResident": true, "links": [{"personId": "2", "relation": "Relation"}], "siblings": [{"siblingId": "1", "relation": "Relation"}]}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
@@ -53,7 +53,7 @@ class ChildControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"gender": "F", "firstname": "Firstname modifié", "lastname": "Lastname", "phone": "0123456789", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo", "school": "1", "franceResident": true, "links": [{"personId": "1", "relation": "Relation"}], "siblings": [{"siblingId": "1", "relation": "Relation"}]}'
+            '{"gender": "m", "firstname": "Melvin", "lastname": "Marquet", "phone": "1234567890", "birthdate": "2018-01-01", "medical": "medical", "photo": "/url/photo", "school": "1", "franceResident": true, "links": [{"personId": "2", "relation": "Relation"}], "siblings": [{"siblingId": "1", "relation": "Relation"}]}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
@@ -65,7 +65,7 @@ class ChildControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"firstname": "Firstname modifié 2"}'
+            '{"phone": "0123456789"}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
@@ -90,7 +90,7 @@ class ChildControllerTest extends WebTestCase
      */
     public function testSearch()
     {
-        $this->clientAuthenticated->request('GET', '/child/search/name');
+        $this->clientAuthenticated->request('GET', '/child/search/melvin');
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
         $this->assertInternalType('array', $content);

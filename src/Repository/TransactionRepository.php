@@ -11,13 +11,62 @@ use Doctrine\ORM\EntityRepository;
 class TransactionRepository extends EntityRepository
 {
     /**
-     * Returns all the transaction
+     * Returns all the transactions
      */
     public function findAll()
     {
         return $this->createQueryBuilder('t')
             ->where('t.suppressed = 0')
             ->orderBy('t.internalOrder', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Returns all the transactions by date
+     */
+    public function findAllByDate($date)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.date LIKE :date')
+            ->andWhere('t.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->orderBy('t.date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Returns all the transactions by date and status
+     */
+    public function findAllByDateStatus($date, $status)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.date LIKE :date')
+            ->andWhere('t.status = :status')
+            ->andWhere('t.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('status', strtolower($status))
+            ->orderBy('t.date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Returns all the transactions by date and person
+     */
+    public function findAllByDatePerson($date, $personId)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.date LIKE :date')
+            ->andWhere('t.person = :personId')
+            ->andWhere('t.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('personId', $personId)
+            ->orderBy('t.date', 'ASC')
             ->getQuery()
             ->getResult()
         ;

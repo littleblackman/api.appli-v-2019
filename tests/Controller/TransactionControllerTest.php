@@ -22,7 +22,7 @@ class TransactionControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"internalOrder": "Order", "status": "Status", "number": "Number", "amount": "152.25", "person": "1", "invoice": "1"}'
+            '{"date": "2019-03-06", "internalOrder": "Order", "status": "status", "number": "Number", "amount": "152.25", "person": "1", "invoice": "1", "registrations": [{"registrationId": "1"}, {"registrationId": "2"}]}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
@@ -47,8 +47,64 @@ class TransactionControllerTest extends WebTestCase
      */
     public function testList()
     {
-        //Tests list
-        $this->clientAuthenticated->request('GET', '/transaction/list');
+        //Tests list by date
+        $this->clientAuthenticated->request('GET', '/transaction/list/2019-03-06');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('transactionId', $first);
+
+        //Tests list by month
+        $this->clientAuthenticated->request('GET', '/transaction/list/2019-03');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('transactionId', $first);
+
+        //Tests list by date and status
+        $this->clientAuthenticated->request('GET', '/transaction/list/2019-03-06/status');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('transactionId', $first);
+
+        //Tests list by month and status
+        $this->clientAuthenticated->request('GET', '/transaction/list/2019-03/status');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('transactionId', $first);
+
+        //Tests list by year and status
+        $this->clientAuthenticated->request('GET', '/transaction/list/2019/status');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('transactionId', $first);
+
+        //Tests list by date and person
+        $this->clientAuthenticated->request('GET', '/transaction/list/2019-03-06/1');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('transactionId', $first);
+
+        //Tests list by month and person
+        $this->clientAuthenticated->request('GET', '/transaction/list/2019-03/1');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('transactionId', $first);
+
+        //Tests list by year and person
+        $this->clientAuthenticated->request('GET', '/transaction/list/2019/1');
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
         $this->assertInternalType('array', $content);

@@ -1,5 +1,12 @@
 ChangeLog
 
+v0.29.1
+- Ajout d'un champ `transaction` sur Registration pour pouvoir lier les Registration à Transaction (06/03/2019)
+- Ajout d'un champ date sur Transaction pour pouvoir les filtrer (06/03/2019)
+- Modification de la liste des Transaction en filtrant par date (06/03/2019)
+- Ajout de la liste par status et person pour Transaction (06/03/2019)
+- Mise en place de strtolower pour certains champs string des entity afin d'éviter les problèmes de search en bdd (06/03/2019)
+
 v0.29
 - Ajout de la possibilité de créer un Person si non authentifié (05/03/2019)
 - Ajout de la bijectivité des relations PersonPersonLink (05/03/2019)

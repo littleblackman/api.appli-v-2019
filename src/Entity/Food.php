@@ -121,24 +121,24 @@ class Food
 
     public function getKind(): ?string
     {
-        return $this->kind;
+        return null !== $this->kind ? strtolower($this->kind) : null;
     }
 
     public function setKind(?string $kind): self
     {
-        $this->kind = $kind;
+        $this->kind = !empty($kind) && 'null' !== $kind ? strtolower($kind) : null;
 
         return $this;
     }
 
     public function getStatus(): ?string
     {
-        return $this->status;
+        return null !== $this->status ? strtolower($this->status) : null;
     }
 
     public function setStatus(?string $status): self
     {
-        $this->status = $status;
+        $this->status = !empty($status) && 'null' !== $status ? strtolower($status) : null;
 
         return $this;
     }

@@ -116,6 +116,14 @@ class Registration
      */
     private $sports;
 
+    /**
+     * @var Transaction
+     *
+     * @ORM\ManyToOne(targetEntity="Transaction", inversedBy="registrations", cascade={"persist"})
+     * @ORM\JoinColumn(name="transaction_id", referencedColumnName="transaction_id")
+     */
+    private $transaction;
+
     public function __construct()
     {
         $this->sports = new ArrayCollection();
@@ -221,12 +229,12 @@ class Registration
 
     public function getStatus(): ?string
     {
-        return $this->status;
+        return null !== $this->status ? strtolower($this->status) : null;
     }
 
     public function setStatus(?string $status): self
     {
-        $this->status = $status;
+        $this->status = !empty($status) && 'null' !== $status ? strtolower($status) : null;
 
         return $this;
     }
@@ -294,6 +302,18 @@ class Registration
                 $sport->setRegistration(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTransaction(): ?Transaction
+    {
+        return $this->transaction;
+    }
+
+    public function setTransaction(?Transaction $transaction): self
+    {
+        $this->transaction = $transaction;
 
         return $this;
     }

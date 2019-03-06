@@ -35,6 +35,13 @@ class Transaction
     private $transactionId;
 
     /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="internal_order", type="string", length=64)
@@ -79,7 +86,7 @@ class Transaction
     private $invoice;
 
     /**
-     * @ORM\OneToMany(targetEntity="Registration", mappedBy="registration")
+     * @ORM\OneToMany(targetEntity="Registration", mappedBy="transaction")
      */
     private $registrations;
 
@@ -95,12 +102,29 @@ class Transaction
     {
         $objectArray = get_object_vars($this);
 
+        //Specific data
+        if (null !== $objectArray['date']) {
+            $objectArray['date'] = $objectArray['date']->format('Y-m-d H:i:s');
+        }
+
         return $objectArray;
     }
 
     public function getTransactionId(): ?int
     {
         return $this->transactionId;
+    }
+
+    public function getDate(): ?DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(?DateTimeInterface $date): self
+    {
+        $this->date = $date;
+
+        return $this;
     }
 
     public function getInternalOrder(): ?string

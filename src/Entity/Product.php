@@ -456,12 +456,12 @@ class Product
 
     public function getVisibility(): ?string
     {
-        return $this->visibility;
+        return null !== $this->visibility ? strtolower($this->visibility) : null;
     }
 
     public function setVisibility(?string $visibility): self
     {
-        $this->visibility = $visibility;
+        $this->visibility = !empty($visibility) && 'null' !== $visibility ? strtolower($visibility) : null;
 
         return $this;
     }

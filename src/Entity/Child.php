@@ -140,12 +140,12 @@ class Child
 
     public function getGender(): ?string
     {
-        return $this->gender;
+        return null !== $this->gender ? strtolower($this->gender) : null;
     }
 
     public function setGender(?string $gender): self
     {
-        $this->gender = $gender;
+        $this->gender = !empty($gender) && 'null' !== $gender ? strtolower($gender) : null;
 
         return $this;
     }

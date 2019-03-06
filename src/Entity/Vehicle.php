@@ -106,12 +106,12 @@ class Vehicle
 
     public function getCombustible(): ?string
     {
-        return $this->combustible;
+        return null !== $this->combustible ? strtolower($this->combustible) : null;
     }
 
     public function setCombustible(?string $combustible): self
     {
-        $this->combustible = $combustible;
+        $this->combustible = !empty($combustible) && 'null' !== $combustible ? strtolower($combustible) : null;
 
         return $this;
     }

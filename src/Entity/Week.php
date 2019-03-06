@@ -94,12 +94,12 @@ class Week
 
     public function getKind(): ?string
     {
-        return $this->kind;
+        return null !== $this->kind ? strtolower($this->kind) : null;
     }
 
     public function setKind(?string $kind): self
     {
-        $this->kind = $kind;
+        $this->kind = !empty($kind) && 'null' !== $kind ? strtolower($kind) : null;
 
         return $this;
     }

@@ -27,13 +27,14 @@ class TransactionController extends AbstractController
         $this->transactionService = $transactionService;
     }
 
-//LIST
+//LIST BY DATE
 
     /**
-     * Lists all the transaction
+     * Lists all the transaction for a specific date
      *
-     * @Route("/transaction/list",
+     * @Route("/transaction/list/{date}",
      *    name="transaction_list",
+     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -47,6 +48,12 @@ class TransactionController extends AbstractController
      * @SWG\Response(
      *     response=403,
      *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the ride (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
      * )
      * @SWG\Parameter(
      *     name="page",
@@ -64,12 +71,148 @@ class TransactionController extends AbstractController
      * )
      * @SWG\Tag(name="Transaction")
      */
-    public function listAll(Request $request, PaginatorInterface $paginator)
+    public function listAll(Request $request, PaginatorInterface $paginator, $date)
     {
         $this->denyAccessUnlessGranted('transactionList');
 
         $transactions = $paginator->paginate(
-            $this->transactionService->findAll(),
+            $this->transactionService->findAllByDate($date),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $transactionsArray = array();
+        foreach ($transactions->getItems() as $transaction) {
+            $transactionsArray[] = $this->transactionService->toArray($transaction);
+        };
+
+        return new JsonResponse($transactionsArray);
+    }
+
+//LIST BY DATE AND STATUS
+
+    /**
+     * Lists all the transaction for a specific date and status
+     *
+     * @Route("/transaction/list/{date}/{status}",
+     *    name="transaction_list_status",
+     *    requirements={
+     *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2})|([0-9]{4}))$",
+     *        "status": "^([a-zA-Z]+)$"
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Transaction::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the ride (YYYY-MM-DD | YYYY-MM | YYYY)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="status",
+     *     in="path",
+     *     description="DateStatus for the transaction)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Transaction")
+     */
+    public function listAllStatus(Request $request, PaginatorInterface $paginator, $date, $status)
+    {
+        $this->denyAccessUnlessGranted('transactionList');
+
+        $transactions = $paginator->paginate(
+            $this->transactionService->findAllByDateStatus($date, $status),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $transactionsArray = array();
+        foreach ($transactions->getItems() as $transaction) {
+            $transactionsArray[] = $this->transactionService->toArray($transaction);
+        };
+
+        return new JsonResponse($transactionsArray);
+    }
+
+//LIST BY DATE AND PERSON
+
+    /**
+     * Lists all the transaction for a specific date and person
+     *
+     * @Route("/transaction/list/{date}/{personId}",
+     *    name="transaction_list_person",
+     *    requirements={
+     *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2})|([0-9]{4}))$",
+     *        "personId": "^([0-9]+)$"
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Transaction::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the ride (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Transaction")
+     */
+    public function listAllPerson(Request $request, PaginatorInterface $paginator, $date, $personId)
+    {
+        $this->denyAccessUnlessGranted('transactionList');
+
+        $transactions = $paginator->paginate(
+            $this->transactionService->findAllByDatePerson($date, $personId),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );

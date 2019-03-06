@@ -201,12 +201,12 @@ class PickupActivity
 
     public function getStatus(): ?string
     {
-        return $this->status;
+        return null !== $this->status ? strtolower($this->status) : null;
     }
 
     public function setStatus(?string $status): self
     {
-        $this->status = $status;
+        $this->status = !empty($status) && 'null' !== $status ? strtolower($status) : null;
 
         return $this;
     }
@@ -225,12 +225,12 @@ class PickupActivity
 
     public function getValidated(): ?string
     {
-        return $this->validated;
+        return null !== $this->validated ? strtolower($this->validated) : null;
     }
 
     public function setValidated(?string $validated): self
     {
-        $this->validated = $validated;
+        $this->validated = !empty($validated) && 'null' !== $validated ? strtolower($validated) : null;
 
         return $this;
     }
