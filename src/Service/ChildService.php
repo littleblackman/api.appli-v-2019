@@ -230,7 +230,7 @@ class ChildService implements ChildServiceInterface
 
         //Gets related school
         if (null !== $object->getSchool() && !$object->getSchool()->getSuppressed()) {
-            $objectArray['school'] = $this->mainService->toArray($object->getSchool());
+            $objectArray['school'] = $this->mainService->toArray($object->getSchool()->toArray());
         }
 
         //Gets related persons
