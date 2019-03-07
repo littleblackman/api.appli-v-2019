@@ -312,6 +312,59 @@ class TransactionController extends AbstractController
         return new JsonResponse($createdData);
     }
 
+//MODIFY WITH INTERNALORDER
+
+    /**
+     * Modifies transaction
+     *
+     * @Route("/transaction/modify/{internalOrder}",
+     *    name="transaction_modify",
+     *    requirements={"internalOrder": "^([a-zA-Z0-9\-\_]+)$"},
+     *    methods={"HEAD", "PUT"})
+     * @Entity("transaction", expr="repository.findOneByIinternalOrder(internalOrder)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="transaction", ref=@Model(type=Transaction::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="transactionId",
+     *     in="path",
+     *     description="Id for the transaction",
+     *     required=true,
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Transaction",
+     *     required=true,
+     *     @Model(type=TransactionType::class)
+     * )
+     * @SWG\Tag(name="Transaction")
+     */
+    public function modify(Request $request, Transaction $transaction)
+    {
+        $this->denyAccessUnlessGranted('transactionModify', $transaction);
+
+        $modifiedData = $this->transactionService->modify($transaction, $request->getContent());
+
+        return new JsonResponse($modifiedData);
+    }
+
 //DELETE
 
     /**

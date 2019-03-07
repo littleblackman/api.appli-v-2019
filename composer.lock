@@ -296,16 +296,16 @@
         },
         {
             "name": "c975l/user-bundle",
-            "version": "v2.5.1",
+            "version": "v2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/UserBundle.git",
-                "reference": "cefc63c2efc491939d493d033e9064460763357a"
+                "reference": "19616aa57024db436598384acf9ecd4f54108826"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/UserBundle/zipball/cefc63c2efc491939d493d033e9064460763357a",
-                "reference": "cefc63c2efc491939d493d033e9064460763357a",
+                "url": "https://api.github.com/repos/975L/UserBundle/zipball/19616aa57024db436598384acf9ecd4f54108826",
+                "reference": "19616aa57024db436598384acf9ecd4f54108826",
                 "shasum": ""
             },
             "require": {
@@ -358,7 +358,7 @@
                 "symfony",
                 "user"
             ],
-            "time": "2019-03-07T07:51:13+00:00"
+            "time": "2019-03-07T10:21:10+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -1763,16 +1763,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.10.6",
+            "version": "8.10.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "75fa86dec0a79632fe492fa121b2a067ec100bf1"
+                "reference": "09686926c6a4ded26944602eae80e56eba088c4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/75fa86dec0a79632fe492fa121b2a067ec100bf1",
-                "reference": "75fa86dec0a79632fe492fa121b2a067ec100bf1",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/09686926c6a4ded26944602eae80e56eba088c4b",
+                "reference": "09686926c6a4ded26944602eae80e56eba088c4b",
                 "shasum": ""
             },
             "require": {
@@ -1827,7 +1827,7 @@
                 "phonenumber",
                 "validation"
             ],
-            "time": "2019-02-21T11:30:36+00:00"
+            "time": "2019-03-07T08:42:08+00:00"
         },
         {
             "name": "giggsey/locale",

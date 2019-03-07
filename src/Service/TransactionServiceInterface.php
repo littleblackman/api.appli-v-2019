@@ -29,6 +29,12 @@ interface TransactionServiceInterface
     public function isEntityFilled(Transaction $object);
 
     /**
+     * Modifies the transaction
+     * @return array
+     */
+    public function modify(Transaction $object, string $data);
+
+    /**
      * Converts entity to array
      * @return array
      */

@@ -28,11 +28,14 @@ class TransactionVoter extends Voter
 
     public const TRANSACTION_LIST = 'transactionList';
 
+    public const TRANSACTION_MODIFY = 'transactionModify';
+
     private const ATTRIBUTES = array(
         self::TRANSACTION_CREATE,
         self::TRANSACTION_DELETE,
         self::TRANSACTION_DISPLAY,
         self::TRANSACTION_LIST,
+        self::TRANSACTION_MODIFY,
     );
 
     public function __construct(Security $security)
@@ -69,6 +72,9 @@ class TransactionVoter extends Voter
                 break;
             case self::TRANSACTION_LIST:
                 return $this->canList();
+                break;
+            case self::TRANSACTION_MODIFY:
+                return $this->canModify();
                 break;
         }
 
@@ -144,6 +150,25 @@ class TransactionVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_USER',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if is allowed to modify
+     */
+    private function canModify()
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ADMIN',
         );
 
         foreach ($roles as $role) {

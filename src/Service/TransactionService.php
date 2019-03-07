@@ -170,6 +170,30 @@ class TransactionService implements TransactionServiceInterface
     /**
      * {@inheritdoc}
      */
+    public function modify(Transaction $object, string $data)
+    {
+        //Submits data
+        $data = $this->mainService->submit($object, 'transaction-modify', $data);
+        $this->addSpecificData($object, $data);
+
+        //Checks if entity has been filled
+        $this->isEntityFilled($object);
+
+        //Persists data
+        $this->mainService->modify($object);
+        $this->mainService->persist($object);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Transaction modifiée',
+            'television' => $this->toArray($object),
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function toArray(Transaction $object)
     {
         //Main data

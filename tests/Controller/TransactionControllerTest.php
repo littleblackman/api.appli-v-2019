@@ -43,6 +43,36 @@ class TransactionControllerTest extends WebTestCase
     }
 
     /**
+     * Tests modify Television
+     */
+    public function testModify()
+    {
+        //Tests with full data array
+        $this->clientAuthenticated->request(
+            'PUT',
+            '/transaction/modify/' . self::$objectId,
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '{"status": "status modified", "invoice": "1"}'
+        );
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests with partial data array
+        $this->clientAuthenticated->request(
+            'PUT',
+            '/transaction/modify/' . self::$objectId,
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '{"status": "status"}'
+        );
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+    }
+
+    /**
      * Tests list of Transaction
      */
     public function testList()

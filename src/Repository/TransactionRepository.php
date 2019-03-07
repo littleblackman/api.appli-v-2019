@@ -85,4 +85,18 @@ class TransactionRepository extends EntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    /**
+     * Returns the transaction if not suppressed by internalOrder
+     */
+    public function findOneByIinternalOrder($internalOrder)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.internalOrder = :internalOrder')
+            ->andWhere('t.suppressed = 0')
+            ->setParameter('internalOrder', $internalOrder)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

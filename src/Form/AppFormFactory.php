@@ -138,8 +138,10 @@ class AppFormFactory implements AppFormFactoryInterface
                 $form = TelevisionType::class;
                 break;
             case 'transaction-create':
-            case 'transaction-modify':
                 $form = TransactionType::class;
+                break;
+            case 'transaction-modify':
+                $form = TransactionModifyType::class;
                 break;
             case 'vehicle-create':
             case 'vehicle-modify':
