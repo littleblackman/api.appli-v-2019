@@ -105,6 +105,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'product-modify':
                 $form = ProductType::class;
                 break;
+            case 'product-cancelled-date-create':
+            case 'product-cancelled-date-modify':
+                $form = ProductCancelledDateType::class;
+                break;
             case 'registration-create':
             case 'registration-modify':
                 $form = RegistrationType::class;
