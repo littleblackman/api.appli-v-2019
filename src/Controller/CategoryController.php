@@ -223,7 +223,7 @@ class CategoryController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('categoryCreate', null);
+        $this->denyAccessUnlessGranted('categoryCreate');
 
         $createdData = $this->categoryService->create($request->getContent());
 

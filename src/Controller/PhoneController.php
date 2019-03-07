@@ -100,7 +100,7 @@ class PhoneController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('phoneCreate', null);
+        $this->denyAccessUnlessGranted('phoneCreate');
 
         $createdData = $this->phoneService->create($request->getContent());
 

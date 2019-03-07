@@ -223,7 +223,7 @@ class BlogController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('blogCreate', null);
+        $this->denyAccessUnlessGranted('blogCreate');
 
         $createdData = $this->blogService->create($request->getContent());
 

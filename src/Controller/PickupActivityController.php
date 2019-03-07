@@ -209,7 +209,7 @@ class PickupActivityController extends AbstractController
      */
     public function affect($date, bool $force)
     {
-        $this->denyAccessUnlessGranted('pickupActivityModify', null);
+        $this->denyAccessUnlessGranted('pickupActivityModify');
 
         $this->pickupActivityService->affect($date, $force);
 
@@ -247,7 +247,7 @@ class PickupActivityController extends AbstractController
      */
     public function unaffect($date)
     {
-        $this->denyAccessUnlessGranted('pickupActivityModify', null);
+        $this->denyAccessUnlessGranted('pickupActivityModify');
 
         $this->pickupActivityService->unaffect($date);
 
@@ -332,7 +332,7 @@ class PickupActivityController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('pickupActivityCreate', null);
+        $this->denyAccessUnlessGranted('pickupActivityCreate');
 
         $createdData = $this->pickupActivityService->create($request->getContent());
 
@@ -372,7 +372,7 @@ class PickupActivityController extends AbstractController
      */
     public function createMultiple(Request $request)
     {
-        $this->denyAccessUnlessGranted('pickupActivityCreate', null);
+        $this->denyAccessUnlessGranted('pickupActivityCreate');
 
         $createdData = $this->pickupActivityService->createMultiple($request->getContent());
 
@@ -514,7 +514,7 @@ class PickupActivityController extends AbstractController
      */
     public function deleteByRegistrationId(int $registrationId)
     {
-        $this->denyAccessUnlessGranted('pickupActivityDelete', null);
+        $this->denyAccessUnlessGranted('pickupActivityDelete');
 
         $suppressedData = $this->pickupActivityService->deleteByRegistrationId($registrationId);
 

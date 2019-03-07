@@ -137,7 +137,7 @@ class ChildPresenceController extends AbstractController
      */
     public function display($childId, $date)
     {
-        $this->denyAccessUnlessGranted('childPresenceDisplay', null);
+        $this->denyAccessUnlessGranted('childPresenceDisplay');
 
         $childPresencesArray = array();
         foreach ($this->childPresenceService->findByChild($childId, $date) as $childPresence) {
@@ -182,7 +182,7 @@ class ChildPresenceController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('childPresenceCreate', null);
+        $this->denyAccessUnlessGranted('childPresenceCreate');
 
         $createdData = $this->childPresenceService->create($request->getContent());
 
@@ -269,7 +269,7 @@ class ChildPresenceController extends AbstractController
      */
     public function deleteByArray(Request $request)
     {
-        $this->denyAccessUnlessGranted('childPresenceDelete', null);
+        $this->denyAccessUnlessGranted('childPresenceDelete');
 
         $suppressedData = $this->childPresenceService->deleteByArray($request->getContent());
 
@@ -313,7 +313,7 @@ class ChildPresenceController extends AbstractController
      */
     public function deleteByRegistrationId(int $registrationId)
     {
-        $this->denyAccessUnlessGranted('childPresenceDelete', null);
+        $this->denyAccessUnlessGranted('childPresenceDelete');
 
         $suppressedData = $this->childPresenceService->deleteByRegistrationId($registrationId);
 

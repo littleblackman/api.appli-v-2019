@@ -203,6 +203,7 @@ class PersonController extends AbstractController
      *    name="person_display_identifier",
      *    requirements={"identifier": "^([a-z0-9]{32})"},
      *    methods={"HEAD", "GET"})
+     * @Entity("person", expr="repository.findByUserIdentifier(identifier)")
      *
      * @SWG\Response(
      *     response=200,
@@ -229,9 +230,8 @@ class PersonController extends AbstractController
      * )
      * @SWG\Tag(name="Person")
      */
-    public function displayByIdentifier($identifier)
+    public function displayByIdentifier(Person $person)
     {
-        $person = $this->personService->findByUserIdentifier($identifier);
         $this->denyAccessUnlessGranted('personDisplay', $person);
 
         $personArray = $this->personService->toArray($person);
@@ -272,7 +272,7 @@ class PersonController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('personCreate', null);
+        $this->denyAccessUnlessGranted('personCreate');
 
         $createdData = $this->personService->create($request->getContent());
 

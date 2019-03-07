@@ -235,7 +235,7 @@ class StaffController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('staffCreate', null);
+        $this->denyAccessUnlessGranted('staffCreate');
 
         $createdData = $this->staffService->create($request->getContent());
 
@@ -370,7 +370,7 @@ class StaffController extends AbstractController
      */
     public function priority(Request $request)
     {
-        $this->denyAccessUnlessGranted('staffModify', null);
+        $this->denyAccessUnlessGranted('staffModify');
 
         $sortOrderData = $this->staffService->priority($request->getContent());
 

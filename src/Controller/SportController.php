@@ -223,7 +223,7 @@ class SportController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('sportCreate', null);
+        $this->denyAccessUnlessGranted('sportCreate');
 
         $createdData = $this->sportService->create($request->getContent());
 

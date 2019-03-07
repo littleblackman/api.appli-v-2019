@@ -229,7 +229,7 @@ class GroupActivityController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('groupActivityCreate', null);
+        $this->denyAccessUnlessGranted('groupActivityCreate');
 
         $createdData = $this->groupActivityService->create($request->getContent());
 
@@ -271,7 +271,7 @@ class GroupActivityController extends AbstractController
      */
     public function createMultiple(Request $request)
     {
-        $this->denyAccessUnlessGranted('groupActivityCreate', null);
+        $this->denyAccessUnlessGranted('groupActivityCreate');
 
         $createdData = $this->groupActivityService->createMultiple($request->getContent());
 

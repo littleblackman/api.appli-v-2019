@@ -22,7 +22,7 @@ class PersonControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"firstname": "Firstname", "lastname": "Lastname", "photo": "/url/photo", "relations": [{"related": "2", "relation": "Relation"}]}'
+            '{"firstname": "Firstname", "lastname": "Lastname", "key": "cf23ba48c06d7e6d4b41a205bfb3cac3bb7b1e38", "identifier": "6e2bbc8541e18b7475952c6d7e8d9113", "photo": "/url/photo", "relations": [{"related": "2", "relation": "Relation"}]}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);

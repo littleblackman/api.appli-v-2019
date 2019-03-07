@@ -168,7 +168,7 @@ class SeasonController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('seasonCreate', null);
+        $this->denyAccessUnlessGranted('seasonCreate');
 
         $createdData = $this->seasonService->create($request->getContent());
 

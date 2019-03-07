@@ -293,7 +293,7 @@ class RideController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('rideCreate', null);
+        $this->denyAccessUnlessGranted('rideCreate');
 
         $createdData = $this->rideService->create($request->getContent());
 
@@ -335,7 +335,7 @@ class RideController extends AbstractController
      */
     public function createMultiple(Request $request)
     {
-        $this->denyAccessUnlessGranted('rideCreate', null);
+        $this->denyAccessUnlessGranted('rideCreate');
 
         $createdData = $this->rideService->createMultiple($request->getContent());
 

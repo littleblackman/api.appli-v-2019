@@ -157,7 +157,7 @@ class LocationController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('locationCreate', null);
+        $this->denyAccessUnlessGranted('locationCreate');
 
         $createdData = $this->locationService->create($request->getContent());
 

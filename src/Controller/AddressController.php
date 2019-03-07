@@ -100,7 +100,7 @@ class AddressController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('addressCreate', null);
+        $this->denyAccessUnlessGranted('addressCreate');
 
         $createdData = $this->addressService->create($request->getContent());
 
@@ -231,7 +231,7 @@ class AddressController extends AbstractController
     {
         set_time_limit(600);
 
-        $this->denyAccessUnlessGranted('addressGeocode', null);
+        $this->denyAccessUnlessGranted('addressGeocode');
 
         $counterRecords = $this->addressService->geocode();
 

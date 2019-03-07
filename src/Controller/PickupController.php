@@ -216,7 +216,7 @@ class PickupController extends AbstractController
      */
     public function affect($date, $kind, bool $force)
     {
-        $this->denyAccessUnlessGranted('pickupModify', null);
+        $this->denyAccessUnlessGranted('pickupModify');
 
         $this->pickupService->affect($date, $kind, $force);
 
@@ -255,7 +255,7 @@ class PickupController extends AbstractController
      */
     public function affectLinkedRide(Ride $ride)
     {
-        $this->denyAccessUnlessGranted('pickupModify', null);
+        $this->denyAccessUnlessGranted('pickupModify');
 
         $this->pickupService->affectPickupLinkedRide($ride);
 
@@ -302,7 +302,7 @@ class PickupController extends AbstractController
      */
     public function unaffect($date, $kind)
     {
-        $this->denyAccessUnlessGranted('pickupModify', null);
+        $this->denyAccessUnlessGranted('pickupModify');
 
         $this->pickupService->unaffect($date, $kind);
 
@@ -348,7 +348,7 @@ class PickupController extends AbstractController
      */
     public function dispatch(Request $request)
     {
-        $this->denyAccessUnlessGranted('pickupModify', null);
+        $this->denyAccessUnlessGranted('pickupModify');
 
         $dispatchData = $this->pickupService->dispatch($request->getContent());
 
@@ -433,7 +433,7 @@ class PickupController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('pickupCreate', null);
+        $this->denyAccessUnlessGranted('pickupCreate');
 
         $createdData = $this->pickupService->create($request->getContent());
 
@@ -473,7 +473,7 @@ class PickupController extends AbstractController
      */
     public function createMultiple(Request $request)
     {
-        $this->denyAccessUnlessGranted('pickupCreate', null);
+        $this->denyAccessUnlessGranted('pickupCreate');
 
         $createdData = $this->pickupService->createMultiple($request->getContent());
 
@@ -615,7 +615,7 @@ class PickupController extends AbstractController
      */
     public function deleteByRegistrationId(int $registrationId)
     {
-        $this->denyAccessUnlessGranted('pickupDelete', null);
+        $this->denyAccessUnlessGranted('pickupDelete');
 
         $suppressedData = $this->pickupService->deleteByRegistrationId($registrationId);
 
@@ -648,7 +648,7 @@ class PickupController extends AbstractController
     {
         set_time_limit(600);
 
-        $this->denyAccessUnlessGranted('pickupGeocode', null);
+        $this->denyAccessUnlessGranted('pickupGeocode');
 
         $counterRecords = $this->pickupService->geocode();
 

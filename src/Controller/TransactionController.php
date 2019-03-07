@@ -305,7 +305,7 @@ class TransactionController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('transactionCreate', null);
+        $this->denyAccessUnlessGranted('transactionCreate');
 
         $createdData = $this->transactionService->create($request->getContent());
 

@@ -223,7 +223,7 @@ class SchoolController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('schoolCreate', null);
+        $this->denyAccessUnlessGranted('schoolCreate');
 
         $createdData = $this->schoolService->create($request->getContent());
 

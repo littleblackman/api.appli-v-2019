@@ -223,7 +223,7 @@ class WeekController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('weekCreate', null);
+        $this->denyAccessUnlessGranted('weekCreate');
 
         $createdData = $this->weekService->create($request->getContent());
 

@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.29.7
+- Suppression des envois inutiles de "null" pour les `denyAccessUnlessGranted` (07/03/2019)
+- Utilisation de @entity pour `person_display_identifier` (07/03/2019)
+
 v0.29.6
 - Ajout de `/transaction/modify/{internalOrder}` (07/03/2019)
 - Mise à jour de UserBundle pour prendre en compte le reset-password par email (07/03/2019)

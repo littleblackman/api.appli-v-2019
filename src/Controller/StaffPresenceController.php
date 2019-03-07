@@ -147,7 +147,7 @@ class StaffPresenceController extends AbstractController
      */
     public function display($staffId, $date)
     {
-        $this->denyAccessUnlessGranted('staffPresenceDisplay', null);
+        $this->denyAccessUnlessGranted('staffPresenceDisplay');
 
         $staffPresencesArray = array();
         foreach ($this->staffPresenceService->findByStaff($staffId, $date) as $staffPresence) {
@@ -194,7 +194,7 @@ class StaffPresenceController extends AbstractController
      */
     public function total(int $seasonId)
     {
-        $this->denyAccessUnlessGranted('staffPresenceDisplay', null);
+        $this->denyAccessUnlessGranted('staffPresenceDisplay');
 
         $totals = $this->staffPresenceService->getTotals($seasonId);
 
@@ -236,7 +236,7 @@ class StaffPresenceController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('staffPresenceCreate', null);
+        $this->denyAccessUnlessGranted('staffPresenceCreate');
 
         $createdData = $this->staffPresenceService->create($request->getContent());
 
@@ -323,7 +323,7 @@ class StaffPresenceController extends AbstractController
      */
     public function deleteByArray(Request $request)
     {
-        $this->denyAccessUnlessGranted('staffPresenceDelete', null);
+        $this->denyAccessUnlessGranted('staffPresenceDelete');
 
         $suppressedData = $this->staffPresenceService->deleteByArray($request->getContent());
 

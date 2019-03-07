@@ -278,7 +278,7 @@ class ProductController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('productCreate', null);
+        $this->denyAccessUnlessGranted('productCreate');
 
         $createdData = $this->productService->create($request->getContent());
 

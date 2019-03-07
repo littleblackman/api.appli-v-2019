@@ -162,7 +162,7 @@ class TelevisionController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('televisionCreate', null);
+        $this->denyAccessUnlessGranted('televisionCreate');
 
         $createdData = $this->televisionService->create($request->getContent());
 

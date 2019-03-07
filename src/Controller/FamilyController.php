@@ -223,7 +223,7 @@ class FamilyController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('familyCreate', null);
+        $this->denyAccessUnlessGranted('familyCreate');
 
         $createdData = $this->familyService->create($request->getContent());
 

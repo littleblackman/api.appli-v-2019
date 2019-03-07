@@ -223,7 +223,7 @@ class MailController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('mailCreate', null);
+        $this->denyAccessUnlessGranted('mailCreate');
 
         $createdData = $this->mailService->create($request->getContent());
 

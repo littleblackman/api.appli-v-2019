@@ -299,7 +299,7 @@ class InvoiceController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('invoiceCreate', null);
+        $this->denyAccessUnlessGranted('invoiceCreate');
 
         $createdData = $this->invoiceService->create($request->getContent());
 

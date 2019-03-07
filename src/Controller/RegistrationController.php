@@ -240,7 +240,7 @@ class RegistrationController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('registrationCreate', null);
+        $this->denyAccessUnlessGranted('registrationCreate');
 
         $createdData = $this->registrationService->create($request->getContent());
 
