@@ -10,6 +10,9 @@ use Doctrine\ORM\EntityRepository;
  */
 class ParameterRepository extends EntityRepository
 {
+    /**
+     * Returns all the groups of age
+     */
     public function findAllGroupAge()
     {
         return $this->createQueryBuilder('p')
@@ -20,6 +23,22 @@ class ParameterRepository extends EntityRepository
             ->orderBy('p.value', 'ASC')
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    /**
+     * Returns the requested parameter if active
+     */
+    public function findOneByName($name)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.name = :name')
+            ->andWhere('p.isActive = :true')
+            ->setParameter('name', $name)
+            ->setParameter('true', true)
+            ->orderBy('p.value', 'ASC')
+            ->getQuery()
+            ->getOneOrNullResult()
         ;
     }
 }

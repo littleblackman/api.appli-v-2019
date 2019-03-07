@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.29.5
+- Ajout de la prise en compte de isActive pour les parameters (07/03/2019)
+- Création d'une méthode pour les récupérer parameters pour l'affect des PA (07/03/2019)
+
 v0.29.4
 - Mise à jour de UserBundle pour intégrer change-password et reset-password (06/03/2019)
 

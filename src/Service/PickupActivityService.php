@@ -8,6 +8,7 @@ use App\Entity\PickupActivity;
 use App\Entity\PickupActivityGroupActivityLink;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
@@ -95,48 +96,41 @@ class PickupActivityService implements PickupActivityServiceInterface
 
         //Creates GroupActivities and affects PickupActivity to them
         if (!empty($pickupActivities)) {
-            //Defines the maximum number of children per GroupActivity
-            $maxGroupAgeUnderMax = (int) $this->em->getRepository('App:Parameter')->findOneByName('MaxGroupAgeUnderMax')->getValue();
-            $maxGroupAgeOverMax = (int) $this->em->getRepository('App:Parameter')->findOneByName('MaxGroupAgeOverMax')->getValue();
-
-            //Defines start & end for GroupActivity (hours are taken from table parameter)
-            $groupActivityMorningStart = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityMorningStart')->getValue());
-            $groupActivityMorningEnd = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityMorningEnd')->getValue());
-            $groupActivityAfternoonStart = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityAfternoonStart')->getValue());
-            $groupActivityAfternoonEnd = new DateTime('1970-01-01' . $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityAfternoonEnd')->getValue());
+            $parameters = $this->getParameters();
 
             //Affects PickupActivity to GroupActivity
             foreach ($pickupActivities as $sport => $pickupActivitiesGroup) {
                 foreach ($pickupActivitiesGroup as $ageGroup => $pickupActivities) {
-                    $maxGroupAge = false !== strpos($ageGroup, '+') ? $maxGroupAgeOverMax : $maxGroupAgeUnderMax;
+                    $maxGroupAge = false !== strpos($ageGroup, '+') ? $parameters['maxGroupAgeOverMax'] : $parameters['maxGroupAgeUnderMax'];
                     foreach ($pickupActivities as $pickupActivity) {
                         //Defines data related to PickupActivity
                         $start = $pickupActivity->getStart();
                         $end = $pickupActivity->getEnd();
-                        $pickupActivityNumber = $start <= $groupActivityMorningStart && $end >= $groupActivityAfternoonEnd ? 2 : 1;
 
-                        //Defines if the PickupActivity covers the whole day, to be added in 2 GroupActivity
+                        //Defines the number of GroupActivity to be added to, if the PickupActivity covers the whole day
+                        $pickupActivityNumber = $start <= $parameters['groupActivityMorningStart'] && $end >= $parameters['groupActivityAfternoonEnd'] ? $parameters['totalGroupActivity'] : 1;
+
+                        //Affects the PickupActivity to GroupActivity
                         for ($i = 0; $i < $pickupActivityNumber; $i++) {
                             //Use the start/end of PickupActivity if for half-day otherwise (whole day) use the start/end by default
-                            $start = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 0 === $i) ? $pickupActivity->getStart() : $groupActivityAfternoonStart;
-                            $end = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 1 === $i) ? $pickupActivity->getEnd() : $groupActivityMorningEnd;
+                            $start = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 0 === $i) ? $pickupActivity->getStart() : $parameters['groupActivityAfternoonStart'];
+                            $end = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 1 === $i) ? $pickupActivity->getEnd() : $parameters['groupActivityMorningEnd'];
 
                             //Morning group
-                            if ($start <= $groupActivityMorningStart && $end >= $groupActivityMorningEnd) {
-                                $groupActivityStart = $groupActivityMorningStart;
-                                $groupActivityEnd = $groupActivityMorningEnd;
+                            if ($start <= $parameters['groupActivityMorningStart'] && $end >= $parameters['groupActivityMorningEnd']) {
+                                $groupActivityStart = $parameters['groupActivityMorningStart'];
+                                $groupActivityEnd = $parameters['groupActivityMorningEnd'];
                             //Afternoon group
                             } else {
-                                $groupActivityStart = $groupActivityAfternoonStart;
-                                $groupActivityEnd = $groupActivityAfternoonEnd;
+                                $groupActivityStart = $parameters['groupActivityAfternoonStart'];
+                                $groupActivityEnd = $parameters['groupActivityAfternoonEnd'];
                             }
 
                             //Defines data used to create GroupActivity
                             $sportId = (int) str_replace('sport-', '', $sport);
                             $location = $pickupActivity->getLocation();
                             if (!$location instanceof Location) {
-                                $locationId = (int) $this->em->getRepository('App:Parameter')->findOneByName('GroupActivityDefaultLocation')->getValue();
-                                $location = $this->em->getRepository('App:Location')->findOneByLocationId($locationId);
+                                $location = $parameters['groupActivityDefaultLocation'];
                             }
                             $dataGroupActivity = array(
                                 'date' => $date,
@@ -271,7 +265,7 @@ class PickupActivityService implements PickupActivityServiceInterface
             );
         }
 
-        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
+        throw new LogicException('Submitted data is not an array -> ' . json_encode($data));
     }
 
     /**
@@ -361,6 +355,64 @@ class PickupActivityService implements PickupActivityServiceInterface
         sort($groupAge);
 
         return $groupAge;
+    }
+
+    /**
+     * Returns the parameters used for affect
+     * @returns array
+     * @throws
+     */
+    public function getParameters()
+    {
+        $parameters = array();
+
+        //Defines mandatory parameters that must be set
+        $mandatoryParameters = array(
+            'maxGroupAgeUnderMax',
+            'maxGroupAgeOverMax',
+            'groupActivityMorningStart',
+            'groupActivityMorningEnd',
+            'groupActivityAfternoonStart',
+            'groupActivityAfternoonEnd',
+            'groupActivityDefaultLocation',
+        );
+
+        //Defines optional parameters
+        $optionalParameters = array(
+            'groupActivityMidStart',
+            'groupActivityMidEnd',
+        );
+
+        //Defines parameters
+        foreach (array_merge($mandatoryParameters, $optionalParameters) as $parameter) {
+            $parameters[$parameter] = $this->em->getRepository('App:Parameter')->findOneByName($parameter);
+        }
+
+        //Throws an exception if one of the mandatory parameter is missing
+        foreach ($mandatoryParameters as $parameter) {
+            if (null === $parameters[$parameter]) {
+                throw new LogicException('Missing mandatory parameter -> "' . $parameter . '", enable it in the table parameter');
+            }
+        }
+
+        //Defines parameters
+        foreach (array_merge($mandatoryParameters, $optionalParameters) as $parameter) {
+            $parameters[$parameter] = null !== $parameters[$parameter] ? $parameters[$parameter]->getValue() : null;
+        }
+
+        //Defines values to use
+        $parameters['maxGroupAgeUnderMax'] = (int) $parameters['maxGroupAgeUnderMax'];
+        $parameters['maxGroupAgeOverMax'] = (int) $parameters['maxGroupAgeOverMax'];
+        $parameters['groupActivityMorningStart'] = new DateTime('1970-01-01' . $parameters['groupActivityMorningStart']);
+        $parameters['groupActivityMorningEnd'] = new DateTime('1970-01-01' . $parameters['groupActivityMorningEnd']);
+        $parameters['groupActivityAfternoonStart'] = new DateTime('1970-01-01' . $parameters['groupActivityAfternoonStart']);
+        $parameters['groupActivityAfternoonEnd'] = new DateTime('1970-01-01' . $parameters['groupActivityAfternoonEnd']);
+        $parameters['groupActivityMidStart'] = null !== $parameters['groupActivityMidStart'] ? new DateTime('1970-01-01' . $parameters['groupActivityMidStart']) : null;
+        $parameters['groupActivityMidEnd'] = null !== $parameters['groupActivityMidEnd'] ? new DateTime('1970-01-01' . $parameters['groupActivityMidEnd']) : null;
+        $parameters['groupActivityDefaultLocation'] = $this->em->getRepository('App:Location')->findOneByLocationId((int) $parameters['groupActivityDefaultLocation']);
+        $parameters['totalGroupActivity'] = null !== $parameters['groupActivityMidStart'] ? 3 : 2;
+
+        return $parameters;
     }
 
     /**
