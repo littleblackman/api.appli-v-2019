@@ -296,16 +296,16 @@
         },
         {
             "name": "c975l/user-bundle",
-            "version": "v2.5",
+            "version": "v2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/975L/UserBundle.git",
-                "reference": "cf5e06afdc1f2a448d9f1dc7b5e85ec8a19ac320"
+                "reference": "cefc63c2efc491939d493d033e9064460763357a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/975L/UserBundle/zipball/cf5e06afdc1f2a448d9f1dc7b5e85ec8a19ac320",
-                "reference": "cf5e06afdc1f2a448d9f1dc7b5e85ec8a19ac320",
+                "url": "https://api.github.com/repos/975L/UserBundle/zipball/cefc63c2efc491939d493d033e9064460763357a",
+                "reference": "cefc63c2efc491939d493d033e9064460763357a",
                 "shasum": ""
             },
             "require": {
@@ -358,7 +358,7 @@
                 "symfony",
                 "user"
             ],
-            "time": "2019-03-06T21:33:35+00:00"
+            "time": "2019-03-07T07:51:13+00:00"
         },
         {
             "name": "cocur/slugify",

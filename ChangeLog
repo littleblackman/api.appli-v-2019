@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.29.4
+- Mise à jour de UserBundle pour intégrer change-password et reset-password (06/03/2019)
+
 v0.29.3
 - Mise à jour de UserBundle pour intégrer change-password et reset-password (06/03/2019)
 
