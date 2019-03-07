@@ -19,17 +19,17 @@ class RegistrationService implements RegistrationServiceInterface
 
     private $mainService;
 
-    private $personService;
+    private $productService;
 
     public function __construct(
         EntityManagerInterface $em,
         MainServiceInterface $mainService,
-        PersonServiceInterface $personService
+        ProductServiceInterface $productService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
-        $this->personService = $personService;
+        $this->productService = $productService;
     }
 
     /**
@@ -211,7 +211,7 @@ class RegistrationService implements RegistrationServiceInterface
 
         //Gets related product
         if (null !== $object->getProduct() && !$object->getProduct()->getSuppressed()) {
-            $objectArray['product'] = $this->mainService->toArray($object->getProduct()->toArray());
+            $objectArray['product'] = $this->productService->toArray($object->getProduct());
         }
 
         //Gets related location

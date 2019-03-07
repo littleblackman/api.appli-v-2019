@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.29.9
+- Mise à jour de UserBundle pour intégrer la modification de reset-password-confirm (06/03/2019)
+- Affiche des Components de Product dans Registration (07/03/2019)
+
 v0.29.8
 - Correction de l'affichage de school pour Child (07/03/2019)
 
