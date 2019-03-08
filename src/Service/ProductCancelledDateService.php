@@ -132,6 +132,11 @@ class ProductCancelledDateService implements ProductCancelledDateServiceInterfac
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
 
+        //Gets related category
+        if (null !== $object->getCategory() && !$object->getCategory()->getSuppressed()) {
+            $objectArray['category'] = $this->mainService->toArray($object->getCategory()->toArray());
+        }
+
         //Gets related product
         if (null !== $object->getProduct() && !$object->getProduct()->getSuppressed()) {
             $objectArray['product'] = $this->mainService->toArray($object->getProduct()->toArray());

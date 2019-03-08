@@ -36,7 +36,7 @@ class PersonPersonLink
     /**
      * @var Person
      *
-     * @ORM\ManyToOne(targetEntity="Person")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="related")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="related_id", referencedColumnName="person_id")
      * })

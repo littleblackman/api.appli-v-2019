@@ -46,7 +46,7 @@ class TransactionVoter extends Voter
     protected function supports($attribute, $subject)
     {
         if (null !== $subject) {
-            return $subject instanceof Transaction && in_array($attribute, self::ATTRIBUTES);
+            return (is_int($subject) || $subject instanceof Transaction) && in_array($attribute, self::ATTRIBUTES);
         }
 
         return in_array($attribute, self::ATTRIBUTES);
@@ -71,7 +71,7 @@ class TransactionVoter extends Voter
                 return $this->canDisplay($token, $subject);
                 break;
             case self::TRANSACTION_LIST:
-                return $this->canList();
+                return $this->canList($token, $subject);
                 break;
             case self::TRANSACTION_MODIFY:
                 return $this->canModify();
@@ -145,11 +145,14 @@ class TransactionVoter extends Voter
     /**
      * Checks if is allowed to list
      */
-    private function canList()
+    private function canList($token, $subject)
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_USER',
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
         );
 
         foreach ($roles as $role) {
@@ -158,7 +161,7 @@ class TransactionVoter extends Voter
             }
         }
 
-        return false;
+        return ($subject === $token->getUser()->getUserPersonLink()->getPerson()->getPersonId());
     }
 
     /**

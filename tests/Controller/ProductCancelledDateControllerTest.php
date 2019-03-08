@@ -22,7 +22,7 @@ class ProductCancelledDateControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2019-03-06", "product": "1", "messageFr": "Message FR", "messageEn": "Message EN"}'
+            '{"date": "2019-03-06", "category": "1", "product": "1", "messageFr": "Message FR", "messageEn": "Message EN"}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
@@ -54,7 +54,7 @@ class ProductCancelledDateControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2019-03-07", "product": "1", "messageFr": "Message FR", "messageEn": "Message EN"}'
+            '{"date": "2019-03-07", "category": "1", "product": "1", "messageFr": "Message FR", "messageEn": "Message EN"}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);

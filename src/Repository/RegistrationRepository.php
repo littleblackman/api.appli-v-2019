@@ -31,6 +31,7 @@ class RegistrationRepository extends EntityRepository
             ->getQuery()
         ;
     }
+
     /**
      * Returns all the registrations related to person and status in an array
      */

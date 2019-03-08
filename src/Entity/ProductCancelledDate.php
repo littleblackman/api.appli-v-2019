@@ -42,6 +42,14 @@ class ProductCancelledDate
     private $date;
 
     /**
+     * @var Category
+     *
+     * @ORM\OneToOne(targetEntity="Category")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="category_id")
+     */
+    private $category;
+
+    /**
      * @var Product
      *
      * @ORM\OneToOne(targetEntity="Product")
@@ -96,6 +104,18 @@ class ProductCancelledDate
     public function setDate(?DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

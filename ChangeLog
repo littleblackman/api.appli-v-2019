@@ -1,5 +1,12 @@
 ChangeLog
 
+v0.30.1
+- Ajout du filtrage des transactions pour n'afficher que celles liées à la Person (08/03/2019)
+- Suppression de l'ajout de la date par défaut dans les Transactions (08/03/2019)
+- Ajout du champ category sur ProductCancelledDate (08/03/2019)
+- Correction du inversed related sur Person (08/03/2019)
+- Correction du inversed invoiceProducts sur Invoice (08/03/2019)
+
 v0.30
 - Ajout de l'entité ProductCancelledDate (07/03/2019)
 

@@ -207,9 +207,9 @@ class TransactionController extends AbstractController
      * )
      * @SWG\Tag(name="Transaction")
      */
-    public function listAllPerson(Request $request, PaginatorInterface $paginator, $date, $personId)
+    public function listAllPerson(Request $request, PaginatorInterface $paginator, $date, int $personId)
     {
-        $this->denyAccessUnlessGranted('transactionList');
+        $this->denyAccessUnlessGranted('transactionList', $personId);
 
         $transactions = $paginator->paginate(
             $this->transactionService->findAllByDatePerson($date, $personId),

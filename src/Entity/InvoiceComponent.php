@@ -31,7 +31,7 @@ class InvoiceComponent
     private $invoiceComponentId;
 
     /**
-     * @var Invoice
+     * @var InvoiceProduct
      *
      * @ORM\ManyToOne(targetEntity="InvoiceProduct", inversedBy="invoiceComponents", cascade={"persist"})
      * @ORM\JoinColumns({

@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Product;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -22,6 +23,10 @@ class ProductCancelledDateType extends AbstractType
             ->add('date', DateType::class, array(
                 'required' => false,
                 'widget' => 'single_text',
+                ))
+            ->add('category', EntityType::class, array(
+                'required' => false,
+                'class' => Category::class,
                 ))
             ->add('product', EntityType::class, array(
                 'required' => false,

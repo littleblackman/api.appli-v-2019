@@ -39,8 +39,10 @@ class InvoiceProduct
     /**
      * @var Invoice
      *
-     * @ORM\OneToOne(targetEntity="Invoice", cascade={"persist"})
-     * @ORM\JoinColumn(name="invoice_id", referencedColumnName="invoice_id")
+     * @ORM\ManyToOne(targetEntity="Invoice", inversedBy="invoiceProducts", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="invoice_id", referencedColumnName="invoice_id")
+     * })
      */
     private $invoice;
 

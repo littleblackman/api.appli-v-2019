@@ -22,7 +22,7 @@ class TransactionControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"date": "2019-03-06", "internalOrder": "Order", "status": "status", "number": "Number", "amount": "152.25", "person": "1", "invoice": "1", "registrations": [{"registrationId": "1"}, {"registrationId": "2"}]}'
+            '{"date": "2019-03-06 10:00:00", "internalOrder": "123456789XYZ", "status": "status", "number": "Number", "amount": "152.25", "person": "1", "invoice": "1", "registrations": [{"registrationId": "1"}, {"registrationId": "2"}]}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
@@ -43,14 +43,14 @@ class TransactionControllerTest extends WebTestCase
     }
 
     /**
-     * Tests modify Television
+     * Tests modify Transaction
      */
     public function testModify()
     {
         //Tests with full data array
         $this->clientAuthenticated->request(
             'PUT',
-            '/transaction/modify/' . self::$objectId,
+            '/transaction/modify/123456789XYZ',
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
@@ -62,7 +62,7 @@ class TransactionControllerTest extends WebTestCase
         //Tests with partial data array
         $this->clientAuthenticated->request(
             'PUT',
-            '/transaction/modify/' . self::$objectId,
+            '/transaction/modify/123456789XYZ',
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
