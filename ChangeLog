@@ -1,5 +1,10 @@
 ChangeLog
 
+v0.30.2
+- Suppression de la restriction d'accès pour Category->display(), Product->display() et Blog->list()/display() (08/03/2019)
+- Ajout de `/transaction/list/{status}/{personId}` (08/03/2019)
+- Ajout de product-cancelled-date/list/{categoryId}/{date} et product-cancelled-date/list/{productId}/{date} (08/03/2019)
+
 v0.30.1
 - Ajout du filtrage des transactions pour n'afficher que celles liées à la Person (08/03/2019)
 - Suppression de l'ajout de la date par défaut dans les Transactions (08/03/2019)

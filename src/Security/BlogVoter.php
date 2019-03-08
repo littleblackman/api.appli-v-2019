@@ -130,21 +130,7 @@ class BlogVoter extends Voter
      */
     private function canDisplay()
     {
-        //Checks roles allowed
-        $roles = array(
-            'ROLE_ASSISTANT',
-            'ROLE_MANAGER',
-            'ROLE_LEADER',
-            'ROLE_ADMIN',
-        );
-
-        foreach ($roles as $role) {
-            if ($this->security->isGranted($role)) {
-                return true;
-            }
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -152,21 +138,7 @@ class BlogVoter extends Voter
      */
     private function canList()
     {
-        //Checks roles allowed
-        $roles = array(
-            'ROLE_ASSISTANT',
-            'ROLE_MANAGER',
-            'ROLE_LEADER',
-            'ROLE_ADMIN',
-        );
-
-        foreach ($roles as $role) {
-            if ($this->security->isGranted($role)) {
-                return true;
-            }
-        }
-
-        return false;
+        return true;
     }
 
     /**

@@ -79,6 +79,18 @@ class ProductCancelledDateService implements ProductCancelledDateServiceInterfac
     }
 
     /**
+     * Returns the list of all productCancelledDates for a specific category and date
+     * @return array
+     */
+    public function findAllByCategoryDate($categoryId, $date)
+    {
+        return $this->em
+            ->getRepository('App:ProductCancelledDate')
+            ->findAllByCategoryDate($categoryId, $date)
+        ;
+    }
+
+    /**
      * Returns the list of all productCancelledDates for a specific date
      * @return array
      */
@@ -87,6 +99,18 @@ class ProductCancelledDateService implements ProductCancelledDateServiceInterfac
         return $this->em
             ->getRepository('App:ProductCancelledDate')
             ->findAllByDate($date)
+        ;
+    }
+
+    /**
+     * Returns the list of all productCancelledDates for a specific product and date
+     * @return array
+     */
+    public function findAllByProductDate($productId, $date)
+    {
+        return $this->em
+            ->getRepository('App:ProductCancelledDate')
+            ->findAllByProductDate($productId, $date)
         ;
     }
 

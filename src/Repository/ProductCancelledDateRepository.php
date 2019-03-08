@@ -23,6 +23,23 @@ class ProductCancelledDateRepository extends EntityRepository
     }
 
     /**
+     * Returns all the ProductCancelledDate by category and date
+     */
+    public function findAllByCategoryDate($categoryId, $date)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.date LIKE :date')
+            ->andWhere('p.category = :categoryId')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('categoryId', $categoryId)
+            ->orderBy('p.date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns all the ProductCancelledDate by date
      */
     public function findAllByDate($date)
@@ -31,6 +48,23 @@ class ProductCancelledDateRepository extends EntityRepository
             ->where('p.date LIKE :date')
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
+            ->orderBy('p.date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * Returns all the ProductCancelledDate by product and date
+     */
+    public function findAllByProductDate($productId, $date)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.date LIKE :date')
+            ->andWhere('p.product = :productId')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('productId', $productId . '%')
             ->orderBy('p.date', 'ASC')
             ->getQuery()
             ->getResult()

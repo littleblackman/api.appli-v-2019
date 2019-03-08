@@ -107,7 +107,7 @@ class ProductCancelledDateController extends AbstractController
      * @SWG\Parameter(
      *     name="date",
      *     in="path",
-     *     description="Date for the ride (YYYY-MM-DD | YYYY-MM | YYYY)",
+     *     description="Date for the productCancelledDate (YYYY-MM-DD | YYYY-MM | YYYY)",
      *     type="string",
      * )
      * @SWG\Parameter(
@@ -132,6 +132,148 @@ class ProductCancelledDateController extends AbstractController
 
         $productCancelledDates = $paginator->paginate(
             $this->productCancelledDateService->findAllByDate($date),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $productCancelledDatesArray = array();
+        foreach ($productCancelledDates->getItems() as $productCancelledDate) {
+            $productCancelledDatesArray[] = $this->productCancelledDateService->toArray($productCancelledDate);
+        };
+
+        return new JsonResponse($productCancelledDatesArray);
+    }
+
+//LIST BY CATEGORY AND DATE
+
+    /**
+     * Lists all the productCancelledDate for a specific category and date
+     *
+     * @Route("product-cancelled-date/list-category/{categoryId}/{date}",
+     *    name="product_cancelled_date_list_category_date",
+     *    requirements={
+     *        "categoryId": "^([0-9]+)$",
+     *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=ProductCancelledDate::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="categoryId",
+     *     in="path",
+     *     description="Id of the category",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the productCancelledDate (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="ProductCancelledDate")
+     */
+    public function listAllCategoryDate(Request $request, PaginatorInterface $paginator, $categoryId, $date)
+    {
+        $this->denyAccessUnlessGranted('productCancelledDateList');
+
+        $productCancelledDates = $paginator->paginate(
+            $this->productCancelledDateService->findAllByCategoryDate($categoryId, $date),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $productCancelledDatesArray = array();
+        foreach ($productCancelledDates->getItems() as $productCancelledDate) {
+            $productCancelledDatesArray[] = $this->productCancelledDateService->toArray($productCancelledDate);
+        };
+
+        return new JsonResponse($productCancelledDatesArray);
+    }
+
+//LIST BY PRODUCT AND DATE
+
+    /**
+     * Lists all the productCancelledDate for a specific product and date
+     *
+     * @Route("product-cancelled-date/list-product/{productId}/{date}",
+     *    name="product_cancelled_date_list_product_date",
+     *    requirements={
+     *        "productId": "^([0-9]+)$",
+     *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=ProductCancelledDate::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="productId",
+     *     in="path",
+     *     description="Id of the product",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the productCancelledDate (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="ProductCancelledDate")
+     */
+    public function listAllProductDate(Request $request, PaginatorInterface $paginator, $productId, $date)
+    {
+        $this->denyAccessUnlessGranted('productCancelledDateList');
+
+        $productCancelledDates = $paginator->paginate(
+            $this->productCancelledDateService->findAllByProductDate($productId, $date),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );

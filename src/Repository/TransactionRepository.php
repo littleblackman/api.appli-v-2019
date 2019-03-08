@@ -73,6 +73,24 @@ class TransactionRepository extends EntityRepository
     }
 
     /**
+     * Returns all the transactions by status and person
+     */
+    public function findAllByStatusPerson($status, $personId)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.status = :status')
+            ->andWhere('t.person = :personId')
+            ->andWhere('t.suppressed = 0')
+            ->setParameter('status', $status)
+            ->setParameter('personId', $personId)
+            ->orderBy('t.date', 'ASC')
+            ->orderBy('t.status', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns the transaction if not suppressed
      */
     public function findOneById($transactionId)

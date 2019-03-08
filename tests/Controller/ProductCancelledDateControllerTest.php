@@ -108,6 +108,38 @@ class ProductCancelledDateControllerTest extends WebTestCase
         $this->assertInternalType('array', $content);
         $first = $content[0];
         $this->assertArrayHasKey('productCancelledDateId', $first);
+
+        //Tests list by date and category
+        $this->clientAuthenticated->request('GET', '/product-cancelled-date/list-category/1/2019-03-06');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('productCancelledDateId', $first);
+
+        //Tests list by month and category
+        $this->clientAuthenticated->request('GET', '/product-cancelled-date/list-category/1/2019-03');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('productCancelledDateId', $first);
+
+        //Tests list by date and product
+        $this->clientAuthenticated->request('GET', '/product-cancelled-date/list-product/1/2019-03-06');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('productCancelledDateId', $first);
+
+        //Tests list by month and product
+        $this->clientAuthenticated->request('GET', '/product-cancelled-date/list-product/1/2019-03');
+        $response = $this->clientAuthenticated->getResponse();
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('productCancelledDateId', $first);
     }
 
     /**

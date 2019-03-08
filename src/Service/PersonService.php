@@ -147,6 +147,7 @@ class PersonService implements PersonServiceInterface
             }
         }
 
+
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);

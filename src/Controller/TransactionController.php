@@ -225,6 +225,71 @@ class TransactionController extends AbstractController
         return new JsonResponse($transactionsArray);
     }
 
+//LIST BY STATUS AND PERSON
+
+    /**
+     * Lists all the transaction for a specific status and person
+     *
+     * @Route("/transaction/list/{status}/{personId}",
+     *    name="transaction_list_status_person",
+     *    requirements={
+     *        "status": "^([a-zA-Z]+)$",
+     *        "personId": "^([0-9]+)$"
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Transaction::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="status",
+     *     in="path",
+     *     description="DateStatus for the transaction)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Transaction")
+     */
+    public function listAllStatusPerson(Request $request, PaginatorInterface $paginator, $status, int $personId)
+    {
+        $this->denyAccessUnlessGranted('transactionList', $personId);
+
+        $transactions = $paginator->paginate(
+            $this->transactionService->findAllByStatusPerson($status, $personId),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $transactionsArray = array();
+        foreach ($transactions->getItems() as $transaction) {
+            $transactionsArray[] = $this->transactionService->toArray($transaction);
+        };
+
+        return new JsonResponse($transactionsArray);
+    }
+
 //DISPLAY
 
     /**

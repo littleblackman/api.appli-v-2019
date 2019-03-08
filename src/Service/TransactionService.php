@@ -153,6 +153,18 @@ class TransactionService implements TransactionServiceInterface
     }
 
     /**
+     * Returns the list of all transactions for a specific date and person
+     * @return array
+     */
+    public function findAllByStatusPerson($status, $person)
+    {
+        return $this->em
+            ->getRepository('App:Transaction')
+            ->findAllByStatusPerson($status, $person)
+        ;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEntityFilled(Transaction $object)
