@@ -107,49 +107,53 @@ class PickupActivityService implements PickupActivityServiceInterface
                         $start = $pickupActivity->getStart();
                         $end = $pickupActivity->getEnd();
 
-                        //Defines the number of GroupActivity to be added to, if the PickupActivity covers the whole day
-                        $pickupActivityNumber = $start <= $parameters['groupActivityMorningStart'] && $end >= $parameters['groupActivityAfternoonEnd'] ? $parameters['totalGroupActivity'] : 1;
+                        //If PickupActivity covers whole day, defines the number of GroupActivity (3 if groupActivityMidStart is enabled, 2 otherwise)
+                        $groupActivityNumber = $start <= $parameters['groupActivityMorningStart'] && $end >= $parameters['groupActivityAfternoonEnd'] ? $parameters['totalGroupActivity'] : 1;
 
                         //Affects the PickupActivity to GroupActivity
-                        for ($i = 0; $i < $pickupActivityNumber; $i++) {
+                        for ($i = 0; $i < $groupActivityNumber; $i++) {
                             //Use the start/end of PickupActivity if for half-day otherwise (whole day) use the start/end by default
-                            $start = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 0 === $i) ? $pickupActivity->getStart() : $parameters['groupActivityAfternoonStart'];
-                            $end = 1 === $pickupActivityNumber || (2 === $pickupActivityNumber && 1 === $i) ? $pickupActivity->getEnd() : $parameters['groupActivityMorningEnd'];
+                            $start = 1 === $groupActivityNumber || (2 === $groupActivityNumber && 0 === $i) ? $pickupActivity->getStart() : $parameters['groupActivityAfternoonStart'];
+                            $end = 1 === $groupActivityNumber || (2 === $groupActivityNumber && 1 === $i) ? $pickupActivity->getEnd() : $parameters['groupActivityMorningEnd'];
+                            $groupActivityStart = null;
 
                             //Morning group
                             if ($start <= $parameters['groupActivityMorningStart'] && $end >= $parameters['groupActivityMorningEnd']) {
                                 $groupActivityStart = $parameters['groupActivityMorningStart'];
                                 $groupActivityEnd = $parameters['groupActivityMorningEnd'];
                             //Afternoon group
-                            } else {
+                            } elseif ($start <= $parameters['groupActivityAfternoonStart'] && $end >= $parameters['groupActivityAfternoonEnd']) {
                                 $groupActivityStart = $parameters['groupActivityAfternoonStart'];
                                 $groupActivityEnd = $parameters['groupActivityAfternoonEnd'];
                             }
 
-                            //Defines data used to create GroupActivity
-                            $sportId = (int) str_replace('sport-', '', $sport);
-                            $location = $pickupActivity->getLocation();
-                            if (!$location instanceof Location) {
-                                $location = $parameters['groupActivityDefaultLocation'];
-                            }
-                            $dataGroupActivity = array(
-                                'date' => $date,
-                                'ageGroup' => $ageGroup,
-                                'start' => $groupActivityStart,
-                                'end' => $groupActivityEnd,
-                                'sportId' => $sportId,
-                                'location' => $location,
-                            );
+                            //Checks if the PickupActivity can be linked to a group
+                            if (null !== $groupActivityStart) {
+                                //Defines data used to create GroupActivity
+                                $sportId = (int) str_replace('sport-', '', $sport);
+                                $location = $pickupActivity->getLocation();
+                                if (!$location instanceof Location) {
+                                    $location = $parameters['groupActivityDefaultLocation'];
+                                }
+                                $dataGroupActivity = array(
+                                    'date' => $date,
+                                    'ageGroup' => $ageGroup,
+                                    'start' => $groupActivityStart,
+                                    'end' => $groupActivityEnd,
+                                    'sportId' => $sportId,
+                                    'location' => $location,
+                                );
 
-                            //Uses existing GroupActivity
-                            $key = $location->getLocationId() . '-' . $groupActivityStart->format('Hi') . '-' . $sportId . '-' . $ageGroup;
-                            $groupActivities = array_key_exists($key, $this->groupActivities) ? $this->groupActivities[$key] : null;
-                            if (is_array($groupActivities)) {
-                                $this->affectToGroupActivities($groupActivities, $pickupActivity, $maxGroupAge, $dataGroupActivity);
-                            //Creates GroupActivity if none has been found
-                            } else {
-                                $groupActivity = $this->createGroupActivity($dataGroupActivity);
-                                $this->affectToGroupActivity($pickupActivity, $groupActivity);
+                                //Uses existing GroupActivity
+                                $key = $location->getLocationId() . '-' . $groupActivityStart->format('Hi') . '-' . $sportId . '-' . $ageGroup;
+                                $groupActivities = array_key_exists($key, $this->groupActivities) ? $this->groupActivities[$key] : null;
+                                if (is_array($groupActivities)) {
+                                    $this->affectToGroupActivities($groupActivities, $pickupActivity, $maxGroupAge, $dataGroupActivity);
+                                //Creates GroupActivity if none has been found
+                                } else {
+                                    $groupActivity = $this->createGroupActivity($dataGroupActivity);
+                                    $this->affectToGroupActivity($pickupActivity, $groupActivity);
+                                }
                             }
                         }
                     }

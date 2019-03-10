@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.30.3
+- Correction de l'affect des PA pour vérifier avant de passer dans le PA de l'après-midi (10/03/2019)
+
 v0.30.2
 - Suppression de la restriction d'accès pour Category->display(), Product->display() et Blog->list()/display() (08/03/2019)
 - Ajout de `/transaction/list/{status}/{personId}` (08/03/2019)
