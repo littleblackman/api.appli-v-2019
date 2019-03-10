@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.30.4
+- Suppression des données liées au groupActivityMidStart (10/03/2019)
+
 v0.30.3
 - Correction de l'affect des PA pour vérifier avant de passer dans le PA de l'après-midi (10/03/2019)
 

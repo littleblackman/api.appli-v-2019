@@ -88,7 +88,7 @@ class PickupActivityControllerTest extends WebTestCase
     }
 
     /**
-     * Tests list of Ride
+     * Tests list of PickupAcitvity
      */
     public function testList()
     {

@@ -107,7 +107,7 @@ class PickupActivityService implements PickupActivityServiceInterface
                         $start = $pickupActivity->getStart();
                         $end = $pickupActivity->getEnd();
 
-                        //If PickupActivity covers whole day, defines the number of GroupActivity (3 if groupActivityMidStart is enabled, 2 otherwise)
+                        //If PickupActivity covers whole day, defines the number of GroupActivity
                         $groupActivityNumber = $start <= $parameters['groupActivityMorningStart'] && $end >= $parameters['groupActivityAfternoonEnd'] ? $parameters['totalGroupActivity'] : 1;
 
                         //Affects the PickupActivity to GroupActivity
@@ -368,8 +368,6 @@ class PickupActivityService implements PickupActivityServiceInterface
      */
     public function getParameters()
     {
-        $parameters = array();
-
         //Defines mandatory parameters that must be set
         $mandatoryParameters = array(
             'maxGroupAgeUnderMax',
@@ -381,27 +379,18 @@ class PickupActivityService implements PickupActivityServiceInterface
             'groupActivityDefaultLocation',
         );
 
-        //Defines optional parameters
-        $optionalParameters = array(
-            'groupActivityMidStart',
-            'groupActivityMidEnd',
-        );
-
         //Defines parameters
-        foreach (array_merge($mandatoryParameters, $optionalParameters) as $parameter) {
-            $parameters[$parameter] = $this->em->getRepository('App:Parameter')->findOneByName($parameter);
-        }
-
-        //Throws an exception if one of the mandatory parameter is missing
+        $parameters = array();
         foreach ($mandatoryParameters as $parameter) {
-            if (null === $parameters[$parameter]) {
+            $parameterValue = $this->em->getRepository('App:Parameter')->findOneByName($parameter);
+
+            //Assigns value
+            if (null !== $parameterValue) {
+                $parameters[$parameter] = $parameterValue->getValue();
+            //Throws an exception if one of the mandatory parameter is missing
+            } else {
                 throw new LogicException('Missing mandatory parameter -> "' . $parameter . '", enable it in the table parameter');
             }
-        }
-
-        //Defines parameters
-        foreach (array_merge($mandatoryParameters, $optionalParameters) as $parameter) {
-            $parameters[$parameter] = null !== $parameters[$parameter] ? $parameters[$parameter]->getValue() : null;
         }
 
         //Defines values to use
@@ -411,10 +400,8 @@ class PickupActivityService implements PickupActivityServiceInterface
         $parameters['groupActivityMorningEnd'] = new DateTime('1970-01-01' . $parameters['groupActivityMorningEnd']);
         $parameters['groupActivityAfternoonStart'] = new DateTime('1970-01-01' . $parameters['groupActivityAfternoonStart']);
         $parameters['groupActivityAfternoonEnd'] = new DateTime('1970-01-01' . $parameters['groupActivityAfternoonEnd']);
-        $parameters['groupActivityMidStart'] = null !== $parameters['groupActivityMidStart'] ? new DateTime('1970-01-01' . $parameters['groupActivityMidStart']) : null;
-        $parameters['groupActivityMidEnd'] = null !== $parameters['groupActivityMidEnd'] ? new DateTime('1970-01-01' . $parameters['groupActivityMidEnd']) : null;
         $parameters['groupActivityDefaultLocation'] = $this->em->getRepository('App:Location')->findOneByLocationId((int) $parameters['groupActivityDefaultLocation']);
-        $parameters['totalGroupActivity'] = null !== $parameters['groupActivityMidStart'] ? 3 : 2;
+        $parameters['totalGroupActivity'] = 2;
 
         return $parameters;
     }
