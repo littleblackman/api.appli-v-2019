@@ -209,6 +209,8 @@ class PickupActivityController extends AbstractController
      */
     public function affect($date, bool $force)
     {
+        set_time_limit(600);
+
         $this->denyAccessUnlessGranted('pickupActivityModify');
 
         $this->pickupActivityService->affect($date, $force);

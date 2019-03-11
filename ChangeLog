@@ -1,5 +1,8 @@
 ChangeLog
 
+v0.30.5
+- Ajout de `set_time_limit(600);` pour `pickup_activity_affect` (11/03/2019)
+
 v0.30.4
 - Suppression des données liées au groupActivityMidStart (10/03/2019)
 
