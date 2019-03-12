@@ -28,7 +28,6 @@ class MealController extends AbstractController
     }
 
 //LIST BY DATE
-
     /**
      * Lists all the meals for a specific date
      *
@@ -90,7 +89,6 @@ class MealController extends AbstractController
     }
 
 //TOTAL BY DATE
-
     /**
      * Calculates the totals for meals for a specific date
      *
@@ -140,7 +138,6 @@ class MealController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays the meal using its id
      *
@@ -184,7 +181,6 @@ class MealController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a Meal
      *
@@ -224,7 +220,6 @@ class MealController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies meal
      *
@@ -277,7 +272,6 @@ class MealController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes meal and moves all the pickups as "Non pris en charge"
      *

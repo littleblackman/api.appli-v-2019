@@ -28,7 +28,6 @@ class TransactionController extends AbstractController
     }
 
 //LIST BY DATE
-
     /**
      * Lists all the transaction for a specific date
      *
@@ -90,7 +89,6 @@ class TransactionController extends AbstractController
     }
 
 //LIST BY DATE AND STATUS
-
     /**
      * Lists all the transaction for a specific date and status
      *
@@ -161,7 +159,6 @@ class TransactionController extends AbstractController
     }
 
 //LIST BY DATE AND PERSON
-
     /**
      * Lists all the transaction for a specific date and person
      *
@@ -226,7 +223,6 @@ class TransactionController extends AbstractController
     }
 
 //LIST BY STATUS AND PERSON
-
     /**
      * Lists all the transaction for a specific status and person
      *
@@ -291,7 +287,6 @@ class TransactionController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays transaction using transactionId
      *
@@ -336,7 +331,6 @@ class TransactionController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates Transaction
      *
@@ -378,7 +372,6 @@ class TransactionController extends AbstractController
     }
 
 //MODIFY WITH INTERNALORDER
-
     /**
      * Modifies transaction
      *
@@ -431,7 +424,6 @@ class TransactionController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes transaction using its id
      *

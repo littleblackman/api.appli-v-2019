@@ -28,7 +28,6 @@ class PickupActivityController extends AbstractController
     }
 
 //LIST BY STATUS AND DATE
-
     /**
      * Lists all the pickupActivity by date and status
      *
@@ -99,7 +98,6 @@ class PickupActivityController extends AbstractController
     }
 
 //LIST BY ChildId AND DATE
-
     /**
      * Lists all the pickupActivity by childId and date
      *
@@ -169,7 +167,6 @@ class PickupActivityController extends AbstractController
     }
 
 //AFFECT
-
     /**
      * Affects all the Pickups to the GroupActivity
      *
@@ -219,7 +216,6 @@ class PickupActivityController extends AbstractController
     }
 
 //UNAFFECT
-
     /**
      * Unaffects all the Pickups to the GroupActivity
      *
@@ -257,7 +253,6 @@ class PickupActivityController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays pickupActivity
      *
@@ -302,7 +297,6 @@ class PickupActivityController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a PickupActivity
      *
@@ -342,7 +336,6 @@ class PickupActivityController extends AbstractController
     }
 
 //CREATE MULTIPLE
-
     /**
      * Creates multiples PickupActivities
      *
@@ -382,7 +375,6 @@ class PickupActivityController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies pickupActivity
      *
@@ -435,7 +427,6 @@ class PickupActivityController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes pickupActivity
      *
@@ -480,7 +471,6 @@ class PickupActivityController extends AbstractController
     }
 
 //DELETE BY REGISTRATION_ID
-
     /**
      * Deletes pickupActivity using the registrationId
      *

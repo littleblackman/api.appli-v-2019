@@ -28,7 +28,6 @@ class SportController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the categories
      *
@@ -83,7 +82,6 @@ class SportController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name_fr for Sport
      *
@@ -150,7 +148,6 @@ class SportController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays sport
      *
@@ -191,7 +188,6 @@ class SportController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates sport
      *
@@ -231,7 +227,6 @@ class SportController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies sport
      *
@@ -284,7 +279,6 @@ class SportController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes sport
      *

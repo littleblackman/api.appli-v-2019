@@ -28,7 +28,6 @@ class FamilyController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the families
      *
@@ -83,7 +82,6 @@ class FamilyController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name_fr for Family
      *
@@ -150,7 +148,6 @@ class FamilyController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays family
      *
@@ -191,7 +188,6 @@ class FamilyController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates family
      *
@@ -231,7 +227,6 @@ class FamilyController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies family
      *
@@ -284,7 +279,6 @@ class FamilyController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes family
      *

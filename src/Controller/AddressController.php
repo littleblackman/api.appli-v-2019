@@ -27,7 +27,6 @@ class AddressController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays address
      *
@@ -68,7 +67,6 @@ class AddressController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates address
      *
@@ -108,7 +106,6 @@ class AddressController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies address
      *
@@ -161,7 +158,6 @@ class AddressController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes address
      *
@@ -206,7 +202,6 @@ class AddressController extends AbstractController
     }
 
 //GEOCODING
-
     /**
      * Geocodes all the Address
      *

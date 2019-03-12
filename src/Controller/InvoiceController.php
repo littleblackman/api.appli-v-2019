@@ -28,7 +28,6 @@ class InvoiceController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the invoices
      *
@@ -83,7 +82,6 @@ class InvoiceController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name_fr for Invoice
      *
@@ -150,7 +148,6 @@ class InvoiceController extends AbstractController
     }
 
 //SEARCH BY DATES
-
     /**
      * Searches by dates of invoices
      *
@@ -226,7 +223,6 @@ class InvoiceController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays invoice
      *
@@ -267,7 +263,6 @@ class InvoiceController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates invoice
      *
@@ -307,7 +302,6 @@ class InvoiceController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies invoice
      *
@@ -360,7 +354,6 @@ class InvoiceController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes invoice
      *

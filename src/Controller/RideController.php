@@ -36,7 +36,6 @@ class RideController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the rides coming or finished
      *
@@ -100,7 +99,6 @@ class RideController extends AbstractController
     }
 
 //LIST BY DATE
-
     /**
      * Lists all the rides for a specific date
      *
@@ -162,7 +160,6 @@ class RideController extends AbstractController
     }
 
 //DISPLAY BY DATE AND STAFFID
-
     /**
      * Displays the rides for a specific date and staff
      *
@@ -217,7 +214,6 @@ class RideController extends AbstractController
     }
 
 //DISPLAY BY ID
-
     /**
      * Displays the ride using its id
      *
@@ -261,7 +257,6 @@ class RideController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a Ride
      *
@@ -301,7 +296,6 @@ class RideController extends AbstractController
     }
 
 //CREATE MULTIPLE
-
     /**
      * Creates multiples Rides
      *
@@ -343,7 +337,6 @@ class RideController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies ride
      *
@@ -396,7 +389,6 @@ class RideController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes ride and moves all the pickups as "Non pris en charge"
      *

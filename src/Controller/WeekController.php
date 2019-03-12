@@ -28,7 +28,6 @@ class WeekController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the weeks
      *
@@ -83,7 +82,6 @@ class WeekController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name for Week
      *
@@ -150,7 +148,6 @@ class WeekController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays week
      *
@@ -191,7 +188,6 @@ class WeekController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates week
      *
@@ -231,7 +227,6 @@ class WeekController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies week
      *
@@ -284,7 +279,6 @@ class WeekController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes week
      *

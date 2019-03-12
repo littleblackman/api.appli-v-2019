@@ -28,7 +28,6 @@ class FoodController extends AbstractController
     }
 
 //LIST BY STATUS
-
     /**
      * Lists all the foods by status
      *
@@ -94,7 +93,6 @@ class FoodController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays the food using its id
      *
@@ -137,7 +135,6 @@ class FoodController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a Food
      *
@@ -177,7 +174,6 @@ class FoodController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies food
      *
@@ -230,7 +226,6 @@ class FoodController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes food
      *

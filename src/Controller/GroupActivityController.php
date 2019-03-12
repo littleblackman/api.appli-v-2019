@@ -36,7 +36,6 @@ class GroupActivityController extends AbstractController
     }
 
 //LIST BY DATE
-
     /**
      * Lists all the groupActivities for a specific date
      *
@@ -98,7 +97,6 @@ class GroupActivityController extends AbstractController
     }
 
 //DISPLAY BY DATE AND STAFFID
-
     /**
      * Displays the groupActivity for a specific date and staff
      *
@@ -153,7 +151,6 @@ class GroupActivityController extends AbstractController
     }
 
 //DISPLAY BY ID
-
     /**
      * Displays the groupActivity using its id
      *
@@ -197,7 +194,6 @@ class GroupActivityController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a GroupActivity
      *
@@ -237,7 +233,6 @@ class GroupActivityController extends AbstractController
     }
 
 //CREATE MULTIPLE
-
     /**
      * Creates multiples GroupActivitys
      *
@@ -279,7 +274,6 @@ class GroupActivityController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies groupActivity
      *
@@ -332,7 +326,6 @@ class GroupActivityController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes groupActivity and moves all the pickups as "Non pris en charge"
      *

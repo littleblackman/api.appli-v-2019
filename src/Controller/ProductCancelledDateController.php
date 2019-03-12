@@ -28,7 +28,6 @@ class ProductCancelledDateController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the productCancelledDate
      *
@@ -83,7 +82,6 @@ class ProductCancelledDateController extends AbstractController
     }
 
 //LIST BY DATE
-
     /**
      * Lists all the productCancelledDate for a specific date
      *
@@ -145,7 +143,6 @@ class ProductCancelledDateController extends AbstractController
     }
 
 //LIST BY CATEGORY AND DATE
-
     /**
      * Lists all the productCancelledDate for a specific category and date
      *
@@ -216,7 +213,6 @@ class ProductCancelledDateController extends AbstractController
     }
 
 //LIST BY PRODUCT AND DATE
-
     /**
      * Lists all the productCancelledDate for a specific product and date
      *
@@ -287,7 +283,6 @@ class ProductCancelledDateController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays productCancelledDate using productCancelledDateId
      *
@@ -332,7 +327,6 @@ class ProductCancelledDateController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates ProductCancelledDate
      *
@@ -374,7 +368,6 @@ class ProductCancelledDateController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies productCancelledDate
      *
@@ -427,7 +420,6 @@ class ProductCancelledDateController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes productCancelledDate using its id
      *

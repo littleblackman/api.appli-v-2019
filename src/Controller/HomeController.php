@@ -14,7 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
 //HOME
-
     /**
      * Home of the API
      * @return JsonResponse (true)

@@ -28,7 +28,6 @@ class SeasonController extends AbstractController
     }
 
 //LIST BY STATUS
-
     /**
      * Lists all the seasons by status
      *
@@ -94,7 +93,6 @@ class SeasonController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays season
      *
@@ -136,7 +134,6 @@ class SeasonController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a season
      *
@@ -176,7 +173,6 @@ class SeasonController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies season
      *
@@ -229,7 +225,6 @@ class SeasonController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes season
      *

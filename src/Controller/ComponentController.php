@@ -28,7 +28,6 @@ class ComponentController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the components
      *
@@ -83,7 +82,6 @@ class ComponentController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name_fr for Component
      *
@@ -150,7 +148,6 @@ class ComponentController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays component
      *
@@ -191,7 +188,6 @@ class ComponentController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates component
      *
@@ -231,7 +227,6 @@ class ComponentController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies component
      *
@@ -284,7 +279,6 @@ class ComponentController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes component
      *

@@ -28,7 +28,6 @@ class ProductController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the products
      *
@@ -83,7 +82,6 @@ class ProductController extends AbstractController
     }
 
 //LIST FOR A CHILD
-
     /**
      * Lists all the products linked to a Child
      *
@@ -138,7 +136,6 @@ class ProductController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name_fr for Product
      *
@@ -205,7 +202,6 @@ class ProductController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays product
      *
@@ -246,7 +242,6 @@ class ProductController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates product
      *
@@ -286,7 +281,6 @@ class ProductController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies product
      *
@@ -339,7 +333,6 @@ class ProductController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes product
      *

@@ -28,7 +28,6 @@ class LocationController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the locations
      *
@@ -83,7 +82,6 @@ class LocationController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays location
      *
@@ -125,7 +123,6 @@ class LocationController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a location
      *
@@ -165,7 +162,6 @@ class LocationController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies location
      *
@@ -218,7 +214,6 @@ class LocationController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes location
      *

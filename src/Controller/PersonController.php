@@ -28,7 +28,6 @@ class PersonController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the persons
      *
@@ -83,7 +82,6 @@ class PersonController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in firstname|lastname for Person
      *
@@ -150,7 +148,6 @@ class PersonController extends AbstractController
     }
 
 //DISPLAY WITH ID
-
     /**
      * Displays person using its id
      *
@@ -195,7 +192,6 @@ class PersonController extends AbstractController
     }
 
 //DISPLAY WITH USER'S IDENTIFIER
-
     /**
      * Displays person using its user's identifier
      *
@@ -240,7 +236,6 @@ class PersonController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a Person
      *
@@ -280,7 +275,6 @@ class PersonController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies person
      *
@@ -333,7 +327,6 @@ class PersonController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes person
      *

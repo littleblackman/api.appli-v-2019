@@ -28,7 +28,6 @@ class VehicleController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the vehicles
      *
@@ -78,7 +77,6 @@ class VehicleController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays the vehicle using its id
      *
@@ -122,7 +120,6 @@ class VehicleController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a Vehicle
      *
@@ -162,7 +159,6 @@ class VehicleController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies vehicle
      *
@@ -215,7 +211,6 @@ class VehicleController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes vehicle and moves all the pickups as "Non pris en charge"
      *

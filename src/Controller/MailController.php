@@ -28,7 +28,6 @@ class MailController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the mails
      *
@@ -83,7 +82,6 @@ class MailController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name_fr for Mail
      *
@@ -150,7 +148,6 @@ class MailController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays mail
      *
@@ -191,7 +188,6 @@ class MailController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates mail
      *
@@ -231,7 +227,6 @@ class MailController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies mail
      *
@@ -284,7 +279,6 @@ class MailController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes mail
      *

@@ -28,7 +28,6 @@ class RegistrationController extends AbstractController
     }
 
 //LIST BY STATUS
-
     /**
      * Lists all the registrations
      *
@@ -91,8 +90,61 @@ class RegistrationController extends AbstractController
         return new JsonResponse($registrationsArray);
     }
 
-//LIST BY PERSONID AND STATUS
+//LIST BY ALL EXCEPT CART STATUS
+    /**
+     * Lists all the registrations excepting those with cart status
+     *
+     * @Route("/registration/list/without-cart",
+     *    name="registration_list_without_cart",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Registration::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Registration")
+     */
+    public function listAllWithoutCart(Request $request, PaginatorInterface $paginator)
+    {
+        $this->denyAccessUnlessGranted('registrationListWithoutCart');
 
+        $registrations = $paginator->paginate(
+            $this->registrationService->findAllWithoutCart(),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('size', 50)
+        );
+
+        $registrationsArray = array();
+        foreach ($registrations->getItems() as $registration) {
+            $registrationsArray[] = $this->registrationService->toArray($registration);
+        };
+
+        return new JsonResponse($registrationsArray);
+    }
+
+//LIST BY PERSONID AND STATUS
     /**
      * Lists all the registrations
      *
@@ -166,7 +218,6 @@ class RegistrationController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays registration
      *
@@ -208,7 +259,6 @@ class RegistrationController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a registration
      *
@@ -248,7 +298,6 @@ class RegistrationController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies registration
      *
@@ -301,7 +350,6 @@ class RegistrationController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes registration
      *

@@ -29,7 +29,6 @@ class PickupController extends AbstractController
     }
 
 //LIST BY STATUS AND DATE
-
     /**
      * Lists all the pickups by date and status
      *
@@ -100,7 +99,6 @@ class PickupController extends AbstractController
     }
 
 //LIST NOT AFFECTED
-
     /**
      * Lists all the pickups by date not affected to a ride
      *
@@ -169,7 +167,6 @@ class PickupController extends AbstractController
     }
 
 //AFFECT
-
     /**
      * Affects all the Pickups to the rides
      *
@@ -224,7 +221,6 @@ class PickupController extends AbstractController
     }
 
 //AFFECT TO LINKED RIDE
-
     /**
      * Affects all the Pickups to the linked Ride
      *
@@ -263,7 +259,6 @@ class PickupController extends AbstractController
     }
 
 //UNAFFECT
-
     /**
      * Unaffects all the Pickups to the rides
      *
@@ -310,7 +305,6 @@ class PickupController extends AbstractController
     }
 
 //DISPATCH
-
     /**
      * Modifies the dispatch for Pickups
      *
@@ -356,7 +350,6 @@ class PickupController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays pickup
      *
@@ -401,7 +394,6 @@ class PickupController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a Pickup
      *
@@ -441,7 +433,6 @@ class PickupController extends AbstractController
     }
 
 //CREATE MULTIPLE
-
     /**
      * Creates multiples Pickups
      *
@@ -481,7 +472,6 @@ class PickupController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies pickup
      *
@@ -534,7 +524,6 @@ class PickupController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes pickup
      *
@@ -579,7 +568,6 @@ class PickupController extends AbstractController
     }
 
 //DELETE BY REGISTRATION_ID
-
     /**
      * Deletes pickup using the registrationId
      *
@@ -623,7 +611,6 @@ class PickupController extends AbstractController
     }
 
 //GEOCODING
-
     /**
      * Geocodes all the Pickups
      *

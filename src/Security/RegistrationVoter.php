@@ -29,6 +29,8 @@ class RegistrationVoter extends Voter
 
     public const REGISTRATION_LIST = 'registrationList';
 
+    public const REGISTRATION_LIST_WITHOUT_CART = 'registrationListWithoutCart';
+
     public const REGISTRATION_MODIFY = 'registrationModify';
 
     private const ATTRIBUTES = array(
@@ -36,6 +38,7 @@ class RegistrationVoter extends Voter
         self::REGISTRATION_DELETE,
         self::REGISTRATION_DISPLAY,
         self::REGISTRATION_LIST,
+        self::REGISTRATION_LIST_WITHOUT_CART,
         self::REGISTRATION_MODIFY,
     );
 
@@ -73,6 +76,9 @@ class RegistrationVoter extends Voter
                 break;
             case self::REGISTRATION_LIST:
                 return $this->canList($token, $subject);
+                break;
+            case self::REGISTRATION_LIST_WITHOUT_CART:
+                return $this->canListWithoutCart();
                 break;
             case self::REGISTRATION_MODIFY:
                 return $this->canModify($token, $subject);
@@ -154,6 +160,28 @@ class RegistrationVoter extends Voter
         }
 
         return ($subject === $token->getUser()->getUserPersonLink()->getPerson()->getPersonId());
+    }
+
+    /**
+     * Checks if is allowed to list without the cart status
+     */
+    private function canListWithoutCart()
+    {
+        //Checks roles allowed
+        $roles = array(
+            'ROLE_ASSISTANT',
+            'ROLE_MANAGER',
+            'ROLE_LEADER',
+            'ROLE_ADMIN',
+        );
+
+        foreach ($roles as $role) {
+            if ($this->security->isGranted($role)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

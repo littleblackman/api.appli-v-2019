@@ -28,7 +28,6 @@ class ChildController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the children
      *
@@ -83,7 +82,6 @@ class ChildController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in firstname|lastname for Child
      *
@@ -150,7 +148,6 @@ class ChildController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays child
      *
@@ -192,7 +189,6 @@ class ChildController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a child
      *
@@ -232,7 +228,6 @@ class ChildController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies child
      *
@@ -285,7 +280,6 @@ class ChildController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes child
      *

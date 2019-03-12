@@ -38,7 +38,9 @@ class RegistrationService implements RegistrationServiceInterface
     public function addSpecificData(Registration $object, array $data)
     {
         //Adds registration datetime
-        $object->setRegistration(new DateTime());
+        if (null === $object->getRegistration()) {
+            $object->setRegistration(new DateTime());
+        }
 
         //Adds preferences
         if (array_key_exists('preferences', $data)) {
@@ -140,6 +142,17 @@ class RegistrationService implements RegistrationServiceInterface
         return $this->em
             ->getRepository('App:Registration')
             ->findAllByPersonAndStatus($personId, $status)
+        ;
+    }
+
+    /**
+     * Returns the list of all registrations related to person without the cart status in the array format
+     */
+    public function findAllWithoutCart()
+    {
+        return $this->em
+            ->getRepository('App:Registration')
+            ->findAllWithoutCart()
         ;
     }
 

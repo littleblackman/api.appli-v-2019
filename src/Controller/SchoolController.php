@@ -28,7 +28,6 @@ class SchoolController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the schools
      *
@@ -83,7 +82,6 @@ class SchoolController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name for School
      *
@@ -150,7 +148,6 @@ class SchoolController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays school
      *
@@ -191,7 +188,6 @@ class SchoolController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates school
      *
@@ -231,7 +227,6 @@ class SchoolController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies school
      *
@@ -284,7 +279,6 @@ class SchoolController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes school
      *

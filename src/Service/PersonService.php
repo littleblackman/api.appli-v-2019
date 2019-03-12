@@ -117,12 +117,6 @@ class PersonService implements PersonServiceInterface
      */
     public function delete(Person $object)
     {
-        //Removes links from user to person
-        $userPersonLink = $this->em->getRepository('App:UserPersonLink')->findOneByPerson($object);
-        if ($userPersonLink instanceof UserPersonLink) {
-            $this->em->remove($userPersonLink);
-        }
-
         //Removes links from person to child
         $childPersonLinks = $this->em->getRepository('App:ChildPersonLink')->findByPerson($object);
         foreach ($childPersonLinks as $childPersonLink) {
@@ -147,10 +141,25 @@ class PersonService implements PersonServiceInterface
             }
         }
 
+        //Removes links from person to person
+        $personPersonLinks = $this->em->getRepository('App:PersonPersonLink')->findByPerson($object);
+        $relatedPersonLinks = $this->em->getRepository('App:PersonPersonLink')->findByRelated($object);
+        foreach (array_merge($personPersonLinks, $relatedPersonLinks) as $personPersonLink) {
+            if ($personPersonLink instanceof personPersonLink) {
+                $this->em->remove($personPersonLink);
+            }
+        }
 
         //Persists data
         $this->mainService->delete($object);
         $this->mainService->persist($object);
+
+        //Removes links from user to person (has to be there otherwise its re-created via cascade persist)
+        $userPersonLink = $this->em->getRepository('App:UserPersonLink')->findOneByPerson($object);
+        if ($userPersonLink instanceof UserPersonLink) {
+            $this->em->remove($userPersonLink);
+            $this->em->flush();
+        }
 
         return array(
             'status' => true,

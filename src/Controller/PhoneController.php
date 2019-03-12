@@ -27,7 +27,6 @@ class PhoneController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays phone
      *
@@ -68,7 +67,6 @@ class PhoneController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates phone
      *
@@ -108,7 +106,6 @@ class PhoneController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies phone
      *
@@ -161,7 +158,6 @@ class PhoneController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes phone
      *

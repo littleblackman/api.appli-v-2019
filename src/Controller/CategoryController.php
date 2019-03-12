@@ -28,7 +28,6 @@ class CategoryController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the categories
      *
@@ -83,7 +82,6 @@ class CategoryController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name_fr for Category
      *
@@ -150,7 +148,6 @@ class CategoryController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays category
      *
@@ -191,7 +188,6 @@ class CategoryController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates category
      *
@@ -231,7 +227,6 @@ class CategoryController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies category
      *
@@ -284,7 +279,6 @@ class CategoryController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes category
      *

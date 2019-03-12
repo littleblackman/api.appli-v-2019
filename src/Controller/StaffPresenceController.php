@@ -28,7 +28,6 @@ class StaffPresenceController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the staff presences by kind of staff and date
      *
@@ -100,7 +99,6 @@ class StaffPresenceController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays staffPresence using staffId and date (optional)
      *
@@ -158,7 +156,6 @@ class StaffPresenceController extends AbstractController
     }
 
 //DISPLAY TOTALS BY SEASON
-
     /**
      * Displays the totals of staffPresence by season
      *
@@ -202,7 +199,6 @@ class StaffPresenceController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates StaffPresence
      *
@@ -244,7 +240,6 @@ class StaffPresenceController extends AbstractController
     }
 
 //DELETE BY ID
-
     /**
      * Deletes staffPresence using its id
      *
@@ -289,7 +284,6 @@ class StaffPresenceController extends AbstractController
     }
 
 //DELETE BY ARRAY OF IDS
-
     /**
      * Deletes staffPresence
      *

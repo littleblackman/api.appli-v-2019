@@ -28,7 +28,6 @@ class TelevisionController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the television
      *
@@ -83,7 +82,6 @@ class TelevisionController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays television using televisionId
      *
@@ -128,7 +126,6 @@ class TelevisionController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates Television
      *
@@ -170,7 +167,6 @@ class TelevisionController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies television
      *
@@ -223,7 +219,6 @@ class TelevisionController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes television using its id
      *

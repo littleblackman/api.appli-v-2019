@@ -28,7 +28,6 @@ class BlogController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the blogs
      *
@@ -83,7 +82,6 @@ class BlogController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in name_fr for Blog
      *
@@ -150,7 +148,6 @@ class BlogController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays blog
      *
@@ -191,7 +188,6 @@ class BlogController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates blog
      *
@@ -231,7 +227,6 @@ class BlogController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies blog
      *
@@ -284,7 +279,6 @@ class BlogController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes blog
      *

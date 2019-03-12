@@ -57,6 +57,20 @@ class RegistrationRepository extends EntityRepository
     }
 
     /**
+     * Returns all the registrations related to person without cart status in an array
+     */
+    public function findAllWithoutCart()
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.status != :cart')
+            ->andWhere('r.suppressed = 0')
+            ->orderBy('r.registration', 'DESC')
+            ->setParameter('cart', 'cart')
+            ->getQuery()
+        ;
+    }
+
+    /**
      * Returns the registration if not suppressed
      */
     public function findOneById($registrationId)

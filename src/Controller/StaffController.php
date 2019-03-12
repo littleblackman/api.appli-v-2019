@@ -29,7 +29,6 @@ class StaffController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the staffs
      *
@@ -92,7 +91,6 @@ class StaffController extends AbstractController
     }
 
 //SEARCH
-
     /**
      * Searches for %{term}% in firstname|lastname for Staff
      *
@@ -158,7 +156,6 @@ class StaffController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays staff using its id
      *
@@ -203,7 +200,6 @@ class StaffController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates a Staff
      *
@@ -243,7 +239,6 @@ class StaffController extends AbstractController
     }
 
 //MODIFY
-
     /**
      * Modifies staff
      *
@@ -296,7 +291,6 @@ class StaffController extends AbstractController
     }
 
 //DELETE
-
     /**
      * Deletes staff
      *
@@ -341,7 +335,6 @@ class StaffController extends AbstractController
     }
 
 //PRIORITY
-
     /**
      * Modifies priorities for Staffs
      *

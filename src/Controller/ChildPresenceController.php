@@ -28,7 +28,6 @@ class ChildPresenceController extends AbstractController
     }
 
 //LIST
-
     /**
      * Lists all the child presences by date
      *
@@ -90,7 +89,6 @@ class ChildPresenceController extends AbstractController
     }
 
 //DISPLAY
-
     /**
      * Displays childPresence using childId and date (optional)
      *
@@ -148,7 +146,6 @@ class ChildPresenceController extends AbstractController
     }
 
 //CREATE
-
     /**
      * Creates ChildPresence
      *
@@ -190,7 +187,6 @@ class ChildPresenceController extends AbstractController
     }
 
 //DELETE BY ID
-
     /**
      * Deletes childPresence using its id
      *
@@ -235,7 +231,6 @@ class ChildPresenceController extends AbstractController
     }
 
 //DELETE BY ARRAY OF IDS
-
     /**
      * Deletes childPresence
      *
@@ -277,7 +272,6 @@ class ChildPresenceController extends AbstractController
     }
 
 //DELETE BY REGISTRATION_ID
-
     /**
      * Deletes childPresence using the registrationId
      *
