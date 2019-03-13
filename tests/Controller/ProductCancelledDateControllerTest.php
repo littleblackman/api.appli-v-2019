@@ -36,7 +36,6 @@ class ProductCancelledDateControllerTest extends WebTestCase
      */
     public function testDisplay()
     {
-        //Test for a day
         $this->clientAuthenticated->request('GET', '/product-cancelled-date/display/' . self::$objectId);
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);

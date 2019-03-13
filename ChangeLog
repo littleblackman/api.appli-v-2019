@@ -1,5 +1,9 @@
 ChangeLog
 
+v0.30.7
+- Ajout d'un champ token sur transactions (13/03/2019)
+- Ajout de la route `transaction_display_internal_order` (13/03/2019)
+
 v0.30.6
 - Suppression des retours lignes inutiles (11/03/2019)
 - Ajout de la route `/registration/list/without-cart` (12/03/2019)

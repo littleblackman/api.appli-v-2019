@@ -36,10 +36,12 @@ class TelevisionControllerTest extends WebTestCase
      */
     public function testDisplay()
     {
-        //Test for a day
         $this->clientAuthenticated->request('GET', '/television/display/' . self::$objectId);
         $response = $this->clientAuthenticated->getResponse();
-        $this->assertJsonResponse($response, 200);
+        $content = $this->assertJsonResponse($response, 200);
+        $this->assertInternalType('array', $content);
+        $first = $content[0];
+        $this->assertArrayHasKey('televisionId', $first);
     }
 
     /**

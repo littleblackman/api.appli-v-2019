@@ -36,8 +36,13 @@ class TransactionControllerTest extends WebTestCase
      */
     public function testDisplay()
     {
-        //Test for a day
+        //Tests with id
         $this->clientAuthenticated->request('GET', '/transaction/display/' . self::$objectId);
+        $response = $this->clientAuthenticated->getResponse();
+        $this->assertJsonResponse($response, 200);
+
+        //Tests with internalOrder
+        $this->clientAuthenticated->request('GET', '/transaction/display/123456789XYZ');
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
     }

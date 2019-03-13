@@ -286,7 +286,7 @@ class TransactionController extends AbstractController
         return new JsonResponse($transactionsArray);
     }
 
-//DISPLAY
+//DISPLAY WITH ID
     /**
      * Displays transaction using transactionId
      *
@@ -322,6 +322,51 @@ class TransactionController extends AbstractController
      * @SWG\Tag(name="Transaction")
      */
     public function display(Transaction $transaction)
+    {
+        $this->denyAccessUnlessGranted('transactionDisplay', $transaction);
+
+        $transactionArray = $this->transactionService->toArray($transaction);
+
+        return new JsonResponse($transactionArray);
+    }
+
+//DISPLAY WITH INTERNALORDER
+    /**
+     * Displays transaction with its internalOrder
+     *
+     * @Route("/transaction/display/{internalOrder}",
+     *    name="transaction_display_internal_order",
+     *    requirements={"internalOrder": "^([a-zA-Z0-9\-\_]+)$"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("transaction", expr="repository.findOneByInternalOrder(internalOrder)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="transaction", ref=@Model(type=Transaction::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="internalOrder",
+     *     in="path",
+     *     description="InternalOrder for the transaction",
+     *     required=true,
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Transaction")
+     */
+    public function displayInternalOrder(Transaction $transaction)
     {
         $this->denyAccessUnlessGranted('transactionDisplay', $transaction);
 
@@ -379,7 +424,7 @@ class TransactionController extends AbstractController
      *    name="transaction_modify",
      *    requirements={"internalOrder": "^([a-zA-Z0-9\-\_]+)$"},
      *    methods={"HEAD", "PUT"})
-     * @Entity("transaction", expr="repository.findOneByIinternalOrder(internalOrder)")
+     * @Entity("transaction", expr="repository.findOneByInternalOrder(internalOrder)")
      *
      * @SWG\Response(
      *     response=200,
@@ -399,11 +444,11 @@ class TransactionController extends AbstractController
      *     description="Not Found",
      * )
      * @SWG\Parameter(
-     *     name="transactionId",
+     *     name="internalOrder",
      *     in="path",
-     *     description="Id for the transaction",
+     *     description="InternalOrder for the transaction",
      *     required=true,
-     *     type="integer",
+     *     type="string",
      * )
      * @SWG\Parameter(
      *     name="data",

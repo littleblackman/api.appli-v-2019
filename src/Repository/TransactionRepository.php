@@ -107,7 +107,7 @@ class TransactionRepository extends EntityRepository
     /**
      * Returns the transaction if not suppressed by internalOrder
      */
-    public function findOneByIinternalOrder($internalOrder)
+    public function findOneByInternalOrder($internalOrder)
     {
         return $this->createQueryBuilder('t')
             ->where('t.internalOrder = :internalOrder')
