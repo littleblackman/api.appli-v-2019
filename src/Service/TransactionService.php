@@ -32,6 +32,11 @@ class TransactionService implements TransactionServiceInterface
      */
     public function addSpecificData(Transaction $object, array $data)
     {
+        //Adds registration datetime
+        if (null === $object->getDate()) {
+            $object->setDate(new DateTime());
+        }
+
         //Adds links to Registration
         $this->addRegistrations($object, $data);
     }
