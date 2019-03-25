@@ -26,7 +26,7 @@ class RegistrationSportLink
     /**
      * @var Sport
      *
-     * @ORM\ManyToOne(targetEntity="Sport", inversedBy="registrations")
+     * @ORM\ManyToOne(targetEntity="Sport")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="sport_id", referencedColumnName="sport_id")
      * })
