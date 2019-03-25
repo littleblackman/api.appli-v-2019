@@ -4,6 +4,9 @@ config_bundles.yaml
 config_bundles.yaml.bak
 config/jwt
 backup_config.cnf
+config/bundles.php
+symfony.lock
+composer.lock
 
 ###> symfony/framework-bundle ###
 /.env
@@ -26,3 +29,7 @@ backup_config.cnf
 /.php_cs
 /.php_cs.cache
 ###< friendsofphp/php-cs-fixer ###
+
+###> symfony/web-server-bundle ###
+/.web-server-pid
+###< symfony/web-server-bundle ###
