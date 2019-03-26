@@ -16,13 +16,11 @@ class TaskStaffService implements TaskStaffServiceInterface
 {
     private $em;
 
-    private $taskService;
 
     private $mainService;
 
     public function __construct(
         EntityManagerInterface $em,
-        TaskStaffServiceInterface $taskService,
         MainServiceInterface $mainService
     )
     {
@@ -40,7 +38,7 @@ class TaskStaffService implements TaskStaffServiceInterface
         $data = json_decode($data, true);
         if (is_array($data) && !empty($data)) {
 
-            
+
 
             //Returns data
             return array(

@@ -30,7 +30,7 @@ class TaskStaff
      * @ORM\OneToOne(targetEntity="Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="task_id")
      */
-    private $staff;
+    private $task;
 
     /**
      * @ORM\Column(type="datetime")

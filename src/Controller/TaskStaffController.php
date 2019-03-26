@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Entity\TaskStaff;
+use App\Form\TaskStaffType;
+use App\Service\TaskStaffServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -22,7 +24,7 @@ class TaskStaffController extends AbstractController
 
     private $taskStaffService;
 
-    public function __construct(StaffPresenceServiceInterface $taskStaffServic)
+    public function __construct(TaskStaffServiceInterface $taskStaffServic)
     {
         $this->$taskStaffService = $taskStaffService;
     }
@@ -63,7 +65,7 @@ class TaskStaffController extends AbstractController
     {
         $this->denyAccessUnlessGranted('taskStaffCreate');
 
-        $createdData = $this->staffPresenceService->create($request->getContent());
+        //$createdData = $this->staffPresenceService->create($request->getContent());
 
         return new JsonResponse($createdData);
     }
