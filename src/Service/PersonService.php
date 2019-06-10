@@ -266,9 +266,14 @@ class PersonService implements PersonServiceInterface
             unset($objectArray['userPersonLink']);
         }
 
-        //Gets Driver if is one
-        $driver = $this->em->getRepository('App:Staff')->findOneByPerson($object->getPersonId());
-        $objectArray['driver'] = null !== $driver && 'driver' === $driver->getKind() ? $this->staffService->toArray($driver) : null;
+        //Gets staff if is one
+        $staff = $this->em->getRepository('App:Staff')->findOneByPerson($object->getPersonId());
+        // deprecated
+        $objectArray['driver'] = null !== $staff ? $this->staffService->toArray($staff) : null;
+        $objectArray['staff'] = $objectArray['driver'];
+        $objectArray['driver']['disclaimer'] = 'use Staff this array is depreacated';
+
+
 
         //Gets related addresses
         if (null !== $object->getAddresses()) {

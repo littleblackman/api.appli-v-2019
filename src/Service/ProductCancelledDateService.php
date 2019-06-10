@@ -7,6 +7,7 @@ use App\Entity\ProductCancelledDate;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\Service\ProductService;
 
 /**
  * ProductCancelledDateService class
@@ -17,14 +18,18 @@ class ProductCancelledDateService implements ProductCancelledDateServiceInterfac
     private $em;
 
     private $mainService;
+    private $productService;
 
     public function __construct(
         EntityManagerInterface $em,
-        MainServiceInterface $mainService
+        MainServiceInterface $mainService,
+        ProductService $productService
+
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
+        $this->productService = $productService;
     }
 
     /**
@@ -163,7 +168,7 @@ class ProductCancelledDateService implements ProductCancelledDateServiceInterfac
 
         //Gets related product
         if (null !== $object->getProduct() && !$object->getProduct()->getSuppressed()) {
-            $objectArray['product'] = $this->mainService->toArray($object->getProduct()->toArray());
+            $objectArray['product'] = $this->productService->toArray($object->getProduct());
         }
 
         return $objectArray;

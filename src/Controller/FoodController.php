@@ -76,7 +76,7 @@ class FoodController extends AbstractController
      */
     public function listByStatus(Request $request, PaginatorInterface $paginator, $status)
     {
-        $this->denyAccessUnlessGranted('foodList');
+        //$this->denyAccessUnlessGranted('foodList');
 
         $foods = $paginator->paginate(
             $this->foodService->findAllByStatus($status),

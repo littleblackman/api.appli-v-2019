@@ -2,49 +2,66 @@
 
 namespace App\Repository;
 
-use App\Entity\TaskStaff;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
+use App\Entity\Staff;
 
 /**
- * @method TaskStaff|null find($id, $lockMode = null, $lockVersion = null)
- * @method TaskStaff|null findOneBy(array $criteria, array $orderBy = null)
- * @method TaskStaff[]    findAll()
- * @method TaskStaff[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * TaskStaffRepository class
+ * @author Sandy Razafirimo <sandyrazafitrimo@gmail.com>
  */
-class TaskStaffRepository extends ServiceEntityRepository
+class TaskStaffRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, TaskStaff::class);
-    }
+  /**
+   * Returns all the tasks for a staff at a date
+   */
+  public function findByStaffAndDate(Staff $staff, $date)
+  {
+      return $this->createQueryBuilder('s')
+          ->where('s.dateTask LIKE :date')
+          ->andWhere('s.staff = :staff')
+          ->orderBy('s.dateTask', 'ASC')
+          ->setParameter('date', '%' . $date . '%')
+          ->setParameter('staff', $staff)
+          ->getQuery()
+          ->getResult()
+      ;
+  }
 
-    // /**
-    //  * @return TaskStaff[] Returns an array of TaskStaff objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+  /**
+   * Returns all the tasks by date
+   */
+  public function findByDate($date)
+  {
+      return $this->createQueryBuilder('s')
+          ->where('s.dateTask LIKE :date')
+          ->orderBy('s.dateTask', 'ASC')
+          ->setParameter('date', '%' . $date . '%')
+          ->getQuery()
+          ->getResult()
+      ;
+  }
 
-    /*
-    public function findOneBySomeField($value): ?TaskStaff
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+
+  /**
+   * Returns all the tasks by step
+   */
+  public function findByStep($step, $staff = null)
+  {
+      $qb = $this->createQueryBuilder('s')
+          ->where('s.step LIKE :step')
+          ->orderBy('s.dateTask', 'ASC')
+          ->setParameter('step', $step)
+      ;
+
+      if($staff) {
+        $qb->andWhere('s.staff = :staff')
+          ->setParameter('staff', $staff);
+      }
+
+      return $qb
+        ->getQuery()
+        ->getResult();
+  }
+
+
 }

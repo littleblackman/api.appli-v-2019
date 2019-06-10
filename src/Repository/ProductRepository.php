@@ -24,6 +24,23 @@ class ProductRepository extends EntityRepository
     }
 
     /**
+     * Returns all the products not archived in an array
+     */
+    public function findNotArchived()
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.suppressed = 0')
+            ->andWhere('p.visibility <> \'archived\'')
+            ->andWhere('p.child IS NULL')
+            ->orderBy('p.nameFr', 'ASC')
+            ->getQuery()
+        ;
+    }
+
+
+
+
+    /**
      * Returns all the products linked to a child in an array
      */
     public function findAllByChild($childId)

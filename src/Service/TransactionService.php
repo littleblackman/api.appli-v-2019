@@ -7,6 +7,7 @@ use App\Entity\Transaction;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\Service\RegistrationService;
 
 /**
  * TransactionService class
@@ -18,13 +19,19 @@ class TransactionService implements TransactionServiceInterface
 
     private $mainService;
 
+    private $registrationService;
+
     public function __construct(
         EntityManagerInterface $em,
+        RegistrationService $registrationService,
+
         MainServiceInterface $mainService
+
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
+        $this->registrationService = $registrationService;
     }
 
     /**
@@ -218,7 +225,8 @@ class TransactionService implements TransactionServiceInterface
             $registrations = array();
             foreach($object->getRegistrations() as $registration) {
                 if (!$registration->getSuppressed()) {
-                    $registrations[] = $this->mainService->toArray($registration->toArray());
+                    //$registrations[] = $this->mainService->toArray($registration->toArray());
+                    $registrations[] = $this->registrationService->toArray($registration);
                 }
             }
             $objectArray['registrations'] = $registrations;

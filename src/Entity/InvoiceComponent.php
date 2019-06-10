@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * InvoiceComponent
  *
- * @ORM\Table(name="invoice_component", indexes={@ORM\Index(name="invoice_component_component_FK", columns={"invoice_component_id"}), @ORM\Index(name="invoice_component_invoice_FK", columns={"invoice_id"})})
+ * @ORM\Table(name="invoice_component", indexes={@ORM\Index(name="invoice_component_component_FK", columns={"component_id"}), @ORM\Index(name="invoice_component_invoice_FK", columns={"invoice_id"})})
  * @ORM\Entity
  *
  * @author Laurent Marquet <laurent.marquet@laposte.net>

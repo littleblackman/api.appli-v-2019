@@ -65,7 +65,7 @@ class ProductCancelledDateController extends AbstractController
      */
     public function listAll(Request $request, PaginatorInterface $paginator)
     {
-        $this->denyAccessUnlessGranted('productCancelledDateList');
+        //$this->denyAccessUnlessGranted('productCancelledDateList');
 
         $productCancelledDates = $paginator->paginate(
             $this->productCancelledDateService->findAll(),
@@ -126,7 +126,7 @@ class ProductCancelledDateController extends AbstractController
      */
     public function listAllDate(Request $request, PaginatorInterface $paginator, $date)
     {
-        $this->denyAccessUnlessGranted('productCancelledDateList');
+        //$this->denyAccessUnlessGranted('productCancelledDateList');
 
         $productCancelledDates = $paginator->paginate(
             $this->productCancelledDateService->findAllByDate($date),
@@ -196,7 +196,7 @@ class ProductCancelledDateController extends AbstractController
      */
     public function listAllCategoryDate(Request $request, PaginatorInterface $paginator, $categoryId, $date)
     {
-        $this->denyAccessUnlessGranted('productCancelledDateList');
+        //$this->denyAccessUnlessGranted('productCancelledDateList');
 
         $productCancelledDates = $paginator->paginate(
             $this->productCancelledDateService->findAllByCategoryDate($categoryId, $date),
@@ -266,7 +266,7 @@ class ProductCancelledDateController extends AbstractController
      */
     public function listAllProductDate(Request $request, PaginatorInterface $paginator, $productId, $date)
     {
-        $this->denyAccessUnlessGranted('productCancelledDateList');
+        //$this->denyAccessUnlessGranted('productCancelledDateList');
 
         $productCancelledDates = $paginator->paginate(
             $this->productCancelledDateService->findAllByProductDate($productId, $date),

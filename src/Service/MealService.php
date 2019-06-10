@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Food;
 use App\Entity\Meal;
+use App\Entity\Child;
 use App\Entity\MealFoodLink;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -110,6 +111,38 @@ class MealService implements MealServiceInterface
             ->getRepository('App:Meal')
             ->findAllByDate($date)
         ;
+    }
+
+    /**
+     * Returns the list of all meals by date
+     * @return array
+     */
+    public function findByChildAndDate($childId, $date)
+    {
+
+        $child = $this->em->getRepository('App:Child')->find($childId);
+
+        return $this->em
+            ->getRepository('App:Meal')
+            ->findByChildAndDate($child, $date)
+        ;
+
+    }
+
+
+    /**
+     * Returns the latest meal by child
+     * @return array
+     */
+    public function latestMealByChild($childId)
+    {
+      $child = $this->em->getRepository('App:Child')->find($childId);
+
+      return $this->em
+          ->getRepository('App:Meal')
+          ->findLatestByChild($child)
+      ;
+
     }
 
     /**

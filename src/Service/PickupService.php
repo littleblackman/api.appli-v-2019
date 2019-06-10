@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Pickup;
 use App\Entity\Ride;
+Use App\Entity\Child;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -462,6 +463,30 @@ class PickupService implements PickupServiceInterface
             'pickup' => $this->toArray($object),
         );
     }
+
+  /**
+   * {@inheritdoc}
+   */
+   public function getLastPEC($childId, $kind)
+   {
+
+        $child = $this->em->getRepository('App:Child')->find($childId);
+        $pickup = $this->em
+                ->getRepository('App:Pickup')->findOneBy(
+                                                    array('child' => $child, 'kind' => $kind, 'status' => 'pec'),
+                                                    array('start' => 'desc'),
+                                                    1
+                                                );
+        if(!$pickup) return null;
+        $result = [
+                                'kind' => $pickup->getKind(),
+                                'status_change' => $pickup->getStatusChange(),
+                                'start' => $pickup->getStart(),
+                                'status' => $pickup->getStatus()
+                    ];
+        return $result;
+   }
+
 
     /**
      * {@inheritdoc}

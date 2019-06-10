@@ -117,6 +117,16 @@ class Person
     public function toArray()
     {
         $objectArray = get_object_vars($this);
+        if($this->getUserPersonLink()) {
+            $objectArray['myIdentifier'] = $this->getUserPersonLink()->getUser()->getIdentifier();
+            $objectArray['roles'] = $this->getUserPersonLink()->getUser()->getRoles();
+        }
+
+        //$objectArray['phones'] = "100000";
+
+        foreach($this->getPhones() as $link) {
+            $objectArray['phones'] = $link->getPhone()->toArray();
+        }
 
         return $objectArray;
     }
@@ -337,4 +347,5 @@ class Person
 
         return $this;
     }
+
 }

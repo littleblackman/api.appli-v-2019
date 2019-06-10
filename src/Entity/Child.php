@@ -106,6 +106,15 @@ class Child
      */
     private $persons;
 
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="pickup_instruction", type="string", length=35, nullable=true)
+     */
+    private $pickupInstruction;
+
+
     /**
      * @ORM\OneToMany(targetEntity="ChildChildLink", mappedBy="child")
      * @SWG\Property(ref=@Model(type=Child::class))
@@ -258,6 +267,18 @@ class Child
     public function getSiblings()
     {
         return $this->siblings;
+    }
+
+    public function getPickupInstruction(): ?string
+    {
+        return $this->pickupInstruction;
+    }
+
+    public function setPickupInstruction(?string $pickupInstruction): self
+    {
+        $this->pickupInstruction = $pickupInstruction;
+
+        return $this;
     }
 
     public function addPerson(ChildPersonLink $person): self

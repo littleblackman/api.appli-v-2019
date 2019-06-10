@@ -2,49 +2,14 @@
 
 namespace App\Repository;
 
-use App\Entity\Task;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\EntityRepository;
+
 
 /**
- * @method Task|null find($id, $lockMode = null, $lockVersion = null)
- * @method Task|null findOneBy(array $criteria, array $orderBy = null)
- * @method Task[]    findAll()
- * @method Task[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * TaskRepository class
+ * @author Sandy Razafirimo <sandyrazafitrimo@gmail.com>
  */
-class TaskRepository extends ServiceEntityRepository
+class TaskRepository extends EntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Task::class);
-    }
 
-    // /**
-    //  * @return Task[] Returns an array of Task objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Task
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

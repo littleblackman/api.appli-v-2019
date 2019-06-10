@@ -67,7 +67,7 @@ class StaffPresence
     public function toArray()
     {
         $objectArray = get_object_vars($this);
-
+        
         //Specific data
         if (null !== $objectArray['date']) {
             $objectArray['date'] = $objectArray['date']->format('Y-m-d');

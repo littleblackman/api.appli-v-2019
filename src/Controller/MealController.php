@@ -72,7 +72,7 @@ class MealController extends AbstractController
      */
     public function listByDate(Request $request, PaginatorInterface $paginator, $date)
     {
-        $this->denyAccessUnlessGranted('mealList');
+        //$this->denyAccessUnlessGranted('mealList');
 
         $meals = $paginator->paginate(
             $this->mealService->findAllByDate($date),
@@ -130,7 +130,7 @@ class MealController extends AbstractController
      */
     public function totalByDate($date)
     {
-        $this->denyAccessUnlessGranted('mealList');
+        //$this->denyAccessUnlessGranted('mealList');
 
         $meals = $this->mealService->totalMealByDate($date);
 
@@ -173,12 +173,109 @@ class MealController extends AbstractController
      */
     public function display(Meal $meal)
     {
-        $this->denyAccessUnlessGranted('mealDisplay', $meal);
+        //$this->denyAccessUnlessGranted('mealDisplay', $meal);
 
         $mealArray = $this->mealService->toArray($meal);
 
         return new JsonResponse($mealArray);
     }
+
+//DISPLAY LAST MEAL BY CHILD_ID
+    /**
+     * Displays the lastest meal by child_id
+     *
+     * @Route("/meal/latest/{childId}",
+     *    name="meal_latest_by_child",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Meal::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="mealId",
+     *     in="path",
+     *     description="childId and  date",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Meal")
+     */
+    public function latestMealByChild($childId)
+    {
+        $this->denyAccessUnlessGranted('mealCreate');
+        $meal = $this->mealService->latestMealByChild($childId);
+        if($meal) {
+            $mealArray = $this->mealService->toArray($meal);
+        } else {
+            $mealArray = ['message' => 'Aucun repas trouvé'];
+        }
+
+        return new JsonResponse([$mealArray]);
+    }
+
+
+
+//DISPLAY BY CHILD_ID & DATE
+    /**
+     * Displays the meal by child_id and date
+     *
+     * @Route("/meal/childDate/{childId}/{date}",
+     *    name="meal_child_date",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Meal::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="mealId",
+     *     in="path",
+     *     description="childId and  date",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Meal")
+     */
+    public function mealByChildAndDate($childId, $date)
+    {
+        $this->denyAccessUnlessGranted('mealCreate');
+        $meal = $this->mealService->findByChildAndDate($childId, $date);
+        if($meal) {
+            $mealArray = $this->mealService->toArray($meal);
+        } else {
+            $mealArray = ['message' => 'Aucun repas trouvé'];
+        }
+
+
+        return new JsonResponse([$mealArray]);
+    }
+
+
+
+
 
 //CREATE
     /**
@@ -212,7 +309,7 @@ class MealController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('mealCreate');
+        //$this->denyAccessUnlessGranted('mealCreate');
 
         $createdData = $this->mealService->create($request->getContent());
 
@@ -264,7 +361,7 @@ class MealController extends AbstractController
      */
     public function modify(Request $request, Meal $meal)
     {
-        $this->denyAccessUnlessGranted('mealModify', $meal);
+        //$this->denyAccessUnlessGranted('mealModify', $meal);
 
         $modifiedData = $this->mealService->modify($meal, $request->getContent());
 

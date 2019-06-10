@@ -88,7 +88,7 @@ class AddressVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_LEADER',
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 
@@ -100,7 +100,6 @@ class AddressVoter extends Voter
 
         //Checks roles UNallowed
         $roles = array(
-            'ROLE_TRAINEE',
             'ROLE_COACH',
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
@@ -123,7 +122,7 @@ class AddressVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_LEADER',
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 
@@ -146,7 +145,7 @@ class AddressVoter extends Voter
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
+            'ROLE_COACH',
             'ROLE_ADMIN',
         );
 

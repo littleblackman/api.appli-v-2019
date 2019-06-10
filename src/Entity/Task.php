@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="task")
  * @ORM\Entity(repositoryClass="App\Repository\TaskRepository")
  */
 class Task
@@ -53,5 +54,14 @@ class Task
         $this->moment = $moment;
 
         return $this;
+    }
+
+    /**
+     * Converts the entity in an array
+     */
+    public function toArray()
+    {
+        $objectArray = get_object_vars($this);
+        return $objectArray;
     }
 }

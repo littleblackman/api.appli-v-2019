@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Entity\DriverZone;
 use App\Entity\Staff;
+use App\Entity\User;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -40,6 +42,15 @@ class StaffService implements StaffServiceInterface
 
         $this->mainService->create($driverZone);
         $this->mainService->persist($driverZone);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findSupervisor()
+    {
+        $staffs = $this->em->getRepository('App:Staff')->findBy(array('isSupervisor' => 1));
+        return $staffs;
     }
 
     /**
@@ -152,6 +163,28 @@ class StaffService implements StaffServiceInterface
             ->findAllSearch($term)
         ;
     }
+
+    /**
+     * Returns the list of all staffs in the array format
+     * @return array
+     */
+    public function findUserNoStaffYet(string $term)
+    {
+        $repository = $this->em->getRepository(User::Class);
+        $users = $repository->findUserNoStaffYet($term);
+
+        $userArray = array();
+        foreach ($users as $user) {
+            $userA = $user->toArray();
+            if($user->getUserPersonLink()->getPerson()) $userA['person'] = $user->getUserPersonLink()->getPerson()->toArray();
+            $userArray[] = $userA;
+
+        };
+
+        return $userArray;
+
+    }
+
 
     /**
      * {@inheritdoc}

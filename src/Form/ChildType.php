@@ -47,6 +47,12 @@ class ChildType extends AbstractType
                 'required' => false,
                 'class' => School::class,
                 ))
+            ->add('france_resident', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('pickup_instruction', TextType::class, array(
+                'required' => false,
+                ))
             ->add('franceResident', CheckboxType::class, array(
                 'required' => false,
                 ))
@@ -62,6 +68,7 @@ class ChildType extends AbstractType
                 'mapped' => false,
                 'allow_extra_fields' => true,
                 ))
+
         ;
     }
 

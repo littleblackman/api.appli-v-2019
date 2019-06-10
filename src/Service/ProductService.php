@@ -264,12 +264,13 @@ class ProductService implements ProductServiceInterface
         }
 
         $prices = array();
+        /*
         foreach ($components as $component) {
             $vatRate = $component->getVat();
             $prices["$vatRate"]['totalVat'] = isset($prices["$vatRate"]['totalVat']) ? $prices["$vatRate"]['totalVat'] + $component->getTotalVat() : $component->getTotalVat();
             $prices["$vatRate"]['totalHt'] = isset($prices["$vatRate"]['totalHt']) ? $prices["$vatRate"]['totalHt'] + $component->getTotalHt() : $component->getTotalHt();
             $prices["$vatRate"]['totalTtc'] = isset($prices["$vatRate"]['totalTtc']) ? $prices["$vatRate"]['totalTtc'] + $component->getTotalTtc() : $component->getTotalTtc();
-        }
+        }*/
 
         return $prices;
     }
@@ -329,12 +330,21 @@ class ProductService implements ProductServiceInterface
      * Returns the list of all products in the array format
      * @return array
      */
-    public function findAll()
+    public function findAll($all = 0)
     {
-        return $this->em
-            ->getRepository('App:Product')
-            ->findAll()
-        ;
+        if($all == 1) {
+            return $this->em
+                ->getRepository('App:Product')
+                ->findAll()
+            ;
+        } else {
+            return $this->em
+                ->getRepository('App:Product')
+                ->findNotArchived();
+        }
+
+
+
     }
 
     /**

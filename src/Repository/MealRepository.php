@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityRepository;
 class MealRepository extends EntityRepository
 {
     /**
-     * Returns all the rides by date
+     * Returns all the meals by date
      */
     public function findAllByDate($date)
     {
@@ -26,6 +26,53 @@ class MealRepository extends EntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+
+    /**
+     * Returns by child and date
+     */
+    public function findByChildAndDate($child, $date)
+    {
+        return $this->createQueryBuilder('m')
+            ->addSelect('ml', 'f')
+            ->leftJoin('m.foods', 'ml')
+            ->leftJoin('ml.food', 'f')
+            ->where('m.date LIKE :date')
+            ->andWhere('m.child = :child')
+            ->andWhere('m.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('child', $child)
+            ->orderBy('m.mealId', 'ASC')
+            ->getQuery()
+            ->getOneOrNullResult()
+
+        ;
+    }
+
+    /**
+     * Returns by latest meal
+     */
+    public function findLatestByChild($child)
+    {
+
+      $date = date('Y-m-d');
+
+      return $this->createQueryBuilder('m')
+          ->addSelect('ml', 'f')
+          ->leftJoin('m.foods', 'ml')
+          ->leftJoin('ml.food', 'f')
+          ->where('m.date < :date')
+          ->andWhere('m.child = :child')
+          ->andWhere('m.suppressed = 0')
+          ->setParameter('date', $date . '%')
+          ->setParameter('child', $child)
+          ->orderBy('m.date', 'DESC')
+           ->setMaxResults(1)
+          ->getQuery()
+          ->getOneOrNullResult()
+
+      ;
     }
 
     /**

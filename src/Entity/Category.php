@@ -42,6 +42,13 @@ class Category
     private $name;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="photo", type="string", length=256, nullable=true)
+     */
+    private $photo;
+
+    /**
      * @ORM\OneToMany(targetEntity="ProductCategoryLink", mappedBy="category")
      * @SWG\Property(ref=@Model(type=Product::class))
      */
@@ -75,6 +82,18 @@ class Category
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

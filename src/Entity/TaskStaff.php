@@ -3,15 +3,24 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Traits\CreationTrait;
+use App\Entity\Traits\SuppressionTrait;
+use App\Entity\Traits\UpdateTrait;
 
 /**
+ * @ORM\Table(name="task_staff")
  * @ORM\Entity(repositoryClass="App\Repository\TaskStaffRepository")
  */
 class TaskStaff
 {
+
+    use CreationTrait;
+    use UpdateTrait;
+    use SuppressionTrait;
+
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -20,22 +29,56 @@ class TaskStaff
      * @var Staff
      *
      * @ORM\OneToOne(targetEntity="Staff")
-     * @ORM\JoinColumn(name="staff_id", referencedColumnName="staff_id")
+     * @ORM\JoinColumn(name="staff_id", referencedColumnName="staff_id", nullable=true)
      */
     private $staff;
 
     /**
-     * @var Task
+     * @var Task|null
      *
-     * @ORM\OneToOne(targetEntity="Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="task_id")
+     * @ORM\ManyToOne(targetEntity="Task")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true)
      */
     private $task;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @var string|null
+     *
+     * @ORM\Column(name="name", type="string", nullable=true)
+     */
+    private $name;
+
+    /**
+    * @var string|null
+    *
+    * @ORM\Column(name="description", type="string", nullable=true)
+    */
+    private $description;
+
+    /**
+     * @var Staff
+     *
+     * @ORM\OneToOne(targetEntity="Staff")
+     * @ORM\JoinColumn(name="supervisor_id", referencedColumnName="staff_id")
+     */
+    private $supervisor;
+
+    /**
+     * @ORM\Column(name="step", type="string", length=255, nullable=true)
+     */
+    private $step;
+
+    /**
+     * @ORM\Column(name="date_task", type="datetime", nullable=true)
      */
     private $dateTask;
+
+    /**
+     * @var string|null
+     * @ORM\Column(name="remote_address", type="string", length=255, nullable=true)
+     */
+    private $remoteAddress;
+
 
     public function getId(): ?int
     {
@@ -76,5 +119,81 @@ class TaskStaff
         $this->task = $task;
 
         return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getStep(): ?string
+    {
+        return $this->step;
+    }
+
+    public function setStep(?string $step): self
+    {
+        $this->step = $step;
+
+        return $this;
+    }
+
+    public function getSupervisor(): ?Staff
+    {
+        return $this->supervisor;
+    }
+
+    public function setSupervisor(?Staff $supervisor): self
+    {
+        $this->supervisor = $supervisor;
+
+        return $this;
+    }
+
+    public function getRemoteAddress(): ?string
+    {
+      return $this->remoteAddress;
+    }
+
+    public function setRemoteAddress($remoteAddress): self
+    {
+      $this->remoteAddress = $remoteAddress;
+      return $this;
+    }
+
+
+    /**
+     * Converts the entity in an array
+     */
+    public function toArray()
+    {
+        $objectArray = get_object_vars($this);
+        if (null !== $objectArray['staff']) {
+              $objectArray['staff'] = $this->getStaff()->toArray();
+        }
+        if (null !== $objectArray['supervisor']) {
+              $objectArray['supervisor'] = $this->getSupervisor()->toArray();
+        }
+        
+        return $objectArray;
     }
 }

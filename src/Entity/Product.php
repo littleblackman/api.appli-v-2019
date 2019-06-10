@@ -89,10 +89,15 @@ class Product
 
     /**
      * @var string|null
-     *
+     * deprecated use totals
      * @ORM\Column(name="prices", type="string", nullable=true)
      */
     private $prices;
+
+    /**
+     * @var string
+     */
+    private $totals;
 
     /**
      * @var boolean
@@ -214,6 +219,11 @@ class Product
      */
     private $sports;
 
+    private $totalHt;
+    private $totalVat;
+    private $totalTtc;
+
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -222,6 +232,10 @@ class Product
         $this->hours = new ArrayCollection();
         $this->locations = new ArrayCollection();
         $this->sports = new ArrayCollection();
+        $this->totalHt = 0;
+        $this->totalVat = 0;
+        $this->totalTtc = 0;
+
     }
 
     /**
@@ -231,6 +245,7 @@ class Product
     {
         $objectArray = get_object_vars($this);
 
+
         //Specific data
         if (null !== $objectArray['hourDropin']) {
             $objectArray['hourDropin'] = $objectArray['hourDropin']->format('H:i:s');
@@ -238,9 +253,13 @@ class Product
         if (null !== $objectArray['hourDropoff']) {
             $objectArray['hourDropoff'] = $objectArray['hourDropoff']->format('H:i:s');
         }
+
+
         if (null !== $objectArray['prices']) {
             $objectArray['prices'] = $this->getPrices();
+            $objectArray['totals'] = $this->getTotals();
         }
+
 
         return $objectArray;
     }
@@ -345,6 +364,26 @@ class Product
 
         return $this;
     }
+
+    public function getTotals(): ?array
+    {
+
+        $this->totals = ['totalVat' => $this->totalHt, 'totalHt' => $this->totalVat, 'totalTtc' => $this->totalTtc];
+
+        $prices = $this->getPrices();
+        foreach($prices as $price) {
+            $this->totals['totalHt'] += $price['totalHt'];
+            $this->totals['totalTtc'] += $price['totalTtc'];
+            $this->totals['totalVat'] += $price['totalVat'];
+        }
+
+        $this->totalHt = $this->totals['totalHt'];
+        $this->totalTtc = $this->totals['totalTtc'];
+        $this->totalVat = $this->totals['totalVat'];
+
+        return $this->totals;
+    }
+
 
     public function getTransport(): ?bool
     {

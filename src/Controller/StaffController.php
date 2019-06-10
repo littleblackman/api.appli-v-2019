@@ -90,6 +90,47 @@ class StaffController extends AbstractController
         return new JsonResponse($staffsArray);
     }
 
+
+
+
+//LIST
+    /**
+     * Lists all supervisor
+     *
+     * @Route("/staff/supervisor",
+     *    name="staff_supervisor",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Staff::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Tag(name="Staff")
+     */
+    public function listSupervisor()
+    {
+
+        $this->denyAccessUnlessGranted('staffList');
+
+        $staffs = $this->staffService->findSupervisor();
+        $staffsArray = array();
+        foreach ($staffs as $staff) {
+            $staffsArray[] = $this->staffService->toArray($staff);
+        };
+
+        return new JsonResponse($staffsArray);
+    }
+
+
+
 //SEARCH
     /**
      * Searches for %{term}% in firstname|lastname for Staff
@@ -155,6 +196,73 @@ class StaffController extends AbstractController
         return new JsonResponse($staffsArray);
     }
 
+
+
+//SEARCH USER NOT STAFF BY EMAIL
+  /**
+   * Searches for %{term}% in firstname|lastname for Staff
+   *
+   * @Route("/staff/nostaff/{term}",
+   *    name="staff_search_nostaff",
+   *    requirements={"term": "^([a-zA-Z0-9\ \-]+)"},
+   *    methods={"HEAD", "GET"})
+   *
+   * @SWG\Response(
+   *     response=200,
+   *     description="Success",
+   *     @SWG\Schema(
+   *         type="array",
+   *         @SWG\Items(ref=@Model(type=Staff::class))
+   *     )
+   * )
+   * @SWG\Response(
+   *     response=403,
+   *     description="Access denied",
+   * )
+   * @SWG\Response(
+   *     response=404,
+   *     description="Not Found",
+   * )
+   * @SWG\Parameter(
+   *     name="term",
+   *     in="path",
+   *     required=true,
+   *     description="Searched term",
+   *     type="string",
+   * )
+   * @SWG\Parameter(
+   *     name="page",
+   *     in="query",
+   *     description="Number of the page",
+   *     type="integer",
+   *     default="1",
+   * )
+   * @SWG\Parameter(
+   *     name="size",
+   *     in="query",
+   *     description="Number of records",
+   *     type="integer",
+   *     default="50",
+   * )
+   * @SWG\Tag(name="Staff")
+   */
+  public function userNotStaffYet(Request $request, string $term)
+  {
+      $this->denyAccessUnlessGranted('staffList');
+      $userArray = $this->staffService->findUserNoStaffYet($term);
+
+      return new JsonResponse($userArray);
+  }
+
+
+
+
+
+
+
+
+
+
 //DISPLAY
     /**
      * Displays staff using its id
@@ -192,12 +300,15 @@ class StaffController extends AbstractController
      */
     public function display(Staff $staff)
     {
-        $this->denyAccessUnlessGranted('staffDisplay', $staff);
+        //$this->denyAccessUnlessGranted('staffDisplay', $staff);
 
         $staffArray = $this->staffService->toArray($staff);
 
         return new JsonResponse($staffArray);
     }
+
+
+
 
 //CREATE
     /**

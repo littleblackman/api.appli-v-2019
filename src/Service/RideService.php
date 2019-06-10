@@ -5,7 +5,9 @@ namespace App\Service;
 use App\Entity\Person;
 use App\Entity\Ride;
 use DateTime;
+use App\Service\PickupService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\ChildService;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
@@ -22,17 +24,26 @@ class RideService implements RideServiceInterface
 
     private $vehicleService;
 
+    private $childService;
+
+    private $mealService;
+
+
     public function __construct(
         EntityManagerInterface $em,
         MainServiceInterface $mainService,
         StaffServiceInterface $staffService,
-        VehicleServiceInterface $vehicleService
+        VehicleServiceInterface $vehicleService,
+        ChildService $childService,
+        MealService $mealService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
         $this->staffService = $staffService;
         $this->vehicleService = $vehicleService;
+        $this->childService = $childService;
+        $this->mealService = $mealService;
     }
 
     /**
@@ -284,7 +295,56 @@ class RideService implements RideServiceInterface
             foreach($object->getPickups() as $pickup) {
                 if (!$pickup->getSuppressed()) {
                     $pickups[$i] = $this->mainService->toArray($pickup->toArray());
-                    $pickups[$i]['child'] = $this->mainService->toArray($pickup->getChild()->toArray());
+                    //$pickups[$i]['child'] = $this->mainService->toArray($pickup->getChild()->toArray());
+
+                    $pickups[$i]['child'] = $this->childService->toArray($pickup->getChild());
+
+                    // latest meal
+                    $meal = $this->mealService->latestMealByChild($pickup->getChild()->getChildId());
+                    if($meal) {
+                        $mealArray = $this->mealService->toArray($meal);
+                    } else {
+                        $mealArray = null;
+                    }
+                    $pickups[$i]['child']['latestMeal'] = $mealArray;
+
+                    //latest PEC
+                    $latestPickup = $this->em
+                            ->getRepository('App:Pickup')->findOneBy(
+                                                                                        array('child' => $pickup->getChild(), 'kind' => $pickup->getKind(), 'status' => 'pec'),
+                                                                                        array('start' => 'desc'),
+                                                                                        1
+                                                                                    );
+                    if(!$latestPickup)
+                    {
+                        $latestPEC = null;
+                    } else {
+                        $latestPEC = [
+                                                'kind' => $latestPickup->getKind(),
+                                                'status_change' => $latestPickup->getStatusChange(),
+                                                'start' => $latestPickup->getStart(),
+                                                'status' => $latestPickup->getStatus()
+                                    ];
+                    }
+
+                    $pickups[$i]['child']['latestPEC'] = $latestPEC;
+
+
+/*
+
+
+                    if($persons = $pickup->getChild()->getPersons()) {
+                        foreach($persons as $link)
+                        {
+                            $personData[] = $link->getPerson()->toArray();
+                        }
+                        $pickups[$i]['child']['persons'] = $personData;
+
+                        unset($personData);
+
+                    }*/
+
+
                     $i++;
                 }
             }

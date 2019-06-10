@@ -198,11 +198,13 @@ class MainService implements MainServiceInterface
         }
 
         //Global data
+        /*
         $globalData = array(
             '__initializer__',
             '__cloner__',
             '__isInitialized__',
-        );
+        );*/
+        $globalData = array();
 
         //User's role linked data
         $specificData = array();

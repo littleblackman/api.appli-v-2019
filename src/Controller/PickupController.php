@@ -610,6 +610,58 @@ class PickupController extends AbstractController
         return new JsonResponse($suppressedData);
     }
 
+
+
+//GET LAST PEC
+    /**
+     * Get last PEC time changed by child_id
+     *
+     * @Route("/pickup/lastPEC/{childId}/{kind}",
+     *    name="pickup_last_PEC",
+     *    requirements={"childId": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="pickup", ref=@Model(type=Pickup::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="pickupId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the pickup",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Pickup",
+     *     required=true,
+     *     @Model(type=PickupType::class)
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function lastPEC(Request $request, $childId, $kind)
+    {
+        //$this->denyAccessUnlessGranted('pickupLastPEC', $pickup);
+
+        $datas = $this->pickupService->getLastPEC($childId, $kind);
+        return new JsonResponse(array($datas));
+    }
+
 //GEOCODING
     /**
      * Geocodes all the Pickups

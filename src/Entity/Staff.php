@@ -42,6 +42,13 @@ class Staff
     private $kind;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="is_supervisor", type="string", nullable=true)
+     */
+    private $isSupervisor;
+
+    /**
      * @var Person
      *
      * @ORM\OneToOne(targetEntity="Person")
@@ -107,6 +114,12 @@ class Staff
         //Specific data
         $objectArray['totalZones'] = $this->getDriverZones()->count();
 
+        $objectArray['phone_number'] = $this->getPerson()->getPhones();
+
+        if($this->getPerson()) {
+          $objectArray['person'] = $this->getPerson()->toArray(); 
+        }
+
         return $objectArray;
     }
 
@@ -135,6 +148,18 @@ class Staff
     public function setPerson(?Person $person): self
     {
         $this->person = $person;
+
+        return $this;
+    }
+
+    public function getIsSupervisor(): ?Int
+    {
+        return $this->$isSupervisor;
+    }
+
+    public function setIsSupervisor(?int $isSupervisor): self
+    {
+        $this->isSupervisor = $isSupervisor;
 
         return $this;
     }

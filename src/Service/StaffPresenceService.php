@@ -158,6 +158,33 @@ class StaffPresenceService implements StaffPresenceServiceInterface
     }
 
     /**
+     * Returns the all presence by Staff for a specific season
+     */
+    public function getPresenceBySeasonAndStaff(int $seasonId, $staffId)
+    {
+        // get staff
+         $staff = $this->em->getRepository('App:Staff')->find($staffId);
+
+        //Gets the season dates
+        $season = $this->em->getRepository('App:Season')->findOneById($seasonId);
+        $seasonStart = $season->getDateStart()->format('Y-m-d');
+        $seasonEnd = $season->getDateEnd()->format('Y-m-d');
+
+        //Gets the staffPresence within the season
+        $staffPresences = $this->em->getRepository('App:StaffPresence')->findAllBetweenDates($seasonStart, $seasonEnd, $staff);
+        $staffPresencesArray = array();
+        foreach ($staffPresences as $staffPresence) {
+            $staffPresencesArray[] = $staffPresence->toArray();
+        }
+
+        $result['staff'] = $staff->toArray();
+        $result['presences'] = $staffPresencesArray;
+
+        return $result;
+    }
+
+
+    /**
      * Returns the total of staffPresence for a specific season
      */
     public function getTotals(int $seasonId)

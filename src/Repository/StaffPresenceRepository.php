@@ -13,18 +13,23 @@ class StaffPresenceRepository extends EntityRepository
     /**
      * Counts all the staffPresences between two dates
      */
-    public function findAllBetweenDates($start, $end)
+    public function findAllBetweenDates($start, $end, $staff = null)
     {
-        return $this->createQueryBuilder('pr')
+        $qb = $this->createQueryBuilder('pr')
             ->where('pr.date >= :start')
             ->andWhere('pr.date <= :end')
-            ->setParameter('start', $start)
+            ->andWhere('pr.suppressed = 0');
+
+        if($staff) {
+          $qb->andWhere('pr.staff = :staff')
+            ->setParameter('staff', $staff);
+        };
+          $qb->setParameter('start', $start)
             ->setParameter('end', $end)
             ->orderBy('pr.staff', 'ASC')
-            ->addOrderBy('pr.date', 'ASC')
-            ->getQuery()
-            ->getResult()
+            ->addOrderBy('pr.date', 'ASC');
         ;
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -41,6 +46,7 @@ class StaffPresenceRepository extends EntityRepository
             ->leftJoin('s.person', 'p')
             ->leftJoin('s.driverZones', 'z')
             ->where('pr.suppressed = 0')
+            ->andWhere('s.suppressed = 0')
             ->andWhere('pr.staff = :staffId')
             ->andWhere('pr.date LIKE :date')
             ->andWhere($startCondition)
@@ -79,6 +85,7 @@ class StaffPresenceRepository extends EntityRepository
             ->where('pr.suppressed = 0')
             ->andWhere($kindCriteria)
             ->andWhere($dateCriteria)
+            ->andWhere('s.suppressed = 0')
             ->orderBy('pr.date', 'ASC')
             ->addOrderBy('pr.start', 'ASC')
             ->addOrderBy('z.priority', 'ASC')
@@ -140,6 +147,7 @@ class StaffPresenceRepository extends EntityRepository
             ->leftJoin('s.driverZones', 'z')
             ->where('pr.suppressed = 0')
             ->andWhere('pr.date = :date')
+            ->andWhere('s.suppressed = 0')
             ->orderBy('s.priority', 'ASC')
             ->addOrderBy('z.priority', 'ASC')
             ->setParameter('date', $date)
