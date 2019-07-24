@@ -329,4 +329,36 @@ class ChildController extends AbstractController
 
         return new JsonResponse($suppressedData);
     }
+
+
+  //LIST BIRTHDATE
+    /**
+     * List child birthdate
+     *
+     * @Route("/child/birthdate",
+     *    name="child_birthdate",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Child::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Tag(name="Child")
+     */
+    public function retrieveCurrentBirthdates(Request $request)
+    {
+        $this->denyAccessUnlessGranted('childList');
+
+        $birthdates = $this->childService->retrieveCurrentBirthdates();
+
+        return new JsonResponse($birthdates);
+    }
 }

@@ -107,7 +107,7 @@ class Staff
     /**
      * Converts the entity in an array
      */
-    public function toArray()
+    public function toArray($type = "full")
     {
         $objectArray = get_object_vars($this);
 
@@ -117,7 +117,27 @@ class Staff
         $objectArray['phone_number'] = $this->getPerson()->getPhones();
 
         if($this->getPerson()) {
-          $objectArray['person'] = $this->getPerson()->toArray(); 
+          $objectArray['person'] = $this->getPerson()->toArray($type);
+        }
+
+        if($type == "light") {
+            unset($objectArray['totalZones']);
+            unset($objectArray['maxChildren']);
+            unset($objectArray['priority']);
+            unset($objectArray['vehicle']);
+            unset($objectArray['address']);
+            unset($objectArray['driverZones']);
+            unset($objectArray['groupActivities']);
+            if(isset($objectArray['__initializer__'])) unset($objectArray['__initializer__']);
+           if(isset($objectArray['__cloner__'])) unset($objectArray['__cloner__']);
+           if(isset($objectArray['__isInitialized__'])) unset($objectArray['__isInitialized__']);
+           if(isset($objectArray['createdAt'])) unset($objectArray['createdAt']);
+           if(isset($objectArray['createdBy'])) unset($objectArray['createdBy']);
+           if(isset($objectArray['updatedBy'])) unset($objectArray['updatedBy']);
+           if(isset($objectArray['updatedAt'])) unset($objectArray['updatedAt']);
+           if(isset($objectArray['suppressedAt'])) unset($objectArray['suppressedAt']);
+           if(isset($objectArray['suppressedBy'])) unset($objectArray['suppressedBy']);
+           if(isset($objectArray['suppressed'])) unset($objectArray['suppressed']);
         }
 
         return $objectArray;
@@ -139,6 +159,7 @@ class Staff
 
         return $this;
     }
+
 
     public function getPerson(): ?Person
     {

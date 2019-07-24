@@ -89,7 +89,6 @@ class GroupActivityVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -110,7 +109,6 @@ class GroupActivityVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -133,7 +131,6 @@ class GroupActivityVoter extends Voter
             'ROLE_COACH',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -156,7 +153,6 @@ class GroupActivityVoter extends Voter
             'ROLE_COACH',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -179,7 +175,6 @@ class GroupActivityVoter extends Voter
             'ROLE_COACH',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

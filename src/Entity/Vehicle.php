@@ -45,6 +45,13 @@ class Vehicle
     private $matriculation;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="mileage", type="string", length=16, nullable=false)
+     */
+    private $mileage;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="combustible", type="string", length=16, nullable=true)
@@ -68,9 +75,21 @@ class Vehicle
     /**
      * Converts the entity in an array
      */
-    public function toArray()
+    public function toArray($type = "full")
     {
         $objectArray = get_object_vars($this);
+        if($type == "light") {
+                unset($objectArray['__initializer__']);
+                unset($objectArray['__cloner__']);
+                unset($objectArray['__isInitialized__']);
+                unset($objectArray['createdAt']);
+                unset($objectArray['createdBy']);
+                unset($objectArray['updatedBy']);
+                unset($objectArray['updatedAt']);
+                unset($objectArray['suppressedAt']);
+                unset($objectArray['suppressedBy']);
+                unset($objectArray['suppressed']);
+            }
 
         return $objectArray;
     }
@@ -88,6 +107,18 @@ class Vehicle
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getMileage(): ?string
+    {
+        return $this->mileage;
+    }
+
+    public function setMileage(?string $mileage): self
+    {
+        $this->mileage = $mileage;
 
         return $this;
     }

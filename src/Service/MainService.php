@@ -96,10 +96,12 @@ class MainService implements MainServiceInterface
         $object
             ->setCreatedAt(new DateTime())
             ->setCreatedBy($userId)
-            ->setSuppressed(false)
             ->setUpdatedAt(new DateTime())
             ->setUpdatedBy($userId)
         ;
+        if(method_exists($object, "setSuppressed")) {
+          $object->setSuppressed(false);
+        }
     }
 
     /**

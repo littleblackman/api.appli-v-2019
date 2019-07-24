@@ -189,11 +189,14 @@ class TaskStaff
         $objectArray = get_object_vars($this);
         if (null !== $objectArray['staff']) {
               $objectArray['staff'] = $this->getStaff()->toArray();
+              $objectArray['staff_fullname'] = $this->getStaff()->getPerson()->getFirstname().' '.$this->getStaff()->getPerson()->getLastname();
         }
         if (null !== $objectArray['supervisor']) {
               $objectArray['supervisor'] = $this->getSupervisor()->toArray();
+              $objectArray['supervisor_fullname'] = $this->getSupervisor()->getPerson()->getFirstname().' '.$this->getSupervisor()->getPerson()->getLastname();
+
         }
-        
+
         return $objectArray;
     }
 }

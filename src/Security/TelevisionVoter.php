@@ -90,7 +90,6 @@ class TelevisionVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -112,7 +111,6 @@ class TelevisionVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -134,7 +132,6 @@ class TelevisionVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -156,7 +153,6 @@ class TelevisionVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -178,7 +174,6 @@ class TelevisionVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

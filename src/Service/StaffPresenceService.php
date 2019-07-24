@@ -3,6 +3,10 @@
 namespace App\Service;
 
 use App\Entity\StaffPresence;
+use App\Entity\TaskStaff;
+use App\Entity\Pickup;
+
+
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -119,6 +123,122 @@ class StaffPresenceService implements StaffPresenceServiceInterface
         }
 
         throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
+    }
+
+    /**
+     * Returns the workload of each staff between 2 dates
+     * @return array
+     */
+    public function getWorkloads($date_from, $date_to, $staffId = null)
+    {
+      // get staff
+      if($staffId) {
+         $staff = $this->em->getRepository('App:Staff')->find($staffId);
+      } else {
+        $staff = null;
+      }
+
+      $staffPresences = $this->em->getRepository('App:StaffPresence')->findAllBetweenDates($date_from, $date_to, $staff);
+
+      $workloads = array();
+      $currentStaffId = null;
+      foreach($staffPresences as $staffPresence) {
+            // workloads[staffId][] = [
+            //                              'date1' => ['timeStart' => $start, 'timeEnd' => $end, 'firstAction' => $first, 'lastAction' => $last]
+            //                              'date2' => ['timeStart' => $start, 'timeEnd' => $end, 'firstAction' => $first, 'lastAction' => $last]
+            //                        ]
+            $date = $staffPresence->getDate()->format('Y-m-d');
+            $staff = $staffPresence->getStaff();
+
+            if($staff) {
+
+                    // retrieve first task
+                    $firstTask = $this->em->getRepository('App:TaskStaff')->findOneByStaffAndDate($staff, $date, 'first');
+                    $lastTask  = $this->em->getRepository('App:TaskStaff')->findOneByStaffAndDate($staff, $date, 'last');
+
+                    // retrieve first PEC
+                    $firstPickup = $this->em->getRepository('App:Pickup')->findOneByStaffAndDate($staff, $date, 'first');
+                    $lastPickup = $this->em->getRepository('App:Pickup')->findOneByStaffAndDate($staff, $date, 'last');
+
+
+                    /***** FIRST ACTION ****/
+
+                    // test if we need use first task or pickup
+                    if($firstTask !== null &&  $firstPickup !== null) {
+                        $taskTime = $firstTask->getDateTask()->format('YmdHis');
+                        $pickupTime = $firstPickup->getStatusChange()->format('Y-m-d H:i:s');
+                        ($taskTime < $pickupTime) ? $caseA = "task" : $caseA = "pickup";
+                    } else {
+                        if($firstTask) {
+                            $caseA = "task";
+                        } else if($firstPickup) {
+                            $caseA = "pickup";
+                        } else {
+                            $caseA = null;
+                        }
+                    }
+
+                    // create FIRSTACTION
+                    if($caseA == "task") {
+                        $timeStart = $firstTask->getDateTask()->format('Y-m-d H:i:s');
+                        $firstAction = $firstTask->getName();
+                    }  else if ($caseA == "pickup"){
+                        $timeStart = $firstPickup->getStatusChange()->format('Y-m-d H:i:s');
+                        $firstAction = "Pickup";
+                    } else {
+                        $timeStart = null;
+                        $firstAction = null;
+                    }
+
+
+                    /***** LAST ACTION ****/
+
+                    // test if we need use last task or pickup
+                    if($lastTask && $lastPickup) {
+                        $taskTime = $lastTask->getDateTask()->format('YmdHis');
+                        $pickupTime = $lastPickup->getStatusChange()->format('Y-m-d H:i:s');
+                        ($taskTime > $pickupTime) ? $caseB = "task" : $caseB = "pickup";
+                    } else {
+                        if($lastTask) {
+                            $caseB = "task";
+                        } else if($lastPickup) {
+                            $caseB = "pickup";
+                        } else {
+                            $caseB = null;
+                        }
+                    }
+
+                    // create lastACTION
+                    if($caseB == "task") {
+                        $timeEnd = $lastTask->getDateTask()->format('Y-m-d H:i:s');
+                        $lastAction = $lastTask->getName();
+                    }  else if( $caseB == "pickup"){
+                        $timeEnd = $lastPickup->getStatusChange()->format('Y-m-d H:i:s');
+                        $lastAction = "Dropoff";
+                    } else {
+                        $timeEnd = null;
+                        $lastAction = null;
+                    }
+
+                    /***** CREATE WORKLOAD ****/
+
+                    $workload = ['date' => $date, 'startCase' => $caseA, 'endCase' => $caseB, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'firstAction' => $firstAction, 'lastAction' => $lastAction];
+                    $person = $staffPresence->getStaff()->getPerson();
+
+                    if($currentStaffId != $staffPresence->getStaff()->getStaffId()) {
+                        $staff = [ 'staffId'  => $staffPresence->getStaff()->getStaffId(), 'fullname' => $person->getFirstname().' '.$person->getLastname()];
+                        $workloads[$staffPresence->getStaff()->getStaffId()]['staff'] = $staff;
+                    }
+
+                    $workloads[$staffPresence->getStaff()->getStaffId()]['dates'][] = $workload;
+
+                    $currentStaffId = $staffPresence->getStaff()->getStaffId();
+            }
+      }
+
+      return $workloads;
+
+
     }
 
     /**

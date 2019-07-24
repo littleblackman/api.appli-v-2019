@@ -90,9 +90,7 @@ class ChildPresenceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -112,9 +110,9 @@ class ChildPresenceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_ASSISTANT',
+            'ROLE_DRIVER',
+            'ROLE_COACH',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -134,9 +132,9 @@ class ChildPresenceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_ASSISTANT',
+            'ROLE_DRIVER',
+            'ROLE_COACH',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

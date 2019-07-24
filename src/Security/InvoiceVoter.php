@@ -88,8 +88,6 @@ class InvoiceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -109,8 +107,6 @@ class InvoiceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -130,8 +126,6 @@ class InvoiceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -151,8 +145,6 @@ class InvoiceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -172,8 +164,6 @@ class InvoiceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

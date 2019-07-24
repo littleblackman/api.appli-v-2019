@@ -102,8 +102,7 @@ class AddressVoter extends Voter
         $roles = array(
             'ROLE_COACH',
             'ROLE_DRIVER',
-            'ROLE_ASSISTANT',
-            'ROLE_MANAGER',
+            'ROLE_ASSISTANT'
         );
 
         foreach ($roles as $role) {
@@ -166,7 +165,6 @@ class AddressVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -187,6 +185,7 @@ class AddressVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_ADMIN',
+            'ROLE_MANAGER'
         );
 
         foreach ($roles as $role) {

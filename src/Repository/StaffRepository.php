@@ -22,8 +22,8 @@ class StaffRepository extends EntityRepository
             ->leftJoin('s.person', 'p')
             ->where($kindCondition)
             ->andWhere('s.suppressed = 0')
-            ->orderBy('p.lastname', 'ASC')
-            ->addOrderBy('p.firstname', 'ASC')
+            ->orderBy('p.firstname', 'ASC')
+            ->addOrderBy('p.lastname', 'ASC')
         ;
 
         if ('all' !== $kind) {
@@ -34,6 +34,35 @@ class StaffRepository extends EntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function retrieveCurrentBirthdates($start, $n)
+    {
+
+        $start_sql = date("m-d", strtotime($start));
+
+        $qb = $this->createQueryBuilder('s')
+           ->leftJoin('s.person', 'p')
+           ->where('s.suppressed = 0');
+
+         $orModule = $qb->expr()->orx();
+         for($i = 0; $i < $n; $i++) {
+             $orModule->add($qb->expr()->like('p.birthdate', ':mydate'.$i));
+         }
+
+         $qb->andWhere($orModule);
+
+         $current_date = $start;
+         for($i = 0; $i < $n; $i++) {
+             $current_date_sql = date("m-d", strtotime($current_date));
+             $qb->setParameter('mydate'.$i, '%-'.$current_date_sql);
+             $current_date = date('Y-m-d', strtotime($current_date.", +1 day"));
+         }
+
+         return $qb->orderBy('p.birthdate', 'ASC')
+           ->getQuery()
+           ->getResult();
+
     }
 
     /**
@@ -47,8 +76,8 @@ class StaffRepository extends EntityRepository
             ->where('LOWER(p.firstname) LIKE :term OR LOWER(p.lastname) LIKE :term')
             ->andWhere('s.suppressed = 0')
             ->andWhere('p.suppressed = 0')
-            ->orderBy('p.lastname', 'ASC')
-            ->addOrderBy('p.firstname', 'ASC')
+            ->orderBy('p.firstname', 'ASC')
+            ->addOrderBy('p.lastname', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
         ;

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use App\Entity\Staff;
 
 /**
  * PickupRepository class
@@ -51,6 +52,44 @@ class PickupRepository extends EntityRepository
             ->getResult()
         ;
     }
+
+
+    /**
+     * Returns all the pickups by status
+     */
+    public function findOneByStaffAndDate(Staff $staff, $date, $which)
+    {
+        if($which == "first") $kind = "dropin";
+        if($which == "last") $kind = "dropoff";
+
+        $qb = $this->createQueryBuilder('p')
+            ->leftJoin('p.ride', 'r')
+            ->where('r.staff = :staff')
+            ->andWhere('p.start LIKE :date')
+            ->andWhere("p.status = 'PEC' or p.status = 'pec' ")
+            ->andWhere("p.statusChange is not null or p.statusChange <> '' ")
+
+            ->andWhere('p.kind = :kind');
+
+        if($which == 'first') {
+          $qb->orderBy('p.statusChange', 'ASC');
+        }
+        if($which == 'last') {
+          $qb->orderBy('p.statusChange', 'DESC');
+        }
+
+        $qb ->setParameter('date', $date . '%')
+           ->setParameter('kind', $kind)
+           ->setParameter('staff', $staff )
+           ->setMaxResults(1);
+
+        return $qb
+          ->getQuery()
+          ->getOneOrNullResult();
+    }
+
+
+
 
     /**
      * Returns all the pickups by status

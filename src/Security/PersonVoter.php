@@ -101,7 +101,7 @@ class PersonVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_LEADER',
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 
@@ -132,7 +132,7 @@ class PersonVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_LEADER',
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 
@@ -157,7 +157,6 @@ class PersonVoter extends Voter
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -180,7 +179,6 @@ class PersonVoter extends Voter
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -201,7 +199,6 @@ class PersonVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

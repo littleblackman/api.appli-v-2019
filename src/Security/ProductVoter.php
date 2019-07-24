@@ -89,7 +89,6 @@ class ProductVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -110,7 +109,6 @@ class ProductVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -139,7 +137,6 @@ class ProductVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -160,7 +157,6 @@ class ProductVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

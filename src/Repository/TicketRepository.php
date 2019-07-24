@@ -19,6 +19,16 @@ class TicketRepository extends ServiceEntityRepository
         parent::__construct($registry, Ticket::class);
     }
 
+    public function findNeedCall()
+    {
+      return $this->createQueryBuilder('t')
+      ->andWhere('t.recall = 1')
+      ->addOrderBy('t.hasBeenTreated', 'ASC')
+      ->addOrderBy('t.createdAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+    }
+
     // /**
     //  * @return Ticket[] Returns an array of Ticket objects
     //  */

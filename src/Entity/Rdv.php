@@ -149,6 +149,7 @@ class Rdv
         $objectArray = get_object_vars($this);
         if (null !== $objectArray['staff']) {
                 $objectArray['staff'] = $this->getStaff()->toArray();
+                $objectArray['staff_fullname'] = $this->getStaff()->getPerson()->getFirstname().' '.$this->getStaff()->getPerson()->getLastname();
             }
         if (null !== $objectArray['dateRdv']) {
             $objectArray['dateRdv'] = $objectArray['dateRdv']->format('Y-m-d H:i:s');

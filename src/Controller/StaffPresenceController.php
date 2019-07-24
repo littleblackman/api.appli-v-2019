@@ -155,6 +155,73 @@ class StaffPresenceController extends AbstractController
         return new JsonResponse($staffPresencesArray);
     }
 
+
+//DISPLAY WORKLOAD
+    /**
+     * Displays workload by staff between 2 dates and staffId(optionnel)
+     *
+     * @Route("/staff/presence/workload/{date_from}/{date_to}/{staffId}",
+     *    name="staff_presence_workload",
+     *    requirements={
+     *        "staffId": "^([0-9]+)",
+     *        "date_from": "^(all|([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2})|([0-9]{4}))$",
+     *        "date_to": "^(all|([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2})|([0-9]{4}))$"
+
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=StaffPresence::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="staffId",
+     *     in="path",
+     *     default="null",
+     *     description="Id of the staff",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="date_from",
+     *     in="path",
+     *     description="Date for the staff presence (YYYY-MM-DD)",
+     *     type="string",
+     *     default="null",
+     * )
+     * @SWG\Parameter(
+     *     name="date_to",
+     *     in="path",
+     *     description="Date for the staff presence (YYYY-MM-DD)",
+     *     type="string",
+     *     default="null"
+     * )
+     * @SWG\Tag(name="StaffPresence")
+     */
+    public function staffWorkloads($date_from, $date_to, $staffId = null)
+    {
+        //$this->denyAccessUnlessGranted('staffPresenceDisplay');
+        $staffWorkloads = $this->staffPresenceService->getWorkloads($date_from, $date_to, $staffId);
+        return new JsonResponse($staffWorkloads);
+    }
+
+
+
+
+
+
+
 //DISPLAY TOTALS BY SEASON
     /**
      * Displays the totals of staffPresence by season

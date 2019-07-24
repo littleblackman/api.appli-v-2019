@@ -361,7 +361,7 @@ class MealController extends AbstractController
      */
     public function modify(Request $request, Meal $meal)
     {
-        //$this->denyAccessUnlessGranted('mealModify', $meal);
+        $this->denyAccessUnlessGranted('mealModify', $meal);
 
         $modifiedData = $this->mealService->modify($meal, $request->getContent());
 

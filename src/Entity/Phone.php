@@ -62,11 +62,24 @@ class Phone
     /**
      * Converts the entity in an array
      */
-    public function toArray()
+    public function toArray($type = "full")
     {
-        $phoneArray = get_object_vars($this);
+        $objectArray = get_object_vars($this);
+        if($type == "light") {
+            unset($objectArray['__initializer__']);
+            unset($objectArray['__cloner__']);
+            unset($objectArray['__isInitialized__']);
+            unset($objectArray['createdAt']);
+            unset($objectArray['createdBy']);
+            unset($objectArray['updatedBy']);
+            unset($objectArray['updatedAt']);
+            unset($objectArray['suppressedAt']);
+            unset($objectArray['suppressedBy']);
+            unset($objectArray['suppressed']);
 
-        return $phoneArray;
+        }
+
+        return $objectArray;
     }
 
     public function getPhoneId(): ?int

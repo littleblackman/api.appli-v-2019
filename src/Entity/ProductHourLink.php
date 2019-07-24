@@ -40,6 +40,23 @@ class ProductHourLink
     private $end;
 
     /**
+     * @var Int
+     *
+     * @ORM\Column(name="is_full", type="integer")
+     */
+    private $isFull;
+
+  /**
+    * @ORM\Column(type="string", length=255, nullable=true)
+    */
+    private $messageFr;
+
+  /**
+    * @ORM\Column(type="string", length=255, nullable=true)
+    */
+    private $messageEn;
+
+    /**
      * @var Product
      *
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="hours")
@@ -95,6 +112,44 @@ class ProductHourLink
 
         return $this;
     }
+
+    public function getIsFull()
+    {
+        return $this->isFull;
+    }
+
+    public function setIsFull(?Int $isFull): self
+    {
+        $this->isFull = $isFull;
+
+        return $this;
+    }
+
+    public function getMessageFr()
+    {
+        return $this->messageFr;
+    }
+
+    public function setMessageFr(?String $message): self
+    {
+        $this->messageFr = $message;
+
+        return $this;
+    }
+
+    public function getMessageEn()
+    {
+        return $this->messageEn;
+    }
+
+    public function setMessageEn(?String $message): self
+    {
+        $this->messageEn = $message;
+
+        return $this;
+    }
+
+
 
     public function getProduct(): ?Product
     {

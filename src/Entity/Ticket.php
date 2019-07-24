@@ -81,6 +81,12 @@ class Ticket
      */
     private $recall;
 
+
+    /**
+     * @ORM\Column(name= "has_been_treated", type="boolean", nullable=true)
+     */
+    private $hasBeenTreated;
+
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -182,6 +188,18 @@ class Ticket
         return $this;
     }
 
+    public function getHasBeenTreated(): ?bool
+    {
+        return $this->hasBeenTreated;
+    }
+
+    public function setHasBeenTreated(?bool $hasBeenTreated): self
+    {
+        $this->hasBeenTreated = $hasBeenTreated;
+
+        return $this;
+    }
+
     public function getType(): ?string
     {
         return $this->type;
@@ -273,7 +291,7 @@ class Ticket
     /**
      * Converts the entity in an array
      */
-    public function toArray()
+    public function toArray($type = "full")
     {
         $objectArray = get_object_vars($this);
 
@@ -283,7 +301,7 @@ class Ticket
         }
 
         if (null !== $objectArray['staff']) {
-            $objectArray['staff'] = $this->getStaff()->toArray();
+            $objectArray['staff'] = $this->getStaff()->toArray($type);
         }
 
         if (null !== $objectArray['rdv']) {

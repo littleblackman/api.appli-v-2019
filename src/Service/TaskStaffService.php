@@ -81,7 +81,7 @@ class TaskStaffService implements TaskStaffServiceInterface
             ($supervisor_id) ? $supervisor  = $this->em->getRepository('App:Staff')->find($supervisor_id) : $supervisor = null;
 
 
-            ($values['name'] == null && $task != null) ? $name = $task->getName() : $name = null;
+            ($values['name'] == null && $task != null) ? $name = $task->getName() : $name = $values['name'];
 
             $dateTask = new DateTime($date);
 

@@ -108,7 +108,6 @@ class SchoolVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -148,7 +147,6 @@ class SchoolVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -169,7 +167,6 @@ class SchoolVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

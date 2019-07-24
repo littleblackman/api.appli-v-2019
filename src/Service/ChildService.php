@@ -261,4 +261,33 @@ class ChildService implements ChildServiceInterface
 
         return $objectArray;
     }
+
+    /**
+     * retrieve birthdays staff of the current week
+     */
+    public function retrieveCurrentBirthdates()
+    {
+
+        $date_ref = date('Y-m-d');
+        $n = 3; // nb days before and total of days = n*6
+        $maxAge = 14;
+        $start = date('Y-m-d', strtotime($date_ref.", -".$n." day"));
+        $datesArray = array();
+        $childs = $this->em->getRepository('App:Child')->retrieveCurrentBirthdates($start, $n*2, $maxAge);
+
+
+        if($childs) {
+                    foreach($childs as $child) {
+                        $datesArray[$child->getBirthdate()->format('m-d')][] = [
+                                        'full_name' => $child->getFirstname().' '.$child->getLastname(),
+                                        'birthdate' => $child->getBirthdate()->format('Y-m-d')
+                                    ];
+                        }
+        } else {
+            $datesArray = ['message' => "aucun enfant n'est née dans cette période"];
+        }
+
+
+        return $datesArray;
+    }
 }

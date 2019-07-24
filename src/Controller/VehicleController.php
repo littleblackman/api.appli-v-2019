@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Vehicle;
+use App\Entity\VehicleCheckup;
 use App\Form\VehicleType;
 use App\Service\VehicleServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;

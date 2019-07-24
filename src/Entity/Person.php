@@ -10,6 +10,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
+use DateTime;
+use DateTimeInterface;
 
 /**
  * Person
@@ -54,6 +56,13 @@ class Person
      * @ORM\Column(name="photo", type="string", length=256, nullable=true)
      */
     private $photo;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="birthdate", type="date", nullable=true)
+     */
+    private $birthdate;
 
     /**
      * @ORM\OneToMany(targetEntity="PersonAddressLink", mappedBy="person")
@@ -114,19 +123,41 @@ class Person
     /**
      * Converts the entity in an array
      */
-    public function toArray()
+    public function toArray($type = "full")
     {
         $objectArray = get_object_vars($this);
         if($this->getUserPersonLink()) {
             $objectArray['myIdentifier'] = $this->getUserPersonLink()->getUser()->getIdentifier();
             $objectArray['roles'] = $this->getUserPersonLink()->getUser()->getRoles();
+            $objectArray['email'] = $this->getUserPersonLink()->getUser()->getEmail();
+        }
+
+        if($this->getBirthdate()) {
+            $objectArray['birthdate'] = $this->getBirthdate()->format('Y-m-d');
         }
 
         //$objectArray['phones'] = "100000";
 
         foreach($this->getPhones() as $link) {
-            $objectArray['phones'] = $link->getPhone()->toArray();
+            $objectArray['phones'] = $link->getPhone()->toArray($type);
         }
+
+        if($type == "light") {
+           if(isset($objectArray['__initializer__'])) unset($objectArray['__initializer__']);
+           if(isset($objectArray['__cloner__'])) unset($objectArray['__cloner__']);
+           if(isset($objectArray['__isInitialized__'])) unset($objectArray['__isInitialized__']);
+           if(isset($objectArray['createdAt'])) unset($objectArray['createdAt']);
+           if(isset($objectArray['createdBy'])) unset($objectArray['createdBy']);
+           if(isset($objectArray['updatedBy'])) unset($objectArray['updatedBy']);
+           if(isset($objectArray['updatedAt'])) unset($objectArray['updatedAt']);
+           if(isset($objectArray['suppressedAt'])) unset($objectArray['suppressedAt']);
+           if(isset($objectArray['suppressedBy'])) unset($objectArray['suppressedBy']);
+           if(isset($objectArray['suppressed'])) unset($objectArray['suppressed']);
+           unset($objectArray['myIdentifier']);
+           unset($objectArray['roles']);
+        }
+
+
 
         return $objectArray;
     }
@@ -170,6 +201,22 @@ class Person
         $this->photo = $photo;
 
         return $this;
+    }
+
+    public function getBirthdate(): ?DateTimeInterface
+    {
+        return $this->birthdate;
+    }
+
+    public function setBirthdate($birthdate)
+    {
+          if (!$birthdate instanceof DateTime) {
+              $birthdate = new DateTime($birthdate);
+          }
+
+      $this->birthdate = $birthdate;
+
+      return $this;
     }
 
     public function getAddresses()

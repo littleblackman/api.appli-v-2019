@@ -44,23 +44,81 @@ class TicketService implements TicketServiceInterface
     /**
      * Returns the list of all TICKET
      */
-    public function findAll()
+    public function findAll($group = null)
     {
 
         $tickets = $this->em
             ->getRepository('App:Ticket')
-            ->findBy(array(), array('dateCall' => 'DESC'));
+            ->findBy(array(), array('createdAt' => 'DESC'));
         ;
 
         $array = [];
-        foreach($tickets as $ticket)
-        {
-            $array[] = $this->toArray($ticket);
+
+
+        if($group == null) {
+            foreach($tickets as $ticket)
+            {
+                $array[] = $this->toArray($ticket);
+            }
+        } else {
+            foreach($tickets as $ticket)
+            {
+                $array[$ticket->getDateCall()->format('Y-m-d')][] = $this->toArray($ticket);
+            }
+        }
+        return $array;
+
+    }
+
+    /**
+     * Returns the list of all TICKET need call
+     */
+    public function findNeedCall($group = null)
+    {
+
+        $tickets = $this->em
+            ->getRepository('App:Ticket')
+            ->findNeedCall();
+        ;
+
+        $array = [];
+
+
+        if($group == null) {
+            foreach($tickets as $ticket)
+            {
+                $array[] = $this->toArray($ticket);
+            }
+        } else {
+            foreach($tickets as $ticket)
+            {
+                $array[$ticket->getDateCall()->format('Y-m-d')][] = $this->toArray($ticket);
+            }
         }
 
         return $array;
 
     }
+
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTreated($ticket)
+    {
+      $ticket->setHasBeenTreated(1);
+      $this->mainService->create($ticket);
+      $this->mainService->persist($ticket);
+
+      //Returns data
+      return array(
+          'status' => true,
+          'message' => 'Ticket traité',
+          'ticket' => $ticket->toArray(),
+      );
+    }
+
 
 
     /**
@@ -75,6 +133,9 @@ class TicketService implements TicketServiceInterface
         if(!$location = $this->em->getRepository('App:Location')->find($values['location_id'])) $location = null;
         if(!$taskStaff = $this->em->getRepository('App:TaskStaff')->find($values['taskStaff_id'])) $taskStaff = null;
         if(!$rdv = $this->em->getRepository('App:Rdv')->find($values['rdv_id'])) $rdv = null;
+
+        (!isset($values['has_been_treated'])) ? $has_been_treated = 1 :  $has_been_treated = $values['has_been_treated'];
+
 
         $dateCall = new DateTime($values['date_call']);
 
@@ -94,6 +155,7 @@ class TicketService implements TicketServiceInterface
             $object->setRecall($values['recall']);
             $object->setType($values['type']);
             $object->setDateCall($dateCall);
+            $object->setHasBeenTreated($has_been_treated);
             $object->setOriginCall($values['origin_call']);
 
             $this->mainService->create($object);
@@ -128,7 +190,7 @@ class TicketService implements TicketServiceInterface
     public function toArray(Ticket $object)
     {
         //Main data
-        $objectArray = $this->mainService->toArray($object->toArray());
+        $objectArray = $this->mainService->toArray($object->toArray('light'));
 
 
         //Gets related product

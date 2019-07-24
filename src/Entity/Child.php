@@ -121,6 +121,13 @@ class Child
      */
     private $siblings;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="family_id", type="integer", nullable=true)
+     */
+    private $familyId;
+
     public function __construct()
     {
         $this->persons = new ArrayCollection();
@@ -140,6 +147,20 @@ class Child
         }
 
         return $objectArray;
+    }
+
+    // use only in myclub import
+    public function setChildId(?int $childId): self
+    {
+        $this->childId = $childId;
+        return $this;
+    }
+    
+    // use only in myclub import
+    public function setFamilyId(?int $familyId): self
+    {
+        $this->familyId = $familyId;
+        return $this;
     }
 
     public function getChildId(): ?int

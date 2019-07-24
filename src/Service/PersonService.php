@@ -263,6 +263,21 @@ class PersonService implements PersonServiceInterface
             $user = $object->getUserPersonLink()->getUser();
             $objectArray['email'] = $user->getEmail();
             $objectArray['identifier'] = $user->getIdentifier();
+            $objectArray['user_id'] = $user->getId();
+
+            if($user->getDevices()) {
+                foreach($user->getDevices() as $device)
+                {
+                    $deviceArray = $device->toArray();
+                    if(isset($deviceArray['user'])) unset($deviceArray['user']);
+                    $objectArray['devices'][] = $deviceArray;
+
+                }
+            }
+
+
+
+
             unset($objectArray['userPersonLink']);
         }
 

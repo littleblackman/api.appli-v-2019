@@ -105,7 +105,6 @@ class RegistrationVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -127,7 +126,6 @@ class RegistrationVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -149,7 +147,6 @@ class RegistrationVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -171,7 +168,6 @@ class RegistrationVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -193,7 +189,6 @@ class RegistrationVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

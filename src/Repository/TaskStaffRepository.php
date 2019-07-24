@@ -27,6 +27,31 @@ class TaskStaffRepository extends EntityRepository
       ;
   }
 
+
+  /**
+   * Returns the one task done by staff and date (first or last)
+   */
+  public function findOneByStaffAndDate(Staff $staff, $date, $which)
+  {
+      $qb = $this->createQueryBuilder('s')
+          ->where('s.dateTask LIKE :date')
+          ->andWhere('s.staff = :staff')
+          ->andWhere("s.step = 'DONE' ");
+
+      if($which == "first") $qb->orderBy('s.dateTask', 'ASC');
+      if($which == "last") $qb->orderBy('s.dateTask', 'DESC');
+
+      $qb->setParameter('date', '%' . $date . '%')
+          ->setParameter('staff', $staff)
+          ->setMaxResults(1);
+
+
+      return $qb
+          ->getQuery()
+          ->getOneOrNullResult();
+  }
+
+
   /**
    * Returns all the tasks by date
    */
@@ -34,7 +59,8 @@ class TaskStaffRepository extends EntityRepository
   {
       return $this->createQueryBuilder('s')
           ->where('s.dateTask LIKE :date')
-          ->orderBy('s.dateTask', 'ASC')
+          ->orderBy('s.staff', 'ASC')
+          //orderBy('s.dateTask', 'ASC')
           ->setParameter('date', '%' . $date . '%')
           ->getQuery()
           ->getResult()

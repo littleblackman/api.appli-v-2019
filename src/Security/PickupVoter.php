@@ -95,7 +95,6 @@ class PickupVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -139,7 +138,6 @@ class PickupVoter extends Voter
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -162,7 +160,6 @@ class PickupVoter extends Voter
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -185,7 +182,6 @@ class PickupVoter extends Voter
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -205,6 +201,7 @@ class PickupVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 

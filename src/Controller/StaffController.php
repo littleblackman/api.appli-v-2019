@@ -256,10 +256,36 @@ class StaffController extends AbstractController
 
 
 
+//LIST BIRTHDATE
+  /**
+   * List staff birthdate
+   *
+   * @Route("/staff/birthdate",
+   *    name="staff_birthdate",
+   *    methods={"HEAD", "GET"})
+   *
+   * @SWG\Response(
+   *     response=200,
+   *     description="Success",
+   *     @SWG\Schema(
+   *         type="array",
+   *         @SWG\Items(ref=@Model(type=Staff::class))
+   *     )
+   * )
+   * @SWG\Response(
+   *     response=403,
+   *     description="Access denied",
+   * )
+   * @SWG\Tag(name="Staff")
+   */
+  public function retrieveCurrentBirthdates(Request $request)
+  {
+      $this->denyAccessUnlessGranted('staffList');
 
+      $birthdates = $this->staffService->retrieveCurrentBirthdates();
 
-
-
+      return new JsonResponse($birthdates);
+  }
 
 
 

@@ -88,7 +88,7 @@ class ChildVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_LEADER',
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 
@@ -103,8 +103,7 @@ class ChildVoter extends Voter
             'ROLE_TRAINEE',
             'ROLE_COACH',
             'ROLE_DRIVER',
-            'ROLE_ASSISTANT',
-            'ROLE_MANAGER',
+            'ROLE_ASSISTANT'
         );
 
         foreach ($roles as $role) {
@@ -123,7 +122,7 @@ class ChildVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_LEADER',
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 
@@ -148,7 +147,6 @@ class ChildVoter extends Voter
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -169,9 +167,9 @@ class ChildVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_DRIVER',
+            'ROLE_COACH',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -192,7 +190,6 @@ class ChildVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

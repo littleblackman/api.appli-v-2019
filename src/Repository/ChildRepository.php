@@ -51,4 +51,36 @@ class ChildRepository extends EntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    public function retrieveCurrentBirthdates($start, $n, $maxAge)
+    {
+
+        $start_sql = date("m-d", strtotime($start));
+        $yearStart = date('Y', strtotime($start)) - $maxAge;
+
+        $qb = $this->createQueryBuilder('c')
+           ->where('c.suppressed = 0')
+           ->andWhere("c.birthdate > '".$yearStart."-01-01'");
+
+         $orModule = $qb->expr()->orx();
+         for($i = 0; $i < $n; $i++) {
+             $orModule->add($qb->expr()->like('c.birthdate', ':mydate'.$i));
+         }
+
+         $qb->andWhere($orModule);
+
+         $current_date = $start;
+         for($i = 0; $i < $n; $i++) {
+             $current_date_sql = date("m-d", strtotime($current_date));
+             $qb->setParameter('mydate'.$i, '%-'.$current_date_sql);
+             $current_date = date('Y-m-d', strtotime($current_date.", +1 day"));
+         }
+
+         $qb->groupBy('c.childId');
+
+         return $qb->orderBy('c.birthdate', 'ASC')
+           ->getQuery()
+           ->getResult();
+
+    }
 }

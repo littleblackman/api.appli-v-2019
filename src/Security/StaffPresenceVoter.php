@@ -83,7 +83,6 @@ class StaffPresenceVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -104,7 +103,6 @@ class StaffPresenceVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -124,8 +122,9 @@ class StaffPresenceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
+            'ROLE_DRIVER',
+            'ROLE_COACH',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -145,8 +144,9 @@ class StaffPresenceVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
+            'ROLE_DRIVER',
+            'ROLE_COACH',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

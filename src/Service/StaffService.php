@@ -263,6 +263,34 @@ class StaffService implements StaffServiceInterface
     }
 
     /**
+     * retrieve birthdays staff of the current week
+     */
+    public function retrieveCurrentBirthdates()
+    {
+
+        $date_ref = date('Y-m-d');
+        $n = 5;
+        $start = date('Y-m-d', strtotime($date_ref.", -".$n." day"));
+        $datesArray = array();
+        $staffs = $this->em->getRepository('App:Staff')->retrieveCurrentBirthdates($start, $n*2);
+        if($staffs) {
+            foreach($staffs as $staff) {
+                $person = $staff->getPerson();
+                $datesArray[$person->getBirthdate()->format('m-d')][]  = [
+                                                'full_name' => $person->getFirstname().' '.$staff->getPerson()->getLastname(),
+                                                'birthdate' => $person->getBirthdate()->format('Y-m-d'),
+                                                'kind'      => $staff->getKind()
+                                            ];
+            }
+        } else {
+            $datesArray = ['message' => "aucune personne n'est née dans cette période"];
+        }
+
+
+        return $datesArray;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray(Staff $object)

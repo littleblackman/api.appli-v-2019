@@ -108,7 +108,6 @@ class TransactionVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -129,7 +128,6 @@ class TransactionVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -151,7 +149,6 @@ class TransactionVoter extends Voter
         $roles = array(
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -171,6 +168,7 @@ class TransactionVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 

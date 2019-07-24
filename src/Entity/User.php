@@ -24,6 +24,12 @@ class User extends UserLightAbstract
      */
     private $userPersonLink;
 
+    /**
+      * @var ArrayCollection
+      * @ORM\OneToMany(targetEntity="Device", mappedBy="user")
+      */
+     private $devices;
+
     public function getUserPersonLink(): ?UserPersonLink
     {
         return $this->userPersonLink;
@@ -35,4 +41,48 @@ class User extends UserLightAbstract
 
         return $this;
     }
+
+
+    /**
+      * @return Collection|Devices[]
+      */
+     public function getDevices()
+     {
+         return $this->devices;
+     }
+
+     public function addDevice(Device $device): self
+     {
+         if (!$this->devices->contains($device)) {
+             $this->devices[] = $device;
+             $device->setUser($this);
+         }
+
+         return $this;
+     }
+
+     public function removeDevice(Device $device): self
+     {
+         if ($this->devices->contains($device)) {
+             $this->devices->removeElement($device);
+             // set the owning side to null (unless already changed)
+             if ($device->setUser() === $this) {
+                 $device->setUser(null);
+             }
+         }
+
+         return $this;
+     }
+
+     public function toArray()
+     {
+         $datas = parent::toArray();
+         if($this->getDevices()) {
+             foreach($this->getDevices() as $device) {
+                 $datas['devices'][] = $device->toArray();
+             }
+         }
+         return $datas;
+     }
+
 }

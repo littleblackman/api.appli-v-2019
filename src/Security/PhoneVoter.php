@@ -82,7 +82,7 @@ class PhoneVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_LEADER',
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 
@@ -98,7 +98,6 @@ class PhoneVoter extends Voter
             'ROLE_COACH',
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
-            'ROLE_MANAGER',
         );
 
         foreach ($roles as $role) {
@@ -117,7 +116,7 @@ class PhoneVoter extends Voter
     {
         //Checks roles allowed
         $roles = array(
-            'ROLE_LEADER',
+            'ROLE_MANAGER',
             'ROLE_ADMIN',
         );
 
@@ -140,7 +139,6 @@ class PhoneVoter extends Voter
             'ROLE_DRIVER',
             'ROLE_ASSISTANT',
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 
@@ -161,7 +159,6 @@ class PhoneVoter extends Voter
         //Checks roles allowed
         $roles = array(
             'ROLE_MANAGER',
-            'ROLE_LEADER',
             'ROLE_ADMIN',
         );
 

@@ -3,6 +3,11 @@
 namespace App\Service;
 
 use App\Entity\Vehicle;
+use App\Entity\VehicleFuel;
+
+use App\Entity\Staff;
+use DateTime;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -107,6 +112,59 @@ class VehicleService implements VehicleServiceInterface
             'message' => 'Véhicule modifié',
             'vehicle' => $this->toArray($object),
         );
+    }
+
+    public function addFuel(string $data)
+    {
+        $data = json_decode($data, true);
+        $staff = $this->em->getRepository('App:Staff')->find($data['staff_id']);
+        $vehicle = $this->em->getRepository('App:Vehicle')->find($data['vehicle_id']);
+
+        if($staff == null || $vehicle == null) {
+            return [
+                            "message" => "Staff non trouvé et/ou véhicule non trouvé"
+                    ];
+        }
+
+        $object = new VehicleFuel();
+        $object->setVehicle($vehicle);
+        $object->setStaff($staff);
+        $object->setQuantity($data['quantity']);
+        $object->setAmount($data['amount']);
+        $object->setMileage($data['mileage']);
+        $object->setDateAction($data['date_action']);
+
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
+
+        $vehicle->setMileage($object->getMileage());
+
+        $this->mainService->create($vehicle);
+        $this->mainService->persist($vehicle);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'données ajoutées',
+            'action' => $object->toArray(),
+        );
+    }
+
+    public function listFuelByDate($date = null, $vehicle_id = null)
+    {
+        if($vehicle_id) {
+            $vehicle = $this->em->getRepository('App:Vehicle')->find($vehicle_id);
+            $actions = $this->em->getRepository('App:VehicleFuel')->findBy(['dateAction' => new DateTime($date), 'vehicle' => $vehicle], ['id' => 'desc']);
+        } else {
+          $actions = $this->em->getRepository('App:VehicleFuel')->findBy(['dateAction' => new DateTime($date)], ['id' => 'desc']);
+        }
+        $result = [];
+        foreach($actions as $action)
+        {
+            $result[] = $action->toArray("light");
+        }
+        if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
+        return $result;
     }
 
     /**

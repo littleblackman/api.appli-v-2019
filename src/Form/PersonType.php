@@ -7,6 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 /**
  * PersonType FormType
@@ -25,6 +26,10 @@ class PersonType extends AbstractType
                 ))
             ->add('photo', TextType::class, array(
                 'required' => false,
+                ))
+            ->add('birthdate', DateType::class, array(
+                'required' => false,
+                'widget' => 'single_text'
                 ))
             ->add('identifier', TextType::class, array(
                 'required' => false,
