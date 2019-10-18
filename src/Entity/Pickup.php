@@ -148,6 +148,13 @@ class Pickup
     private $ride;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="sms_sent_data", type="string", nullable=true)
+     */
+    private $smsSentData;
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
@@ -161,6 +168,19 @@ class Pickup
         if (null !== $objectArray['statusChange']) {
             $objectArray['statusChange'] = $objectArray['statusChange']->format('Y-m-d H:i:s');
         }
+
+        if (null !== $objectArray['smsSentData']) {
+            $objectArray['smsSentData'] = $this->getSmsSentData();
+        }
+
+        if(null !== $objectArray['registration']) {
+            $categories = $this->getRegistration()->getProduct()->getCategories();
+            $objectArray['category'] = $categories[0]->getCategory()->getName();
+            $objectArray['category_link'] = $categories[0]->getCategory()->getPhoto();
+
+        }
+
+
 
         return $objectArray;
     }
@@ -202,6 +222,19 @@ class Pickup
     public function setStart(?DateTimeInterface $start): self
     {
         $this->start = $start;
+
+        return $this;
+    }
+
+    public function getSmsSentData(): ?Array
+    {
+        if($this->smsSentData == null) return null;
+        return unserialize($this->smsSentData);
+    }
+
+    public function setSmsSentData(Array $smsSentData): self
+    {
+        $this->smsSentData = serialize($smsSentData);
 
         return $this;
     }

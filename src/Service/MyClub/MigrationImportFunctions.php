@@ -18,6 +18,62 @@ trait MigrationImportFunctions
       $this->setExecute($query);
     }
 
+    public function importActivitys($date, $limit = 10) {
+
+        // first query  // child with desiderata
+        /*"SELECT esd.child_id, esd.sport_list, ecp.day_ref
+        FROM ea_sport_desiderata esd
+        LEFT JOIN ea_child_presence ecp ON ecp.id = esd.presence_id
+        WHERE 1 =1
+        AND ecp.date_presence = "2019-09-28"
+        LIMIT 0 , 30"*/
+
+        // second query // child in the seance
+        /*SELECT es.date_seance, es.sport_id, esc.child_id, es.moment
+        FROM ea_seance es
+        LEFT JOIN ea_seance_child esc ON esc.seance_id = es.id
+        WHERE es.date_seance = "2019-09-28"*/
+
+        $this->resetQuery();
+
+        $this->setTable('ea_seance es');
+        $this->addFields(array('es.date_seance as date_seance' ,'es.sport_id as sport_id', 'es.moment as moment'));
+        $this->addJoin('ea_seance_child esc', 'es.id', 'esc.seance_id');
+        $this->addWhere("es.date_seance = '".$date."'");
+
+        // child and family informations
+        $this->addFields(array('c.id as child_id', 'c.first_name as firstname', 'c.child_last_name as lastname', 'c.sexe as gender', 'c.birthday as birthdate', 'c.medical_note as medical', 'c.family_id as family_id', 'c.created_at as c_created_at', 'c.updated_at as updated_at'));
+        $this->addFields(array('f.name as family_name'));
+        $this->addFields(array('ref.name as pickup_instruction'));
+
+        $this->addJoin('ea_child as c', 'c.id', 'esc.child_id');
+        $this->addJoin('ea_family as f', 'f.id', 'c.family_id');
+        $this->addJoin('padaref_ref as ref', 'ref.id', 'c.need_call');
+
+        $this->setOrderBy('child_id');
+        $this->setLimit($limit);
+
+        $datas = $this->createSelectQuery()->getDatas();
+
+
+        return $datas;
+    }
+
+    public function importPresenceId($date)
+    {
+        $this->resetQuery();
+
+        $this->setTable('ea_child_presence pe');
+        $this->addFields(array('pe.child_id as child_id' ,'pe.date_presence as date_presence', 'pe.day_ref as day_ref'));
+        $this->addWhere("pe.date_presence = '".$date."'");
+        $this->setGroupBy('pe.child_id');
+
+        $list = $this->createSelectQuery()->getDatas();
+
+        return $list;
+
+      }
+
     public function importTransport($date, $limit = 10){
 
         $this->resetQuery();
@@ -38,7 +94,7 @@ trait MigrationImportFunctions
         $this->addFields(array('c.created_at as created_at', 'c.updated_at as updated_at'));
 
         // child and family informations
-        $this->addFields(array('c.id as child_id', 'c.first_name as firstname', 'c.child_last_name as lastname', 'c.sexe as gender', 'c.birthday as birthdate', 'c.medical_note as medical', 'c.family_id as family_id'));
+        $this->addFields(array('c.id as child_id', 'c.first_name as firstname', 'c.child_last_name as lastname', 'c.sexe as gender', 'c.birthday as birthdate', 'c.medical_note as medical', 'c.family_id as family_id', 'c.created_at as c_created_at', 'c.updated_at as updated_at'));
         $this->addFields(array('f.name as family_name'));
 
         $this->addJoin('ea_driver as d', 'd.id', 't.driver_id');
@@ -64,7 +120,7 @@ trait MigrationImportFunctions
         $this->setTable('ea_family as f');
 
         // child and family
-        $this->addFields(array('c.id as child_id', 'c.first_name as firstname', 'c.child_last_name as lastname', 'c.sexe as gender', 'c.birthday as birthdate', 'c.medical_note as medical', 'c.family_id as family_id'));
+        $this->addFields(array('c.id as child_id', 'c.first_name as firstname', 'c.child_last_name as lastname', 'c.sexe as gender', 'c.birthday as birthdate', 'c.medical_note as medical', 'c.family_id as family_id', 'c.created_at as c_created_at'));
         $this->addFields(array('f.name as family_name', 'f.id as family_id'));
 
         // address

@@ -47,14 +47,115 @@ class TaskController extends AbstractController
       public function list(Request $request, EntityManagerInterface $em)
       {
           //$this->denyAccessUnlessGranted('taskList');
-          $tasks = $em->getRepository('App:Task')->findAll();
+          $tasks = $em->getRepository('App:Task')->findBy(['isActive' => 1]);
 
           $arr = [];
 
          foreach($tasks as $task) {
-           $arr[$task->getMoment()][$task->getId()] = $task->getName();   
+           $arr[$task->getMoment()][$task->getId()] = $task->getName();
          }
           return new JsonResponse($arr);
     }
+
+//DELETE BASIC TASK
+    /**
+     * switch to inactive a basic task
+     *
+     * @Route("/task/deleteBasicTask",
+     *    name="task_delete_basictask",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Task",
+     *     required=true,
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=TaskType::class))
+     *     )
+     * )
+     * @SWG\Tag(name="Task")
+     */
+    public function deleteBasicTask(Request $request, EntityManagerInterface $em)
+    {
+
+      $data = $request->getContent();
+      $values = json_decode($data, true);
+
+      $task = $em->getRepository('App:Task')->find($values['taskId']);
+
+      $task->setIsActive(0);
+
+      $em->persist($task);
+      $em->flush();
+
+      return new JsonResponse(['message' => 'tache supprimée']) ;
+    }
+
+
+
+//ADD BASIC TASK
+    /**
+     * ADD A a basic task
+     *
+     * @Route("/task/addBasicTask/",
+     *    name="task_add_basictask",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Task",
+     *     required=true,
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=TaskType::class))
+     *     )
+     * )
+     * @SWG\Tag(name="Task")
+     */
+    public function addBasicTask(Request $request, EntityManagerInterface $em)
+    {
+      $data = $request->getContent();
+
+      $values = json_decode($data, true);
+
+      $task = new Task();
+      $task->setName($values['task_name']);
+      $task->setMoment($values['moment']);
+      $task->setIsActive(1);
+
+      $em->persist($task);
+      $em->flush();
+
+
+      return new JsonResponse(['message' => 'tache ajoutée']) ;
+    }
+
 
 }

@@ -4,13 +4,15 @@ namespace App\Service\MyClub;
 
 /**
  * Class MigrationTransformDatas
+ * 
+ * transform the data to import value
  */
 trait MigrationTransformDatas
 {
 
     private $chield_fields = [
                             'gender' => 1, 'firstname' => 1, 'lastname' => 1, 'phone' => 0, 'birthdate' => 1,
-                            'medical' => 1, 'pickup_instruction' => 1, 'photo' => 0, 'created_at' => 1, 'updated_at' => 1,
+                            'medical' => 1, 'pickup_instruction' => 1, 'photo' => 0, 'c_created_at' => 1, 'updated_at' => 1,
                             'family_id' => 1, 'child_id' => 0
                          ];
 
@@ -100,6 +102,7 @@ trait MigrationTransformDatas
 
     public function extractFamilyDatas($datas)
     {
+
         $u = 1; $p = 1;
         foreach($datas as $data) {
 
@@ -108,13 +111,18 @@ trait MigrationTransformDatas
                 $childs[$childArray['child_id']] = $childArray;
             }
 
+
             // user
             if($u == 1) {
                 if(isset($data['email']) && $data['email'] != "") {
                     $user['email'] = $data['email'];
                     $user['password'] = "zlatan";
+                } else {
+                    $user['email'] = "";
+                    $user['password'] = "zlatan";
                     $u = 0;
                 }
+                $u = 0;
             }
 
             // person

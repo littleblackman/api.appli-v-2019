@@ -128,6 +128,13 @@ class Child
      */
     private $familyId;
 
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="comment", type="string", nullable=true)
+     */
+    private $comment;
+
     public function __construct()
     {
         $this->persons = new ArrayCollection();
@@ -155,7 +162,7 @@ class Child
         $this->childId = $childId;
         return $this;
     }
-    
+
     // use only in myclub import
     public function setFamilyId(?int $familyId): self
     {
@@ -344,6 +351,18 @@ class Child
                 $sibling->setChild(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?string $comment): self
+    {
+        $this->comment = $comment;
 
         return $this;
     }

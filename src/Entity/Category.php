@@ -44,6 +44,13 @@ class Category
     /**
      * @var string|null
      *
+     * @ORM\Column(name="public_name", type="string", length=64, nullable=true)
+     */
+    private $publicName;
+
+    /**
+     * @var string|null
+     *
      * @ORM\Column(name="photo", type="string", length=256, nullable=true)
      */
     private $photo;
@@ -53,6 +60,13 @@ class Category
      * @SWG\Property(ref=@Model(type=Product::class))
      */
     private $products;
+
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="order_item", type="integer", nullable=true)
+     */
+    private $orderItem;
 
     public function __construct()
     {
@@ -86,6 +100,18 @@ class Category
         return $this;
     }
 
+    public function getPublicName(): ?string
+    {
+        return $this->publicName;
+    }
+
+    public function setPublicName(?string $publicName): self
+    {
+        $this->publicName = $publicName;
+
+        return $this;
+    }
+
     public function getPhoto(): ?string
     {
         return $this->photo;
@@ -94,6 +120,18 @@ class Category
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getOrderItem(): ?int
+    {
+        return $this->orderItem;
+    }
+
+    public function setOrderItem(?int $orderItem): self
+    {
+        $this->orderItem = $orderItem;
 
         return $this;
     }

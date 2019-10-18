@@ -39,6 +39,12 @@ class ProductType extends AbstractType
             ->add('nameEn', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('messageFr', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('messageEn', TextType::class, array(
+                'required' => false,
+                ))
             ->add('descriptionFr', TextType::class, array(
                 'required' => false,
                 ))
@@ -67,6 +73,9 @@ class ProductType extends AbstractType
                 'class' => Mail::class,
                 ))
             ->add('isLocationSelectable', CheckboxType::class, array(
+                'required' => false,
+                ))
+            ->add('isFull', CheckboxType::class, array(
                 'required' => false,
                 ))
             ->add('isDateSelectable', CheckboxType::class, array(

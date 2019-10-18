@@ -16,9 +16,9 @@ class CategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, array(
-                'required' => false,
-                ))
+            ->add('name', TextType::class, array('required' => false))
+            ->add('publicName', TextType::class, array('required' => false))
+                
         ;
     }
 

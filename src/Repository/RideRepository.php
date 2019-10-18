@@ -34,6 +34,43 @@ class RideRepository extends EntityRepository
     }
 
     /**
+     * Returns all the rides by date with params
+     */
+    public function findAllByDateAndParams($date, $kind, $moment)
+    {
+        $timeRef = $date.' 12:30:00';
+
+        $qb = $this->createQueryBuilder('r')
+            ->addSelect('s', 'p', 'v', 'pi', 'z')
+            ->leftJoin('r.staff', 's')
+            ->leftJoin('s.person', 'p')
+            ->leftJoin('s.driverZones', 'z')
+            ->leftJoin('r.vehicle', 'v')
+            ->leftJoin('r.pickups', 'pi')
+            ->where('r.date LIKE :date')
+            ->andWhere('pi.kind = :kind')
+            ->setParameter('kind', $kind);
+
+        if($moment == "am") {
+            $qb->andWhere('pi.start < :timeRef');
+        } else {
+            $qb->andWhere('pi.start > :timeRef');
+        }
+
+        $qb->setParameter('timeRef', $timeRef)
+            ->andWhere('r.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->orderBy('r.date', 'ASC')
+            ->addOrderBy('r.start', 'ASC')
+            ->addOrderBy('pi.sortOrder', 'ASC');
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns all the rides by date and kind
      */
     public function findAllByDateAndKind($date, $kind)

@@ -83,7 +83,7 @@ class CategoryService implements CategoryServiceInterface
     {
         return $this->em
             ->getRepository('App:Category')
-            ->findAll()
+            ->findBy([], ['orderItem' => 'ASC'])
         ;
     }
 

@@ -27,6 +27,13 @@ class Task
      */
     private $moment;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="is_active", type="integer")
+     */
+    private $isActive;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -55,6 +62,17 @@ class Task
 
         return $this;
     }
+
+    public function setIsActive($is_active) {
+      $this->isActive = $is_active;
+      return $this;
+    }
+
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
 
     /**
      * Converts the entity in an array

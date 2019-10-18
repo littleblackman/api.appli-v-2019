@@ -7,6 +7,8 @@ use PDO;
 
 /**
  * Trait MigrationQueryBuilder
+ * 
+ * use to create PDO query on appli-v database
  */
 trait MigrationQueryBuilder
 {
@@ -18,6 +20,8 @@ trait MigrationQueryBuilder
     protected $whereList = [];
     protected $orderBy;
     protected $limit;
+    protected $groupBy;
+
 
     protected $conn;
 
@@ -39,6 +43,7 @@ trait MigrationQueryBuilder
       $this->joinList  = [];
       $this->whereList = [];
       $this->orderBy   = "";
+      $this->groupBy   = "";
       $this->limit     = "";
     }
 
@@ -126,6 +131,15 @@ trait MigrationQueryBuilder
         $this->orderBy = $orderBy;
     }
 
+    /**
+     * set the groupBy
+     * @param $groupBy
+     */
+    public function setGroupBy($groupBy)
+    {
+        $this->groupBy = $groupBy;
+    }
+
 
     public function createSelectQuery()
     {
@@ -162,6 +176,10 @@ trait MigrationQueryBuilder
 
         if($this->orderBy) {
             $query .= " ORDER BY ".$this->orderBy;
+        }
+
+        if($this->groupBy) {
+            $query .= " GROUP BY ".$this->groupBy;
         }
 
 

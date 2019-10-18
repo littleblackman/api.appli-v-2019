@@ -8,6 +8,8 @@ use App\Entity\PersonAddressLink;
 use App\Entity\PersonPersonLink;
 use App\Entity\PersonPhoneLink;
 use App\Entity\UserPersonLink;
+use App\Entity\Phone;
+use App\Service\PhoneService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -29,13 +31,16 @@ class PersonService implements PersonServiceInterface
         AddressServiceInterface $addressService,
         StaffServiceInterface $staffService,
         EntityManagerInterface $em,
-        MainServiceInterface $mainService
+        MainServiceInterface $mainService,
+        PhoneService $phoneService
+
     )
     {
         $this->addressService = $addressService;
         $this->staffService = $staffService;
         $this->em = $em;
         $this->mainService = $mainService;
+        $this->phoneService = $phoneService;
     }
 
     /**
@@ -110,6 +115,33 @@ class PersonService implements PersonServiceInterface
             'message' => 'Personne ajoutée',
             'person' => $this->toArray($object),
         );
+    }
+
+    /**
+     * Retrive a perosn by pone number
+     *
+     * @param string $number
+     * @return array
+     */
+    public function getPersonFromNumber($number)
+    {
+        $number = str_replace(['+33', '+'], '', $number);
+        $phones = $this->em->getRepository('App:Phone')->findLike($number);
+        foreach($phones as $phone) {
+            //$result[] = $this->phoneService->toArray($phone);
+
+            foreach($phone->getPersons() as $personLink) 
+            {
+                $person = $personLink->getPerson();
+                $result[$person->getFirstname().' '.$person->getLastname()] = $person->getFirstname().' '.$person->getLastname();
+            }
+        }
+
+        foreach($result as $r) {
+            $resultArra[] = $r;
+        }
+        
+        return array($resultArra);
     }
 
     /**
@@ -294,9 +326,14 @@ class PersonService implements PersonServiceInterface
         if (null !== $object->getAddresses()) {
             $addresses = array();
             foreach($object->getAddresses() as $addressLink) {
-                if (!$addressLink->getAddress()->getSuppressed()) {
-                    $addresses[] = $this->mainService->toArray($addressLink->getAddress()->toArray());
+                if(!$addressLink->getAddress()) {
+                    $addresses[] = "address not found for ".$addressLink->getAddressId();
+                } else {
+                    if (!$addressLink->getAddress()->getSuppressed()) {
+                        $addresses[] = $this->mainService->toArray($addressLink->getAddress()->toArray());
+                    }
                 }
+
             }
             $objectArray['addresses'] = $addresses;
         }

@@ -33,7 +33,7 @@ class MigrationMyClubController extends AbstractController
 
 //TRANSPORTS BY DATE
     /**
-     * Display tel rediction number
+     * Retrieve transport from my club from a date
      *
      * @Route("/migration/retrieve/transport/{date}",
      *    name="retrieve_transport_dy_date",
@@ -60,6 +60,40 @@ class MigrationMyClubController extends AbstractController
     public function getTransportByDate($date)
     {
         $data = $this->migrationMyClubService->getTransportByDate($date);
+
+        return new JsonResponse($data);
+    }
+
+
+//ACTIVITY BY DATE
+    /**
+     * Retrieve activity from my club from a date
+     *
+     * @Route("/migration/retrieve/activity/{date}",
+     *    name="retrieve_activity_dy_date",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Standard::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Tag(name="MigrationMyClub")
+     */
+    public function getActivityByDate($date)
+    {
+        $data = $this->migrationMyClubService->getActivityByDate($date);
 
         return new JsonResponse($data);
     }

@@ -62,10 +62,100 @@ class VehicleFuelController extends AbstractController
     }
 
 
-// ajouter la liste des prises d'essence par vehicle_id
 // ajouter une plage de date > moyenne
 
 // ajout de la photo du reçue de l'essence
+
+
+//LIST BY VEHICLE
+    /**
+     * Lists all the fuel by vehicle
+     *
+     * @Route("/vehicle/fuel/{vehicle_id}/{limit}",
+     *    name="vehicle_fuel_list",
+     *    defaults={"limit": "100"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=VehicleFuel::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="vehicle_id",
+     *     in="path",
+     *     description="vehicle  can be null",
+     *     type="integer",
+     *     default="null"
+     * )
+     * @SWG\Tag(name="VehicleFuel")
+     */
+    public function listByVehicle(Request $request, $vehicle_id = null, $limit = 100)
+    {
+        $this->denyAccessUnlessGranted('vehicleList');
+
+        $action = $this->vehicleService->listFuelByVehicle($vehicle_id, $limit);
+
+        return new JsonResponse($action);
+    }
+
+
+//LIST BETWEEN DATE
+    /**
+     * Lists all the vehicle fuel between date
+     *
+     * @Route("/vehicle/fuel/between/{from}/{to}/{vehicle_id}/{limit}",
+     *    name="vehicle_fuel_between_date",
+     *    defaults={"vehicle_id": null, "limit" : null},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=VehicleFuel::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="date action can be null",
+     *     type="string",
+     *     default="null"
+     * )
+     * @SWG\Parameter(
+     *     name="vehicle_id",
+     *     in="path",
+     *     description="vehicle  can be null",
+     *     type="integer",
+     *     default="null"
+     * )
+     * @SWG\Tag(name="VehicleFuel")
+     */
+    public function listBetweenDate(Request $request, $from, $to, $vehicle_id = null, $limit = null)
+    {
+        $this->denyAccessUnlessGranted('vehicleList');
+
+        $action = $this->vehicleService->listFuelBetweenDate($from, $to, $vehicle_id, $limit);
+
+        return new JsonResponse($action);
+    }
+
+
+
+
 
 
 //LIST

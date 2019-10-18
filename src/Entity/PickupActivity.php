@@ -142,6 +142,15 @@ class PickupActivity
             $objectArray['statusChange'] = $objectArray['statusChange']->format('Y-m-d H:i:s');
         }
 
+        if (null !== $objectArray['sport']) {
+            $objectArray['sport'] = $this->getSport()->toArray();
+        }
+
+        if (null !== $objectArray['child']) {
+            $objectArray['child'] = $this->getChild()->toArray();
+        }
+
+
         return $objectArray;
     }
 

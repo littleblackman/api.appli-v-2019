@@ -60,7 +60,7 @@ class TaskStaffRepository extends EntityRepository
       return $this->createQueryBuilder('s')
           ->where('s.dateTask LIKE :date')
           ->orderBy('s.staff', 'ASC')
-          //orderBy('s.dateTask', 'ASC')
+          ->addOrderBy('s.dateTask', 'ASC')
           ->setParameter('date', '%' . $date . '%')
           ->getQuery()
           ->getResult()

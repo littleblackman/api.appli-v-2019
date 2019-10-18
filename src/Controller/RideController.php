@@ -82,6 +82,7 @@ class RideController extends AbstractController
      */
     public function listAllByStatus(Request $request, PaginatorInterface $paginator, $status)
     {
+
         $this->denyAccessUnlessGranted('rideList');
 
         $rides = $paginator->paginate(
@@ -143,6 +144,8 @@ class RideController extends AbstractController
      */
     public function listByDate(Request $request, PaginatorInterface $paginator, $date)
     {
+        ini_set('memory_limit', '512M');
+
         $this->denyAccessUnlessGranted('rideList');
 
         $rides = $paginator->paginate(
@@ -158,6 +161,53 @@ class RideController extends AbstractController
 
         return new JsonResponse($ridesArray);
     }
+
+//LIST BY DATE
+    /**
+     * Lists all the rides for a specific date
+     *
+     * @Route("/ride/realtime/{date}/{kind}/{moment}",
+     *    name="ride_realtime_list_date",
+     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Ride::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the ride (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Ride")
+     */
+    public function listRealTime(Request $request, $date, $kind, $moment)
+    {
+        ini_set('memory_limit', '512M');
+
+        $this->denyAccessUnlessGranted('rideList');
+
+        $rides = $this->rideService->findRealtime($date, $kind, $moment);
+
+        $ridesArray = array();
+        foreach ($rides as $ride) {
+            $ridesArray[] = $this->rideService->toArray($ride);
+        };
+
+        return new JsonResponse($ridesArray);
+    }
+
+
 
 //DISPLAY BY DATE AND STAFFID
     /**

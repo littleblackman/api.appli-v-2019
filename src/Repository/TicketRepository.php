@@ -29,6 +29,67 @@ class TicketRepository extends ServiceEntityRepository
       ->getResult();
     }
 
+    /*
+    * persona (string),
+    * category (object), location (objet),
+    * type (string), origin (string)
+    * date_from, date_to (Y-m-d)
+    * has_been_treated (bool)
+    * recall (bool)
+    */
+    public function findByCriteria($values) {
+
+      $qb = $this->createQueryBuilder('t')
+          ->where('1 = 1');
+
+      if(isset($values['persona'])) {
+        $qb->andWhere('t.persona like :persona')
+        ->setParameter('persona', '%'.$values['persona'].'%');
+      };
+      if(isset($values['category'])) {
+        $qb->andWhere('t.category = :category')
+        ->setParameter('category', $values['category']);
+      };
+      if(isset($values['location'])) {
+        $qb->andWhere('t.location = :location')
+        ->setParameter('location', $values['location']);
+      };
+      if(isset($values['type'])) {
+        $qb->andWhere('t.type like :type')
+        ->setParameter('type', '%'.$values['type'].'%');
+      };
+      if(isset($values['origin'])) {
+        $qb->andWhere('t.origin like :origin')
+        ->setParameter('origin', '%'.$values['origin'].'%');
+      };
+      if(isset($values['date_from'])) {
+        $qb->andWhere('t.dateCall > :date_from')
+        ->setParameter('date_from', $values['date_from'].' 00:00:00');
+      };
+      if(isset($values['date_to'])) {
+        $qb->andWhere('t.dateCall < :date_to')
+        ->setParameter('date_to', $values['date_to'].' 00:00:00');
+      };
+      if(isset($values['has_been_treated'])) {
+        $qb->andWhere('t.hasBeenTreated = :has_been_treated')
+        ->setParameter('has_been_treated', $values['has_been_treated']);
+      };
+      if(isset($values['recall'])) {
+        $qb->andWhere('t.recall = :recall')
+        ->setParameter('recall', $values['recall']);
+      };
+
+      $qb->orderBy('t.dateCall', 'ASC')
+      ->setFirstResult(0)
+      ->setMaxResults($values['limit']);
+
+      return $qb
+          ->getQuery()
+          ->getResult()
+      ;
+
+    }
+
     // /**
     //  * @return Ticket[] Returns an array of Ticket objects
     //  */

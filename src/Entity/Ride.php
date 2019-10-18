@@ -138,6 +138,18 @@ class Ride
     {
         $objectArray = get_object_vars($this);
 
+        if($objectArray['startPoint']) {
+            if (preg_match("#<b>Notice</b>#", $objectArray['startPoint'])) {
+                $objectArray['startPoint'] = "<b style='color: red'>PB sur l'adresse de départ</b>" ;
+            }
+        }
+
+        if($objectArray['endPoint']) {
+            if (preg_match("#<b>Notice</b>#", $objectArray['endPoint'])) {
+                $objectArray['endPoint'] = "<b style='color: red'>PB sur l'adresse d'arrivée</b>" ;
+            }
+        }
+
         //Specific data
         if (null !== $objectArray['date']) {
             $objectArray['date'] = $objectArray['date']->format('Y-m-d');

@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 
 /**
@@ -71,6 +72,54 @@ class TaskStaffController extends AbstractController
 
         return new JsonResponse($taskStaffs) ;
     }
+
+
+
+    //UPDATE
+        /**
+         * Update TaskStaff
+         *
+         * @Route("/task/staff/update",
+         *    name="task_staff_update",
+         *    methods={"HEAD", "POST"})
+         *
+         * @SWG\Response(
+         *     response=200,
+         *     description="Success",
+         *     @SWG\Schema(
+         *         @SWG\Property(property="status", type="boolean"),
+         *         @SWG\Property(property="message", type="string"),
+         *     )
+         * )
+         * @SWG\Response(
+         *     response=403,
+         *     description="Access denied",
+         * )
+         * @SWG\Parameter(
+         *     name="data",
+         *     in="body",
+         *     description="Data for the TaskStaff",
+         *     required=true,
+         *     @SWG\Schema(
+         *         type="array",
+         *         @SWG\Items(ref=@Model(type=TaskStaffType::class))
+         *     )
+         * )
+         * @SWG\Tag(name="TaskStaff")
+         */
+        public function update(Request $request)
+        {
+            $data = $request->getContent();
+
+            $taskStaff = $this->taskStaffService->update($data);
+
+            return new JsonResponse($taskStaff) ;
+        }
+
+
+
+
+
 
 //UPDATE STEP
     /**
@@ -200,6 +249,53 @@ class TaskStaffController extends AbstractController
         return new JsonResponse($taskStaffsArray);
 
     }
+
+
+  //DISPLAY
+        /**
+         * Retrieve Task by taskStaffId
+         *
+         * @Route("/task/staff/display/{taskStaffId}",
+         *    name="task_staff_display",
+         *    methods={"HEAD", "GET"})
+         *
+         * @SWG\Response(
+         *     response=200,
+         *     description="Success",
+         *     @SWG\Schema(
+         *         @SWG\Property(property="status", type="boolean"),
+         *         @SWG\Property(property="message", type="string"),
+         *     )
+         * )
+         * @SWG\Response(
+         *     response=403,
+         *     description="Access denied",
+         * )
+         * @SWG\Parameter(
+         *     name="data",
+         *     in="body",
+         *     description="Task by task_staff_id",
+         *     required=true,
+         *     @SWG\Schema(
+         *         type="array",
+         *         @SWG\Items(ref=@Model(type=TaskStaffType::class))
+         *     )
+         * )
+         * @SWG\Tag(name="TaskStaff")
+         */
+        public function display($taskStaffId,  EntityManagerInterface $em)
+        {
+
+            $taskStaff = $em->getRepository('App:TaskStaff')->find($taskStaffId);
+            $taskStaffArray = $taskStaff->toArray();
+
+            return new JsonResponse($taskStaffArray);
+
+        }
+
+
+
+
 
 
     //LIST

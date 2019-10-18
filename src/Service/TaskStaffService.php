@@ -80,7 +80,6 @@ class TaskStaffService implements TaskStaffServiceInterface
             ($task_id) ? $task  = $this->em->getRepository('App:Task')->find($task_id) : $task = null;
             ($supervisor_id) ? $supervisor  = $this->em->getRepository('App:Staff')->find($supervisor_id) : $supervisor = null;
 
-
             ($values['name'] == null && $task != null) ? $name = $task->getName() : $name = $values['name'];
 
             $dateTask = new DateTime($date);
@@ -100,6 +99,25 @@ class TaskStaffService implements TaskStaffServiceInterface
             //Persists data
             $this->mainService->persist($object);
 
+
+            if($supervisor != null) {
+                $object2 = new TaskStaff();
+                $object2->setName('SUPERVISION: '.$staff->getPerson()->getFirstname().' '.$staff->getPerson()->getLastname().' - '.$name);
+                $object2->setDescription($values['description']);
+                $object2->setSupervisor(null);
+                $object2->setStep($values['step']);
+                $object2->setTask($task);
+                $object2->setStaff($supervisor);
+                $object2->setDateTask($dateTask);
+                $object2->setRemoteAddress($remoteAddress);
+            }
+
+            $this->mainService->create($object2);
+
+            //Persists data
+            $this->mainService->persist($object2);
+
+
             //Returns data
             return array(
                 'status' => true,
@@ -110,6 +128,51 @@ class TaskStaffService implements TaskStaffServiceInterface
 
         throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
     }
+
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function update(string $data)
+    {
+        $values = json_decode($data, true);
+
+        $object = $this->em->getRepository('App:TaskStaff')->find($values['id']);
+        isset($values['supervisor_id']) ?  $supervisor_id = $values['supervisor_id'] : $supervisor_id = null;
+        ($supervisor_id) ? $supervisor  = $this->em->getRepository('App:Staff')->find($supervisor_id) : $supervisor = null;
+        isset($values['staff_id']) ?  $staff_id = $values['staff_id'] : $staff_id = null;
+        ($staff_id) ? $staff = $this->em->getRepository('App:Staff')->find($staff_id) : $staff = null;
+
+        $object->setName($values['name']);
+        $object->setDescription($values['description']);
+        $object->setSupervisor($supervisor);
+        $object->setStep($values['step']);
+        $object->setTask(null);
+        $object->setStaff($staff);
+        $object->setDateTask( new DateTime($values['date_task']));
+        $object->setRemoteAddress($values['remote_address']);
+
+
+        $this->mainService->modify($object);
+
+        //Persists data
+        $this->mainService->persist($object);
+
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'Tache ajoutée' ,
+            'task_staff_id' => $object->getId()
+        );
+
+
+    }
+
+
+
+
 
     public function delete(string $data)
     {

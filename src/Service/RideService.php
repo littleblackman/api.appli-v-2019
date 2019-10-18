@@ -159,6 +159,18 @@ class RideService implements RideServiceInterface
     }
 
     /**
+     * Returns the list of all rides by date and params
+     * @return array
+     */
+    public function findRealtime($date, $kind, $moment)
+    {
+      return $this->em
+          ->getRepository('App:Ride')
+          ->findAllByDateAndParams($date, $kind, $moment)
+      ;
+    }
+
+    /**
      * Returns the list of all rides by date and kind
      * @return array
      */
@@ -297,7 +309,9 @@ class RideService implements RideServiceInterface
                     $pickups[$i] = $this->mainService->toArray($pickup->toArray());
                     //$pickups[$i]['child'] = $this->mainService->toArray($pickup->getChild()->toArray());
 
-                    $pickups[$i]['child'] = $this->childService->toArray($pickup->getChild());
+                    if(is_object($pickup->getChild())) {
+                        $pickups[$i]['child'] = $this->childService->toArray($pickup->getChild());
+                    } 
 
                     // latest meal
                     $meal = $this->mealService->latestMealByChild($pickup->getChild()->getChildId());
@@ -307,6 +321,8 @@ class RideService implements RideServiceInterface
                         $mealArray = null;
                     }
                     $pickups[$i]['child']['latestMeal'] = $mealArray;
+
+
 
                     //latest PEC
                     $latestPickup = $this->em
@@ -330,7 +346,7 @@ class RideService implements RideServiceInterface
                     $pickups[$i]['child']['latestPEC'] = $latestPEC;
 
 
-/*
+                    /*
 
 
                     if($persons = $pickup->getChild()->getPersons()) {

@@ -369,4 +369,49 @@ class PersonController extends AbstractController
 
         return new JsonResponse($suppressedData);
     }
+
+
+//GET PERSONN BY NUMBER
+    /**
+     * Return person by number
+     *
+     * @Route("/person/from/{number}",
+     *    name="person_from_number",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Person::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="number",
+     *     in="path",
+     *     required=true,
+     *     description="phone number of the person",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Person")
+     */
+    public function getPersonByNumber($number)
+    {
+        
+        $this->denyAccessUnlessGranted('personList');
+
+        $result = $this->personService->getPersonFromNumber($number);
+
+        return new JsonResponse($result);
+    }
+
 }

@@ -50,6 +50,9 @@ class ChildType extends AbstractType
             ->add('france_resident', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('comment', TextType::class, array(
+                'required' => false,
+                ))
             ->add('pickup_instruction', TextType::class, array(
                 'required' => false,
                 ))

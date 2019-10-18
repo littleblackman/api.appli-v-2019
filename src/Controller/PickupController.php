@@ -1,4 +1,4 @@
- <?php
+<?php
 
 namespace App\Controller;
 
@@ -661,6 +661,54 @@ class PickupController extends AbstractController
         $datas = $this->pickupService->getLastPEC($childId, $kind);
         return new JsonResponse(array($datas));
     }
+
+
+
+//UPDATE SMS SENT DATA
+  /**
+   * Update datas on sms sent on pickup
+   *
+   * @Route("/pickup/update-sms-sent-data",
+   *    name="pickup_update_sms_sent_data",
+   *    methods={"HEAD", "POST"})
+   *
+   * @SWG\Response(
+   *     response=200,
+   *     description="Success",
+   *     @SWG\Schema(
+   *         @SWG\Property(property="status", type="boolean"),
+   *         @SWG\Property(property="message", type="string"),
+   *         @SWG\Property(property="pickup", ref=@Model(type=Pickup::class)),
+   *     )
+   * )
+   * @SWG\Response(
+   *     response=403,
+   *     description="Access denied",
+   * )
+   * @SWG\Parameter(
+   *     name="data",
+   *     in="body",
+   *     description="Data for the sms sent data",
+   *     required=true,
+   *     @Model(type=PickupType::class)
+   * )
+   * @SWG\Tag(name="Pickup")
+   */
+  public function updateSmsSentData(Request $request)
+  {
+      //$this->denyAccessUnlessGranted('pickupCreate');
+
+
+
+      $createdData = $this->pickupService->updateSmsSentData($request->getContent());
+
+      return new JsonResponse($createdData);
+  }
+
+
+
+
+
 
 //GEOCODING
     /**

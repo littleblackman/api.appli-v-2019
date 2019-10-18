@@ -167,6 +167,48 @@ class VehicleService implements VehicleServiceInterface
         return $result;
     }
 
+
+    public function listFuelByVehicle($vehicle_id = null, $limit = 100)
+    {
+        $vehicle = $this->em->getRepository('App:Vehicle')->find($vehicle_id);
+        $actions = $this->em->getRepository('App:VehicleFuel')->findBy(['vehicle' => $vehicle], ['id' => 'desc'], $limit);
+
+        $result = [];
+        foreach($actions as $action)
+        {
+            $result[] = $action->toArray("light");
+        }
+        if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
+        return $result;
+    }
+
+
+    public function listFuelBetweenDate($from, $to, $vehicle_id = null, $limit = null)
+    {
+
+        $fromDate = new DateTime($from);
+        $toDate = new DateTime($to);
+
+        if($vehicle_id) {
+            $vehicle = $this->em->getRepository('App:Vehicle')->find($vehicle_id);
+        } else {
+            $vehicle = null;
+        }
+
+        $actions = $this->em->getRepository('App:VehicleFuel')->findBetweenDate($fromDate, $toDate, $vehicle, $limit);
+
+        $result = [];
+        foreach($actions as $action)
+        {
+            $result[] = $action->toArray("light");
+        }
+        if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
+        return $result;
+    }
+
+
+
+
     /**
      * {@inheritdoc}
      */

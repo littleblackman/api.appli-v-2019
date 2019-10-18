@@ -23,4 +23,18 @@ class PhoneRepository extends EntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    /**
+     * Returns the phones like the number
+     */
+    public function findLike($number)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.phone like :number')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('number', '%'.$number.'%')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

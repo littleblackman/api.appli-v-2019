@@ -91,7 +91,12 @@ class MainService implements MainServiceInterface
      */
     public function create($object, $user = null)
     {
-        $userId = null !== $user ? $user->getId() : $this->user->getId();
+
+        if($this->user != "anon.") {
+          $userId = null !== $user ? $user->getId() : $this->user->getId();
+        } else {
+          $userId = 99;
+        }
 
         $object
             ->setCreatedAt(new DateTime())
@@ -109,10 +114,11 @@ class MainService implements MainServiceInterface
      */
     public function delete($object)
     {
+        (!isset($this->user)) ? $id = 99 : $id = $this->user->getId();
         $object
             ->setSuppressed(true)
             ->setSuppressedAt(new DateTime())
-            ->setSuppressedBy($this->user->getId())
+            ->setSuppressedBy($id)
         ;
     }
 
@@ -129,9 +135,16 @@ class MainService implements MainServiceInterface
      */
     public function modify($object)
     {
+      if($this->user != "anon.") {
+        $userId = $this->user->getId();
+      } else {
+        $userId = 99;
+      }
+
+
         $object
             ->setUpdatedAt(new DateTime())
-            ->setUpdatedBy($this->user->getId())
+            ->setUpdatedBy($userId)
         ;
     }
 
@@ -199,14 +212,14 @@ class MainService implements MainServiceInterface
             }
         }
 
+        $globalData = array();
+
         //Global data
-        /*
         $globalData = array(
             '__initializer__',
             '__cloner__',
             '__isInitialized__',
-        );*/
-        $globalData = array();
+        );
 
         //User's role linked data
         $specificData = array();
@@ -214,9 +227,9 @@ class MainService implements MainServiceInterface
             $specificData = array_merge(
                 $specificData,
                 array(
-                    'createdAt',
+                  //  'createdAt',
                     'createdBy',
-                    'updatedAt',
+                    //'updatedAt',
                     'updatedBy',
                     'suppressed',
                     'suppressedAt',

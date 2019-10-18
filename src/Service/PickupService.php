@@ -204,6 +204,40 @@ class PickupService implements PickupServiceInterface
         }
     }
 
+
+    public function updateSmsSentData(string $data)
+    {
+
+          $elements = explode(';', $data);
+
+          $pickupId = str_replace('"', '', $elements[0]);
+          $number = str_replace('"', '', $elements[1]);
+
+          $pickup = $this->em->getRepository('App:Pickup')->find($pickupId);
+          $timeSent = date('Y-m-d H:i');
+          $timeSentFr = date('d/m/Y - H:i');
+          $data = ['timeSent' => $timeSent, 'number' => $number];
+
+          ($pickup->getSmsSentData() == null) ? $dataArray = [] : $dataArray = $pickup->getSmsSentData();
+
+          $dataArray[] = $data;
+
+          $pickup->setSmsSentData($dataArray);
+
+          $this->em->persist($pickup);
+          $this->em->flush();
+
+          //Returns data
+          return array(
+              'status' => true,
+              'message' => 'sms sent data mis à jour',
+              'smsSendData' => $pickup->getSmsSentData(),
+              'currentDateSent' => $timeSentFr
+          );
+
+
+    }
+
     /**
      * Checks gps coordinates
      */

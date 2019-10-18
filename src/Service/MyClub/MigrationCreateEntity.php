@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\MainServiceInterface;
 use App\Service\MyClub\MigrationTransformDatas;
 use App\Service\PickupService;
+use App\Service\PickupActivityService;
+
 
 
 use App\Entity\User;
@@ -20,7 +22,11 @@ use App\Entity\ChildPersonLink;
 use App\Entity\ChildChildLink;
 
 
+
 use App\Entity\Pickup;
+use App\Entity\PickupActivity;
+use App\Entity\Location;
+
 
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -33,6 +39,8 @@ use DateTime;
 
 /**
  * Class MigrationCreateEntity
+ *
+ * Create the new entity in appli-v from myclub array
  */
 class MigrationCreateEntity
 {
@@ -186,7 +194,8 @@ class MigrationCreateEntity
        $isNew = 1;
      }
 
-      $object->setCreatedAt(new DateTime());
+
+      $object->setCreatedAt(new DateTime($dataChild['c_created_at']));
       $object->setCreatedBy(99);
       $object->setUpdatedAt(new DateTime());
       $object->setUpdatedBy(99);
@@ -194,6 +203,7 @@ class MigrationCreateEntity
 
       unset($dataChild['family_id']);
       unset($dataChild['child_id']);
+      unset($dataChild['c_created_at']);
 
       $data = $this->mainService->submit($object, 'child-create', $dataChild);
 
@@ -244,6 +254,77 @@ class MigrationCreateEntity
     }
     return $messages;
   }
+
+
+  public function createPickupActivity($child, $activityData, $presencesIdList)
+  {
+
+    $location = $this->em->getRepository('App:Location')->find(6);
+    if(!$sport = $this->em->getRepository('App:Sport')->find($activityData['sport_id'])) return null;
+    $dateActivity = new DateTime($activityData['date_seance']);
+
+    $start_time = '00:00:00';
+    $end_time = '00:00:00';
+
+    if(key_exists($child->getChildId(), $presencesIdList)) $activityData['moment'] = $presencesIdList[$child->getChildId()];
+
+
+    if($activityData['moment'] == 'AM') {
+      $start_time = "08:00:00";
+      $end_time   = "11:30:00";
+    }
+
+    if($activityData['moment'] == 'PM') {
+      $start_time = "14:00:00";
+      $end_time   = "16:00:00";
+    }
+
+    if($activityData['moment'] == 'DAY') {
+      $start_time = "08:00:00";
+      $end_time   = "16:00:00";
+    }
+
+    $starTimeActivity = new DateTime('1970-01-01 '.$start_time);
+    $endTimeActivity = new DateTime('1970-01-01 '.$end_time);
+
+
+    if(
+        $this->em->getRepository('App:PickupActivity')->findBy([
+                                                                'location' => $location,
+                                                                'date' => $dateActivity,
+                                                                'child' => $child,
+                                                                'sport' => $sport,
+                                                                'start' => $starTimeActivity,
+                                                                'end' => $endTimeActivity
+                                                                ])
+      ) {
+        return null;
+      }
+
+
+    $object = new PickupActivity();
+    $object->setCreatedAt(new DateTime());
+    $object->setCreatedBy(99);
+    $object->setUpdatedAt(new DateTime());
+    $object->setUpdatedBy(99);
+    $object->setSuppressed(false);
+    $object->setChild($child);
+    $object->setSport($sport);
+
+    $object->setDate($dateActivity);
+    $object->setLocation($location);
+
+
+
+    $object->setStart($starTimeActivity);
+    $object->setEnd($endTimeActivity);
+
+    $this->em->persist($object);
+    $this->em->flush();
+
+    return $object;
+  }
+
 
   public function createPickup($child, $transportData)
   {
