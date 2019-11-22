@@ -95,7 +95,6 @@ class MigrationMyClubService
             // create pickup activty by activity
             foreach($activitys as $dataActivity) {
 
-
                 // extract child data
                 $childArray = $this->extractChild($dataActivity);
 
@@ -115,8 +114,6 @@ class MigrationMyClubService
                         $messages['info'] = "pas d'activité créée pour ce jour";
                     }
 
-
-
                 } else {
 
                     // data not completed to create pickup activity
@@ -128,7 +125,6 @@ class MigrationMyClubService
             }
 
         }
-
 
         return $messages;
     }

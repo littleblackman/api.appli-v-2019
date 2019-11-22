@@ -27,6 +27,17 @@ class TaskStaffRepository extends EntityRepository
       ;
   }
 
+  public function findTaskDone($date) {
+        return $this->createQueryBuilder('s')
+            ->where('s.dateTask LIKE :date')
+            ->andWhere('s.task is not null')
+            ->orderBy('s.name', 'ASC')
+            ->setParameter('date', $date . '%')
+            ->getQuery()
+            ->getResult()
+        ;
+  }
+
 
   /**
    * Returns the one task done by staff and date (first or last)
@@ -67,21 +78,60 @@ class TaskStaffRepository extends EntityRepository
       ;
   }
 
+  public function findWithLimit($step, $dateLimit, $from = null) {
+
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.step = :step')
+            ->setParameter('step', $step);
+
+
+        if($from != null) {
+          $qb->andWhere('s.dateLimit >= :from')
+          ->setParameter('from', $from.' 00:00:00');
+        }
+
+
+        return $qb->andWhere('s.dateLimit <= :dateLimit')
+            ->setParameter('dateLimit', $dateLimit.' 23:59:59')
+            ->orderBy('s.staff', 'ASC')
+            ->addOrderBy('s.dateTask', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+  }
+
 
   /**
    * Returns all the tasks by step
    */
-  public function findByStep($step, $staff = null)
+  public function findByStep($step, $staff = null, $dateTask = null, $dateEnd = null)
   {
       $qb = $this->createQueryBuilder('s')
-          ->where('s.step LIKE :step')
-          ->orderBy('s.dateTask', 'ASC')
-          ->setParameter('step', $step)
-      ;
+          ->where('s.step LIKE :step');
+      $qb->setParameter('step', $step);
+
+      if($step == "DONE") {
+        $qb->orderby('s.dateTaskDone', 'ASC');
+      } else {
+        $qb->orderBy('s.dateTask', 'ASC');
+      }
 
       if($staff) {
         $qb->andWhere('s.staff = :staff')
           ->setParameter('staff', $staff);
+      }
+
+      if($dateTask) {
+        if(!$dateEnd) {
+          $qb->andWhere('s.dateTask like :dateTask')
+            ->setParameter('dateTask', '%'.$dateTask.'%');
+        } else {
+          $qb->andWhere('s.dateTask > :dateTask')
+            ->setParameter('dateTask', $dateTask.' 00:00:00')
+            ->andWhere('s.dateTask < :dateEnd')
+            ->setParameter('dateEnd', $dateEnd.' 23:59:59');
+        }
+
       }
 
       return $qb

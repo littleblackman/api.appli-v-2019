@@ -22,40 +22,106 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class TaskController extends AbstractController
 {
-  //LIST
-      /**
-       * Lists all the task
-       *
-       * @Route("/task/list",
-       *    name="task_list",
-       *    methods={"HEAD", "GET"})
-       *
-       * @SWG\Response(
-       *     response=200,
-       *     description="Success",
-       *     @SWG\Schema(
-       *         type="array",
-       *         @SWG\Items(ref=@Model(type=Task::class))
-       *     )
-       * )
-       * @SWG\Response(
-       *     response=403,
-       *     description="Access denied",
-       * )
-       * @SWG\Tag(name="Task")
-       */
-      public function list(Request $request, EntityManagerInterface $em)
-      {
-          //$this->denyAccessUnlessGranted('taskList');
-          $tasks = $em->getRepository('App:Task')->findBy(['isActive' => 1]);
+//LIST
+    /**
+     * Lists all the task
+     *
+     * @Route("/task/list",
+     *    name="task_list",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Task::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Tag(name="Task")
+     */
+    public function list(Request $request, EntityManagerInterface $em)
+    {
+        //$this->denyAccessUnlessGranted('taskList');
+        $tasks = $em->getRepository('App:Task')->findBy(['isActive' => 1]);
 
-          $arr = [];
+        $arr = [];
 
-         foreach($tasks as $task) {
-           $arr[$task->getMoment()][$task->getId()] = $task->getName();
+       foreach($tasks as $task) {
+         $arr[$task->getMoment()][$task->getId()] = $task->getName();
+       }
+        return new JsonResponse($arr);
+  }
+
+//LIST
+    /**
+     * Lists all the task done a day
+     *
+     * @Route("/task/list/done/{date}",
+     *    name="task_list_date",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Task::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Tag(name="Task")
+     */
+    public function listDone(Request $request, EntityManagerInterface $em, $date = null)
+    {
+
+        $taskdones = $em->getRepository('App:TaskStaff')->findTaskDone($date);
+
+        $taskDoneArray = [];
+
+        foreach($taskdones as $taskdone) {
+            $person = $taskdone->getStaff()->getPerson();
+            $taskDoneArray[$taskdone->getName()][] = $person->getFirstname().' '.$person->getLastname();
+        }
+
+        $tasks = $em->getRepository('App:Task')->findBy(
+                                                            ['isActive' => 1],
+                                                            [
+                                                              'moment' => 'DESC',
+                                                              'name' => 'ASC'
+                                                            ]
+                                                          );
+        $arr = [];
+       foreach($tasks as $task) {
+
+         if(key_exists($task->getName(), $taskDoneArray)) {
+            $listStaffName = implode(', ', $taskDoneArray[$task->getName()]);
+            $status = 1;
+
+         } else {
+           $listStaffName = null;
+           $status = 0;
          }
-          return new JsonResponse($arr);
-    }
+
+         $arr[$task->getMoment()][$task->getId()] = [
+                                                        'status' => $status,
+                                                        'staff' => $listStaffName,
+                                                        'name' => $task->getName(),
+
+                                                    ];
+       }
+        return new JsonResponse($arr);
+  }
+
+
+
 
 //DELETE BASIC TASK
     /**
@@ -84,7 +150,7 @@ class TaskController extends AbstractController
      *     required=true,
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=TaskType::class))
+     *         @SWG\Items(ref=@Model(type=Task::class))
      *     )
      * )
      * @SWG\Tag(name="Task")
@@ -134,7 +200,7 @@ class TaskController extends AbstractController
      *     required=true,
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=TaskType::class))
+     *         @SWG\Items(ref=@Model(type=Task::class))
      *     )
      * )
      * @SWG\Tag(name="Task")

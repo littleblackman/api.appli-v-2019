@@ -48,14 +48,37 @@ class StaffPresenceService implements StaffPresenceServiceInterface
         }
     }
 
+
+    public function modifyTypeName($staffPresenceId, $typeName) {
+      $object = $this->em->getRepository('App:StaffPresence')->find($staffPresenceId);
+
+      if($typeName == "DELETE") {
+          return $this->delete($object);
+      } else {
+          $object->setTypeName($typeName);
+          $this->em->persist($object);
+          $this->em->flush();
+          return array(
+              'status' => true,
+              'message' => 'StaffPresence modifiée',
+          );
+      }
+    }
+
     /**
      * {@inheritdoc}
      */
     public function create(string $data)
     {
+
+
         $data = json_decode($data, true);
+
         if (is_array($data) && !empty($data)) {
             foreach ($data as $staffPresence) {
+
+
+                if(!isset($staffPresence['typeName'])) $staffPresence['typeName'] = "PRESENCE";
                 $object = $this->em->getRepository('App:StaffPresence')->findByData($staffPresence);
                 //Creates object if not already existing
                 if (null === $object) {

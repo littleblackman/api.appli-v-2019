@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**
  * StaffPresenceType FormType
@@ -36,6 +37,9 @@ class StaffPresenceType extends AbstractType
                 'required' => false,
                 'input' => 'datetime',
                 'widget' => 'single_text',
+                ))
+            ->add('typeName', TextType::class, array(
+                'required' => false
                 ))
         ;
     }

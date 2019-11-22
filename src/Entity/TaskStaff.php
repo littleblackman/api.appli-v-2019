@@ -56,6 +56,13 @@ class TaskStaff
     private $description;
 
     /**
+    * @var string|null
+    *
+    * @ORM\Column(name="type", type="string", nullable=true)
+    */
+    private $type;
+
+    /**
      * @var Staff
      *
      * @ORM\OneToOne(targetEntity="Staff")
@@ -72,6 +79,22 @@ class TaskStaff
      * @ORM\Column(name="date_task", type="datetime", nullable=true)
      */
     private $dateTask;
+
+    /**
+     * @ORM\Column(name="date_limit", type="datetime", nullable=true)
+     */
+    private $dateLimit;
+
+    /**
+     *@var String | null (time in seconds)
+     * @ORM\Column(name="duration", type="string", nullable=true)
+     */
+    private $duration;
+
+    /**
+     * @ORM\Column(name="date_task_done", type="datetime", nullable=true)
+     */
+    private $dateTaskDone;
 
     /**
      * @var string|null
@@ -96,6 +119,43 @@ class TaskStaff
 
         return $this;
     }
+
+    public function getDateLimit(): ?\DateTimeInterface
+    {
+        return $this->dateLimit;
+    }
+
+    public function setDateLimit($dateLimit): self
+    {
+        $this->dateLimit = $dateLimit;
+
+        return $this;
+    }
+
+    public function getDuration(): ?string
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(?string $duration): self
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function getDateTaskDone(): ?\DateTimeInterface
+    {
+        return $this->dateTaskDone;
+    }
+
+    public function setDateTaskDone($dateTaskDone): self
+    {
+        $this->dateTaskDone = $dateTaskDone;
+
+        return $this;
+    }
+
 
     public function getStaff(): ?Staff
     {
@@ -144,6 +204,19 @@ class TaskStaff
 
         return $this;
     }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
 
     public function getStep(): ?string
     {

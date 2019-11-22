@@ -210,7 +210,9 @@ class PickupActivityController extends AbstractController
 
         $this->denyAccessUnlessGranted('pickupActivityModify');
 
-        $this->pickupActivityService->affect($date, $force);
+        $result = $this->pickupActivityService->affect($date, $force);
+
+        return new JsonResponse($result);
 
         return new JsonResponse(array('status' => true));
     }

@@ -41,7 +41,7 @@ class ChildService implements ChildServiceInterface
             $this->removeLinks($object);
             if (is_array($data['links']) && !empty($data['links'])) {
                 foreach ($data['links'] as $link) {
-                    $person = $this->em->getRepository('App:Person')->findOneById($link['personId']);
+                    $person = $this->em->getRepository('App:Person')->findOneById($link[' ']);
                     if ($person instanceof Person && !$person->getSuppressed()) {
                         $childPersonLink = new ChildPersonLink();
                         $childPersonLink

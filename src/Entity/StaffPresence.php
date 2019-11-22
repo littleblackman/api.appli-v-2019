@@ -62,12 +62,19 @@ class StaffPresence
     private $end;
 
     /**
+     * @var String|null
+     *
+     * @ORM\Column(name="type_name", type="string", length=255, nullable=true)
+     */
+    private $typeName;
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
     {
         $objectArray = get_object_vars($this);
-        
+
         //Specific data
         if (null !== $objectArray['date']) {
             $objectArray['date'] = $objectArray['date']->format('Y-m-d');
@@ -134,4 +141,17 @@ class StaffPresence
 
         return $this;
     }
+
+    public function getTypeName(): ?string
+    {
+        return $this->typeName;
+    }
+
+    public function setTypeName(?string $typeName): self
+    {
+        $this->typeName = $typeName;
+
+        return $this;
+    }
+
 }

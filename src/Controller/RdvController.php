@@ -26,6 +26,60 @@ class RdvController extends AbstractController
         $this->rdvService = $rdvService;
     }
 
+//LIST
+    /**
+     * Displays list rdv with date optionnel
+     *
+     * @Route("/rdv/list/{date}",
+     *    name="rdv_list",
+     *    requirements={
+     *        "date": "^(all|([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2})|([0-9]{4}))$"
+     *    },
+     *    defaults={"date": "all"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Rdv::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="RDV by list (all | YYYY-MM-DD | YYYY-MM | YYYY (default: all))",
+     *     type="string",
+     *     default="null",
+     * )
+     * @SWG\Tag(name="Rdv")
+     */
+    public function list($date)
+    {
+        //$this->denyAccessUnlessGranted('staffPresenceDisplay');
+        $rdvArray = array();
+        $rdvs = $this->rdvService->findByDate($date);
+
+
+        foreach ($rdvs as $rdv) {
+            $rdvArray[] = $this->rdvService->toArray($rdv);
+        };
+
+        return new JsonResponse($rdvArray);
+    }
+
+
+
+
 //DISPLAY
     /**
      * Displays all RDV  using staffId and date (optional)

@@ -343,12 +343,11 @@ class TaskStaffController extends AbstractController
 
         }
 
-
         //LIST STEP
             /**
              * Retrieve Task by step
              *
-             * @Route("/task/staff/list/step/{step}/{staffId}",
+             * @Route("/task/staff/list/step/{step}/{staffId}/{dateTask}/{dateEnd}",
              *    name="task_staff_by_step",
              *    methods={"HEAD", "GET"})
              *
@@ -376,17 +375,53 @@ class TaskStaffController extends AbstractController
              * )
              * @SWG\Tag(name="TaskStaff")
              */
-            public function listByStep(Request $request, $step, $staffId = null)
+            public function listByStep(Request $request, $step, $staffId = 0, $dateTask = null, $dateEnd = null)
             {
-                $taskStaffsArray = $this->taskStaffService->listByStep($step, $staffId);
-
-
+                $taskStaffsArray = $this->taskStaffService->listByStep($step, $staffId, $dateTask, $dateEnd);
                 return new JsonResponse($taskStaffsArray);
 
             }
 
 
 
+    //LIST LATE
+        /**
+         * Retrieve TASK LATE (change by step)
+         *
+         * @Route("/task/staff/late/limit/{step}/{dateLimit}/{from}",
+         *    name="task_staff_late",
+         *    methods={"HEAD", "GET"})
+         *
+         * @SWG\Response(
+         *     response=200,
+         *     description="Success",
+         *     @SWG\Schema(
+         *         @SWG\Property(property="status", type="boolean"),
+         *         @SWG\Property(property="message", type="string"),
+         *     )
+         * )
+         * @SWG\Response(
+         *     response=403,
+         *     description="Access denied",
+         * )
+         * @SWG\Parameter(
+         *     name="data",
+         *     in="body",
+         *     description="Task by step",
+         *     required=true,
+         *     @SWG\Schema(
+         *         type="array",
+         *         @SWG\Items(ref=@Model(type=TaskStaffType::class))
+         *     )
+         * )
+         * @SWG\Tag(name="TaskStaff")
+         */
+        public function listTaskLateLimit(Request $request, $step, $dateLimit, $from = null)
+        {
+            $taskStaffsArray = $this->taskStaffService->listTaskLateLimit($step, $dateLimit, $from);
+            return new JsonResponse($taskStaffsArray);
+
+        }
 
 
 }

@@ -22,13 +22,18 @@ class RdvRepository extends ServiceEntityRepository
 
     public function findByDate($date)
   {
-    
-      return $this->createQueryBuilder('s')
-          ->where('s.dateRdv LIKE :date')
-          ->orderBy('s.dateRdv', 'ASC')
-          ->setParameter('date', '%' . $date . '%')
-          ->getQuery()
-          ->getResult()
+
+      $qb = $this->createQueryBuilder('s')
+          ->orderBy('s.dateRdv', 'ASC');
+
+      if($date != "all") {
+        $qb->where('s.dateRdv LIKE :date')
+              ->setParameter('date', '%' . $date . '%');
+      } else {
+          $qb->setMaxResults(500);
+      }
+      return $qb->getQuery()
+                ->getResult();
       ;
   }
 

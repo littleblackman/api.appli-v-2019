@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Vehicle;
-use App\Entity\VehicleFuel;
+use App\Entity\VehicleAction;
 use App\Form\VehicleType;
 use App\Entity\VehicleCheckup;
 use App\Service\VehicleServiceInterface;
@@ -17,10 +17,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * VehicleFuelController class
+ * VehicleActionController class
  * @author Sandy Razafitrimo <sandy@etsik.com>
  */
-class VehicleFuelController extends AbstractController
+class VehicleActionController extends AbstractController
 {
     private $vehicleService;
 
@@ -31,10 +31,10 @@ class VehicleFuelController extends AbstractController
 
 //ADD
     /**
-     * Add fuel to a Vehicle
+     * Add action to a Vehicle
      *
-     * @Route("/vehicle/add/fuel",
-     *    name="vehicle_add_fuel",
+     * @Route("/vehicle/add/action",
+     *    name="vehicle_add_action",
      *    methods={"HEAD", "POST"})
      *
      * @SWG\Response(
@@ -43,20 +43,20 @@ class VehicleFuelController extends AbstractController
      *     @SWG\Schema(
      *         @SWG\Property(property="status", type="boolean"),
      *         @SWG\Property(property="message", type="string"),
-     *         @SWG\Property(property="vehicle", ref=@Model(type=VehicleFuel::class)),
+     *         @SWG\Property(property="vehicle", ref=@Model(type=VehicleAction::class)),
      *     )
      * )
      * @SWG\Response(
      *     response=403,
      *     description="Access denied",
      * )
-     * @SWG\Tag(name="VehicleFuel")
+     * @SWG\Tag(name="VehicleAction")
      */
-    public function addFuel(Request $request)
+    public function addAction(Request $request)
     {
         $this->denyAccessUnlessGranted('vehicleList');
 
-        $createdData = $this->vehicleService->addFuel($request->getContent());
+        $createdData = $this->vehicleService->addAction($request->getContent());
 
         return new JsonResponse($createdData);
     }
@@ -69,10 +69,10 @@ class VehicleFuelController extends AbstractController
 
 //LIST BY VEHICLE
     /**
-     * Lists all the fuel by vehicle
+     * Lists all the action by vehicle
      *
-     * @Route("/vehicle/fuel/{vehicle_id}/{limit}",
-     *    name="vehicle_fuel_list",
+     * @Route("/vehicle/action/{vehicle_id}/{limit}",
+     *    name="vehicle_action_list",
      *    defaults={"limit": "100"},
      *    methods={"HEAD", "GET"})
      *
@@ -81,7 +81,7 @@ class VehicleFuelController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=VehicleFuel::class))
+     *         @SWG\Items(ref=@Model(type=VehicleAction::class))
      *     )
      * )
      * @SWG\Response(
@@ -95,13 +95,13 @@ class VehicleFuelController extends AbstractController
      *     type="integer",
      *     default="null"
      * )
-     * @SWG\Tag(name="VehicleFuel")
+     * @SWG\Tag(name="VehicleAction")
      */
     public function listByVehicle(Request $request, $vehicle_id = null, $limit = 100)
     {
         $this->denyAccessUnlessGranted('vehicleList');
 
-        $action = $this->vehicleService->listFuelByVehicle($vehicle_id, $limit);
+        $action = $this->vehicleService->listActionByVehicle($vehicle_id, $limit);
 
         return new JsonResponse($action);
     }
@@ -109,10 +109,10 @@ class VehicleFuelController extends AbstractController
 
 //LIST BETWEEN DATE
     /**
-     * Lists all the vehicle fuel between date
+     * Lists all the vehicle action between date
      *
-     * @Route("/vehicle/fuel/between/{from}/{to}/{vehicle_id}/{limit}",
-     *    name="vehicle_fuel_between_date",
+     * @Route("/vehicle/action/between/{from}/{to}/{vehicle_id}/{limit}",
+     *    name="vehicle_action_between_date",
      *    defaults={"vehicle_id": null, "limit" : null},
      *    methods={"HEAD", "GET"})
      *
@@ -121,7 +121,7 @@ class VehicleFuelController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=VehicleFuel::class))
+     *         @SWG\Items(ref=@Model(type=VehicleAction::class))
      *     )
      * )
      * @SWG\Response(
@@ -142,23 +142,23 @@ class VehicleFuelController extends AbstractController
      *     type="integer",
      *     default="null"
      * )
-     * @SWG\Tag(name="VehicleFuel")
+     * @SWG\Tag(name="VehicleAction")
      */
     public function listBetweenDate(Request $request, $from, $to, $vehicle_id = null, $limit = null)
     {
         $this->denyAccessUnlessGranted('vehicleList');
 
-        $action = $this->vehicleService->listFuelBetweenDate($from, $to, $vehicle_id, $limit);
+        $action = $this->vehicleService->listActionBetweenDate($from, $to, $vehicle_id, $limit);
 
         return new JsonResponse($action);
     }
 
 //LIST
     /**
-     * Lists all the vehicle fuel by date
+     * Lists all the vehicle action by date
      *
-     * @Route("/vehicle/fuel/{date_action}/{vehicle_id}",
-     *    name="vehicle_fuel_list_date",
+     * @Route("/vehicle/action/{date_action}/{vehicle_id}",
+     *    name="vehicle_action_list_date",
      *    methods={"HEAD", "GET"})
      *
      * @SWG\Response(
@@ -166,7 +166,7 @@ class VehicleFuelController extends AbstractController
      *     description="Success",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=VehicleFuel::class))
+     *         @SWG\Items(ref=@Model(type=VehicleAction::class))
      *     )
      * )
      * @SWG\Response(
@@ -187,13 +187,13 @@ class VehicleFuelController extends AbstractController
      *     type="integer",
      *     default="null"
      * )
-     * @SWG\Tag(name="VehicleFuel")
+     * @SWG\Tag(name="VehicleAction")
      */
     public function listByDate(Request $request, $date_action = null, $vehicle_id = null)
     {
         $this->denyAccessUnlessGranted('vehicleList');
 
-        $action = $this->vehicleService->listFuelByDate($date_action, $vehicle_id);
+        $action = $this->vehicleService->listActionByDate($date_action, $vehicle_id);
 
         return new JsonResponse($action);
     }

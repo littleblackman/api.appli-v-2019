@@ -81,17 +81,28 @@ class GroupActivityController extends AbstractController
     public function listByDate(Request $request, PaginatorInterface $paginator, $date)
     {
         $this->denyAccessUnlessGranted('groupActivityList');
-
+/*
         $groupActivities = $paginator->paginate(
             $this->groupActivityService->findAllByDate($date),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
-
         $groupActivitiesArray = array();
         foreach ($groupActivities->getItems() as $groupActivity) {
             $groupActivitiesArray[] = $this->groupActivityService->toArray($groupActivity);
         };
+*/
+
+ini_set("memory_limit","1024M");
+
+        $groupActivities = $this->groupActivityService->findAllByDate($date);
+
+        $groupActivitiesArray = array();
+        foreach ($groupActivities as $groupActivity) {
+            $groupActivitiesArray[] = $this->groupActivityService->toArray($groupActivity);
+        };
+
+
 
         return new JsonResponse($groupActivitiesArray);
     }

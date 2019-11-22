@@ -309,7 +309,11 @@ class Ticket
         }
 
         if (null !== $objectArray['taskStaff']) {
-            $objectArray['taskStaff'] = $this->getTaskStaff()->toArray();
+            try {
+                $objectArray['taskStaff'] = $this->getTaskStaff()->toArray();
+            } catch(Exception $e) {
+              $objectArray['taskStaff'] = ['message' => 'Task effacée par erreur'];
+            }
         }
 
         if (null !== $objectArray['location']) {

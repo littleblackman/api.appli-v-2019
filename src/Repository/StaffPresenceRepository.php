@@ -58,6 +58,7 @@ class StaffPresenceRepository extends EntityRepository
             ->orderBy('z.priority', 'ASC')
             ->setParameter('staffId', $data['staff'])
             ->setParameter('date', $data['date'] . '%')
+
         ;
 
         if (array_key_exists('start', $data)) {

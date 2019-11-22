@@ -82,12 +82,33 @@ class TicketService implements TicketServiceInterface
         $values = json_decode($datas, true);
 
         if(isset($values['category_id'])) {
-          $values['category'] = $this->em->getRepository('App:Category')->find($values['category_id']);
+              if(!$values['category_id'] != "") {
+                $values['category'] = $this->em->getRepository('App:Category')->find($values['category_id']);
+              } else {
+                $values['category'] = null;
+              }
+        } else {
+              $values['category'] = null;
         }
 
         if(isset($values['location_id'])) {
-          $values['location'] = $this->em->getRepository('App:Location')->find($values['location_id']);
+              if($values['location_id'] != "") {
+                $values['location'] = $this->em->getRepository('App:Location')->find($values['location_id']);
+              } else {
+                $values['location'] = null;
+              }
+        } else {
+              $values['location'] = null;
         }
+
+        if(!isset($values['persona'])) $values['persona'] = null;
+        if(!isset($values['type'])) $values['type'] = null;
+        if(!isset($values['origin'])) $values['origin'] = null;
+        if(!isset($values['date_from'])) $values['date_from'] = null;
+        if(!isset($values['date_to'])) $values['date_to'] = null;
+        if(!isset($values['has_been_treated'])) $values['has_been_treated'] = null;
+        if(!isset($values['recall'])) $values['recall'] = null;
+
 
         if(!isset($values['limit'])) $values['limit'] = 250;
 

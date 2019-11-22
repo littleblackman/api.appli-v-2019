@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Entity\Vehicle;
 use App\Entity\VehicleFuel;
+use App\Entity\VehicleAction;
+
 
 use App\Entity\Staff;
 use DateTime;
@@ -114,6 +116,8 @@ class VehicleService implements VehicleServiceInterface
         );
     }
 
+    /***** fuel methods **************************************/
+
     public function addFuel(string $data)
     {
         $data = json_decode($data, true);
@@ -205,6 +209,103 @@ class VehicleService implements VehicleServiceInterface
         if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
         return $result;
     }
+
+    /***** action methods **************************************/
+
+    public function addAction(string $data)
+    {
+        $data = json_decode($data, true);
+        $staff = $this->em->getRepository('App:Staff')->find($data['staff_id']);
+        $vehicle = $this->em->getRepository('App:Vehicle')->find($data['vehicle_id']);
+
+        if($staff == null || $vehicle == null) {
+            return [
+                            "message" => "Staff non trouvé et/ou véhicule non trouvé"
+                    ];
+        }
+
+        $object = new VehicleAction();
+        $object->setVehicle($vehicle);
+        $object->setStaff($staff);
+        $object->setQuantity($data['quantity']);
+        $object->setAmount($data['amount']);
+        $object->setMileage($data['mileage']);
+        $object->setDateAction($data['date_action']);
+        $object->setActioName($data['action_name']);
+        $object->setActionType($data['action_type']);
+
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
+
+        $vehicle->setMileage($object->getMileage());
+
+        $this->mainService->create($vehicle);
+        $this->mainService->persist($vehicle);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'données ajoutées',
+            'action' => $object->toArray(),
+        );
+    }
+
+    public function listActionByDate($date = null, $vehicle_id = null)
+    {
+        if($vehicle_id) {
+            $vehicle = $this->em->getRepository('App:Vehicle')->find($vehicle_id);
+            $actions = $this->em->getRepository('App:VehicleAction')->findBy(['dateAction' => new DateTime($date), 'vehicle' => $vehicle], ['id' => 'desc']);
+        } else {
+          $actions = $this->em->getRepository('App:VehicleAction')->findBy(['dateAction' => new DateTime($date)], ['id' => 'desc']);
+        }
+        $result = [];
+        foreach($actions as $action)
+        {
+            $result[] = $action->toArray("light");
+        }
+        if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
+        return $result;
+    }
+
+    public function listActionByVehicle($vehicle_id = null, $limit = 100)
+    {
+        $vehicle = $this->em->getRepository('App:Vehicle')->find($vehicle_id);
+        $actions = $this->em->getRepository('App:VehicleAction')->findBy(['vehicle' => $vehicle], ['id' => 'desc'], $limit);
+
+        $result = [];
+        foreach($actions as $action)
+        {
+            $result[] = $action->toArray("light");
+        }
+        if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
+        return $result;
+    }
+
+
+    public function listActionBetweenDate($from, $to, $vehicle_id = null, $limit = null)
+    {
+
+        $fromDate = new DateTime($from);
+        $toDate = new DateTime($to);
+
+        if($vehicle_id) {
+            $vehicle = $this->em->getRepository('App:Vehicle')->find($vehicle_id);
+        } else {
+            $vehicle = null;
+        }
+
+        $actions = $this->em->getRepository('App:VehicleAction')->findBetweenDate($fromDate, $toDate, $vehicle, $limit);
+
+        $result = [];
+        foreach($actions as $action)
+        {
+            $result[] = $action->toArray("light");
+        }
+        if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
+        return $result;
+    }
+
+
 
 
 

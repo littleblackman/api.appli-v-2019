@@ -98,8 +98,14 @@ class PickupActivityService implements PickupActivityServiceInterface
         if (!empty($pickupActivities)) {
             $parameters = $this->getParameters();
 
+            // lunch list child
+            $lunchIdList = [];
+
             //Affects PickupActivity to GroupActivity
             foreach ($pickupActivities as $sport => $pickupActivitiesGroup) {
+
+                $sportId = (int) str_replace('sport-', '', $sport);
+
                 foreach ($pickupActivitiesGroup as $ageGroup => $pickupActivities) {
                     $maxGroupAge = false !== strpos($ageGroup, '+') ? $parameters['maxGroupAgeOverMax'] : $parameters['maxGroupAgeUnderMax'];
                     foreach ($pickupActivities as $pickupActivity) {
@@ -112,25 +118,31 @@ class PickupActivityService implements PickupActivityServiceInterface
 
                         //Affects the PickupActivity to GroupActivity
                         for ($i = 0; $i < $groupActivityNumber; $i++) {
+
                             //Use the start/end of PickupActivity if for half-day otherwise (whole day) use the start/end by default
                             $start = 1 === $groupActivityNumber || (2 === $groupActivityNumber && 0 === $i) ? $pickupActivity->getStart() : $parameters['groupActivityAfternoonStart'];
                             $end = 1 === $groupActivityNumber || (2 === $groupActivityNumber && 1 === $i) ? $pickupActivity->getEnd() : $parameters['groupActivityMorningEnd'];
                             $groupActivityStart = null;
 
-                            //Morning group
-                            if ($start <= $parameters['groupActivityMorningStart'] && $end >= $parameters['groupActivityMorningEnd']) {
-                                $groupActivityStart = $parameters['groupActivityMorningStart'];
-                                $groupActivityEnd = $parameters['groupActivityMorningEnd'];
-                            //Afternoon group
-                            } elseif ($start <= $parameters['groupActivityAfternoonStart'] && $end >= $parameters['groupActivityAfternoonEnd']) {
-                                $groupActivityStart = $parameters['groupActivityAfternoonStart'];
-                                $groupActivityEnd = $parameters['groupActivityAfternoonEnd'];
+                            // lunch exception
+                            if($sportId == 10) {
+                                $groupActivityStart = $parameters['groupActivityLunchStart'];
+                                $groupActivityEnd = $parameters['groupActivityLunchEnd'];
+                            } else {
+                                  //Morning group
+                                  if ( ($start <= $parameters['groupActivityMorningStart'] && $end >= $parameters['groupActivityMorningEnd']) && $i == 0) {
+                                      $groupActivityStart = $parameters['groupActivityMorningStart'];
+                                      $groupActivityEnd = $parameters['groupActivityMorningEnd'];
+                                  //Afternoon group
+                                  } elseif ($start <= $parameters['groupActivityAfternoonStart'] && $end >= $parameters['groupActivityAfternoonEnd']) {
+                                      $groupActivityStart = $parameters['groupActivityAfternoonStart'];
+                                      $groupActivityEnd = $parameters['groupActivityAfternoonEnd'];
+                                  }
                             }
 
                             //Checks if the PickupActivity can be linked to a group
                             if (null !== $groupActivityStart) {
                                 //Defines data used to create GroupActivity
-                                $sportId = (int) str_replace('sport-', '', $sport);
                                 $location = $pickupActivity->getLocation();
                                 if (!$location instanceof Location) {
                                     $location = $parameters['groupActivityDefaultLocation'];
@@ -144,17 +156,30 @@ class PickupActivityService implements PickupActivityServiceInterface
                                     'location' => $location,
                                 );
 
-                                //Uses existing GroupActivity
-                                $key = $location->getLocationId() . '-' . $groupActivityStart->format('Hi') . '-' . $sportId . '-' . $ageGroup;
-                                $groupActivities = array_key_exists($key, $this->groupActivities) ? $this->groupActivities[$key] : null;
-                                if (is_array($groupActivities)) {
-                                    $this->affectToGroupActivities($groupActivities, $pickupActivity, $maxGroupAge, $dataGroupActivity);
-                                //Creates GroupActivity if none has been found
+                                // add child to lunch list
+                                if($sportId == "10" && in_array($pickupActivity->getChild()->getChildId(), $lunchIdList)) {
+
                                 } else {
-                                    $groupActivity = $this->createGroupActivity($dataGroupActivity);
-                                    $this->affectToGroupActivity($pickupActivity, $groupActivity);
+
+                                  if($sportId == 10) $lunchIdList[] = $pickupActivity->getChild()->getChildId();
+
+                                  //Uses existing GroupActivity
+                                  $key = $location->getLocationId() . '-' . $groupActivityStart->format('Hi') . '-' . $sportId . '-' . $ageGroup;
+                                  $groupActivities = array_key_exists($key, $this->groupActivities) ? $this->groupActivities[$key] : null;
+                                  if (is_array($groupActivities)) {
+                                      $this->affectToGroupActivities($groupActivities, $pickupActivity, $maxGroupAge, $dataGroupActivity);
+                                  //Creates GroupActivity if none has been found
+                                  } else {
+                                      $groupActivity = $this->createGroupActivity($dataGroupActivity);
+                                      $this->affectToGroupActivity($pickupActivity, $groupActivity);
+                                  }
+
                                 }
+
+
                             }
+
+
                         }
                     }
                 }
@@ -377,6 +402,8 @@ class PickupActivityService implements PickupActivityServiceInterface
             'groupActivityAfternoonStart',
             'groupActivityAfternoonEnd',
             'groupActivityDefaultLocation',
+            'groupActivityLunchStart',
+            'groupActivityLunchEnd'
         );
 
         //Defines parameters
@@ -400,6 +427,8 @@ class PickupActivityService implements PickupActivityServiceInterface
         $parameters['groupActivityMorningEnd'] = new DateTime('1970-01-01' . $parameters['groupActivityMorningEnd']);
         $parameters['groupActivityAfternoonStart'] = new DateTime('1970-01-01' . $parameters['groupActivityAfternoonStart']);
         $parameters['groupActivityAfternoonEnd'] = new DateTime('1970-01-01' . $parameters['groupActivityAfternoonEnd']);
+        $parameters['groupActivityLunchStart'] = new DateTime('1970-01-01' . $parameters['groupActivityLunchStart']);
+        $parameters['groupActivityLunchEnd'] = new DateTime('1970-01-01' . $parameters['groupActivityLunchEnd']);
         $parameters['groupActivityDefaultLocation'] = $this->em->getRepository('App:Location')->findOneByLocationId((int) $parameters['groupActivityDefaultLocation']);
         $parameters['totalGroupActivity'] = 2;
 

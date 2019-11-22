@@ -351,6 +351,38 @@ class StaffPresenceController extends AbstractController
         return new JsonResponse($createdData);
     }
 
+//CREATE
+    /**
+     * UPDATE TYPE OF STAFFPRESENCE
+     *
+     * @Route("/staff/presence/modify/{staffPresenceId}/{typeName}",
+     *    name="staff_presence_modify_typeName",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Tag(name="StaffPresence")
+     */
+    public function modifyTypeName(Request $request, $staffPresenceId, $typeName)
+    {
+        //$this->denyAccessUnlessGranted('staffPresenceCreate');
+
+        $createdData = $this->staffPresenceService->modifyTypeName($staffPresenceId, $typeName);
+
+        return new JsonResponse($createdData);
+    }
+
+
 //DELETE BY ID
     /**
      * Deletes staffPresence using its id
