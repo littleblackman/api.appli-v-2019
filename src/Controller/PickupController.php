@@ -87,7 +87,7 @@ class PickupController extends AbstractController
         $pickups = $paginator->paginate(
             $this->pickupService->findAllByStatus($date, $status),
             $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
+            $request->query->getInt('size', 500)
         );
 
         $pickupsArray = array();
@@ -155,7 +155,7 @@ class PickupController extends AbstractController
         $pickups = $paginator->paginate(
             $this->pickupService->findAllUnaffected($date, $kind),
             $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
+            $request->query->getInt('size', 500)
         );
 
         $pickupsArray = array();

@@ -97,7 +97,11 @@ class VehicleCheckup
     public function toArray($type = "full")
     {
         $objectArray = get_object_vars($this);
-        $objectArray["staff"] = $this->getStaff()->toArray("light");
+        if($objectArray["staff"]) {
+          if($this->getStaff()) {
+            $objectArray["staff"] = $this->getStaff()->toArray("light");
+          }
+        }
         $objectArray["vehicle"] = $this->getVehicle()->toArray("light");
 
         if($this->getItems()) {

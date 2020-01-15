@@ -4,7 +4,7 @@ namespace App\Service\MyClub;
 
 /**
  * Class MigrationTransformDatas
- * 
+ *
  * transform the data to import value
  */
 trait MigrationTransformDatas
@@ -42,7 +42,8 @@ trait MigrationTransformDatas
                                                     86  => 'Prise en charge',
                                                     85  => 'Prioritaire',
                                                     342 => 'Personnel',
-                                                    343 => 'Professionnel'
+                                                    343 => 'Professionnel',
+                                                    332 => 'Point de rdv'
                                             ];
 
     public function extractChild($data) {

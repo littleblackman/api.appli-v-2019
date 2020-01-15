@@ -77,6 +77,40 @@ class VehicleController extends AbstractController
         return new JsonResponse($vehicles->getItems());
     }
 
+
+  //LIST
+      /**
+       * Lists all the vehicle information between
+       *
+       * @Route("/vehicle/data/{type}/{from}/{to}/{limit}/{vehicle_id}",
+       *    name="vehicle_list_data",
+       *    defaults={"vehicle_id": null, "limit" : null},
+       *    methods={"HEAD", "GET"})
+       *
+       * @SWG\Response(
+       *     response=200,
+       *     description="Success",
+       *     @SWG\Schema(
+       *         type="array",
+       *         @SWG\Items(ref=@Model(type=Vehicle::class))
+       *     )
+       * )
+       * @SWG\Response(
+       *     response=403,
+       *     description="Access denied",
+       * )
+       * @SWG\Tag(name="Vehicle")
+       */
+       public function listBetweenDate(Request $request, $type,  $from, $to, $limit = null, $vehicle_id = null)
+      {
+          $this->denyAccessUnlessGranted('vehicleList');
+
+          $action = $this->vehicleService->listVehicleBetweenDate($type, $from, $to, $limit, $vehicle_id);
+
+          return new JsonResponse($action);
+      }
+
+
 //DISPLAY
     /**
      * Displays the vehicle using its id

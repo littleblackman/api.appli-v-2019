@@ -101,6 +101,9 @@ class TaskStaffRepository extends EntityRepository
   }
 
 
+
+
+
   /**
    * Returns all the tasks by step
    */
@@ -116,7 +119,7 @@ class TaskStaffRepository extends EntityRepository
         $qb->orderBy('s.dateTask', 'ASC');
       }
 
-      if($staff) {
+      if($staff != null ) {
         $qb->andWhere('s.staff = :staff')
           ->setParameter('staff', $staff);
       }
@@ -131,13 +134,29 @@ class TaskStaffRepository extends EntityRepository
             ->andWhere('s.dateTask < :dateEnd')
             ->setParameter('dateEnd', $dateEnd.' 23:59:59');
         }
-
       }
 
       return $qb
         ->getQuery()
         ->getResult();
   }
+
+
+    /**
+     * Returns all the tasks by step
+     */
+    public function findByStepAll($step)
+    {
+        return $this->createQueryBuilder('s')
+              ->where('s.step LIKE :step')
+              ->andWhere('s.type != \'basic\'')
+              ->setParameter('step', $step)
+              ->addOrderBy('s.staff', 'ASC')
+              ->addOrderBy('s.dateTask', 'ASC')
+              ->getQuery()
+              ->getResult();
+    }
+
 
 
 }

@@ -12,12 +12,12 @@ use DateTime;
 /**
  * Vehicle
  *
- * @ORM\Table(name="vehicle_action")
- * @ORM\Entity(repositoryClass="App\Repository\VehicleActionRepository")
+ * @ORM\Table(name="vehicle_washing")
+ * @ORM\Entity(repositoryClass="App\Repository\VehicleWashingRepository")
  *
  * @author Sandy Razafitrimo <sandy@etsik.com>
  */
-class VehicleAction
+class VehicleWashing
 {
     use CreationTrait;
     use UpdateTrait;
@@ -43,13 +43,6 @@ class VehicleAction
     /**
      * @var string
      *
-     * @ORM\Column(name="quantity", type="float", nullable=false)
-     */
-    private $quantity;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="amount", type="float", nullable=false)
      */
     private $amount;
@@ -70,6 +63,13 @@ class VehicleAction
     private $staff;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="description", type="string", length=250, nullable=true)
+     */
+    private $description;
+
+    /**
      * @var DateTime|null
      *
      * @ORM\Column(name="date_action", type="date", nullable=true)
@@ -77,28 +77,11 @@ class VehicleAction
     private $dateAction;
 
     /**
-     * @var String|null
-     *
-     * @ORM\Column(name="action_name", type="string", nullable=true)
-     */
-    private $actionName;
-
-    /**
-     * @var String|null
-     *
-     * @ORM\Column(name="action_type", type="string", nullable=true)
-     */
-    private $actionType;
-
-
-    /**
      * Converts the entity in an array
      */
     public function toArray($type = "full")
     {
         $objectArray = get_object_vars($this);
-
-
         if($objectArray['staff']) {
             $objectArray['staff'] = $this->getStaff()->toArray($type);
         }
@@ -132,18 +115,6 @@ class VehicleAction
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getQuantity(): ?string
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(?string $quantity): self
-    {
-        $this->quantity = $quantity;
-
-        return $this;
     }
 
     public function getAmount(): ?string
@@ -193,6 +164,18 @@ class VehicleAction
         return $this;
     }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     public function getDateAction(): ?DateTimeInterface
     {
         return $this->dateAction;
@@ -208,30 +191,5 @@ class VehicleAction
 
         return $this;
     }
-
-    public function getActionName(): ?string
-    {
-        return $this->actionName;
-    }
-
-    public function setActionName(?string $actionName): self
-    {
-        $this->actionName = $actionName;
-
-        return $this;
-    }
-
-    public function getActionType(): ?string
-    {
-        return $this->actionType;
-    }
-
-    public function setActionType(?string $actionType): self
-    {
-        $this->actionType = $actionType;
-
-        return $this;
-    }
-
 
 }

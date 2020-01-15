@@ -151,7 +151,7 @@ class RideController extends AbstractController
         $rides = $paginator->paginate(
             $this->rideService->findAllByDate($date),
             $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
+            $request->query->getInt('size', 500)
         );
 
         $ridesArray = array();
@@ -206,6 +206,48 @@ class RideController extends AbstractController
 
         return new JsonResponse($ridesArray);
     }
+
+
+
+//DUPLICATE RIDE FROM DAY TO ANOTHER DAY
+    /**
+     * Duplicates all rides from a day to another day
+     *
+     * @Route("/ride/duplicate/{source}/{target}",
+     *    name="ride_duplicate",
+     *    requirements={"source": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Ride::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="source",
+     *     in="path",
+     *     description="Source for the ride (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Ride")
+     */
+    public function duplicate($source, $target)
+    {
+
+        $this->denyAccessUnlessGranted('rideList');
+
+        $message = $this->rideService->duplicateRecursive($source, $target);
+
+        return new JsonResponse($message);
+    }
+
 
 
 

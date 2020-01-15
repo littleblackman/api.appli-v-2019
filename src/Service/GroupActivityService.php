@@ -70,6 +70,17 @@ class GroupActivityService implements GroupActivityServiceInterface
         }
     }
 
+
+    public function listByLunchGroup($date) {
+
+          $groups = $this->em->getRepository('App:GroupActivity')->findLunchgroup($date);
+          $arr = [];
+          foreach($groups as $group) {
+            $arr[] = $group->getArrayOptimise();
+          }
+          return $arr;
+    }
+
     /**
      * Adds specific data that could not be added via generic method
      */

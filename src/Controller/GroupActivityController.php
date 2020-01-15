@@ -93,7 +93,7 @@ class GroupActivityController extends AbstractController
         };
 */
 
-ini_set("memory_limit","1024M");
+        ini_set("memory_limit","1024M");
 
         $groupActivities = $this->groupActivityService->findAllByDate($date);
 
@@ -106,6 +106,47 @@ ini_set("memory_limit","1024M");
 
         return new JsonResponse($groupActivitiesArray);
     }
+
+
+    //LIST BY LUNCH AND DATE
+        /**
+         * Lists all the pickup as lung group
+         *
+         * @Route("/group-activity/lunch/{date}",
+         *    name="group_activity_list_lunch",
+         *    requirements={
+         *        "date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$",
+         *    },
+         *    methods={"HEAD", "GET"})
+         *
+         * @SWG\Response(
+         *     response=200,
+         *     description="Success",
+         *     @SWG\Schema(
+         *         type="array",
+         *         @SWG\Items(ref=@Model(type=GroupActivity::class))
+         *     )
+         * )
+         * @SWG\Response(
+         *     response=403,
+         *     description="Access denied",
+         * )
+         * @SWG\Parameter(
+         *     name="date",
+         *     in="path",
+         *     description="Date for the pickupActivity (YYYY-MM-DD | YYYY-MM)",
+         *     type="string",
+         * )
+         * @SWG\Tag(name="GroupActivity")
+         */
+        public function listByLunchgroup(Request $request, $date)
+        {
+          //  $this->denyAccessUnlessGranted('pickupActivityList');
+
+            $groups = $this->groupActivityService->listByLunchGroup($date);
+
+            return new JsonResponse($groups);
+        }
 
 //DISPLAY BY DATE AND STAFFID
     /**

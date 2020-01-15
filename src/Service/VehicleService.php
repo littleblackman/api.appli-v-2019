@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Vehicle;
 use App\Entity\VehicleFuel;
+use App\Entity\VehicleWashing;
 use App\Entity\VehicleAction;
 
 
@@ -116,6 +117,137 @@ class VehicleService implements VehicleServiceInterface
         );
     }
 
+    public function listVehicleBetweenDate($type, $from, $to, $limit = null, $vehicle_id = null) {
+
+          // list all actions in between days
+          $elements['actions'] = $this->listActionBetweenDate($from, $to, $vehicle_id, $limit, true);
+          // list all fuel
+          $elements['fuels'] = $this->listFuelBetweenDate($from, $to, $vehicle_id, $limit, true);
+
+          // list all washing
+          $elements['washings'] = $this->listWashingBetweenDate($from, $to, $vehicle_id, $limit, true);
+
+          $results = [];
+
+          // foreach on each array
+          foreach($elements as $name => $objects) {
+              foreach($objects as $object) {
+                  if($type == "date") {
+                      $result[$object->getDateAction()->format('Y-m-d')][$name][] = $object->toArray('light');
+                  } else { // table by vehicle
+                      if(!$result[$object->getVehicle()->getId()]) {
+                        $result[$object->getVehicle()->getId()]['vehicle'] = $object->getVehicle()->toArray('exclude-vehicle');
+                      };
+                      $result[$object->getVehicle()->getId()][$name][] = $object->toArray('exclude-vehicle');
+                  }
+              }
+          }
+
+          return $results;
+
+    }
+
+
+    /***** wadhing methods **************************************/
+
+    public function addWashing(string $data)
+    {
+        $data = json_decode($data, true);
+        $staff = $this->em->getRepository('App:Staff')->find($data['staff_id']);
+        $vehicle = $this->em->getRepository('App:Vehicle')->find($data['vehicle_id']);
+
+        if($staff == null || $vehicle == null) {
+            return [
+                            "message" => "Staff non trouvé et/ou véhicule non trouvé"
+                    ];
+        }
+
+        (!isset($data['description'])) ? $description = null : $description = $data['description'];
+
+        $object = new VehicleWashing();
+        $object->setVehicle($vehicle);
+        $object->setStaff($staff);
+        $object->setDescription($description);
+        $object->setAmount($data['amount']);
+        $object->setMileage($data['mileage']);
+        $object->setDateAction($data['date_action']);
+
+        $this->mainService->create($object);
+        $this->mainService->persist($object);
+
+        $vehicle->setMileage($object->getMileage());
+
+        $this->mainService->create($vehicle);
+        $this->mainService->persist($vehicle);
+
+        //Returns data
+        return array(
+            'status' => true,
+            'message' => 'données ajoutées',
+            'action' => $object->toArray(),
+        );
+    }
+
+    public function listWashingByDate($date = null, $vehicle_id = null)
+    {
+        if($vehicle_id) {
+            $vehicle = $this->em->getRepository('App:Vehicle')->find($vehicle_id);
+            $actions = $this->em->getRepository('App:VehicleWashing')->findBy(['dateAction' => new DateTime($date), 'vehicle' => $vehicle], ['id' => 'desc']);
+        } else {
+          $washings = $this->em->getRepository('App:VehicleWashing')->findBy(['dateAction' => new DateTime($date)], ['id' => 'desc']);
+        }
+        $result = [];
+        foreach($washings as $washing)
+        {
+            $result[] = $action->toArray("light");
+        }
+        if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
+        return $result;
+    }
+
+
+    public function listWashingByVehicle($vehicle_id = null, $limit = 100)
+    {
+        $vehicle = $this->em->getRepository('App:Vehicle')->find($vehicle_id);
+        $washings = $this->em->getRepository('App:VehicleWashing')->findBy(['vehicle' => $vehicle], ['id' => 'desc'], $limit);
+
+        $result = [];
+        foreach($washings as $washing)
+        {
+            $result[] = $action->toArray("light");
+        }
+        if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
+        return $result;
+    }
+
+
+    public function listWashingBetweenDate($from, $to, $vehicle_id = null, $limit = null, $returnObject = false)
+    {
+
+        $fromDate = new DateTime($from);
+        $toDate = new DateTime($to);
+
+        if($vehicle_id) {
+            $vehicle = $this->em->getRepository('App:Vehicle')->find($vehicle_id);
+        } else {
+            $vehicle = null;
+        }
+
+        $washings = $this->em->getRepository('App:VehicleWashing')->findBetweenDate($fromDate, $toDate, $vehicle, $limit);
+
+        if($returnObject) return $washings;
+
+        $result = [];
+        foreach($washings as $washing)
+        {
+            $result[] = $washing->toArray("light");
+        }
+        if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
+        return $result;
+    }
+
+
+
     /***** fuel methods **************************************/
 
     public function addFuel(string $data)
@@ -187,7 +319,7 @@ class VehicleService implements VehicleServiceInterface
     }
 
 
-    public function listFuelBetweenDate($from, $to, $vehicle_id = null, $limit = null)
+    public function listFuelBetweenDate($from, $to, $vehicle_id = null, $limit = null, $returnObject = false)
     {
 
         $fromDate = new DateTime($from);
@@ -199,12 +331,14 @@ class VehicleService implements VehicleServiceInterface
             $vehicle = null;
         }
 
-        $actions = $this->em->getRepository('App:VehicleFuel')->findBetweenDate($fromDate, $toDate, $vehicle, $limit);
+        $fuels = $this->em->getRepository('App:VehicleFuel')->findBetweenDate($fromDate, $toDate, $vehicle, $limit);
+
+        if($returnObject) return $fuels;
 
         $result = [];
-        foreach($actions as $action)
+        foreach($fuels as $fuel)
         {
-            $result[] = $action->toArray("light");
+            $result[] = $fuel->toArray("light");
         }
         if(!$result) $result = ['message' => 'aucune donnée trouvée ce jour'];
         return $result;
@@ -231,7 +365,7 @@ class VehicleService implements VehicleServiceInterface
         $object->setAmount($data['amount']);
         $object->setMileage($data['mileage']);
         $object->setDateAction($data['date_action']);
-        $object->setActioName($data['action_name']);
+        $object->setActionName($data['action_name']);
         $object->setActionType($data['action_type']);
 
         $this->mainService->create($object);
@@ -282,7 +416,7 @@ class VehicleService implements VehicleServiceInterface
     }
 
 
-    public function listActionBetweenDate($from, $to, $vehicle_id = null, $limit = null)
+    public function listActionBetweenDate($from, $to, $vehicle_id = null, $limit = null, $returnObject = false)
     {
 
         $fromDate = new DateTime($from);
@@ -295,6 +429,8 @@ class VehicleService implements VehicleServiceInterface
         }
 
         $actions = $this->em->getRepository('App:VehicleAction')->findBetweenDate($fromDate, $toDate, $vehicle, $limit);
+
+        if($returnObject) return $actions;
 
         $result = [];
         foreach($actions as $action)

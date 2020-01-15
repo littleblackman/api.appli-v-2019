@@ -98,4 +98,39 @@ class MigrationMyClubController extends AbstractController
         return new JsonResponse($data);
     }
 
+
+  //IMPORT ALL CHILDS
+      /**
+       * Retrieve childs from my club to be imported
+       *
+       * @Route("/migration/import/child/{limit}",
+       *    name="import_child_myclub",
+       *    methods={"HEAD", "GET"})
+       *
+       * @SWG\Response(
+       *     response=200,
+       *     description="Success",
+       *     @SWG\Schema(
+       *         type="array",
+       *         @SWG\Items(ref=@Model(type=Standard::class))
+       *     )
+       * )
+       * @SWG\Response(
+       *     response=403,
+       *     description="Access denied",
+       * )
+       * @SWG\Response(
+       *     response=404,
+       *     description="Not Found",
+       * )
+       * @SWG\Tag(name="MigrationMyClub")
+       */
+      public function importChildMyClub($limit = null)
+      {
+
+          $data = $this->migrationMyClubService->importChildMyClub($limit);
+
+          return new JsonResponse($data);
+      }
+
 }

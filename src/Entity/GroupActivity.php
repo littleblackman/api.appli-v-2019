@@ -134,6 +134,54 @@ class GroupActivity
     }
 
     /**
+     *
+     * return array of group activity
+     * @return Array
+     */
+    public function getArrayOptimise() {
+
+          $staffs = null;
+          if($this->getStaff()) {
+            foreach($this->getStaff() as $staffLink) {
+              $staff =  $staffLink->getStaff()->getPerson();
+              $fullname = $staff->getFirstname().' '.$staff->getLastname();
+              $staffs[] = ['fullname' => $fullname, 'firstname' =>$staff->getFirstname(), 'lastname' => $staff->getLastname(), 'personId' => $staff->getPersonId()];
+            }
+          }
+
+          $childs = null;
+          if($activities = $this->getPickupActivities()) {
+            foreach($activities as $activityLink ) {
+                $child = $activityLink->getPickupActivity()->getChild();
+                $childs[] = ['id' => $child->getChildId(), 'firstname' => $child->getFirstname(), 'lastname' => $child->getLastname(), 'photo' => $child->getPhoto()];
+            }
+
+          } else {
+            $childs = null;
+          }
+
+
+          $data = [
+                    'id' => $this->getGroupActivityId(),
+                    'name' => $this->getName(),
+                    'age' => $this->getAge(),
+                    'date' => $this->getDate()->format('Y-m-d'),
+                    'start' => $this->getStart()->format('H:i'),
+                    'end' => $this->getEnd()->format('H:i'),
+                    'lunch' =>  $this->getLunch(),
+                    'location' => $this->getLocation()->getName(),
+                    'sport' => $this->getSport()->getName(),
+                    'area' => $this->getArea(),
+                    'staffs' => $staffs,
+                    'childs' => $childs,
+                    'comment' => $this->getComment()
+
+          ];
+
+          return $data;
+    }
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()

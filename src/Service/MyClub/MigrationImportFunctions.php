@@ -14,7 +14,8 @@ trait MigrationImportFunctions
 
     public function setImported($table_name, $id) {
       $this->resetQuery();
-      $query = 'update '.$table_name.' set _importedInPV = 1 where id = '.$id;
+      $today = date('Y-m-d');
+      $query = 'update '.$table_name.' set _importedInPV = 1, _importedDate = "'.$today.'" where id = '.$id;
       $this->setExecute($query);
     }
 
@@ -74,6 +75,35 @@ trait MigrationImportFunctions
 
       }
 
+    public function importChild($limit = 30) {
+      $this->resetQuery();
+
+      $this->setTable('ea_child as c');
+
+      // child informations
+      $this->addFields(array('c.id as child_id', 'c.first_name as firstname', 'c.child_last_name as lastname', 'c.sexe as gender', 'c.birthday as birthdate', 'c.medical_note as medical', 'c.family_id as family_id', 'c.created_at as c_created_at', 'c.updated_at as updated_at'));
+
+      $this->addJoin('ea_family as f', 'f.id', 'c.family_id');
+
+    //  $this->addWhere('c.id = 11024');
+
+      $this->addWhere('f.is_archived != 1');
+      $this->addWhere('c.is_archived != 1');
+      $this->addWhere('f.accept_mailing = 1');
+      $this->addWhere("c.birthday > '2004-01-01'");
+
+      $this->addWhere('c._importedInPV = 0');
+
+      $this->setLimit(30);
+
+
+      $datas = $this->createSelectQuery()->getDatas();
+
+      return $datas;
+
+
+    }
+
     public function importTransport($date, $limit = 10){
 
         $this->resetQuery();
@@ -103,6 +133,7 @@ trait MigrationImportFunctions
         $this->addJoin('padaref_ref as ref', 'ref.id', 'c.need_call');
 
         $this->addWhere('t._importedInPV = 0');
+        $this->addWhere('t.child_id <> 1');
         $this->addWhere("t.date_presence = '".$date."'");
 
         $this->setLimit($limit);

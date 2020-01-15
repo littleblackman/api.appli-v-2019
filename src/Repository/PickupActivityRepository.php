@@ -26,6 +26,7 @@ class PickupActivityRepository extends EntityRepository
             ->getResult()
         ;
     }
+
     /**
      * Returns all the pickupActivities by date
      */

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Person;
 use App\Entity\Ride;
+use App\Entity\StaffPresence;
 use DateTime;
 use App\Service\PickupService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,7 +28,6 @@ class RideService implements RideServiceInterface
     private $childService;
 
     private $mealService;
-
 
     public function __construct(
         EntityManagerInterface $em,
@@ -63,6 +63,132 @@ class RideService implements RideServiceInterface
         if (array_key_exists('locked', $data)) {
             $object->setLocked((bool) $data['locked']);
         }
+    }
+
+    public function duplicateRecursive($source, $target) {
+
+        // A retrieve all rides from source
+        if(!$source_rides = $this->findAllByDate($source)) return ['message' => 'source_no_ride'];
+
+        // B retrieve all pickups on target
+        $pickup_targets['dropin']  = $this->em->getRepository('App:Pickup')->findAllUnaffected($target, 'dropin');
+        $pickup_targets['dropoff'] = $this->em->getRepository('App:Pickup')->findAllUnaffected($target, 'dropoff');
+
+        // C create table of pickups
+        foreach($pickup_targets['dropin'] as $pickup) {
+            $p_targets['dropin'][$pickup->getChild()->getChildId()] = $pickup;
+        }
+        foreach($pickup_targets['dropoff'] as $pickup) {
+            $p_targets['dropoff'][$pickup->getChild()->getChildId()] = $pickup;
+        }
+
+        // if there is no pickup find return message
+        if(!$pickup_targets['dropin'] && !$pickup_targets['dropoff']) return ['message' => 'target_no_pickup'];
+
+        // D List all driver present in target day
+        $presenceStaffs =  $this->em->getRepository('App:StaffPresence')->findStaffsByPresenceDate($target);
+        foreach($presenceStaffs as $presenceStaff) {
+          $staffArray[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff();
+        }
+
+        // E duplicate rides on the new days if not exist
+        foreach($source_rides as $s_ride) {
+
+            // create target date object
+            $target_date = new DateTime($target);
+
+            // check if staff in source is present in target
+            if(key_exists($s_ride->getStaff()->getStaffId(), $staffArray)) {
+              $staff = $s_ride->getStaff();
+            } else {
+              $staff = null;
+              $person = $s_ride->getStaff()->getPerson();
+              $message['target_staff_absent'][] = $person->getFirstname().' '.$person->getLastname();
+            }
+
+            if($staff) {
+              $person = $s_ride->getStaff()->getPerson();
+              $staff_name = $person->getFirstname().' '.$person->getLastname();
+            } else {
+              $staff_name = "driver absent";
+            }
+
+            if($s_ride->getVehicle()) {
+                $vehicle_name = $s_ride->getVehicle()->getName();
+            } else {
+              $vehicle_name = "véhicule inconnu";
+            }
+
+
+            if(!$t_ride = $this->em->getRepository('App:Ride')->findOneBy([
+                                                                        'name' => $s_ride->getName(),
+                                                                        'kind' => $s_ride->getKind(),
+                                                                        'date' => $target_date,
+                                                                        'start' => $s_ride->getStart(),
+                                                                        'startPoint' => $s_ride->getStartPoint(),
+                                                                        'vehicle' => $s_ride->getVehicle()
+                                                                        ])) {
+                $t_ride = new Ride();
+                $message['target_ride_created'][$s_ride->getKind()][] = $s_ride->getName().' - '.$staff_name.' - '.$vehicle_name.' - Départ: '.$s_ride->getStart()->format('H:i').', '.$s_ride->getStartPoint();
+            } else {
+              $message['target_ride_updated'][$s_ride->getKind()][] = $s_ride->getName().' - '.$staff_name.' - '.$vehicle_name.' - Départ: '.$s_ride->getStart()->format('H:i').', '.$s_ride->getStartPoint();
+
+            }
+            $t_ride->setLocked(0);
+            $t_ride->setDate($target_date);
+            $t_ride->setKind($s_ride->getKind());
+            $t_ride->setName($s_ride->getName());
+            $t_ride->setPlaces($s_ride->getPlaces());
+            $t_ride->setStart($s_ride->getStart());
+            $t_ride->setArrival($s_ride->getArrival());
+            $t_ride->setStartPoint($s_ride->getStartPoint());
+            $t_ride->setEndPoint($s_ride->getEndPoint());
+            $t_ride->setVehicle($s_ride->getVehicle());
+            $t_ride->setStaff($staff);
+            $userId = 99;
+            $t_ride->setCreatedAt(new DateTime());
+            $t_ride->setCreatedBy($userId);
+            $t_ride->setUpdatedAt(new DateTime());
+            $t_ride->setUpdatedBy($userId);
+            $t_ride->setSuppressed(0);
+
+            $this->em->persist($t_ride);
+            $this->em->flush();
+
+            // list all pickup in source if exist child exist in target > affect in ride
+            foreach($s_ride->getPickups() as $pickup) {
+              if(\key_exists($pickup->getChild()->getChildId(), $p_targets[$t_ride->getKind()])) {
+
+                // new pickup
+                $new_pickup = $p_targets[$t_ride->getKind()][$pickup->getChild()->getChildId()];
+                $new_pickup->setSortOrder($pickup->getSortOrder());
+                $new_pickup->setStart($pickup->getStart());
+                $new_pickup->setPhone($pickup->getPhone());
+                $new_pickup->setPostal($pickup->getPostal());
+                $new_pickup->setAddress($pickup->getAddress());
+                $new_pickup->setLatitude($pickup->getLatitude());
+                $new_pickup->setLongitude($pickup->getLongitude());
+
+                $this->em->persist($new_pickup);
+                $this->em->flush();
+
+                $t_ride->addPickup($new_pickup);
+                $message['target_child_associated_to_ride'][$pickup->getChild()->getChildId()] = $pickup->getChild()->getLastname().' '.$pickup->getChild()->getFirstname();
+              } else  {
+                $message['target_child_not_in_target'][$pickup->getChild()->getChildId()] = $pickup->getChild()->getLastname().' '.$pickup->getChild()->getFirstname();
+              }
+            }
+            $this->em->persist($t_ride);
+            $this->em->flush();
+
+        }
+
+        asort($message['target_child_associated_to_ride']);
+        asort($message['target_child_not_in_target']);
+
+
+
+        return [$message];
     }
 
     /**
@@ -311,7 +437,7 @@ class RideService implements RideServiceInterface
 
                     if(is_object($pickup->getChild())) {
                         $pickups[$i]['child'] = $this->childService->toArray($pickup->getChild());
-                    } 
+                    }
 
                     // latest meal
                     $meal = $this->mealService->latestMealByChild($pickup->getChild()->getChildId());

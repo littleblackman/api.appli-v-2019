@@ -377,10 +377,60 @@ class TaskStaffController extends AbstractController
              */
             public function listByStep(Request $request, $step, $staffId = 0, $dateTask = null, $dateEnd = null)
             {
+
+                ini_set('memory_limit', '2048');
+
                 $taskStaffsArray = $this->taskStaffService->listByStep($step, $staffId, $dateTask, $dateEnd);
                 return new JsonResponse($taskStaffsArray);
 
             }
+
+
+
+            //LIST STEP
+                /**
+                 * Retrieve Task by step
+                 *
+                 * @Route("/task/staff/list/stepAll/{step}",
+                 *    name="task_staff_by_step_all",
+                 *    methods={"HEAD", "GET"})
+                 *
+                 * @SWG\Response(
+                 *     response=200,
+                 *     description="Success",
+                 *     @SWG\Schema(
+                 *         @SWG\Property(property="status", type="boolean"),
+                 *         @SWG\Property(property="message", type="string"),
+                 *     )
+                 * )
+                 * @SWG\Response(
+                 *     response=403,
+                 *     description="Access denied",
+                 * )
+                 * @SWG\Parameter(
+                 *     name="data",
+                 *     in="body",
+                 *     description="Task by step",
+                 *     required=true,
+                 *     @SWG\Schema(
+                 *         type="array",
+                 *         @SWG\Items(ref=@Model(type=TaskStaffType::class))
+                 *     )
+                 * )
+                 * @SWG\Tag(name="TaskStaff")
+                 */
+                public function listByStepAll(Request $request, $step)
+                {
+
+                    ini_set('memory_limit', '4096M');
+                    $taskStaffsArray = $this->taskStaffService->listByStepAll($step);
+                    return new JsonResponse($taskStaffsArray);
+
+                }
+
+
+
+
 
 
 

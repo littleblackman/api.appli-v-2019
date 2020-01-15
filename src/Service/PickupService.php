@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Pickup;
+use App\Entity\PickupActivity;
 use App\Entity\Ride;
 Use App\Entity\Child;
 use DateTime;
@@ -490,12 +491,26 @@ class PickupService implements PickupServiceInterface
         $this->mainService->modify($object);
         $this->mainService->persist($object);
 
+        $this->updatePickupActivity($object);
+
+
         //Returns data
         return array(
             'status' => true,
             'message' => 'Pickup modifié',
             'pickup' => $this->toArray($object),
         );
+    }
+
+    public function updatePickupActivity($pickup) {
+
+    //  if(!$activity = $this->em->getRepository('App:PickupActivity')->findBy(['child' => $pickup->getChild(), 'date' => $pickup->getDate()])) return null;
+    //  $activity->setStatus($pickup->getStatus());
+
+
+      //$this->mainService->modify($activity);
+      //$this->mainService->persist($activity);
+
     }
 
   /**

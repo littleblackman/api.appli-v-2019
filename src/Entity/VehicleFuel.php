@@ -85,7 +85,13 @@ class VehicleFuel
         if($objectArray['staff']) {
             $objectArray['staff'] = $this->getStaff()->toArray($type);
         }
-        if($objectArray['vehicle']) {
+
+        if($type == "exclude-vehicle") {
+            unset($objectArray['vehicle']);
+            $type = "light";
+        }
+
+        if(isset($objectArray['vehicle']) && $objectArray['vehicle']) {
             $objectArray['vehicle'] = $this->getVehicle()->toArray($type);
         }
 

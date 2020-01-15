@@ -81,6 +81,7 @@ class TaskStaffService implements TaskStaffServiceInterface
         isset($values['date_limit'])     ?  $dateL = $values['date_limit'] : $dateL = $values['date_task'];;
         isset($values['type'])           ?  $type = $values['type'] : $type = null;
 
+        if(!$task_id) $type = "basic";
 
         if (is_array($values) && !empty($values)) {
 
@@ -103,7 +104,7 @@ class TaskStaffService implements TaskStaffServiceInterface
             $object->setDateTask($dateTask);
             $object->setDateLimit($dateLimit);
             $object->setDuration($duration);
-            $objet->setType($type);
+            $object->setType($type);
             $object->setRemoteAddress($remoteAddress);
 
 
@@ -302,6 +303,8 @@ class TaskStaffService implements TaskStaffServiceInterface
     public function listByStep($step, $staffId = 0, $dateTask = null, $dateEnd = null)
     {
 
+        if($staffId == null) $staffId = 0;
+
         if($staffId > 0) {
             if(!$staff = $this->em->getRepository('App:Staff')->find($staffId)) {
                 return array('message' => 'Staff person not founded');
@@ -313,6 +316,26 @@ class TaskStaffService implements TaskStaffServiceInterface
         $taskStaffsArray = array();
         foreach ($taskStaffs as $taskStaff) {
             $taskStaffsArray[] = $this->toArray($taskStaff);
+        };
+        return $taskStaffsArray;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listByStepAll($step)
+    {
+
+        $taskStaffs = $this->em->getRepository('App:TaskStaff')->findByStepAll($step);
+        $taskStaffsArray = array();
+        foreach ($taskStaffs as $taskStaff) {
+            $task = $taskStaff->getArrayData();
+            if($taskStaff->getType() == null) {
+              $type = "non classé";
+            }  else {
+              $type = $taskStaff->getType();
+            }
+            $taskStaffsArray[$type][] = $task;
         };
         return $taskStaffsArray;
     }
@@ -334,9 +357,10 @@ class TaskStaffService implements TaskStaffServiceInterface
     public function toArray(TaskStaff $object)
     {
         //Main data
-        $objectArray = $this->mainService->toArray($object->toArray());
+        $objectArray = $object->toArray();
 
         //Gets related staff
+        /*
         if (null !== $object->getSupervisor()) {
             $objectArray['supervisor'] = $this->staffService->toArray($object->getSupervisor());
         }
@@ -345,7 +369,7 @@ class TaskStaffService implements TaskStaffServiceInterface
         //Gets related staff
         if (null !== $object->getStaff() && !$object->getStaff()->getSuppressed()) {
             $objectArray['staff'] = $this->staffService->toArray($object->getStaff());
-        }
+        }*/
         //Gets related task
         if (null !== $object->getTask()) {
             $objectArray['task'] = $object->getTask()->toArray();

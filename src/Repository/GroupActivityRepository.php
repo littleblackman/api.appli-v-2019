@@ -44,6 +44,18 @@ class GroupActivityRepository extends EntityRepository
         ;
     }
 
+    public function findLunchgroup($date) {
+      return $this->createQueryBuilder('ga')
+          ->where('ga.date = :date')
+          ->andWhere('ga.lunch = 1')
+          ->andWhere('ga.suppressed = 0')
+          ->setParameter('date', $date)
+          ->orderBy('ga.date', 'ASC')
+          ->getQuery()
+          ->getResult()
+      ;
+    }
+
     /**
      * Returns the groupActivity if not suppressed
      */

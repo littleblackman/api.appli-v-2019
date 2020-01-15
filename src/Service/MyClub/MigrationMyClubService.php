@@ -37,6 +37,23 @@ class MigrationMyClubService
         $this->pickupService = $pickupService;
     }
 
+    public function importChildMyClub($limit) {
+
+          if(!$childs = $this->importChild($limit)) $messages['info'] = "Pas d'enfants à importer";
+          foreach($childs as $childArray) {
+              if(!$this->checkIfChildExist($childArray)) {
+                  $child = $this->createChild($childArray);
+                  $messages['imported'][] = $child->getFirstname().' '.$child->getLastName();;
+                  $this->setImported('ea_child', $childArray['child_id']);
+              } else {
+                $this->setImported('ea_child', $childArray['child_id']);
+                $messages['not_imported'][] = $childArray['firstname'].' '.$childArray['lastname'];
+              }
+          }
+        return $messages;
+
+    }
+
 
     public function getTransportByDate($date, $limit = 30)
     {
@@ -49,6 +66,7 @@ class MigrationMyClubService
 
             // extract child
             $childArray = $this->extractChild($dataTransport);
+
 
             if($this->isValidChild($childArray)) {
 
@@ -76,7 +94,6 @@ class MigrationMyClubService
 
         return $messages;
     }
-
 
     public function getActivityByDate($date, $limit = 230)
     {
@@ -149,35 +166,72 @@ class MigrationMyClubService
         return $child;
     }
 
+    public function checkIfUserExist($userArray)
+    {
+        // check if child exist
+        $user = $this->em->getRepository('App:User')->findOneBy([
+            'email' => $userArray['email'],
+        ]);
+
+        if(!$user) return null;
+        return $user;
+    }
+
+    public function checkIfPersonExist($personArray)
+    {
+        // check if child exist
+        $person = $this->em->getRepository('App:Person')->findOneBy([
+            'firstname' => $personArray['firstname'],
+            'lastname' => $personArray['lastname']
+        ]);
+
+        if(!$person) return null;
+        return $person;
+    }
+
     public function createChild($childArray) {
 
          $childs = [];
+
 
          // create family from child data
          $familyArray = $this->importFamily($childArray['family_id']);
 
          $datas = $this->extractFamilyDatas($familyArray);
-
          // update user & person
-         $user = $this->createEntity->createUser($datas['user']);
-         $person = $this->createEntity->createPerson($datas['person'], $user);
+         //
 
-         if(isset($person) && $person != null ) {
-                // add and create address
-                foreach($datas['address'] as $dataAddress) {
-                    $this->createEntity->createAddressLink($person, $dataAddress);
-                }
-
-                // add phones
-                foreach($datas['phones'] as $dataPhone) {
-                    $this->createEntity->createPhoneLink($person, $dataPhone);
-                }
-
-                // create child
-                foreach($datas['childs'] as $dataChild) {
-                    $childs[] = $this->createEntity->createChildAndLink($person, $dataChild);
-                }
+         if(!$user = $this->checkIfUserExist($datas['user'])) {
+            $user = $this->createEntity->createUser($datas['user']);
          }
+
+         if(!$person = $this->checkIfPersonExist($datas['person'])) {
+            $person = $this->createEntity->createPerson($datas['person'], $user);
+            $newPerson = 1;
+         } else {
+           $newPerson = 0;
+         }
+
+
+//         if(isset($person) && $person != null && is_object($person)) {
+                // add and create address
+
+            if($newPerson == 0) {
+              foreach($datas['address'] as $dataAddress) {
+                  $this->createEntity->createAddressLink($person, $dataAddress);
+              }
+
+              // add phones
+              foreach($datas['phones'] as $dataPhone) {
+                  $this->createEntity->createPhoneLink($person, $dataPhone);
+              }
+            }
+
+              // create child
+              foreach($datas['childs'] as $dataChild) {
+                  $childs[] = $this->createEntity->createChildAndLink($person, $dataChild);
+              }
+  //       }
 
          // retrieve child when created
          $child = $this->em->getRepository('App:Child')->find($childArray['child_id']);

@@ -121,6 +121,7 @@ class Staff
         }
 
         if($type == "light") {
+
             unset($objectArray['totalZones']);
             unset($objectArray['maxChildren']);
             unset($objectArray['priority']);

@@ -97,6 +97,7 @@ class PickupActivityController extends AbstractController
         return new JsonResponse($pickupActivitiesArray);
     }
 
+
 //LIST BY ChildId AND DATE
     /**
      * Lists all the pickupActivity by childId and date

@@ -20,7 +20,7 @@ use App\Entity\PersonPhoneLink;
 use App\Entity\Child;
 use App\Entity\ChildPersonLink;
 use App\Entity\ChildChildLink;
-
+use App\Entity\ChildPresence;
 
 
 use App\Entity\Pickup;
@@ -301,7 +301,37 @@ class MigrationCreateEntity
         return null;
       }
 
+    // create regisration
 
+
+    // create presence
+    if(
+        !$this->em->getRepository('App:ChildPresence')->findBy([
+                                                                'location' => $location,
+                                                                'date' => $dateActivity,
+                                                                'child' => $child,
+                                                                ])
+      ) {
+
+        $presence = new ChildPresence();
+        $presence->setChild($child);
+        $presence->setLocation($location);
+        $presence->setDate($dateActivity);
+        $presence->setStart($starTimeActivity);
+        $presence->setEnd($endTimeActivity);
+        $presence->setCreatedAt(new DateTime());
+        $presence->setCreatedBy(99);
+        $presence->setUpdatedAt(new DateTime());
+        $presence->setUpdatedBy(99);
+        $presence->setSuppressed(false);
+        $this->em->persist($presence);
+        $this->em->flush();
+      }
+
+
+
+
+    // create pickup
     $object = new PickupActivity();
     $object->setCreatedAt(new DateTime());
     $object->setCreatedBy(99);
@@ -313,8 +343,6 @@ class MigrationCreateEntity
 
     $object->setDate($dateActivity);
     $object->setLocation($location);
-
-
 
     $object->setStart($starTimeActivity);
     $object->setEnd($endTimeActivity);
@@ -373,6 +401,34 @@ class MigrationCreateEntity
 
     $this->em->persist($object);
     $this->em->flush();
+
+
+    // createPresence
+    $location = $this->em->getRepository('App:Location')->find(6);
+    $dateCurrent = new DateTime($transportData['date']);
+    // create presence
+    if(
+        !$this->em->getRepository('App:ChildPresence')->findBy([
+                                                                'location' => $location,
+                                                                'date' => $dateCurrent,
+                                                                'child' => $child,
+                                                                ])
+      ) {
+
+        $presence = new ChildPresence();
+        $presence->setChild($child);
+        $presence->setLocation($location);
+        $presence->setDate($dateCurrent);
+        $presence->setStart($dateCurrent);
+        $presence->setEnd($dateCurrent);
+        $presence->setCreatedAt(new DateTime());
+        $presence->setCreatedBy(99);
+        $presence->setUpdatedAt(new DateTime());
+        $presence->setUpdatedBy(99);
+        $presence->setSuppressed(false);
+        $this->em->persist($presence);
+        $this->em->flush();
+      }
 
     return $object;
 

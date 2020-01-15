@@ -70,6 +70,8 @@ class TaskStaff
      */
     private $supervisor;
 
+
+
     /**
      * @ORM\Column(name="step", type="string", length=255, nullable=true)
      */
@@ -102,6 +104,11 @@ class TaskStaff
      */
     private $remoteAddress;
 
+    /**
+     *@var string[] | null ()
+     *
+     */
+    private $arrayData;
 
     public function getId(): ?int
     {
@@ -253,19 +260,50 @@ class TaskStaff
       return $this;
     }
 
+    public function getArrayData() {
+          $task = [];
+          $person = $this->getStaff()->getPerson();
+          if($this->getSupervisor()) {
+              $person2 = $this->getSupervisor()->getPerson();
+              $supervisor = $person2->getFirstname().' '.$person2->getLastname();
+              $supervisor_id = $this->getSupervisor()->getStaffId();
+          } else {
+             $supervisor = null;
+             $supervisor_id = null;
+          }
+
+          $task = [
+                    'id' => $this->getId(),
+                    'type' => $this->getType(),
+                    'name' => $this->getName(),
+                    'description' => $this->getDescription(),
+                    'step' => $this->getStep(),
+                    'date_task' => $this->getDateTask()->format('Y-m-d H:i:s'),
+                    'date_limit' => $this->getDateLimit()->format('Y-m-d H:i:s'),
+                    'duration' => $this->getDuration(),
+                    'staff' => $person->getFirstname().' '.$person->getLastname(),
+                    'staff_id' => $this->getStaff()->getStaffId(),
+                    'supervisor' => $supervisor,
+                    'supervisor_id' => $supervisor_id
+                  ];
+        return $task;
+    }
+
 
     /**
      * Converts the entity in an array
      */
     public function toArray()
     {
+
         $objectArray = get_object_vars($this);
         if (null !== $objectArray['staff']) {
-              $objectArray['staff'] = $this->getStaff()->toArray();
+              $objectArray['staff'] = $this->getStaff()->toArray("light");
               $objectArray['staff_fullname'] = $this->getStaff()->getPerson()->getFirstname().' '.$this->getStaff()->getPerson()->getLastname();
+
         }
         if (null !== $objectArray['supervisor']) {
-              $objectArray['supervisor'] = $this->getSupervisor()->toArray();
+              $objectArray['supervisor'] = $this->getSupervisor()->toArray("light");
               $objectArray['supervisor_fullname'] = $this->getSupervisor()->getPerson()->getFirstname().' '.$this->getSupervisor()->getPerson()->getLastname();
 
         }
