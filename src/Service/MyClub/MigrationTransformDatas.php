@@ -103,15 +103,13 @@ trait MigrationTransformDatas
 
     public function extractFamilyDatas($datas)
     {
-
+        if(empty($datas)) return null;
         $u = 1; $p = 1;
         foreach($datas as $data) {
-
             // extract childs
             if($childArray = $this->extractChild($data)) {
                 $childs[$childArray['child_id']] = $childArray;
             }
-
 
             // user
             if($u == 1) {
@@ -160,7 +158,6 @@ trait MigrationTransformDatas
                                 ];
 
         }
-
         return $datas = [
                                         'user'    => $user,
                                         'person'  => $person,

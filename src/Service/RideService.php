@@ -89,6 +89,8 @@ class RideService implements RideServiceInterface
         $presenceStaffs =  $this->em->getRepository('App:StaffPresence')->findStaffsByPresenceDate($target);
         foreach($presenceStaffs as $presenceStaff) {
           $staffArray[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff();
+          $debug[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff()->getPerson()->getFirstname().' '.$presenceStaff->getStaff()->getPerson()->getLastname();
+
         }
 
         // E duplicate rides on the new days if not exist
@@ -100,18 +102,15 @@ class RideService implements RideServiceInterface
             // check if staff in source is present in target
             if(key_exists($s_ride->getStaff()->getStaffId(), $staffArray)) {
               $staff = $s_ride->getStaff();
-            } else {
-              $staff = null;
-              $person = $s_ride->getStaff()->getPerson();
-              $message['target_staff_absent'][] = $person->getFirstname().' '.$person->getLastname();
-            }
-
-            if($staff) {
               $person = $s_ride->getStaff()->getPerson();
               $staff_name = $person->getFirstname().' '.$person->getLastname();
             } else {
+              $staff = null;
+              $person = $s_ride->getStaff()->getPerson();
               $staff_name = "driver absent";
+              $message['target_staff_absent'][] = $person->getFirstname().' '.$person->getLastname();
             }
+
 
             if($s_ride->getVehicle()) {
                 $vehicle_name = $s_ride->getVehicle()->getName();
@@ -119,12 +118,12 @@ class RideService implements RideServiceInterface
               $vehicle_name = "véhicule inconnu";
             }
 
-
             if(!$t_ride = $this->em->getRepository('App:Ride')->findOneBy([
                                                                         'name' => $s_ride->getName(),
                                                                         'kind' => $s_ride->getKind(),
                                                                         'date' => $target_date,
-                                                                        'start' => $s_ride->getStart(),
+                                                                        'kind' => $s_ride->getKind(),
+                                                                      //  'start' => $s_ride->getStart(),
                                                                         'startPoint' => $s_ride->getStartPoint(),
                                                                         'vehicle' => $s_ride->getVehicle()
                                                                         ])) {
@@ -152,30 +151,33 @@ class RideService implements RideServiceInterface
             $t_ride->setUpdatedBy($userId);
             $t_ride->setSuppressed(0);
 
-            $this->em->persist($t_ride);
-            $this->em->flush();
+            // debug line, delete after debug
+            $debugId = $t_ride->getName().' '.$staff_name;
+            $debug[$debugId] = [];
 
             // list all pickup in source if exist child exist in target > affect in ride
-            foreach($s_ride->getPickups() as $pickup) {
-              if(\key_exists($pickup->getChild()->getChildId(), $p_targets[$t_ride->getKind()])) {
+            foreach($s_ride->getPickups() as $o_pickup) {
 
+              if(\key_exists($o_pickup->getChild()->getChildId(), $p_targets[$t_ride->getKind()])) {
                 // new pickup
-                $new_pickup = $p_targets[$t_ride->getKind()][$pickup->getChild()->getChildId()];
-                $new_pickup->setSortOrder($pickup->getSortOrder());
-                $new_pickup->setStart($pickup->getStart());
-                $new_pickup->setPhone($pickup->getPhone());
-                $new_pickup->setPostal($pickup->getPostal());
-                $new_pickup->setAddress($pickup->getAddress());
-                $new_pickup->setLatitude($pickup->getLatitude());
-                $new_pickup->setLongitude($pickup->getLongitude());
+                $t_pickup = $p_targets[$t_ride->getKind()][$o_pickup->getChild()->getChildId()];
+                $t_pickup->setSortOrder($o_pickup->getSortOrder());
+                $start_time_string = $target.' '.$o_pickup->getStart()->format('H:i:s');
+                $t_pickup->setStart(new DateTime($start_time_string));
+                $t_pickup->setPhone($o_pickup->getPhone());
+                $t_pickup->setPostal($o_pickup->getPostal());
+                $t_pickup->setAddress($o_pickup->getAddress());
+                $t_pickup->setLatitude($o_pickup->getLatitude());
+                $t_pickup->setLongitude($o_pickup->getLongitude());
+                $t_ride->addPickup($t_pickup);
 
-                $this->em->persist($new_pickup);
-                $this->em->flush();
+                $message['target_child_associated_to_ride'][$o_pickup->getChild()->getChildId()] = $o_pickup->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();
 
-                $t_ride->addPickup($new_pickup);
-                $message['target_child_associated_to_ride'][$pickup->getChild()->getChildId()] = $pickup->getChild()->getLastname().' '.$pickup->getChild()->getFirstname();
+                // debug line, delete after debug
+                $debug[$debugId][] = $t_pickup->toArray();
+
               } else  {
-                $message['target_child_not_in_target'][$pickup->getChild()->getChildId()] = $pickup->getChild()->getLastname().' '.$pickup->getChild()->getFirstname();
+                $message['target_child_not_in_target'][$o_pickup->getChild()->getChildId()] = $o_pickup->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();
               }
             }
             $this->em->persist($t_ride);
@@ -188,7 +190,7 @@ class RideService implements RideServiceInterface
 
 
 
-        return [$message];
+        return [$debug, $message];
     }
 
     /**

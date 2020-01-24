@@ -97,7 +97,7 @@ class MigrationMyClubService
 
     public function getActivityByDate($date, $limit = 230)
     {
-
+        $arr = [];
         // check if need importation
         if(!$activitys = $this->importActivitys($date, $limit)) {
             $messages['info'] = "Pas d'activités à créer pour le ".date('d/m/Y', strtotime($date));
@@ -123,14 +123,16 @@ class MigrationMyClubService
                     {
                         $child = $this->createChild($childArray);
                     }
-
-                    // create pickupActivitys from child
-                    if($pickupActivity = $this->createEntity->createPickupActivity($child, $dataActivity, $presences)) {
-                        $messages['imported'][] = $pickupActivity->toArray();
+                    if($child) {
+                      // create pickupActivitys from child
+                      if($pickupActivity = $this->createEntity->createPickupActivity($child, $dataActivity, $presences)) {
+                          $messages['imported'][] = $pickupActivity->toArray();
+                      } else {
+                          $messages['info'] = "pas d'activité créée pour ce jour";
+                      }
                     } else {
-                        $messages['info'] = "pas d'activité créée pour ce jour";
+                      $messages['info'] = "aucune données exploitables";
                     }
-
                 } else {
 
                     // data not completed to create pickup activity
@@ -168,6 +170,7 @@ class MigrationMyClubService
 
     public function checkIfUserExist($userArray)
     {
+
         // check if child exist
         $user = $this->em->getRepository('App:User')->findOneBy([
             'email' => $userArray['email'],
@@ -197,7 +200,7 @@ class MigrationMyClubService
          // create family from child data
          $familyArray = $this->importFamily($childArray['family_id']);
 
-         $datas = $this->extractFamilyDatas($familyArray);
+         if(!$datas = $this->extractFamilyDatas($familyArray)) return null;
          // update user & person
          //
 
