@@ -81,17 +81,6 @@ class GroupActivityController extends AbstractController
     public function listByDate(Request $request, PaginatorInterface $paginator, $date)
     {
         $this->denyAccessUnlessGranted('groupActivityList');
-/*
-        $groupActivities = $paginator->paginate(
-            $this->groupActivityService->findAllByDate($date),
-            $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
-        );
-        $groupActivitiesArray = array();
-        foreach ($groupActivities->getItems() as $groupActivity) {
-            $groupActivitiesArray[] = $this->groupActivityService->toArray($groupActivity);
-        };
-*/
 
         ini_set("memory_limit","1024M");
 
@@ -102,10 +91,50 @@ class GroupActivityController extends AbstractController
             $groupActivitiesArray[] = $this->groupActivityService->toArray($groupActivity);
         };
 
-
-
         return new JsonResponse($groupActivitiesArray);
     }
+
+/*
+
+//DUPLICATE GROUP ACTIVITY FROM DAY TO ANOTHER DAY
+    /**
+     * Duplicates all groups activity from a day to another day
+     *
+     * @Route("/group-activity/duplicate/{source}/{target}",
+     *    name="group-activity_duplicate",
+     *    requirements={"source": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=GroupActivity::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="source",
+     *     in="path",
+     *     description="Source for the ride (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="GroupActivity")
+     *
+    public function duplicate($source, $target)
+    {
+
+        $message = $this->GroupActivityService->duplicateRecursive($source, $target);
+
+        return new JsonResponse($message);
+    }
+*/
+
+
 
 
     //LIST BY LUNCH AND DATE

@@ -141,6 +141,117 @@ class GroupActivityService implements GroupActivityServiceInterface
         }
     }
 
+/*
+    public function duplicateRecursive($source, $target) {
+
+        $debug = [];
+
+        // A retrieve all group from source
+        if(!$source_groups = $this->findAllByDate($source)) return ['message' => 'source_no_groups'];
+
+
+        // B retrieve all activitys on target
+        $target_activitys = $this->em->getRepository('App:PickupActivity')->findAllByDate($target);
+
+        // C create a table sport / child_id = activity object
+        foreach($target_activitys as $a) {
+            $activitysArray[$a->getSport()->getSportId()][$a->getChild()->getChildId()] = $a;
+        }
+
+        // D List all coach present in target day
+        $presenceStaffs =  $this->em->getRepository('App:StaffPresence')->findStaffsByPresenceDate($target);
+        foreach($presenceStaffs as $presenceStaff) {
+          $staffArray[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff();
+          $debug[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff()->getPerson()->getFirstname().' '.$presenceStaff->getStaff()->getPerson()->getLastname();
+
+        }
+
+        // E duplicate all groups
+        foreach($source_groups as $group_s) {
+             // create target date object
+             $target_date = new DateTime($target);
+        
+            // add staff if is present in target day
+             // check if coach in source is present in target
+
+            if($group_s->getStaff()) {
+
+                foreach($group_s->getStaff() as $staffLink) {
+                    $staff_s = $staffLink()->getStaff();
+
+                    // create list staff
+                    if(key_exists($staff_s->getStaffId(), $staffArray)) {
+                        $targetStaffArray[] = $staff_s;
+                        $person = $staff_s->getPerson();
+                        $targetStaffNameArray[] = $person->getFirstname().' '.$person->getLastname();
+                      } else {
+                        $targetStaffArray[] = null;
+                        $person = $staff_s->getPerson();
+                        $targetStaffNameArray = "driver absent";
+                        $message['target_staff_absent'][] = $person->getFirstname().' '.$person->getLastname();
+                      }
+        
+                }
+            }
+
+
+            // create target group
+            $group_t = new GroupActivity();
+            $group_t->setDate($target_date);
+            $group_t->setName($group_s->getName());
+            $group_t->setAge($group_s->getAge());
+            $group_t->setStart($group_s->getStart());
+            $group_t->setEnd($group_s->getEnd());
+            $group_t->setLunch($group_s->getLunch());
+            $group_t->setComment($group_s->getComment());
+            $group_t->setLocation($group_s->getLocation());
+            $group_t->setArea($group_s->getAre());
+            $group_t->setSport($group_s->getSport());
+            $userId = 99;
+            $group_t->setCreatedAt(new DateTime());
+            $group_t->setCreatedBy($userId);
+            $group_t->setUpdatedAt(new DateTime());
+            $group_t->setUpdatedBy($userId);
+            $group_t->setSuppressed(0);
+
+            // boucle all actvity and check if in table present find the same
+            foreach($group_s->getPickupActivities() as $activity_link_s) {
+
+                $activity_s = $activity_link_s->getPickupActivity();
+                // add to groups
+
+                if(\key_exists($activity_s->getChild()->getChildId(), $activitysArray[$activity_s->getSport()->getSportId()])) {
+                    // new pickup
+                    $activity_t = $activitysArray[$activity_s->getSport()->getSportId()][$activity_s->getChild()->getChildId()];
+                    $start_time_string = $target.' '.$activity_s->getStart()->format('H:i:s');
+                    $activity_t->setStart(new DateTime($start_time_string));
+                    $activity_t->setDate($target_date);
+                    $activity_t->setChild($activity_s->getChild());
+                    $activity_t->setLocation($activity_s->getLocation());
+                    $activity_t->setSport($activity_s->getSport());
+            
+                    $message['target_child_associated_to_group'][$activity_s->getChild()->getChildId()] = $activity_s->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();
+    
+                    // debug line, delete after debug
+ //                   $debug[$debugId][] = $t_pickup->toArray();
+
+
+                }
+
+
+            }
+        }
+
+
+        asort($message['target_child_associated_to_group']);
+      //  asort($message['target_child_not_in_target']);
+
+
+
+        return [$debug, $message];
+    }*/
+
+
     /**
      * {@inheritdoc}
      */
