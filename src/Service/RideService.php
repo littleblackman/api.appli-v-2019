@@ -7,6 +7,8 @@ use App\Entity\Ride;
 use App\Entity\StaffPresence;
 use DateTime;
 use App\Service\PickupService;
+use App\Entity\GroupActivity;
+
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\ChildService;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -191,6 +193,35 @@ class RideService implements RideServiceInterface
 
 
         return [$debug, $message];
+    }
+
+    public function retrieveGroupActivity($staff, $date, $kind) {
+        
+        if(!$rides = $this->em->getRepository('App:Ride')->findOneRideByDateStaffKind($date, $staff, $kind)) {
+            return ['status' => 'no rides founded'];
+        }
+
+        // list of childs
+        foreach($rides as $ride) {
+            foreach($ride->getPickups() as $pickup) {
+                $childLists[] = $pickup->getChild();
+            }
+        }
+
+        $datas = [];
+        foreach($childLists as $child) {
+            $gpe = $this->em->getRepository('App:GroupActivity')->findOneGroupByDateChild($child, $date, $kind);
+
+            foreach($gpe->getStaff() as $link) {
+                $staffArray[] = $link->getStaff()->getPerson()->getFirstname().' '.$link->getStaff()->getPerson()->getLastname();
+            }
+
+            $datas[$kind][$child->getChildId()] = implode(',' , $staffArray);
+                        
+            unset($staffArray);
+        }
+
+        return $datas;
     }
 
     /**

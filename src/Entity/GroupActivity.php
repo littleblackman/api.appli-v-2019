@@ -101,9 +101,9 @@ class GroupActivity
     private $location;
 
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="area", type="string", length=32)
+     * @ORM\Column(name="area", type="string", nullable=true, length=32)
      */
     private $area;
 
@@ -127,6 +127,11 @@ class GroupActivity
      */
     private $staff;
 
+    /**
+     * @var string[]
+     */
+    private $arrayOptimise;
+
     public function __construct()
     {
         $this->pickupActivities = new ArrayCollection();
@@ -136,7 +141,7 @@ class GroupActivity
     /**
      *
      * return array of group activity
-     * @return Array
+     * @return Array|null
      */
     public function getArrayOptimise() {
 
@@ -378,11 +383,11 @@ class GroupActivity
         return $this->staff;
     }
 
-    public function addStaff(GroupActivityStaffLink $staff): self
+    public function addStaff(GroupActivityStaffLink $staff, $special = true): self
     {
         if (!$this->staff->contains($staff)) {
             $this->staff[] = $staff;
-            $staff->setStaff($this);
+            if($special) $staff->setStaff($this);
         }
 
         return $this;

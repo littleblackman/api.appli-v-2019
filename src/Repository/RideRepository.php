@@ -139,6 +139,36 @@ class RideRepository extends EntityRepository
     /**
      * Returns the rides by date and staff
      */
+    public function findOneRideByDateStaffKind($date, $staff, $kind)
+    {
+        
+        $qb = $this->createQueryBuilder('r')
+            ->addSelect('pi')
+            ->leftJoin('r.staff', 's')
+            ->leftJoin('r.pickups', 'pi')
+            ->where('r.date = :date')
+            ->andWhere('r.staff = :staff')
+            ->andWhere('r.suppressed = 0')
+            ->andWhere('r.kind = :kind')
+            ->orderBy('r.date', 'ASC');
+        if($kind = "dropin") {
+            $qb->addOrderBy('r.start', 'ASC');
+        } else {
+            $qb->addOrderBy('r.start', 'DESC');
+        }
+        return $qb->addOrderBy('pi.sortOrder', 'ASC')
+            ->setParameter('date', $date)
+            ->setParameter('kind', $kind)
+            ->setParameter('staff', $staff)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
+    /**
+     * Returns the rides by date and staff
+     */
     public function findAllByDateByStaff($date, $staff)
     {
         return $this->createQueryBuilder('r')

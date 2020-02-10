@@ -32,7 +32,7 @@ class MealRepository extends EntityRepository
     /**
      * Returns by child and date
      */
-    public function findByChildAndDate($child, $date)
+    public function findByChildAndDate($child, $date, $result)
     {
         return $this->createQueryBuilder('m')
             ->addSelect('ml', 'f')

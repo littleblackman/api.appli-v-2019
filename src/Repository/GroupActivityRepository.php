@@ -44,6 +44,28 @@ class GroupActivityRepository extends EntityRepository
         ;
     }
 
+    public function findOneGroupByDateChild($child, $date, $kind) {
+
+        $qb = $this->createQueryBuilder('ga')
+                ->leftJoin('ga.pickupActivities', 'link')
+                ->leftJoin('link.pickupActivity', 'p')
+                ->where('ga.date = :date')
+                ->andWhere('p.child = :child')
+                ->setParameter('date', $date)
+                ->setParameter('child', $child);
+            
+        if($kind == "dropin") {
+            $qb->orderBy('ga.start', 'ASC');
+        } else {
+            $qb->orderBy('ga.start', 'DESC');
+        }
+               
+            return $qb->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+
+    }
+
     public function findLunchgroup($date) {
       return $this->createQueryBuilder('ga')
           ->where('ga.date = :date')

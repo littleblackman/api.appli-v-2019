@@ -117,16 +117,22 @@ class MealService implements MealServiceInterface
      * Returns the list of all meals by date
      * @return array
      */
-    public function findByChildAndDate($childId, $date)
+    public function findByChildAndDate($childId, $date, $result = null)
     {
 
         $child = $this->em->getRepository('App:Child')->find($childId);
 
         return $this->em
             ->getRepository('App:Meal')
-            ->findByChildAndDate($child, $date)
+            ->findByChildAndDate($child, $date, $result)
         ;
 
+    }
+
+    public function latestMealDate($childId) {
+        if(!$child = $this->em->getRepository('App:Child')->find($childId)) return null;
+        $meal = $this->em->getRepository('App:Meal')->findOneBy(['child' => $child], ['date' => 'DESC']);
+        return $meal;
     }
 
 
@@ -136,13 +142,12 @@ class MealService implements MealServiceInterface
      */
     public function latestMealByChild($childId)
     {
-      $child = $this->em->getRepository('App:Child')->find($childId);
+        
+        $child = $this->em->getRepository('App:Child')->find($childId);
 
-      return $this->em
-          ->getRepository('App:Meal')
-          ->findLatestByChild($child)
-      ;
+        $meal = $this->em->getRepository('App:Meal')->findLatestByChild($child);
 
+        return $meal;
     }
 
     /**
@@ -218,12 +223,17 @@ class MealService implements MealServiceInterface
             $objectArray['person'] = $this->mainService->toArray($object->getPerson()->toArray());
         }
 
+        $objectArray['nb'] = count($object->getFoods());
+
+
         //Gets related foods
         if (null !== $object->getFoods()) {
             $foods = array();
+
             foreach($object->getFoods() as $foodLink) {
                 if (!$foodLink->getFood()->getSuppressed()) {
-                    $foods[] = $this->mainService->toArray($foodLink->getFood()->toArray());
+                    $foods[] = $foodLink->getFood()->toArray();
+                   // $foods[] = $this->mainService->toArray($foodLink->getFood()->toArray());
                 }
             }
             $objectArray['foods'] = $foods;

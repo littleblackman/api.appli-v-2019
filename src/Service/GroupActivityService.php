@@ -7,6 +7,8 @@ use App\Entity\GroupActivityStaffLink;
 use App\Entity\PickupActivity;
 use App\Entity\PickupActivityGroupActivityLink;
 use App\Entity\Staff;
+use App\Entity\StaffPresence;
+
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -141,7 +143,6 @@ class GroupActivityService implements GroupActivityServiceInterface
         }
     }
 
-/*
     public function duplicateRecursive($source, $target) {
 
         $debug = [];
@@ -149,9 +150,8 @@ class GroupActivityService implements GroupActivityServiceInterface
         // A retrieve all group from source
         if(!$source_groups = $this->findAllByDate($source)) return ['message' => 'source_no_groups'];
 
-
         // B retrieve all activitys on target
-        $target_activitys = $this->em->getRepository('App:PickupActivity')->findAllByDate($target);
+        if(!$target_activitys = $this->em->getRepository('App:PickupActivity')->findAllByDate($target)) return ['message' => 'no_target_activities'];
 
         // C create a table sport / child_id = activity object
         foreach($target_activitys as $a) {
@@ -161,9 +161,8 @@ class GroupActivityService implements GroupActivityServiceInterface
         // D List all coach present in target day
         $presenceStaffs =  $this->em->getRepository('App:StaffPresence')->findStaffsByPresenceDate($target);
         foreach($presenceStaffs as $presenceStaff) {
-          $staffArray[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff();
-          $debug[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff()->getPerson()->getFirstname().' '.$presenceStaff->getStaff()->getPerson()->getLastname();
-
+            $staffArray[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff();
+            $debug[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff()->getPerson()->getFirstname().' '.$presenceStaff->getStaff()->getPerson()->getLastname();
         }
 
         // E duplicate all groups
@@ -175,27 +174,34 @@ class GroupActivityService implements GroupActivityServiceInterface
              // check if coach in source is present in target
 
             if($group_s->getStaff()) {
-
+                $targetStaffArray = null;
                 foreach($group_s->getStaff() as $staffLink) {
-                    $staff_s = $staffLink()->getStaff();
+                    $staff_s = $staffLink->getStaff();
 
                     // create list staff
-                    if(key_exists($staff_s->getStaffId(), $staffArray)) {
+                    if(key_exists($staff_s->getStaffId(), $staffArray) && ($staff_s instanceof Staff) )  {
                         $targetStaffArray[] = $staff_s;
                         $person = $staff_s->getPerson();
                         $targetStaffNameArray[] = $person->getFirstname().' '.$person->getLastname();
+                        $message['target_staff_present'][] = $person->getFirstname().' '.$person->getLastname();
+
                       } else {
+                          /*
                         $targetStaffArray[] = null;
                         $person = $staff_s->getPerson();
                         $targetStaffNameArray = "driver absent";
-                        $message['target_staff_absent'][] = $person->getFirstname().' '.$person->getLastname();
+                        $message['target_staff_absent'][] = $person->getFirstname().' '.$person->getLastname();*/
                       }
         
                 }
+            } else {
+                $targetStaffArray = null;
             }
 
-
             // create target group
+
+            ($group_s->getArea() == null) ? $area = "" : $area = $group_s->getArea();
+
             $group_t = new GroupActivity();
             $group_t->setDate($target_date);
             $group_t->setName($group_s->getName());
@@ -205,14 +211,43 @@ class GroupActivityService implements GroupActivityServiceInterface
             $group_t->setLunch($group_s->getLunch());
             $group_t->setComment($group_s->getComment());
             $group_t->setLocation($group_s->getLocation());
-            $group_t->setArea($group_s->getAre());
+            $group_t->setArea($area);
             $group_t->setSport($group_s->getSport());
+            
             $userId = 99;
             $group_t->setCreatedAt(new DateTime());
             $group_t->setCreatedBy($userId);
             $group_t->setUpdatedAt(new DateTime());
             $group_t->setUpdatedBy($userId);
             $group_t->setSuppressed(0);
+
+            $this->em->persist($group_t);
+            $this->em->flush();
+
+            // add staff to group
+            if($targetStaffArray) {
+
+                foreach($targetStaffArray as $staff) {
+
+                    $debug['targetStaffArray'][] = $staff->getPerson()->getFirstname().' '.$staff->getPerson()->getLastname();
+                    
+                    if ($staff instanceof Staff) {
+                        $linkStaffGroup = new GroupActivityStaffLink();
+                        $linkStaffGroup->setGroupActivity($group_t);
+                        $linkStaffGroup->setStaff($staff);
+                        $this->em->persist($linkStaffGroup);
+                        $this->em->flush();
+                        $group_t->addStaff($linkStaffGroup, false);
+                    }
+
+                   
+
+                }
+            }
+
+            $this->em->persist($group_t);
+            $this->em->flush();
+
 
             // boucle all actvity and check if in table present find the same
             foreach($group_s->getPickupActivities() as $activity_link_s) {
@@ -221,7 +256,7 @@ class GroupActivityService implements GroupActivityServiceInterface
                 // add to groups
 
                 if(\key_exists($activity_s->getChild()->getChildId(), $activitysArray[$activity_s->getSport()->getSportId()])) {
-                    // new pickup
+                    // new activity
                     $activity_t = $activitysArray[$activity_s->getSport()->getSportId()][$activity_s->getChild()->getChildId()];
                     $start_time_string = $target.' '.$activity_s->getStart()->format('H:i:s');
                     $activity_t->setStart(new DateTime($start_time_string));
@@ -230,26 +265,44 @@ class GroupActivityService implements GroupActivityServiceInterface
                     $activity_t->setLocation($activity_s->getLocation());
                     $activity_t->setSport($activity_s->getSport());
             
-                    $message['target_child_associated_to_group'][$activity_s->getChild()->getChildId()] = $activity_s->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();
+
+                    $this->em->persist($activity_t);
+                    $this->em->flush();
+
+                    // add activity to group
+                    $link = new PickupActivityGroupActivityLink();
+                    $link->setPickupActivity($activity_t);
+                    $link->setGroupActivity($group_t);
+                    $this->em->persist($link);
+                    $this->em->flush();
+                    $group_t->addPickupActivity($link);
+
+                    $message['target_child_associated_to_group'][$activity_s->getChild()->getChildId()] = $activity_s->getChild()->getLastname().' '.$activity_s->getChild()->getFirstname();
     
                     // debug line, delete after debug
  //                   $debug[$debugId][] = $t_pickup->toArray();
 
 
+                } else {
+                    $message['target_child_not_in_target'][$activity_s->getChild()->getChildId()] = $activity_s->getChild()->getLastname().' '.$activity_s->getChild()->getFirstname();
+
                 }
 
 
             }
+
+            $this->em->persist($group_t);
+            $this->em->flush();
         }
 
 
         asort($message['target_child_associated_to_group']);
-      //  asort($message['target_child_not_in_target']);
+        asort($message['target_child_not_in_target']);
 
 
 
-        return [$debug, $message];
-    }*/
+        return [$debug,$message];
+    }
 
 
     /**

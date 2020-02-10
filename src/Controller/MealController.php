@@ -214,15 +214,13 @@ class MealController extends AbstractController
      */
     public function latestMealByChild($childId)
     {
-        $this->denyAccessUnlessGranted('mealCreate');
-        $meal = $this->mealService->latestMealByChild($childId);
-        if($meal) {
-            $mealArray = $this->mealService->toArray($meal);
-        } else {
-            $mealArray = ['message' => 'Aucun repas trouvé'];
-        }
 
-        return new JsonResponse([$mealArray]);
+
+        $this->denyAccessUnlessGranted('mealCreate');
+        if(!$meal = $this->mealService->latestMealDate($childId)) return new JsonResponse(['message' => 'Aucun repas trouvé']);       
+        $date = $meal->getDate()->format('Y-m-d');
+        return $this->mealByChildAndDate($childId, $date);
+
     }
 
 

@@ -251,6 +251,67 @@ class RideController extends AbstractController
 
 
 
+
+
+//DISPLAY BY DATE AND STAFFID
+    /**
+     * Displays the rides for a specific date and staff
+     *
+     * @Route("/ride/retrieve-group-activity/{date}/{staffId}/{kind}",
+     *    name="ride_retrieve-group-activity_date_staff",
+     *    requirements={
+     *        "date": "^([0-9]{4}-[0-9]{2}-[0-9]{2})$",
+     *        "staffId": "^([0-9]+)$",
+     *        "kind" : "^(dropin|dropoff)$",
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Ride::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the ride (YYYY-MM-DD)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="staffId",
+     *     in="path",
+     *     description="Id for the Staff",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="kind",
+     *     in="path",
+     *     description="type of ride dropin or dropoff",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Ride")
+     */
+    public function retrieveGroupActivityByDateAndStaff($date, $staffId, $kind)
+    {
+        $this->denyAccessUnlessGranted('rideDisplay');
+        if(!$staff = $this->staffService->findOneById($staffId)) return new JsonResponse(['status' => 'error: staff doesn\'t exist']);
+
+        $childsArray = $this->rideService->retrieveGroupActivity($staff, $date, $kind);
+
+        return new JsonResponse($childsArray);
+    }
+
+
+
+
+
 //DISPLAY BY DATE AND STAFFID
     /**
      * Displays the rides for a specific date and staff

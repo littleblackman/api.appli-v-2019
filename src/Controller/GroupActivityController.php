@@ -94,7 +94,7 @@ class GroupActivityController extends AbstractController
         return new JsonResponse($groupActivitiesArray);
     }
 
-/*
+
 
 //DUPLICATE GROUP ACTIVITY FROM DAY TO ANOTHER DAY
     /**
@@ -124,15 +124,15 @@ class GroupActivityController extends AbstractController
      *     type="string",
      * )
      * @SWG\Tag(name="GroupActivity")
-     *
+     */
     public function duplicate($source, $target)
     {
 
-        $message = $this->GroupActivityService->duplicateRecursive($source, $target);
+        $message = $this->groupActivityService->duplicateRecursive($source, $target);
 
         return new JsonResponse($message);
     }
-*/
+
 
 
 
