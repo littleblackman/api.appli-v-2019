@@ -471,6 +471,9 @@ class PickupService implements PickupServiceInterface
      */
     public function modify(Pickup $object, string $data)
     {
+
+        $status_original = $object->getStatus();
+
         //Submits data
         $data = $this->mainService->submit($object, 'pickup-modify', $data);
 
@@ -485,6 +488,10 @@ class PickupService implements PickupServiceInterface
         //Checks coordinates
         if (array_key_exists('address', $data)) {
             $this->checkCoordinates($object, true);
+        }
+
+        if($status_original != $object->getStatus()) {
+            $object->setStatusChange(new DateTime());
         }
 
         //Persists data

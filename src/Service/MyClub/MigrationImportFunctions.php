@@ -74,6 +74,26 @@ trait MigrationImportFunctions
         return $list;
 
       }
+    
+    public function importOneChild($child_id) {
+        $this->resetQuery();
+
+        $this->setTable('ea_child as c');
+
+        // child informations
+        $this->addFields(array('c.id as child_id', 'c.first_name as firstname', 'c.child_last_name as lastname', 'c.sexe as gender', 'c.birthday as birthdate', 'c.medical_note as medical', 'c.family_id as family_id', 'c.created_at as c_created_at', 'c.updated_at as updated_at'));
+
+        $this->addJoin('ea_family as f', 'f.id', 'c.family_id');
+
+        $this->addWhere('c.id = '.$child_id);
+
+        $data = $this->createSelectQuery()->getData();
+
+        $data['family'] = $this->importFamily($data['family_id']);
+
+        return $data;
+
+    }
 
     public function importChild($limit = 30) {
       $this->resetQuery();
@@ -144,7 +164,7 @@ trait MigrationImportFunctions
 
     }
 
-    public function importFamily($family_id) {
+    public function importFamily($family_id, $groupBy = null) {
 
         $this->resetQuery();
 
@@ -166,6 +186,10 @@ trait MigrationImportFunctions
 
         $this->addWhere('f.is_archived = 0');
         $this->addWhere('f.id = '.$family_id);
+
+        if($groupBy) {
+          $this->setGroupBy($groupBy);
+        }
 
         $datas = $this->createSelectQuery()->getDatas();
 

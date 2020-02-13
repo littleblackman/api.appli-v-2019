@@ -25,6 +25,18 @@ class FoodRepository extends EntityRepository
         ;
     }
 
+
+    public function findByMeal($meal) {
+        return $this->createQueryBuilder('f')
+        ->leftJoin('f.meals', 'link')
+        ->where('link.meal = :meal')
+        ->setParameter('meal', $meal)
+        ->getQuery()
+        ->getResult()
+    ;
+        
+    }
+
     /**
      * Returns the ride if not suppressed
      */

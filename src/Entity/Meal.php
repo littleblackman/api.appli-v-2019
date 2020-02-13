@@ -152,7 +152,7 @@ class Meal
     /**
      * @return Collection|MealFoodLink[]
      */
-    public function getFoods(): Collection
+    public function getFoods()
     {
         return $this->foods;
     }

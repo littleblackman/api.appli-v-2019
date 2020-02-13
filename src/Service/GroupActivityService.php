@@ -155,7 +155,9 @@ class GroupActivityService implements GroupActivityServiceInterface
 
         // C create a table sport / child_id = activity object
         foreach($target_activitys as $a) {
-            $activitysArray[$a->getSport()->getSportId()][$a->getChild()->getChildId()] = $a;
+            if($a->getSport()) {
+                $activitysArray[$a->getSport()->getSportId()][$a->getChild()->getChildId()] = $a;
+            }
         }
 
         // D List all coach present in target day
@@ -255,7 +257,7 @@ class GroupActivityService implements GroupActivityServiceInterface
                 $activity_s = $activity_link_s->getPickupActivity();
                 // add to groups
 
-                if(\key_exists($activity_s->getChild()->getChildId(), $activitysArray[$activity_s->getSport()->getSportId()])) {
+                if($activity_s->getSport() && \key_exists($activity_s->getChild()->getChildId(), $activitysArray[$activity_s->getSport()->getSportId()])) {
                     // new activity
                     $activity_t = $activitysArray[$activity_s->getSport()->getSportId()][$activity_s->getChild()->getChildId()];
                     $start_time_string = $target.' '.$activity_s->getStart()->format('H:i:s');

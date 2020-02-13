@@ -222,6 +222,27 @@ trait MigrationQueryBuilder
         return $datas;
     }
 
+
+    /**
+     *
+     * retrieve all datas
+     * @return array
+     */
+    public function getData($formatData = null)
+    {
+        $conn = $this->getConnexion();
+
+        $r = $conn->prepare($this->query);
+        $r->execute();
+
+        $datas = $r->fetch(PDO::FETCH_ASSOC);
+
+       // $datas = $this->utf8encodeBddResult($datas);
+
+        return $datas;
+    }
+
+
     /**
      * execute query
      * @return mixed

@@ -48,11 +48,10 @@ class PickupActivityRepository extends EntityRepository
      */
     public function findAllByStatus($date, $status)
     {
-        $statusCondition = 'null' === $status ? 'pa.status IS NULL' : 'pa.status = :status';
+        //$statusCondition = 'null' === $status ? 'pa.status IS NULL' : 'pa.status = :status';
 
         $qb = $this->createQueryBuilder('pa')
-            ->where($statusCondition)
-            ->andWhere('pa.date LIKE :date')
+            ->where('pa.date LIKE :date')
             ->andWhere('pa.suppressed = 0')
             ->orderBy('pa.date', 'ASC')
             ->addOrderBy('pa.start', 'ASC')
@@ -60,7 +59,9 @@ class PickupActivityRepository extends EntityRepository
         ;
 
         if ('null' !== $status) {
-            $qb->setParameter('status', $status);
+
+            $qb->andWhere('pa.status = :status')
+            ->setParameter('status', $status);
         }
 
         return $qb

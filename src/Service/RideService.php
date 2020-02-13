@@ -211,12 +211,18 @@ class RideService implements RideServiceInterface
         $datas = [];
         foreach($childLists as $child) {
             $gpe = $this->em->getRepository('App:GroupActivity')->findOneGroupByDateChild($child, $date, $kind);
-
+            if(!$gpe) continue; 
             foreach($gpe->getStaff() as $link) {
                 $staffArray[] = $link->getStaff()->getPerson()->getFirstname().' '.$link->getStaff()->getPerson()->getLastname();
             }
 
-            $datas[$kind][$child->getChildId()] = implode(',' , $staffArray);
+            $datas[$child->getChildId()] = [
+                                                'child_name' => $child->getFirstname().' '.$child->getLastname(),
+                                                'staff_name' => implode(', ' , $staffArray),
+                                                'time_start' => $gpe->getStart()->format('H:i'),
+                                                'sport'      => $gpe->getSport()->getName()
+
+                                            ] ;
                         
             unset($staffArray);
         }

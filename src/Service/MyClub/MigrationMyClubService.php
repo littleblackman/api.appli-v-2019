@@ -54,6 +54,19 @@ class MigrationMyClubService
 
     }
 
+    public function updateChildData($child_id) {
+
+        // child appli_v
+        if(!$child_av = $this->em->getRepository('App:Child')->find($child_id)) return ['child '.$child_id.' not founded'];
+    
+        // child myclub
+        $child_mc = $this->importOneChild($child_id);
+
+
+
+        return $child_mc;
+    }
+
 
     public function getTransportByDate($date, $limit = 30)
     {

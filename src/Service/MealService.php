@@ -223,17 +223,21 @@ class MealService implements MealServiceInterface
             $objectArray['person'] = $this->mainService->toArray($object->getPerson()->toArray());
         }
 
-        $objectArray['nb'] = count($object->getFoods());
-
-
+        // get related food
+        if($foodObjects = $this->em->getRepository('App:Food')->findByMeal($object)) {
+            foreach($foodObjects as $foodObject) {
+                $objectArray['allfoods'][] = $foodObject->toArray();
+            }
+        } else {
+            $objectArray['allfoods'] = [];  
+        }
+        
         //Gets related foods
         if (null !== $object->getFoods()) {
             $foods = array();
-
             foreach($object->getFoods() as $foodLink) {
                 if (!$foodLink->getFood()->getSuppressed()) {
-                    $foods[] = $foodLink->getFood()->toArray();
-                   // $foods[] = $this->mainService->toArray($foodLink->getFood()->toArray());
+                   $foods[] = $this->mainService->toArray($foodLink->getFood()->toArray());
                 }
             }
             $objectArray['foods'] = $foods;

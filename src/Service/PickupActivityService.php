@@ -366,6 +366,7 @@ class PickupActivityService implements PickupActivityServiceInterface
      */
     public function findAllByStatus(string $date, string $status)
     {
+
         return $this->em
             ->getRepository('App:PickupActivity')
             ->findAllByStatus($date, $status)
