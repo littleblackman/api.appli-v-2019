@@ -78,6 +78,12 @@ class PickupType extends AbstractType
                 'required' => false,
                 'class' => Ride::class,
                 ))
+            ->add('payment_due', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('payment_done', TextType::class, array(
+                'required' => false,
+                ))
         ;
     }
 

@@ -53,6 +53,11 @@ class CategoryService implements CategoryServiceInterface
         );
     }
 
+    public function findAllActive() {
+        $categories = $this->em->getRepository('App:Category')->findActiveProducts();
+        return $categories;
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -68,6 +68,22 @@ class StaffPresence
      */
     private $typeName;
 
+       /**
+     * @var String|null
+     *
+     * @ORM\Column(name="teams_id_list", type="string", length=255, nullable=true)
+     */
+    private $teamsIdList;
+
+
+    /**
+     * @var Season
+     *
+     * @ORM\OneToOne(targetEntity="Location")
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="location_id")
+     */
+    private $location;
+
     /**
      * Converts the entity in an array
      */
@@ -85,6 +101,11 @@ class StaffPresence
         if (null !== $objectArray['end']) {
             $objectArray['end'] = $objectArray['end']->format('H:i:s');
         }
+
+        if (null !== $objectArray['location']) {
+            $objectArray['location'] = $this->getLocation()->getName();
+        }
+
 
         return $objectArray;
     }
@@ -154,4 +175,52 @@ class StaffPresence
         return $this;
     }
 
+
+    /**
+     * Get the value of teamsIdList
+     *
+     * @return  String|null
+     */ 
+    public function getTeamsIdList()
+    {
+        return $this->teamsIdList;
+    }
+
+    /**
+     * Set the value of teamsIdList
+     *
+     * @param  String|null  $teamsIdList
+     *
+     * @return  self
+     */ 
+    public function setTeamsIdList($teamsIdList)
+    {
+        $this->teamsIdList = $teamsIdList;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of location
+     *
+     * @return  Location
+     */ 
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * Set the value of location
+     *
+     * @param  Location  $location
+     *
+     * @return  self
+     */ 
+    public function setLocation(Location $location)
+    {
+        $this->location = $location;
+
+        return $this;
+    }
 }

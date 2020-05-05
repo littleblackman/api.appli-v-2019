@@ -279,6 +279,61 @@ class ChildController extends AbstractController
         return new JsonResponse($modifiedData);
     }
 
+
+//REMOVE LINK
+    /**
+     * Remove child link person
+     *
+     * @Route("/child/removePerson/{childId}/{personId}",
+     *    name="child_remove_link_person",
+     *    requirements={"childId": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("child", expr="repository.findOneById(childId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="child", ref=@Model(type=Child::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="childId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the child",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Child",
+     *     required=true,
+     *     @Model(type=ChildType::class)
+     * )
+     * @SWG\Tag(name="Child")
+     */
+    public function removePerson(Child $child, $personId)
+    {
+        $this->denyAccessUnlessGranted('childModify', $child);
+
+        $modifiedData = $this->childService->removePerson($child, $personId);
+
+        return new JsonResponse($modifiedData);
+    }
+
+
+
 //DELETE
     /**
      * Deletes child

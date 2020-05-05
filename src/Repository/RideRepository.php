@@ -136,6 +136,21 @@ class RideRepository extends EntityRepository
         ;
     }
 
+    public function findAllByDateAndBetween($date, $from, $to) {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.pickups', 'pi')
+            ->where('r.date LIKE :date')
+            ->andWhere(' (r.start >= :from AND r.start <= :to)')
+            ->andWhere('r.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->orderBy('r.start', 'ASC')
+            ->addOrderBy('pi.sortOrder', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * Returns the rides by date and staff
      */

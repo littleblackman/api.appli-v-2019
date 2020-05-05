@@ -476,7 +476,6 @@ class PickupController extends AbstractController
      * Modifies pickup
      *
      * @Route("/pickup/modify/{pickupId}",
-     *    name="pickup_modify",
      *    requirements={"pickupId": "^([0-9]+)$"},
      *    methods={"HEAD", "PUT"})
      * @Entity("pickup", expr="repository.findOneById(pickupId)")

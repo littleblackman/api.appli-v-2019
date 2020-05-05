@@ -86,6 +86,20 @@ class ChildPresence
     private $end;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=32)
+     */
+    private $status;
+
+    /**
+     * @var DateTime
+     *
+     * @ORM\Column(name="status_change", type="datetime")
+     */
+    private $statusChange;
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
@@ -191,6 +205,31 @@ class ChildPresence
     public function setEnd(?DateTimeInterface $end): self
     {
         $this->end = $end;
+
+        return $this;
+    }
+
+
+    public function getStatus(): ?string
+    {
+        return null !== $this->status ? strtolower($this->status) : null;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = !empty($status) && 'null' !== $status ? strtolower($status) : null;
+
+        return $this;
+    }
+
+    public function getStatusChange(): ?DateTimeInterface
+    {
+        return $this->statusChange;
+    }
+
+    public function setStatusChange(?DateTimeInterface $statusChange): self
+    {
+        $this->statusChange = $statusChange;
 
         return $this;
     }

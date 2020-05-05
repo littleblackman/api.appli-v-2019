@@ -76,14 +76,17 @@ class StaffController extends AbstractController
     {
         $this->denyAccessUnlessGranted('staffList');
 
+        /*
         $staffs = $paginator->paginate(
             $this->staffService->findAllByKind($kind),
             $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
-        );
+            $request->query->getInt('size', 150)
+        );*/
+
+        $staffs = $this->staffService->findAllByKind($kind);
 
         $staffsArray = array();
-        foreach ($staffs->getItems() as $staff) {
+        foreach ($staffs as $staff) {
             $staffsArray[] = $this->staffService->toArray($staff);
         };
 

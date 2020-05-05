@@ -70,8 +70,6 @@ class StaffPresenceService implements StaffPresenceServiceInterface
      */
     public function create(string $data)
     {
-
-
         $data = json_decode($data, true);
 
         if (is_array($data) && !empty($data)) {
@@ -83,6 +81,12 @@ class StaffPresenceService implements StaffPresenceServiceInterface
                 //Creates object if not already existing
                 if (null === $object) {
                     $object = new StaffPresence();
+
+
+                    $location = $this->em->getRepository('App:Location')->find($staffPresence['location']);
+
+                    $staffPresence['location'] = $location;
+
                     $this->mainService->create($object);
 
                     //Submits data
@@ -91,6 +95,8 @@ class StaffPresenceService implements StaffPresenceServiceInterface
 
                     //Checks if entity has been filled
                     $this->isEntityFilled($object);
+
+                    $object->setLocation($location);
 
                     //Persists data
                     $this->mainService->persist($object);
@@ -245,7 +251,14 @@ class StaffPresenceService implements StaffPresenceServiceInterface
 
                     /***** CREATE WORKLOAD ****/
 
-                    $workload = ['date' => $date, 'startCase' => $caseA, 'endCase' => $caseB, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'firstAction' => $firstAction, 'lastAction' => $lastAction];
+                    $workload = ['date' => $date,
+                                 'startCase' => $caseA,
+                                 'endCase' => $caseB, 
+                                 'timeStart' => $timeStart, 
+                                 'timeEnd' => $timeEnd, 
+                                 'firstAction' => $firstAction, 
+                                 'lastAction' => $lastAction,
+                                 'teamsIdList' => $staffPresence->getTeamsIdList()];
                     $person = $staffPresence->getStaff()->getPerson();
 
                     if($currentStaffId != $staffPresence->getStaff()->getStaffId()) {
@@ -379,6 +392,7 @@ class StaffPresenceService implements StaffPresenceServiceInterface
      */
     public function toArray(StaffPresence $object)
     {
+
         //Main data
         $objectArray = $this->mainService->toArray($object->toArray());
 

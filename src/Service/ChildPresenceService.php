@@ -6,9 +6,12 @@ use App\Entity\ChildPresence;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\Entity\PickupActivity;
+use App\Entity\Pickup;
 
 /**
- * ChildPresenceService class
+ * ChildPresenceService class.
+ *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class ChildPresenceService implements ChildPresenceServiceInterface
@@ -19,19 +22,22 @@ class ChildPresenceService implements ChildPresenceServiceInterface
 
     private $mainService;
 
+    private $pickupActivityService;
+
     public function __construct(
         EntityManagerInterface $em,
         ChildServiceInterface $childService,
-        MainServiceInterface $mainService
-    )
-    {
+        MainServiceInterface $mainService,
+        PickupActivityServiceInterface $pickupActivityService
+    ) {
         $this->em = $em;
         $this->childService = $childService;
         $this->mainService = $mainService;
+        $this->pickupActivityService = $pickupActivityService;
     }
 
     /**
-     * Adds specific data that could not be added via generic method
+     * Adds specific data that could not be added via generic method.
      */
     public function addSpecificData(ChildPresence $object, array $data)
     {
@@ -77,7 +83,105 @@ class ChildPresenceService implements ChildPresenceServiceInterface
             );
         }
 
-        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> '.json_encode($data));
+    }
+
+    public function createFromRegistrationAndData($registration, $date, $location, $hours, $sports, $hasLunch, $hasTransport, $pickupsData)
+    {
+        // $presenceDate = new \DateTime($date);
+
+        // create presence
+
+        $object = new ChildPresence();
+        $this->mainService->create($object);
+
+        $object->setRegistration($registration);
+        $object->setChild($registration->getChild());
+        $object->setLocation($location);
+        $object->setDate($date);
+        $object->setStart($hours['start']);
+        $object->setEnd($hours['end']);
+        $object->setStatus(' ');
+
+        $this->mainService->persist($object);
+
+        // create pickup activity
+        foreach ($sports as $sport) {
+            $object = new PickupActivity();
+            $this->mainService->create($object);
+
+            $object->setDate($date);
+            $object->setRegistration($registration);
+            $object->setChild($registration->getChild());
+            $object->setStart($hours['start']);
+            $object->setEnd($hours['end']);
+            $object->setSport($sport);
+            $object->setLocation($location);
+
+            //Persists data
+            $this->mainService->persist($object);
+        }
+
+        // ahd lunch
+        if($hasLunch == 1) {
+
+            $lunch = $this->em->getRepository('App:Sport')->find(10);
+
+            $object = new PickupActivity();
+            $this->mainService->create($object);
+
+            $object->setDate($date);
+            $object->setRegistration($registration);
+            $object->setChild($registration->getChild());
+            $object->setStart($hours['start']);
+            $object->setEnd($hours['end']);
+            $object->setSport($lunch);
+            $object->setLocation($location);
+
+            //Persists data
+            $this->mainService->persist($object);
+        }
+
+
+        // create pickup
+        if ($hasTransport) {
+            $child = $registration->getChild();
+            $person = $child->getPersons()[0]->getPerson();
+
+            $address = $person->getAddresses()[0]->getAddress();
+
+            foreach ($pickupsData as $kind => $timePickup) {
+                $start = new \DateTime($date->format('Y-m-d').' '.$timePickup->format('H:i:s'));
+
+                //Submits data
+                $object = new Pickup();
+                $this->mainService->create($object);
+
+                $object->setChild($registration->getChild());
+                $object->setKind($kind);
+                $object->setStart($start);
+                $object->setRegistration($registration);
+                $object->setPhone(null);
+                $object->setPostal($address->getPostal());
+                $object->setAddress($address->getAddress().', '.$address->getPostal().' '.$address->getTown());
+
+                //Checks coordinates
+                $this->checkCoordinates($object);
+                $this->mainService->persist($object);
+            }
+        }
+    }
+
+    public function checkCoordinates($object, $force = false)
+    {
+        if ($force ||
+            null === $object->getLatitude() ||
+            null === $object->getLongitude() ||
+            null === $object->getPostal() ||
+            5 != strlen($object->getPostal())
+        ) {
+            $this->mainService->addCoordinates($object);
+        }
     }
 
     /**
@@ -98,7 +202,7 @@ class ChildPresenceService implements ChildPresenceServiceInterface
     }
 
     /**
-     * Deletes ChildPresence by array of ids
+     * Deletes ChildPresence by array of ids.
      */
     public function deleteByArray(string $data)
     {
@@ -117,11 +221,11 @@ class ChildPresenceService implements ChildPresenceServiceInterface
             );
         }
 
-        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> '.json_encode($data));
     }
 
     /**
-     * Deletes ChildPresence by registrationId
+     * Deletes ChildPresence by registrationId.
      */
     public function deleteByRegistrationId(int $registrationId)
     {
@@ -139,7 +243,8 @@ class ChildPresenceService implements ChildPresenceServiceInterface
     }
 
     /**
-     * Returns the list of all children presence by date
+     * Returns the list of all children presence by date.
+     *
      * @return array
      */
     public function findAllByDate($date)
@@ -151,7 +256,8 @@ class ChildPresenceService implements ChildPresenceServiceInterface
     }
 
     /**
-     * Returns the list of presence by child
+     * Returns the list of presence by child.
+     *
      * @return array
      */
     public function findByChild($childId, $date)
@@ -171,8 +277,32 @@ class ChildPresenceService implements ChildPresenceServiceInterface
             null === $object->getDate() ||
             null === $object->getStart() ||
             null === $object->getLocation()) {
-            throw new UnprocessableEntityHttpException('Missing data for ChildPresence -> ' . json_encode($object->toArray()));
+            throw new UnprocessableEntityHttpException('Missing data for ChildPresence -> '.json_encode($object->toArray()));
         }
+    }
+
+    public function updateStatus($child, $date, $status)
+    {
+        $presence = $this->em->getRepository('App:ChildPresence')->findOneBy(['child' => $child, 'date' => $date]);
+        if ($status == null) {
+            $status = '';
+        }
+        $presence->setStatus($status);
+        $presence->setStatusChange(new DateTime());
+
+        $this->em->persist($presence);
+        $this->em->flush();
+
+        if ($pickupActivitys = $this->em->getRepository('App:PickupActivity')->findBy(['child' => $child, 'date' => $date])) {
+            foreach ($pickupActivitys as $pa) {
+                $pa->setStatus($status);
+                $pa->setStatusChange(new DateTime());
+                $this->em->persist($pa);
+                $this->em->flush();
+            }
+        }
+
+        return true;
     }
 
     /**

@@ -40,8 +40,10 @@ class ChildService implements ChildServiceInterface
         if (array_key_exists('links', $data)) {
             $this->removeLinks($object);
             if (is_array($data['links']) && !empty($data['links'])) {
+
                 foreach ($data['links'] as $link) {
-                    $person = $this->em->getRepository('App:Person')->findOneById($link[' ']);
+        
+                    $person = $this->em->getRepository('App:Person')->findOneById($link['personId']);
                     if ($person instanceof Person && !$person->getSuppressed()) {
                         $childPersonLink = new ChildPersonLink();
                         $childPersonLink
@@ -177,6 +179,7 @@ class ChildService implements ChildServiceInterface
      */
     public function modify(Child $object, string $data)
     {
+
         //Submits data
         $data = $this->mainService->submit($object, 'child-modify', $data);
         $this->addSpecificData($object, $data);
@@ -194,6 +197,21 @@ class ChildService implements ChildServiceInterface
             'message' => 'Enfant modifié',
             'child' => $this->toArray($object),
         );
+    }
+
+    public function removeAllLinks(Child $object) {
+
+    }
+
+    public function removePerson($child, $personId) {
+        foreach($child->getPersons( ) as $link) {
+            if($link->getPerson()->getPersonId() == $personId) {
+                $this->em->remove($link);
+            }
+        }
+        $this->em->persist($child);
+        $this->em->flush();
+        return ['message' => 'liaison supprimée'];
     }
 
     /**

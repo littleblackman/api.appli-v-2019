@@ -182,7 +182,7 @@ class Product
     /**
      * @var boolean
      *
-     * @ORM\Column(name="is_full", type="boolean", nullable=true )
+     * @ORM\Column(name="is_full", type="boolean", nullable=true)
      */
     private $isFull;
 

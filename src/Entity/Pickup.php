@@ -155,6 +155,22 @@ class Pickup
     private $smsSentData;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="payment_due", type="string", length=8, nullable=true)
+     */
+    private $paymentDue;
+
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="payment_done", type="string", length=8, nullable=true)
+     */
+    private $paymentDone;
+
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
@@ -400,4 +416,34 @@ class Pickup
 
         return $this;
     }
+
+    public function getPaymentDue(): ?string
+    {
+        return $this->paymentDue;
+    }
+
+    public function setPaymentDue(?string $paymentDue): self
+    {
+        $this->paymentDue = $paymentDue;
+
+        return $this;
+    }
+
+
+    public function getPaymentDone(): ?string
+    {
+        return $this->paymentDone;
+    }
+
+    public function setPaymentDone(?string $paymentDone): self
+    {
+        $this->paymentDone = $paymentDone;
+
+        return $this;
+    }
+
+
+
+
+
 }

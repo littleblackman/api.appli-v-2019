@@ -119,32 +119,26 @@ class VehicleService implements VehicleServiceInterface
 
     public function listVehicleBetweenDate($type, $from, $to, $limit = null, $vehicle_id = null) {
 
-          // list all actions in between days
-          $elements['actions'] = $this->listActionBetweenDate($from, $to, $vehicle_id, $limit, true);
-          // list all fuel
-          $elements['fuels'] = $this->listFuelBetweenDate($from, $to, $vehicle_id, $limit, true);
+        $vehicles = $this->em->getRepository('App:Vehicle')->findBy(['suppressed' => 0]);
 
-          // list all washing
-          $elements['washings'] = $this->listWashingBetweenDate($from, $to, $vehicle_id, $limit, true);
+        foreach($vehicles as $vehicle) {
+            $tests[] = $vehicle->toArray();
 
-          $results = [];
+            if(!$actions = $this->listActionBetweenDate($from, $to, $vehicle->getVehicleId(), $limit, true)) $actions = [];
+            if(!$fuels = $this->listFuelBetweenDate($from, $to, $vehicle->getVehicleId(), $limit, true)) $fuels = [];
+            if(!$washings = $this->listWashingBetweenDate($from, $to, $vehicle->getVehicleId(), $limit, true)) $washings = [];
 
-          // foreach on each array
-          foreach($elements as $name => $objects) {
-              foreach($objects as $object) {
-                  if($type == "date") {
-                      $result[$object->getDateAction()->format('Y-m-d')][$name][] = $object->toArray('light');
-                  } else { // table by vehicle
-                      if(!$result[$object->getVehicle()->getId()]) {
-                        $result[$object->getVehicle()->getId()]['vehicle'] = $object->getVehicle()->toArray('exclude-vehicle');
-                      };
-                      $result[$object->getVehicle()->getId()][$name][] = $object->toArray('exclude-vehicle');
-                  }
-              }
-          }
-
-          return $results;
-
+            foreach(['actions' => $actions, 'fuels' => $fuels, 'washings' => $washings] as $name => $objects) {
+                $objectsArray = []; 
+                foreach($objects as $object) {
+                    $objectsArray[] = $object->toArray('exclude-vehicle');
+                }
+                $elements[$name] = $objectsArray;
+            }
+            $elements['vehicle']  = $vehicle->toArray('light');
+            $result[$vehicle->getVehicleId()] = $elements;         
+        }
+        return $result;
     }
 
 

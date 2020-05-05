@@ -421,6 +421,12 @@ class ProductService implements ProductServiceInterface
         }
     }
 
+    public function findAllActiveProducts()
+    {
+        $products = $this->em->getRepository('App:Product')->findBy(['suppressed' => 0], array('nameFr'=>'asc'));
+        return $products;
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -72,6 +72,62 @@ class GroupActivityService implements GroupActivityServiceInterface
         }
     }
 
+    
+    public function findByDateBetween($date, $from, $to) {
+        $groups = $this->em->getRepository('App:GroupActivity')->findByDateBetween($date, $from, $to);
+        
+        $new_group = array();
+        foreach ($groups as $group) {
+
+            //Gets related pickupActivities
+            if (null !== $group->getPickupActivities()) {
+                $activitys = array();
+                foreach($group->getPickupActivities() as $link) {
+                    if (!$link->getPickupActivity()->getSuppressed() && $link->getPickupActivity()->getStatus() != "npec") {
+                        $activity = $link->getPickupActivity();
+                        $child = $activity->getChild();
+                        $activitys[$child->getChildId()] = [ 
+                                                                    'firstname' => $child->getFirstname(),
+                                                                    'lastname'  => $child->getLastname(),
+                                                                    'photo'     => $child->getPhoto()
+                        ];
+                    }
+                }
+            }
+
+            //Gets related staff
+            if (null !== $group->getStaff()) {
+                $staffs = array();
+                foreach($group->getStaff() as $link) {
+                    if (!$link->getStaff()->getSuppressed()) {
+                        $staffs[$link->getStaff()->getStaffId()] = [
+                                                                        'name' => $link->getStaff()->getPerson()->getFirstname(),
+                                                                        'photo' => $link->getStaff()->getPerson()->getPhoto()
+                        ];
+                    }
+                }
+            }
+            
+
+            $new_group[] = [
+                            'start' => $group->getStart()->format('H:i'),
+                            'end'   => $group->getEnd()->format('H:i'),
+                            'age'   => $group->getAge(),
+                            'lunch' => $group->getLunch(),
+                            'location' => $group->getLocation()->getName(),
+                            'area'  => $group->getArea(),
+                            'staffs' => $staffs,
+                            'sport' => $group->getSport()->getName(),
+                            'childs' => $activitys
+                           
+            ];
+
+
+        };
+
+        return $new_group;
+    }
+
 
     public function listByLunchGroup($date) {
 
@@ -331,6 +387,7 @@ class GroupActivityService implements GroupActivityServiceInterface
             'groupActivity' => $this->toArray($object),
         );
     }
+
 
     /**
      * {@inheritdoc}

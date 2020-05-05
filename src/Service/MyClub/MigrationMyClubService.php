@@ -2,6 +2,7 @@
 
 namespace App\Service\MyClub;
 
+use App\Service\ChildService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -29,12 +30,14 @@ class MigrationMyClubService
 
     private $em;
     private $createEntity;
+    private $childService;
 
-    public function __construct(EntityManagerInterface $em, MigrationCreateEntity $createEntity, PickupService $pickupService)
+    public function __construct(EntityManagerInterface $em, MigrationCreateEntity $createEntity, PickupService $pickupService, ChildService $childService)
     {
         $this->em = $em;
         $this->createEntity = $createEntity;
         $this->pickupService = $pickupService;
+        $this->childService = $childService;
     }
 
     public function importChildMyClub($limit) {
@@ -57,14 +60,43 @@ class MigrationMyClubService
     public function updateChildData($child_id) {
 
         // child appli_v
-        if(!$child_av = $this->em->getRepository('App:Child')->find($child_id)) return ['child '.$child_id.' not founded'];
+       if(!$child_av = $this->em->getRepository('App:Child')->find($child_id)) return ['child '.$child_id.' not founded'];
     
         // child myclub
         $child_mc = $this->importOneChild($child_id);
 
+        $familyArray = $this->importFamily($child_mc['family_id']);
+
+        $datas = $this->extractFamilyDatas($familyArray);
+
+        if(!$user = $this->checkIfUserExist($datas['user'])) {
+            $user = $this->createEntity->createUser($datas['user']);
+        }
+
+        if(!$person = $this->checkIfPersonExist($datas['person'])) {
+            $person = $this->createEntity->createPerson($datas['person'], $user);
+        }
+
+        // add address
+        foreach($datas['address'] as $dataAddress) {
+           $this->createEntity->createAddressLink($person, $dataAddress);
+        }
+   
+         // add phones
+        foreach($datas['phones'] as $dataPhone) {
+            $this->createEntity->createPhoneLink($person, $dataPhone);
+        }
+
+        // link child to family
+        $this->createEntity->linkChildAndPerson($person, $child_av);
 
 
-        return $child_mc;
+        if($child_updated = $this->em->getRepository('App:Child')->find($child_id));
+
+
+        $childArray = $this->childService->toArray($child_updated);
+       
+        return $childArray;
     }
 
 
@@ -232,7 +264,7 @@ class MigrationMyClubService
 //         if(isset($person) && $person != null && is_object($person)) {
                 // add and create address
 
-            if($newPerson == 0) {
+            if($newPerson == 1) {
               foreach($datas['address'] as $dataAddress) {
                   $this->createEntity->createAddressLink($person, $dataAddress);
               }

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Staff;
+use App\Entity\Location;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -40,6 +41,13 @@ class StaffPresenceType extends AbstractType
                 ))
             ->add('typeName', TextType::class, array(
                 'required' => false
+                ))
+            ->add('teamsIdList', TextType::class, array(
+                'required' => false
+                ))
+            ->add('location', EntityType::class, array(
+                'required' => false,
+                'class' => Location::class,
                 ))
         ;
     }

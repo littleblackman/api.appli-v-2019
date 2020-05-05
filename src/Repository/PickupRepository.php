@@ -203,4 +203,20 @@ class PickupRepository extends EntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+     /**
+     * Returns the pickup that correspond to date, and child
+     */
+    public function findAllByChildAndDate($child, $date)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.start LIKE :date')
+            ->andWhere('p.child = :child')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('child', $child)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

@@ -9,7 +9,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * VehicleType FormType
+ * VehicleType FormType.
+ *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class VehicleType extends AbstractType
@@ -27,6 +28,9 @@ class VehicleType extends AbstractType
                 'required' => false,
                 ))
             ->add('places', IntegerType::class, array(
+                'required' => false,
+                ))
+            ->add('mileage', TextType::class, array(
                 'required' => false,
                 ))
             ->add('photo', TextType::class, array(

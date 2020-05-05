@@ -124,7 +124,62 @@ class Registration
      */
     private $transaction;
 
-  
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="dates", type="string", nullable=true)
+     */
+    private $dates;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="has_lunch", type="boolean", nullable=true)
+     */
+    private $hasLunch;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="has_transport", type="boolean", nullable=true  )
+     */
+    private $hasTransport;
+
+    /**
+     * @var DateTime
+     *
+     * @ORM\Column(name="dropin_time", type="datetime", nullable=true)
+     */
+    private $dropinTime;
+
+    /**
+     * @var DateTime
+     *
+     * @ORM\Column(name="dropoff_time", type="datetime", nullable=true)
+     */
+    private $dropoffTime;
+
+    /**
+     * @var DateTime
+     *
+     * @ORM\Column(name="address", type="string", nullable=true)
+     */
+    private $address;
+
+    /**
+     * @var DateTime
+     *
+     * @ORM\Column(name="town", type="string", nullable=true)
+     */
+    private $town;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="postal", type="string", nullable=true)
+     */
+    private $postal;
+
     public function __construct()
     {
         $this->sports = new ArrayCollection();
@@ -315,6 +370,198 @@ class Registration
     public function setTransaction(?Transaction $transaction): self
     {
         $this->transaction = $transaction;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of dates.
+     *
+     * @return string|null
+     */
+    public function getDates()
+    {
+        return $this->dates;
+    }
+
+    /**
+     * Set the value of dates.
+     *
+     * @param string|null $dates
+     *
+     * @return self
+     */
+    public function setDates($dates)
+    {
+        $this->dates = $dates;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of hasLunch.
+     *
+     * @return bool
+     */
+    public function getHasLunch()
+    {
+        return $this->hasLunch;
+    }
+
+    /**
+     * Set the value of hasLunch.
+     *
+     * @param bool $hasLunch
+     *
+     * @return self
+     */
+    public function setHasLunch(bool $hasLunch)
+    {
+        $this->hasLunch = $hasLunch;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of hasTransport.
+     *
+     * @return bool
+     */
+    public function getHasTransport()
+    {
+        return $this->hasTransport;
+    }
+
+    /**
+     * Set the value of hasTransport.
+     *
+     * @param bool $hasTransport
+     *
+     * @return self
+     */
+    public function setHasTransport(bool $hasTransport)
+    {
+        $this->hasTransport = $hasTransport;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of dropinTime.
+     *
+     * @return DateTime
+     */
+    public function getDropinTime()
+    {
+        return $this->dropinTime;
+    }
+
+    /**
+     * Set the value of dropinTime.
+     *
+     * @param DateTime $dropinTime
+     *
+     * @return self
+     */
+    public function setDropinTime(DateTime $dropinTime)
+    {
+        $this->dropinTime = $dropinTime;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of dropoffTime.
+     *
+     * @return DateTime
+     */
+    public function getDropoffTime()
+    {
+        return $this->dropoffTime;
+    }
+
+    /**
+     * Set the value of dropoffTime.
+     *
+     * @param DateTime $dropoffTime
+     *
+     * @return self
+     */
+    public function setDropoffTime(DateTime $dropoffTime)
+    {
+        $this->dropoffTime = $dropoffTime;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of address.
+     *
+     * @return DateTime
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Set the value of address.
+     *
+     * @param string|null $address
+     *
+     * @return self
+     */
+    public function setAddress(DateTime $address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of town.
+     *
+     * @return DateTime
+     */
+    public function getTown()
+    {
+        return $this->town;
+    }
+
+    /**
+     * Set the value of town.
+     *
+     * @param string|null $town
+     *
+     * @return self
+     */
+    public function setTown(DateTime $town)
+    {
+        $this->town = $town;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of postal.
+     *
+     * @return string|null
+     */
+    public function getPostal()
+    {
+        return $this->postal;
+    }
+
+    /**
+     * Set the value of postal.
+     *
+     * @param string|null $postal
+     *
+     * @return self
+     */
+    public function setPostal($postal)
+    {
+        $this->postal = $postal;
 
         return $this;
     }

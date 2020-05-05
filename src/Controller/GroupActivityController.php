@@ -96,6 +96,62 @@ class GroupActivityController extends AbstractController
 
 
 
+//LIST BY DATE AND BETWEEN
+    /**
+     * Lists all the groupActivities for a specific date
+     *
+     * @Route("/group-activity/tv-list/{date}/{from}/{to}",
+     *    name="group_activity_tv_list_date",
+     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=GroupActivity::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the groupActivity (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="GroupActivity")
+     */
+    public function listByDateBetween(Request $request, $date, $from, $to)
+    {
+        $this->denyAccessUnlessGranted('groupActivityList');
+
+        ini_set("memory_limit","1024M");
+
+        $groupActivitiesArray = $this->groupActivityService->findByDateBetween($date, $from, $to);
+
+        return new JsonResponse($groupActivitiesArray);
+    }
+
+
+
 //DUPLICATE GROUP ACTIVITY FROM DAY TO ANOTHER DAY
     /**
      * Duplicates all groups activity from a day to another day

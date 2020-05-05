@@ -157,8 +157,10 @@ class GroupActivity
           $childs = null;
           if($activities = $this->getPickupActivities()) {
             foreach($activities as $activityLink ) {
-                $child = $activityLink->getPickupActivity()->getChild();
-                $childs[] = ['id' => $child->getChildId(), 'firstname' => $child->getFirstname(), 'lastname' => $child->getLastname(), 'photo' => $child->getPhoto()];
+                if($activityLink->getPickupActivity()->getStatus() != "npec") {
+                    $child = $activityLink->getPickupActivity()->getChild();
+                    $childs[] = ['id' => $child->getChildId(), 'firstname' => $child->getFirstname(), 'lastname' => $child->getLastname(), 'photo' => $child->getPhoto()];
+                }
             }
 
           } else {

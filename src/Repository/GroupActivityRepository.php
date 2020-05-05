@@ -25,6 +25,20 @@ class GroupActivityRepository extends EntityRepository
         ;
     }
 
+    public function findByDateBetween($date, $from, $to) {
+        return $this->createQueryBuilder('ga')
+            ->where('ga.date = :date')
+            ->andWhere(' (ga.start >= :from AND ga.start <= :to) OR (ga.start <= :from AND ga.end >= :to)')
+            ->andWhere('ga.suppressed = 0')
+            ->setParameter('date', $date)
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->orderBy('ga.start', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /**
      * Returns the groupActivities by date and staff
      */

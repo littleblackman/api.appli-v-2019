@@ -323,6 +323,50 @@ class RideService implements RideServiceInterface
         ;
     }
 
+    public function findRideTvList($date, $from, $to) {
+        $rides = $this->em->getRepository('App:Ride')->findAllByDateAndBetween($date, $from, $to);
+        $arr = [];
+        foreach($rides as $ride) {
+
+            $pus = []; 
+            foreach($ride->getPickups() as $pu) {
+                if($pu->getStatus() != "npec") {
+
+                    $pus[] = [
+                        'child' => [
+                                        'firstname' => $pu->getChild()->getFirstname(),
+                                        'lastname' => $pu->getChild()->getLastname(),
+                                        'photo'    => $pu->getChild()->getPhoto(),
+                        ]
+                    ];
+                }
+               
+            }
+
+            if($ride->getStaff()) {
+                                    $staff = [
+                                        'name' => $ride->getStaff()->getPerson()->getFirstname(),
+                                        'photo' => $ride->getStaff()->getPerson()->getPhoto()
+                                    ];
+            } else {
+                $staff = null;
+            }
+
+            $myRide = [
+                        'name'    => $ride->getName(),
+                        'kind'    => $ride->getKind(),
+                        'start'   => $ride->getStart()->format('H:i'),
+                        'pickups' => $pus,
+                        'staff'   => $staff,
+                        'start'   => $ride->getStart()->format('H:i')  
+            ];
+
+            $arr[] = $myRide;
+
+        }
+        return $arr;
+    }
+
     /**
      * Returns the list of all rides by date and params
      * @return array

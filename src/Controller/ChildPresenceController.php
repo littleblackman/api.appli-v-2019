@@ -77,7 +77,7 @@ class ChildPresenceController extends AbstractController
         $childPresences = $paginator->paginate(
             $this->childPresenceService->findAllByDate($date),
             $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
+            $request->query->getInt('size', 250)
         );
 
         $childPresencesArray = array();

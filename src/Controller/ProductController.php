@@ -66,15 +66,16 @@ class ProductController extends AbstractController
     public function listAll(Request $request, PaginatorInterface $paginator)
     {
         $this->denyAccessUnlessGranted('productList');
-
+/*
         $products = $paginator->paginate(
             $this->productService->findAll(),
             $request->query->getInt('page', 1),
             $request->query->getInt('size', 50)
         );
-
-        $productsArray = array();
-        foreach ($products->getItems() as $product) {
+*/
+        $productArray = [];
+        $products = $this->productService->findAllActiveProducts();
+        foreach ($products as $product) {
             $productsArray[] = $this->productService->toArray($product);
         };
 

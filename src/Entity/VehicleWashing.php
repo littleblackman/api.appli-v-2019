@@ -176,7 +176,7 @@ class VehicleWashing
         return $this;
     }
 
-    public function getDateAction(): ?DateTimeInterface
+    public function getDateAction(): ?DateTime
     {
         return $this->dateAction;
     }

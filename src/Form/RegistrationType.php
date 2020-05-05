@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 namespace App\Form;
 
@@ -6,7 +6,6 @@ use App\Entity\Child;
 use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Product;
-use App\Entity\RegistrationSportLink;
 use App\Entity\Transaction;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -19,13 +18,15 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * RegistrationType FormType
+ * RegistrationType FormType.
+ *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        
         $builder
             ->add('registration', DateTimeType::class, array(
                 'required' => false,
@@ -72,7 +73,35 @@ class RegistrationType extends AbstractType
             ->add('transaction', EntityType::class, array(
                 'required' => false,
                 'class' => Transaction::class,
+            ));  
+                /*
+            ->add('dates', TextType::class, array(
+                'required' => false,
                 ))
+            ->add('hasLunch', IntegerType::class, array(
+                'required' => false,
+                ))
+            ->add('hasTransport', IntegerType::class, array(
+                'required' => false,
+                ))
+            ->add('dropoffTime', DateTimeType::class, array(
+                'required' => false,
+                'widget' => 'single_text',
+                ))
+            ->add('dropinTime', DateTimeType::class, array(
+                'required' => false,
+                'widget' => 'single_text',
+                ))
+            ->add('address', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('town', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('postal', TextType::class, array(
+                'required' => false,
+                ))*/
+
         ;
     }
 

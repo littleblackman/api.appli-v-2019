@@ -232,6 +232,19 @@ class MigrationCreateEntity
 
   }
 
+  public function linkChildAndPerson($person, $child) {
+
+    $childPersonLink = new ChildPersonLink();
+    $childPersonLink
+        ->setRelation(htmlspecialchars('Parent'))
+        ->setChild($child)
+        ->setPerson($person)
+    ;
+    $this->em->persist($childPersonLink);
+
+    $this->em->flush();
+  }
+
   public function createSiblings($child_ref, $childs)
   {
     foreach($childs as $c) {

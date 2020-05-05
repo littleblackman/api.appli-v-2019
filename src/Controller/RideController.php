@@ -99,6 +99,57 @@ class RideController extends AbstractController
         return new JsonResponse($ridesArray);
     }
 
+
+//LIST BY DATE FROM TO
+    /**
+     * Lists all the rides for tv-list for a specific date
+     *
+     * @Route("/ride/tv-list/{date}/{from}/{to}",
+     *    name="ride_tv_list",
+     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Ride::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the ride (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Ride")
+     */
+    public function listByDateFromTo(Request $request, $date, $from, $to)
+    {
+        $ridesArray =  $this->rideService->findRideTvList($date, $from, $to);
+        return new JsonResponse($ridesArray);
+    }
+
+    
 //LIST BY DATE
     /**
      * Lists all the rides for a specific date
@@ -300,7 +351,7 @@ class RideController extends AbstractController
      */
     public function retrieveGroupActivityByDateAndStaff($date, $staffId, $kind)
     {
-        $this->denyAccessUnlessGranted('rideDisplay');
+       // $this->denyAccessUnlessGranted('rideDisplay');
         if(!$staff = $this->staffService->findOneById($staffId)) return new JsonResponse(['status' => 'error: staff doesn\'t exist']);
 
         $childsArray = $this->rideService->retrieveGroupActivity($staff, $date, $kind);
@@ -352,7 +403,7 @@ class RideController extends AbstractController
      */
     public function displayByDateAndStaff($date, $staffId)
     {
-        $this->denyAccessUnlessGranted('rideDisplay');
+       // $this->denyAccessUnlessGranted('rideDisplay');
 
         $ridesArray = array();
         $staff = $this->staffService->findOneById($staffId);
@@ -402,7 +453,7 @@ class RideController extends AbstractController
      */
     public function display(Ride $ride)
     {
-        $this->denyAccessUnlessGranted('rideDisplay', $ride);
+       // $this->denyAccessUnlessGranted('rideDisplay', $ride);
 
         $rideArray = $this->rideService->toArray($ride);
 

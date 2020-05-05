@@ -5,12 +5,14 @@ namespace App\Service;
 use App\Entity\Registration;
 use App\Entity\RegistrationSportLink;
 use App\Entity\Sport;
+use App\Entity\Product;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
- * RegistrationService class
+ * RegistrationService class.
+ *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class RegistrationService implements RegistrationServiceInterface
@@ -21,19 +23,22 @@ class RegistrationService implements RegistrationServiceInterface
 
     private $productService;
 
+    private $childPresenceService;
+
     public function __construct(
         EntityManagerInterface $em,
         MainServiceInterface $mainService,
-        ProductServiceInterface $productService
-    )
-    {
+        ProductServiceInterface $productService,
+        ChildPresenceService $childPresenceService
+    ) {
         $this->em = $em;
         $this->mainService = $mainService;
         $this->productService = $productService;
+        $this->ChildPresenceService = $childPresenceService;
     }
 
     /**
-     * Adds specific data that could not be added via generic method
+     * Adds specific data that could not be added via generic method.
      */
     public function addSpecificData(Registration $object, array $data)
     {
@@ -65,7 +70,7 @@ class RegistrationService implements RegistrationServiceInterface
     }
 
     /**
-     * Adds link between Registration and Sport
+     * Adds link between Registration and Sport.
      */
     public function addSportLink(int $sportId, Registration $object)
     {
@@ -85,6 +90,7 @@ class RegistrationService implements RegistrationServiceInterface
      */
     public function create(string $data)
     {
+
         //Submits data
         $object = new Registration();
         $this->mainService->create($object);
@@ -94,8 +100,84 @@ class RegistrationService implements RegistrationServiceInterface
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
+       // return $object->getChild()->toArray();
+
         //Persists data
         $this->mainService->persist($object);
+
+
+        // create presence, activity and transport
+        $product = $this->em->getRepository('App:Product')->find($data['product']);
+
+       // return $this->productService->toArray($product);
+
+        $target['hasLunch'] = $product->getLunch();
+
+        // if date is not selectable or not
+        if (!$product->getIsDateSelectable()) {
+            // if not selectable
+            $linkDates = $product->getDates();
+            foreach ($linkDates as $linkDate) {
+                $target['dates'][] = $linkDate->getDate();
+            }
+
+        } else {
+            // if date is selectable
+            $target['dates'][] = [];
+        }
+
+        // if location is selectable or not
+        if(!$product->getIsLocationSelectable()) {
+            // not selectable
+            $linkLocations = $product->getLocations();
+            $target['location'] = $product->getLocations()[0]->getLocation();
+           
+        } else {
+            // if location is selectable
+            $target['location'] = null;
+        }
+
+        // if hours is selectable or not
+        if(!$product->getIsHourSelectable()) {
+            // not selectable
+            $linkHours = $product->getHours();
+            $target['hours']['start'] = $product->getHours()[0]->getStart();
+            $target['hours']['end'] = $product->getHours()[0]->getEnd();            
+        } else {
+            // if location is selectable
+            $target['hours'] = [];
+        }
+
+        // if sport is selectable or not
+        if(!$product->getIsSportSelectable()) {
+            // not selectable
+            $linkSports = $product->getSports();
+            foreach ($linkSports as $linkSport) {
+                $target['sport'][] = $linkSports->getSport();
+            }
+
+        } else {
+            // if sports is selectable
+            foreach($data['sports'] as $sportData) {
+                $sport = $this->em->getRepository('App:Sport')->find($sportData['sportId']);
+                $target['sports'][] = $sport;
+
+            } 
+        }
+
+        // if transport
+        if($product->getTransport()) {
+            $target['pickup']['dropin'] = $product->getHourDropin();
+            $target['pickup']['dropoff'] = $product->getHourDropoff();
+        }
+
+        $target['hasTransport'] = $product->getTransport();
+
+        // create presence and cascade to transport
+        foreach($target['dates'] as $targetDate) {
+           $this->ChildPresenceService->createFromRegistrationAndData($object, $targetDate, $target['location'], $target['hours'], $target['sports'], $target['hasLunch'], $target['hasTransport'], $target['pickup']);
+        }
+       
 
         //Returns data
         return array(
@@ -124,7 +206,7 @@ class RegistrationService implements RegistrationServiceInterface
     }
 
     /**
-     * Returns the list of all registrations related to status in the array format
+     * Returns the list of all registrations related to status in the array format.
      */
     public function findAllByStatus($status)
     {
@@ -135,7 +217,7 @@ class RegistrationService implements RegistrationServiceInterface
     }
 
     /**
-     * Returns the list of all registrations related to person and status in the array format
+     * Returns the list of all registrations related to person and status in the array format.
      */
     public function findAllByPersonAndStatus($personId, $status)
     {
@@ -146,7 +228,7 @@ class RegistrationService implements RegistrationServiceInterface
     }
 
     /**
-     * Returns the list of all registrations related to person without the cart status in the array format
+     * Returns the list of all registrations related to person without the cart status in the array format.
      */
     public function findAllWithoutCart()
     {
@@ -163,7 +245,7 @@ class RegistrationService implements RegistrationServiceInterface
     {
         if (null === $object->getChild() ||
             null === $object->getProduct()) {
-            throw new UnprocessableEntityHttpException('Missing data for Registration -> ' . json_encode($object->toArray()));
+            throw new UnprocessableEntityHttpException('Missing data for Registration -> '.json_encode($object->toArray()));
         }
     }
 
@@ -192,7 +274,7 @@ class RegistrationService implements RegistrationServiceInterface
     }
 
     /**
-     * Removes links from Registration
+     * Removes links from Registration.
      */
     public function removeSportsLinks(Registration $object)
     {
@@ -235,7 +317,7 @@ class RegistrationService implements RegistrationServiceInterface
         //Gets related sports
         if (null !== $object->getSports()) {
             $sports = array();
-            foreach($object->getSports() as $sport) {
+            foreach ($object->getSports() as $sport) {
                 if (!$sport->getSport()->getSuppressed()) {
                     $sports[] = $this->mainService->toArray($sport->getSport()->toArray());
                 }

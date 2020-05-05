@@ -53,9 +53,12 @@ class ChildPresenceRepository extends EntityRepository
             ->leftJoin('pr.child', 'c')
             ->where('pr.suppressed = 0')
             ->andWhere('pr.date LIKE :date')
+            ->andWhere('pr.status <> :status')
             ->orderBy('pr.date', 'ASC')
+            ->addOrderby('c.lastname')
             ->addOrderBy('pr.start', 'ASC')
             ->setParameter('date', $date . '%')
+            ->setParameter('status', 'npec')
             ->getQuery()
             ->getResult()
         ;

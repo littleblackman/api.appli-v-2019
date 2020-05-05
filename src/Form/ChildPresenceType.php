@@ -10,6 +10,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -45,6 +47,13 @@ class ChildPresenceType extends AbstractType
             ->add('start', TimeType::class, array(
                 'required' => false,
                 'input' => 'datetime',
+                'widget' => 'single_text',
+                ))
+            ->add('status', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('statusChange', DateTimeType::class, array(
+                'required' => false,
                 'widget' => 'single_text',
                 ))
             ->add('end', TimeType::class, array(

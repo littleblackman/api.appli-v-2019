@@ -5,13 +5,14 @@ namespace App\Service;
 use App\Entity\Pickup;
 use App\Entity\PickupActivity;
 use App\Entity\Ride;
-Use App\Entity\Child;
+use App\Entity\Child;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
- * PickupService class
+ * PickupService class.
+ *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class PickupService implements PickupServiceInterface
@@ -24,26 +25,29 @@ class PickupService implements PickupServiceInterface
 
     private $rideService;
 
+    private $childPresenceService;
+
     public function __construct(
         EntityManagerInterface $em,
         StaffServiceInterface $staffService,
         MainServiceInterface $mainService,
-        RideServiceInterface $rideService
-    )
-    {
+        RideServiceInterface $rideService,
+        ChildPresenceServiceInterface $childPresenceService
+    ) {
         $this->em = $em;
         $this->staffService = $staffService;
         $this->mainService = $mainService;
         $this->rideService = $rideService;
+        $this->childPresenceService = $childPresenceService;
     }
 
     /**
-     * Affects the Pickups to Rides for a specific date
+     * Affects the Pickups to Rides for a specific date.
      */
     public function affect($date, $kind, $force)
     {
         //Unaffects Pickups if force is requested
-        if($force) {
+        if ($force) {
             $this->unaffect($date, $kind);
         }
 
@@ -64,7 +68,7 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Affects the Pickups to Rides
+     * Affects the Pickups to Rides.
      */
     public function affectPickups($date, $kind)
     {
@@ -81,7 +85,7 @@ class PickupService implements PickupServiceInterface
                     $this->checkCoordinates($pickup);
                     //Adds Pickup to its corresponding group of postal code
                     if ($pickupSortOrder['postal'] === $pickup->getPostal()) {
-                        $md5 = md5($pickup->getLongitude() . $pickup->getLatitude() . $pickup->getStart()->format('H:i'));
+                        $md5 = md5($pickup->getLongitude().$pickup->getLatitude().$pickup->getStart()->format('H:i'));
 
                         $places = 0 === (int) $pickup->getPlaces() ? 1 : (int) $pickup->getPlaces();
                         $places = isset($pickupsSorted[$pickupSortOrder['postal']][$md5]['places']) ? $pickupsSorted[$pickupSortOrder['postal']][$md5]['places'] + $places : $places;
@@ -100,7 +104,7 @@ class PickupService implements PickupServiceInterface
             $rides = $this->rideService->findAllByDateAndKind($date, $kind);
             $maxDriverZones = $this->staffService->getMaxDriverZones() - 1;
             if (null !== $rides) {
-                for ($priority = 0; $priority <= $maxDriverZones; $priority++) {
+                for ($priority = 0; $priority <= $maxDriverZones; ++$priority) {
                     foreach ($pickupsSorted as $postal => $pickupsByPostal) {
                         foreach ($pickupsByPostal as $pickups) {
                             $this->affectRide($rides, $pickups, $postal, $priority);
@@ -112,13 +116,13 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Affects all the Pickups that correspond between Ride and LinkedRide
+     * Affects all the Pickups that correspond between Ride and LinkedRide.
      */
     public function affectPickupLinkedRide($ride)
     {
         $linkedRide = $this->rideService->findOneById($ride->getLinkedRide()->getRideId());
-        $linkedRideDateStart = new DateTime($linkedRide->getDate()->format('Y-m-d') . ' ' . $linkedRide->getStart()->format('H:i:s'));
-        $linkedRideDateArrival = new DateTime($linkedRide->getDate()->format('Y-m-d') . ' ' . $linkedRide->getArrival()->format('H:i:s'));
+        $linkedRideDateStart = new DateTime($linkedRide->getDate()->format('Y-m-d').' '.$linkedRide->getStart()->format('H:i:s'));
+        $linkedRideDateArrival = new DateTime($linkedRide->getDate()->format('Y-m-d').' '.$linkedRide->getArrival()->format('H:i:s'));
 
         $pickups = $ride->getPickups();
         foreach ($pickups as $pickup) {
@@ -142,7 +146,7 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Affects the Pickups (dropoff) to Rides using LinkedRide
+     * Affects the Pickups (dropoff) to Rides using LinkedRide.
      */
     public function affectPickupsLinkedRide($date)
     {
@@ -155,18 +159,19 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Affects the Ride to the Pickup
+     * Affects the Ride to the Pickup.
      */
     public function affectRide($rides, $pickups, $postal, $priority)
     {
         //Filters Rides to keep only those that are NOT full
-        $rides = array_filter($rides, function($i) {
+        $rides = array_filter($rides, function ($i) {
             $ridePlaces = 0 === (int) $i->getPlaces() ? 8 : (int) $i->getPlaces();
+
             return (int) $ridePlaces > $i->getOccupiedPlaces() && !$i->getLocked();
         });
 
         //Filters Pickups to keep only those that are NOT affected
-        $pickups['pickups'] = array_filter($pickups['pickups'], function($i) {
+        $pickups['pickups'] = array_filter($pickups['pickups'], function ($i) {
             return null === $i->getRide();
         });
 
@@ -175,10 +180,10 @@ class PickupService implements PickupServiceInterface
              * Updates Pickup if
              * - Ride is linked to Pickup's postal code using Driver + DriverPriority + DriverZonesPriorities
              * - Ride is not full AND can contain all the Pickups (including places) for the same address
-             * - Pickup Start is within Ride's time slot (between start and arrival)
+             * - Pickup Start is within Ride's time slot (between start and arrival).
              */
-            $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getStart()->format('H:i:s'));
-            $rideDateArrival = new DateTime($ride->getDate()->format('Y-m-d') . ' ' . $ride->getArrival()->format('H:i:s'));
+            $rideDateStart = new DateTime($ride->getDate()->format('Y-m-d').' '.$ride->getStart()->format('H:i:s'));
+            $rideDateArrival = new DateTime($ride->getDate()->format('Y-m-d').' '.$ride->getArrival()->format('H:i:s'));
             $ridePlaces = 0 === (int) $ride->getPlaces() ? 8 : (int) $ride->getPlaces();
 
             if (isset($ride->getStaff()->getDriverZones()[$priority]) &&
@@ -205,42 +210,38 @@ class PickupService implements PickupServiceInterface
         }
     }
 
-
     public function updateSmsSentData(string $data)
     {
+        $elements = explode(';', $data);
 
-          $elements = explode(';', $data);
+        $pickupId = str_replace('"', '', $elements[0]);
+        $number = str_replace('"', '', $elements[1]);
 
-          $pickupId = str_replace('"', '', $elements[0]);
-          $number = str_replace('"', '', $elements[1]);
+        $pickup = $this->em->getRepository('App:Pickup')->find($pickupId);
+        $timeSent = date('Y-m-d H:i');
+        $timeSentFr = date('d/m/Y - H:i');
+        $data = ['timeSent' => $timeSent, 'number' => $number];
 
-          $pickup = $this->em->getRepository('App:Pickup')->find($pickupId);
-          $timeSent = date('Y-m-d H:i');
-          $timeSentFr = date('d/m/Y - H:i');
-          $data = ['timeSent' => $timeSent, 'number' => $number];
+        ($pickup->getSmsSentData() == null) ? $dataArray = [] : $dataArray = $pickup->getSmsSentData();
 
-          ($pickup->getSmsSentData() == null) ? $dataArray = [] : $dataArray = $pickup->getSmsSentData();
+        $dataArray[] = $data;
 
-          $dataArray[] = $data;
+        $pickup->setSmsSentData($dataArray);
 
-          $pickup->setSmsSentData($dataArray);
+        $this->em->persist($pickup);
+        $this->em->flush();
 
-          $this->em->persist($pickup);
-          $this->em->flush();
-
-          //Returns data
-          return array(
+        //Returns data
+        return array(
               'status' => true,
               'message' => 'sms sent data mis à jour',
               'smsSendData' => $pickup->getSmsSentData(),
-              'currentDateSent' => $timeSentFr
+              'currentDateSent' => $timeSentFr,
           );
-
-
     }
 
     /**
-     * Checks gps coordinates
+     * Checks gps coordinates.
      */
     public function checkCoordinates($object, $force = false)
     {
@@ -255,7 +256,7 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Gets all the Pickups by date
+     * Gets all the Pickups by date.
      */
     public function countAllUnaffected(string $date, string $kind)
     {
@@ -295,7 +296,7 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Creates multiples Pickups
+     * Creates multiples Pickups.
      */
     public function createMultiple(string $data)
     {
@@ -312,7 +313,7 @@ class PickupService implements PickupServiceInterface
             );
         }
 
-        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> '.json_encode($data));
     }
 
     /**
@@ -333,7 +334,7 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Deletes Pickup by registrationId
+     * Deletes Pickup by registrationId.
      */
     public function deleteByRegistrationId(int $registrationId)
     {
@@ -351,7 +352,7 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Modifies the dispatch for Pickups
+     * Modifies the dispatch for Pickups.
      */
     public function dispatch(string $data)
     {
@@ -359,7 +360,7 @@ class PickupService implements PickupServiceInterface
         $data = json_decode($data, true);
         if (is_array($data) && !empty($data)) {
             foreach ($data as $dispatch) {
-                $pickup =  $this->em->getRepository('App:Pickup')->findOneById($dispatch['pickupId']);
+                $pickup = $this->em->getRepository('App:Pickup')->findOneById($dispatch['pickupId']);
                 if ($pickup instanceof Pickup && !$pickup->getSuppressed()) {
                     //Modifies Ride
                     $ride = $this->em->getRepository('App:Ride')->findOneById($dispatch['rideId']);
@@ -397,11 +398,11 @@ class PickupService implements PickupServiceInterface
             );
         }
 
-        throw new UnprocessableEntityHttpException('Submitted data is not an array -> ' . json_encode($data));
+        throw new UnprocessableEntityHttpException('Submitted data is not an array -> '.json_encode($data));
     }
 
     /**
-     * Gets all the Pickups by date
+     * Gets all the Pickups by date.
      */
     public function findAllByDate(string $date, string $kind)
     {
@@ -412,7 +413,7 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Gets all the Pickups by status
+     * Gets all the Pickups by status.
      */
     public function findAllByStatus(string $date, string $status)
     {
@@ -423,7 +424,7 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     *Gets all the Pickups unaffected
+     *Gets all the Pickups unaffected.
      */
     public function findAllUnaffected(string $date, string $kind)
     {
@@ -434,7 +435,7 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Geocodes all the Pickups
+     * Geocodes all the Pickups.
      */
     public function geocode()
     {
@@ -447,7 +448,7 @@ class PickupService implements PickupServiceInterface
             if ($this->mainService->addCoordinates($pickup)) {
                 $this->mainService->modify($pickup);
                 $this->mainService->persist($pickup);
-                $counter++;
+                ++$counter;
             }
         }
 
@@ -462,7 +463,7 @@ class PickupService implements PickupServiceInterface
         if (null === $object->getStart() ||
             null === $object->getAddress() ||
             null === $object->getChild()) {
-            throw new UnprocessableEntityHttpException('Missing data for Pickup -> ' . json_encode($object->toArray()));
+            throw new UnprocessableEntityHttpException('Missing data for Pickup -> '.json_encode($object->toArray()));
         }
     }
 
@@ -471,7 +472,6 @@ class PickupService implements PickupServiceInterface
      */
     public function modify(Pickup $object, string $data)
     {
-
         $status_original = $object->getStatus();
 
         //Submits data
@@ -490,8 +490,25 @@ class PickupService implements PickupServiceInterface
             $this->checkCoordinates($object, true);
         }
 
-        if($status_original != $object->getStatus()) {
+        // update change status
+        if ($status_original != $object->getStatus()) {
             $object->setStatusChange(new DateTime());
+
+            // update presence and activity on cascade if npec or pec
+            if ($object->getStatus() == 'npec' || $object->getStatus() == 'pec' || $object->getStatus() == null || $object->getStatus() == '') {
+                $this->childPresenceService->updateStatus($object->getChild(), $object->getStart(), $object->getStatus());
+            }
+
+            // modify other pickup same day
+            $allpa = $this->em->getRepository('App:Pickup')->findAllByChildAndDate($object->getChild(), $object->getStart()->format('Y-m-d'));
+            if ($allpa) {
+                foreach ($allpa as $mypa) {
+                    $mypa->setStatus($object->getStatus());
+                    $mypa->setStatusChange(new DateTime());
+                    $this->em->persist($mypa);
+                    $this->em->flush();
+                }
+            }
         }
 
         //Persists data
@@ -499,7 +516,6 @@ class PickupService implements PickupServiceInterface
         $this->mainService->persist($object);
 
         $this->updatePickupActivity($object);
-
 
         //Returns data
         return array(
@@ -509,23 +525,20 @@ class PickupService implements PickupServiceInterface
         );
     }
 
-    public function updatePickupActivity($pickup) {
-
-    //  if(!$activity = $this->em->getRepository('App:PickupActivity')->findBy(['child' => $pickup->getChild(), 'date' => $pickup->getDate()])) return null;
+    public function updatePickupActivity($pickup)
+    {
+        //  if(!$activity = $this->em->getRepository('App:PickupActivity')->findBy(['child' => $pickup->getChild(), 'date' => $pickup->getDate()])) return null;
     //  $activity->setStatus($pickup->getStatus());
-
 
       //$this->mainService->modify($activity);
       //$this->mainService->persist($activity);
-
     }
 
-  /**
-   * {@inheritdoc}
-   */
-   public function getLastPEC($childId, $kind)
-   {
-
+    /**
+     * {@inheritdoc}
+     */
+    public function getLastPEC($childId, $kind)
+    {
         $child = $this->em->getRepository('App:Child')->find($childId);
         $pickup = $this->em
                 ->getRepository('App:Pickup')->findOneBy(
@@ -533,16 +546,18 @@ class PickupService implements PickupServiceInterface
                                                     array('start' => 'desc'),
                                                     1
                                                 );
-        if(!$pickup) return null;
+        if (!$pickup) {
+            return null;
+        }
         $result = [
                                 'kind' => $pickup->getKind(),
                                 'status_change' => $pickup->getStatusChange(),
                                 'start' => $pickup->getStart(),
-                                'status' => $pickup->getStatus()
+                                'status' => $pickup->getStatus(),
                     ];
-        return $result;
-   }
 
+        return $result;
+    }
 
     /**
      * {@inheritdoc}
@@ -571,12 +586,12 @@ class PickupService implements PickupServiceInterface
     }
 
     /**
-     * Unaffects all the pickups from rides for a specific date
+     * Unaffects all the pickups from rides for a specific date.
      */
     public function unaffect($date, $kind)
     {
         $counter = 0;
-        $kinds = 'all' === $kind ? array('dropin','dropoff') : array($kind);
+        $kinds = 'all' === $kind ? array('dropin', 'dropoff') : array($kind);
         foreach ($kinds as $kind) {
             $pickups = $this->findAllByDate($date, $kind);
             if (!empty($pickups)) {
@@ -591,7 +606,7 @@ class PickupService implements PickupServiceInterface
                         ;
                         $this->mainService->modify($pickup);
 
-                        $counter++;
+                        ++$counter;
                         if (20 === $counter) {
                             $this->em->flush();
                             $counter = 0;

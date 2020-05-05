@@ -92,6 +92,7 @@ class StaffPresenceRepository extends EntityRepository
             ->andWhere($dateCriteria)
             ->andWhere('s.suppressed = 0')
             ->orderBy('pr.date', 'ASC')
+            ->addOrderBy('p.firstname')
             ->addOrderBy('pr.start', 'ASC')
             ->addOrderBy('z.priority', 'ASC')
         ;

@@ -87,7 +87,7 @@ class StaffPresenceController extends AbstractController
         $staffPresences = $paginator->paginate(
             $this->staffPresenceService->findAllByKindAndDate($kind, $date),
             $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
+            $request->query->getInt('size', 100)
         );
 
         $staffPresencesArray = array();
