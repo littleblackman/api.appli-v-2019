@@ -38,7 +38,15 @@ class RideRepository extends EntityRepository
      */
     public function findAllByDateAndParams($date, $kind, $moment)
     {
-        $timeRef = $date.' 12:30:00';
+        if($moment == "am") {
+            if($kind == "dropin") $timeRef = $date.' 12:31:00';
+            if($kind == "dropoff") $timeRef = $date.' 15:01:00';
+
+        } 
+        if($moment == "pm") {
+            if($kind == "dropin") $timeRef = $date. ' 12:29:00';
+            if($kind == "dropoff") $timeRef = $date. ' 15:00:00';
+        }
 
         $qb = $this->createQueryBuilder('r')
             ->addSelect('s', 'p', 'v', 'pi', 'z')
@@ -242,7 +250,7 @@ class RideRepository extends EntityRepository
             ->leftJoin('r.pickups', 'pi')
             ->where('r.rideId = :rideId')
             ->andWhere('r.suppressed = 0')
-            ->andWhere('pi.suppressed = 0 OR pi.suppressed IS NULL')
+           // ->andWhere('pi.suppressed = 0 OR pi.suppressed IS NULL')
             ->setParameter('rideId', $rideId)
             ->orderBy('pi.sortOrder', 'ASC')
             ->getQuery()

@@ -163,6 +163,36 @@ class ChildService implements ChildServiceInterface
         ;
     }
 
+    public function findFastSearch(string $term) {
+
+        $datas = [
+                    ['name' => 'lastname', 'start' => ''],
+                    ['name' => 'lastname', 'start' => '%'],
+                    ['name' => 'firstname', 'start' => ''],
+                    ['name' => 'firstname', 'start' => '%'],
+        ];
+
+        $result = null;
+
+        $existsChild = [];
+
+        foreach($datas as $data) {
+            $childs = $this->em->getRepository('App:Child')->findAllSearchResult($term, $data['name'], $data['start']);
+            foreach($childs as $child) {
+                $childId = $child->getChildId();
+                if(!key_exists($childId, $existsChild)) {
+                    $result[] = [   'id'       => $childId,
+                                    'fullname' => strtoupper($child->getLastname()).' '.$child->getFirstname(),
+                                    'photo'    => $child->getPhoto()
+                                ];
+                }
+                $existsChild[$childId] = $childId;
+            }
+        }
+     
+        return $result;
+    }
+
     /**
      * {@inheritdoc}
      */

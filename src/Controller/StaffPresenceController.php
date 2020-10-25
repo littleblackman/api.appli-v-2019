@@ -84,14 +84,9 @@ class StaffPresenceController extends AbstractController
     {
         $this->denyAccessUnlessGranted('staffPresenceList');
 
-        $staffPresences = $paginator->paginate(
-            $this->staffPresenceService->findAllByKindAndDate($kind, $date),
-            $request->query->getInt('page', 1),
-            $request->query->getInt('size', 100)
-        );
-
         $staffPresencesArray = array();
-        foreach ($staffPresences->getItems() as $staffPresence) {
+        $staffPresences = $this->staffPresenceService->findAllByKindAndDate($kind, $date);
+        foreach ($staffPresences as $staffPresence) {
             $staffPresencesArray[] = $this->staffPresenceService->toArray($staffPresence);
         };
 

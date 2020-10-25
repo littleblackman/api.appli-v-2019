@@ -1,0 +1,490 @@
+<?php
+
+namespace App\Service;
+
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\PickupActivity;
+use App\Entity\Pickup;
+use App\Entity\Meal;
+use App\Entity\ChildPresence;
+use App\Entity\Registration;
+use Nette\Utils\DateTime;
+
+class CascadeService
+{
+    private $em;
+    private $mainService;
+    private $mealService;
+
+    public function __construct(
+        EntityManagerInterface $em,
+        MainServiceInterface $mainService,
+        MealServiceInterface $mealService,
+        PickupActivityService $pickupActivityService,
+        ProductService $productService
+    ) {
+        $this->em = $em;
+        $this->mainService = $mainService;
+        $this->mealService = $mealService;
+        $this->pickupActivityService = $pickupActivityService;
+        $this->productService = $productService;
+    }
+
+    /**
+     * create coordinate
+     */
+    public function checkCoordinates($object, $force = false)
+    {
+        if ($force ||
+            null === $object->getLatitude() ||
+            null === $object->getLongitude() ||
+            null === $object->getPostal() ||
+            5 != strlen($object->getPostal())
+        ) {
+            $this->mainService->addCoordinates($object);
+        }
+    }
+
+    /**
+     * cascade from invoice
+     * load cascade by retrieve registration
+     */
+    public function cascadeFromInvoice($invoice) {
+
+
+        // retrieve registrations from invoice
+        if(!$registrations = $this->em->getRepository('App:Registration')->findByInvoice($invoice, 'paid')) return ['no registration'];
+
+        foreach($registrations as $registration) {
+            $messages[] = $this->cascadeFromRegistration($registration);
+        }
+        return $messages;
+    
+
+    }
+
+    /**
+     * cascade from registration
+     * create childPresence
+     */
+    public function cascadeFromRegistration($registration) {
+
+        $sessions = $registration->getSessions(); 
+
+        // create each presence from date in sessions
+        foreach($sessions as $session) {
+
+
+
+            $date = new DateTime($session['date']);
+
+            $messages[] = '------start session: '.$date->format('Y-m-d');
+
+
+            $arr[$registration->getRegistrationId()][] = $session['date'];
+
+            $startEl = explode(':', $session['start']);
+            (!isset($startEl[2])) ? $start = $session['start'].':00' : $start = $session['start'];
+            $startDate = DateTime::createFromFormat('H:i:s', $start);
+
+
+            $endEl = explode(':', $session['end']);
+            (!isset($endEl[2])) ? $end = $session['end'].':00' : $end = $session['end'];
+            $endDate = DateTime::createFromFormat('H:i:s', $end);
+
+
+            $currentSession = ['date' => $date, 'start' => $startDate, 'end' => $endDate];
+
+
+            // create presence
+            $object = new ChildPresence();
+            $this->mainService->create($object);
+    
+            $object->setRegistration($registration);
+            $object->setChild($registration->getChild());
+            $object->setLocation($registration->getLocation());
+            $object->setDate($currentSession['date']);
+            $object->setStart($currentSession['start']);
+            $object->setEnd($currentSession['end']);
+            $object->setStatus($registration->getStatus());
+
+            $this->mainService->persist($object);
+
+            $messages[] = 'presence '.$object->getChildPresenceId().' created';
+
+
+            // create pickup from a session
+            if($registration->getHasTransport() == 1) {
+                $messages[] = $this->createPickupFromSession($registration, $currentSession);
+            } else {
+                $messages[] = "no transport (pickup) created";
+            }
+
+            // create activity (pickupactivity from sport)
+            if (null !== $registration->getSports()) {
+                foreach ($registration->getSports() as $sportLink) {
+                    if (!$sportLink->getSport()->getSuppressed()) {
+                       $sport = $sportLink->getSport();
+                       
+                       $messages[] = $this->createPickupActivityFromSession($registration, $currentSession, $sport);
+                        
+                    }
+                }
+            } else {
+                $messages[] = "no pickupactivity (sport) created";
+            }
+          
+
+            // create Meal from Child Presence
+            if($registration->getHasLunch() == 1) {
+                if($this->mealService->createMealFromChildPresence($object)) {
+                    $messages[] = "meal created";
+                }
+            } else {
+                $messages[] = "no meal created";
+            }
+
+            $messages[] = '----end session';
+        }
+
+        return $messages;
+
+    }
+
+    /**
+     * create 2 pîckup from data in session
+     */
+    public function createPickupFromSession($registration, $session) {
+
+
+        // SET TIME DEFAUT
+        $pickupsData = [
+            'dropin' => $registration->getProduct()->getHourDropin(),
+            'dropoff' => $registration->getProduct()->getHourDropoff()
+        ];
+
+        // SET ADDRESSE DEFAULT
+
+
+        // check if object address
+        if($registration->getAddress()) {
+            $message_address = "address added";
+            $address = $registration->getAddress();
+            $postal = $address->getPostal();
+            $fullAddress = $address->getAddress().', '.$address->getPostal().' '.$address->getTown();
+            $checkCoord = 1;
+            // or set in pref system
+        } else if(isset($registration->getPreferences()[0]['address']) && $addressPref = $this->em->getRepository('App:Address')->find($registration->getPreferences()[0]['address'])) {
+            $message_address = "address added";
+            $postal = $addressPref->getPostal();
+            $fullAddress = $addressPref->getAddress().', '.$addressPref->getPostal().' '.$addressPref->getTown();
+            $checkCoord = 1;
+        } else { 
+
+            $message_address = "not address founded";
+            $postal = "75000";
+            $fullAddress = "AUCUNE ADRESSE TROUVEE";
+            $checkCoord = 0;
+        }
+
+
+        // SET PHONE DEFAULT
+        if(isset($registration->getPreferences()[0]['phone']) && $phonePref = $this->em->getRepository('App:Phone')->find($registration->getPreferences()[0]['address'])) {
+            $telPhone = $phonePref->getPhone();
+        } else {
+            $telPhone = null;
+        }
+
+        $i = 0;
+        foreach($pickupsData as $kind => $timePickup) {
+            $i++;
+            $start = new \DateTime($session['date']->format('Y-m-d').' '.$timePickup->format('H:i:s'));
+
+            //Submits data
+            $object = new Pickup();
+            $this->mainService->create($object);
+
+            $object->setChild($registration->getChild());
+            $object->setKind($kind);
+            $object->setStart($start);
+            $object->setRegistration($registration);
+            $object->setPhone($telPhone);
+            $object->setPostal($postal);
+            $object->setAddress($fullAddress);
+
+            //Checks coordinates
+            if($checkCoord == 1) $this->checkCoordinates($object);
+            $this->mainService->persist($object);
+
+            $arr[] = $object->getPickupId();
+        }
+
+
+        return 'pickup(s) created '.implode(', ', $arr).' - '.$message_address;
+
+    }
+
+    /**
+     * Create pickupActivity from sessions
+     */
+    public function createPickupActivityFromSession($registration, $session, $sport) {
+
+
+        // create pickup activity
+        $object = new PickupActivity();
+        $this->mainService->create($object);
+
+        $object->setDate($session['date']);
+        $object->setRegistration($registration);
+        $object->setChild($registration->getChild());
+        $object->setStart($session['start']);
+        $object->setEnd($session['end']);
+        $object->setSport($sport);
+        $object->setLocation($registration->getLocation());
+
+        //Persists data
+        $this->mainService->persist($object);
+
+        return $sport->getName().' added';
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /******* CREATE FROM REGISTRATION CHECK IF NEEDED */
+
+    public function createPickupFromRegistration($registration) {
+        $child = $registration->getChild();
+        $person = $child->getPersons()[0]->getPerson(); // check if needed otherwise delete
+
+        if($registration->getAddress()) {
+            $address = $registration->getAddress();
+            $postal = $address->getPostal();
+            $fullAddress = $address->getAddress().', '.$address->getPostal().' '.$address->getTown();
+            $checkCoord = 1;
+        } else {
+            $postal = "75000";
+            $fullAddress = "AUCUNE ADRESSE TROUVEE";
+            $checkCoord = 0;
+        }
+
+        $pickupsData = [
+                        'dropin' => $registration->getProduct()->getHourDropin(),
+                        'dropoff' => $registration->getProduct()->getHourDropoff()
+        ] ;
+
+        $date = $registration->getSessions()['date'];
+
+        foreach($pickupsData as $kind => $timePickup) {
+            $start = new \DateTime($date->format('Y-m-d').' '.$timePickup->format('H:i:s'));
+
+            //Submits data
+            $object = new Pickup();
+            $this->mainService->create($object);
+
+            $object->setChild($registration->getChild());
+            $object->setKind($kind);
+            $object->setStart($start);
+            $object->setRegistration($registration);
+            $object->setPhone(null);
+            $object->setPostal($postal);
+            $object->setAddress($fullAddress);
+
+            //Checks coordinates
+            if($checkCoord == 1) $this->checkCoordinates($object);
+            $this->mainService->persist($object);
+        }
+    }
+
+
+    /*** deprecated */
+    public function createMealFromChildPresence($registration)
+    {
+        if (!$registration->getHasLunch()) {
+            return null;
+        }
+        
+        return $this->mealService->createMealFromChildPresence($registration);
+    }
+
+    public function createPickupActivityFromSports($sports, $registration, $hours) {
+        // create pickup activity
+        foreach ($sports as $sport) {
+            $object = new PickupActivity();
+            $this->mainService->create($object);
+
+            $object->setDate($date);
+            $object->setRegistration($registration);
+            $object->setChild($registration->getChild());
+            $object->setStart($hours['start']);
+            $object->setEnd($hours['end']);
+            $object->setSport($sport);
+            $object->setLocation($registration->getLocation());
+
+            //Persists data
+            $this->mainService->persist($object);
+        }
+    }
+
+    public function deleteChildPresence($childPresence, $return = true)
+    {
+
+        $child  = $childPresence->getChild();
+        $mydate = $childPresence->getDate()->format('Y-m-d');
+
+        // delete pickups
+        $pickups = $this->em->getRepository('App:Pickup')->findAllByChildAndDate($child, $mydate);
+        if (!empty($pickups)) {
+            foreach ($pickups as $pickup) {
+                $this->delete($pickup, false);
+            }
+        }
+
+        // delete pickupactivity
+        $pickupActivities = $this->pickupActivityService->findAllByChildDate($childPresence->getChild()->getChildId(), $mydate);
+        if (!empty($pickupActivities)) {
+            foreach ($pickupActivities as $pickupActivity) {
+                if (!$pickupActivity->getGroupActivities()->isEmpty()) {
+                    foreach ($pickupActivity->getGroupActivities() as $groupActivity) {
+                        $this->em->remove($groupActivity);
+                    }
+                }
+        
+                $this->delete($pickupActivity, false);
+            }
+        }
+
+        // delete meals
+        $this->mealService->deleteFromChildPresence($childPresence);
+
+        //Persists data
+        $this->mainService->delete($childPresence);
+        $this->mainService->persist($childPresence);
+
+        return $return;
+    }
+
+    public function delete($object) {
+        $this->mainService->delete($object);
+        $this->mainService->persist($object);
+
+    }
+
+
+
+
+    /**** deprecated */
+    public function createFromRegistrationAndData($registration, $date, $location, $hours, $sports, $hasLunch, $hasTransport, $pickupsData)
+    {
+        // $presenceDate = new \DateTime($date);
+
+        // create presence
+
+        // test if the same day there is a presence
+
+        $object = new ChildPresence();
+        $this->mainService->create($object);
+
+        $object->setRegistration($registration);
+        $object->setChild($registration->getChild());
+        $object->setLocation($location);
+        $object->setDate($date);
+        $object->setStart($hours['start']);
+        $object->setEnd($hours['end']);
+        $object->setStatus(' ');
+
+        $this->mainService->persist($object);
+
+        // create Meal from Child Presence
+        $this->createMealFromChildPresence($object);
+
+        // create pickup activity
+        foreach ($sports as $sport) {
+            $object = new PickupActivity();
+            $this->mainService->create($object);
+
+            $object->setDate($date);
+            $object->setRegistration($registration);
+            $object->setChild($registration->getChild());
+            $object->setStart($hours['start']);
+            $object->setEnd($hours['end']);
+            $object->setSport($sport);
+            $object->setLocation($location);
+
+            //Persists data
+            $this->mainService->persist($object);
+        }
+
+        // ahd lunch
+        if ($hasLunch == 1) {
+            $lunch = $this->em->getRepository('App:Sport')->find(10);
+
+            $object = new PickupActivity();
+            $this->mainService->create($object);
+
+            $object->setDate($date);
+            $object->setRegistration($registration);
+            $object->setChild($registration->getChild());
+            $object->setStart($hours['start']);
+            $object->setEnd($hours['end']);
+            $object->setSport($lunch);
+            $object->setLocation($location);
+
+            //Persists data
+            $this->mainService->persist($object);
+        }
+
+        // create pickup
+        if ($hasTransport) {
+            $child = $registration->getChild();
+            $person = $child->getPersons()[0]->getPerson(); // check if needed otherwise delete
+
+            if($registration->getAddress()) {
+                $address = $registration->getAddress();
+                $postal = $address->getPostal();
+                $fullAddress = $address->getAddress().', '.$address->getPostal().' '.$address->getTown();
+                $checkCoord = 1;
+            } else {
+                $postal = "75000";
+                $fullAddress = "AUCUNE ADRESSE TROUVEE";
+                $checkCoord = 0;
+            }
+
+            foreach ($pickupsData as $kind => $timePickup) {
+                $start = new \DateTime($date->format('Y-m-d').' '.$timePickup->format('H:i:s'));
+
+                //Submits data
+                $object = new Pickup();
+                $this->mainService->create($object);
+
+                $object->setChild($registration->getChild());
+                $object->setKind($kind);
+                $object->setStart($start);
+                $object->setRegistration($registration);
+                $object->setPhone(null);
+                $object->setPostal($postal);
+                $object->setAddress($fullAddress);
+
+                //Checks coordinates
+                if($checkCoord == 1) $this->checkCoordinates($object);
+                $this->mainService->persist($object);
+            }
+        }
+    }
+
+}

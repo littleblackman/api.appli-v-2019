@@ -118,19 +118,38 @@ class PickupRepository extends EntityRepository
         ;
     }
 
+    public function findByChildAndFromToDate($child, $from, $to) {
+        return $this->createQueryBuilder('p')
+            ->where('p.child = :child')
+            ->andWhere('p.start > :from')
+            ->andWhere('p.start < :to')
+            ->andWhere('p.suppressed = 0')
+            //->andWhere('p.kind = :kind')
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->setParameter('child', $child)
+            //->setParameter('kind', $kind)
+            ->orderBy('p.start')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /**
      * Returns all the pickups that are not affected to a ride
      */
     public function findAllUnaffected($date, $kind)
     {
         return $this->createQueryBuilder('p')
+            ->leftJoin('p.child', 'c')
             ->where('p.start LIKE :date')
             ->andWhere('p.kind = :kind')
             ->andWhere('p.ride IS NULL')
             ->andWhere('p.suppressed = 0')
             ->setParameter('date', $date . '%')
             ->setParameter('kind', $kind)
-            ->orderBy('p.start', 'ASC')
+            ->orderBy('c.lastname')
+            ->addOrderBy('p.start', 'ASC')
             ->addOrderBy('p.postal', 'ASC')
             ->addOrderBy('p.address', 'ASC')
             ->addOrderBy('p.pickupId', 'ASC')

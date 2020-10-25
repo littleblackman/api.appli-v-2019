@@ -1,26 +1,24 @@
 <?php
 
 namespace App\Service\MyClub;
-use App\Service\MyClub\MigrationQueryBuilder;
-
 
 /**
- * Trait MigrationImportFunctions
+ * Trait MigrationImportFunctions.
  */
 trait MigrationImportFunctions
 {
-
     use MigrationQueryBuilder;
 
-    public function setImported($table_name, $id) {
-      $this->resetQuery();
-      $today = date('Y-m-d');
-      $query = 'update '.$table_name.' set _importedInPV = 1, _importedDate = "'.$today.'" where id = '.$id;
-      $this->setExecute($query);
+    public function setImported($table_name, $id)
+    {
+        $this->resetQuery();
+        $today = date('Y-m-d');
+        $query = 'update '.$table_name.' set _importedInPV = 1, _importedDate = "'.$today.'" where id = '.$id;
+        $this->setExecute($query);
     }
 
-    public function importActivitys($date, $limit = 10) {
-
+    public function importActivitys($date, $limit = 10)
+    {
         // first query  // child with desiderata
         /*"SELECT esd.child_id, esd.sport_list, ecp.day_ref
         FROM ea_sport_desiderata esd
@@ -38,7 +36,7 @@ trait MigrationImportFunctions
         $this->resetQuery();
 
         $this->setTable('ea_seance es');
-        $this->addFields(array('es.date_seance as date_seance' ,'es.sport_id as sport_id', 'es.moment as moment'));
+        $this->addFields(array('es.date_seance as date_seance', 'es.sport_id as sport_id', 'es.moment as moment'));
         $this->addJoin('ea_seance_child esc', 'es.id', 'esc.seance_id');
         $this->addWhere("es.date_seance = '".$date."'");
 
@@ -56,7 +54,6 @@ trait MigrationImportFunctions
 
         $datas = $this->createSelectQuery()->getDatas();
 
-
         return $datas;
     }
 
@@ -65,17 +62,17 @@ trait MigrationImportFunctions
         $this->resetQuery();
 
         $this->setTable('ea_child_presence pe');
-        $this->addFields(array('pe.child_id as child_id' ,'pe.date_presence as date_presence', 'pe.day_ref as day_ref'));
+        $this->addFields(array('pe.child_id as child_id', 'pe.date_presence as date_presence', 'pe.day_ref as day_ref'));
         $this->addWhere("pe.date_presence = '".$date."'");
         $this->setGroupBy('pe.child_id');
 
         $list = $this->createSelectQuery()->getDatas();
 
         return $list;
+    }
 
-      }
-    
-    public function importOneChild($child_id) {
+    public function importOneChild($child_id)
+    {
         $this->resetQuery();
 
         $this->setTable('ea_child as c');
@@ -92,46 +89,46 @@ trait MigrationImportFunctions
         $data['family'] = $this->importFamily($data['family_id']);
 
         return $data;
-
     }
 
-    public function importChild($limit = 30) {
-      $this->resetQuery();
+    public function importChild($limit = 30)
+    {
+        $this->resetQuery();
 
-      $this->setTable('ea_child as c');
+        $this->setTable('ea_child as c');
 
-      // child informations
-      $this->addFields(array('c.id as child_id', 'c.first_name as firstname', 'c.child_last_name as lastname', 'c.sexe as gender', 'c.birthday as birthdate', 'c.medical_note as medical', 'c.family_id as family_id', 'c.created_at as c_created_at', 'c.updated_at as updated_at'));
+        // child informations
+        $this->addFields(array('c.id as child_id', 'c.first_name as firstname', 'c.child_last_name as lastname', 'c.sexe as gender', 'c.birthday as birthdate', 'c.medical_note as medical', 'c.family_id as family_id', 'c.created_at as c_created_at', 'c.updated_at as updated_at'));
 
-      $this->addJoin('ea_family as f', 'f.id', 'c.family_id');
+        $this->addJoin('ea_family as f', 'f.id', 'c.family_id');
 
-    //  $this->addWhere('c.id = 11024');
+        //  $this->addWhere('c.id = 11024');
 
-      $this->addWhere('f.is_archived != 1');
-      $this->addWhere('c.is_archived != 1');
-      $this->addWhere('f.accept_mailing = 1');
-      $this->addWhere("c.birthday > '2004-01-01'");
+        $this->addWhere('f.is_archived != 1');
+        $this->addWhere('c.is_archived != 1');
+        $this->addWhere('f.accept_mailing = 1');
+        $this->addWhere("c.birthday > '2004-01-01'");
 
-      $this->addWhere('c._importedInPV = 0');
+        $this->addWhere('c._importedInPV = 0');
 
-      $this->setLimit(30);
+        $this->setLimit(30);
 
+        //// mettre order date created < desc
+        $this->setOrderBy('child_id desc');
 
-      $datas = $this->createSelectQuery()->getDatas();
+        $datas = $this->createSelectQuery()->getDatas();
 
-      return $datas;
-
-
+        return $datas;
     }
 
-    public function importTransport($date, $limit = 10){
-
+    public function importTransport($date, $limit = 10)
+    {
         $this->resetQuery();
 
         $this->setTable('ea_transport as t');
 
         // driver
-        $this->addFields(array('d.name as driver_name' ,'d.last_name as last_name', 'd.id as driver_id'));
+        $this->addFields(array('d.name as driver_name', 'd.last_name as last_name', 'd.id as driver_id'));
 
         // transport information
         $this->addFields(array('t.id as transport_id', 't.driver_id as driver_id', 't.child_id as child_id', 't.presence_id as presence_id'));
@@ -161,11 +158,10 @@ trait MigrationImportFunctions
         $datas = $this->createSelectQuery()->getDatas();
 
         return $datas;
-
     }
 
-    public function importFamily($family_id, $groupBy = null) {
-
+    public function importFamily($family_id, $groupBy = null)
+    {
         $this->resetQuery();
 
         $this->setTable('ea_family as f');
@@ -176,8 +172,8 @@ trait MigrationImportFunctions
 
         // address
         $this->addFields(array('a.id as address_id', 'a.address as address', 'a.postal_code as postal', 'a.city as town', 'a.type_id as address_type_id'));
-        $this->addFields(array('e.id as email_id','e.email as email', 'e.type_id as email_type_id'));
-        $this->addFields(array('t.id as phone_id','t.telephon as phone', 't.type_id as telephon_type_id'));
+        $this->addFields(array('e.id as email_id', 'e.email as email', 'e.type_id as email_type_id'));
+        $this->addFields(array('t.id as phone_id', 't.telephon as phone', 't.type_id as telephon_type_id'));
 
         $this->addJoin('ea_child as c', 'c.family_id', 'f.id');
         $this->addJoin('ea_family_address as a', 'a.family_id', 'f.id');
@@ -187,13 +183,12 @@ trait MigrationImportFunctions
         $this->addWhere('f.is_archived = 0');
         $this->addWhere('f.id = '.$family_id);
 
-        if($groupBy) {
-          $this->setGroupBy($groupBy);
+        if ($groupBy) {
+            $this->setGroupBy($groupBy);
         }
 
         $datas = $this->createSelectQuery()->getDatas();
 
         return $datas;
-
     }
 }

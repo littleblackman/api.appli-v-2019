@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Invoice;
 use App\Form\InvoiceType;
+use App\Service\CascadeService;
 use App\Service\InvoiceServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -21,10 +22,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class InvoiceController extends AbstractController
 {
     private $invoiceService;
+    private $cascadeService;
 
-    public function __construct(InvoiceServiceInterface $invoiceService)
+    public function __construct(InvoiceServiceInterface $invoiceService, CascadeService $cascadeService)
     {
         $this->invoiceService = $invoiceService;
+        $this->cascadeService = $cascadeService;
     }
 
 //LIST
@@ -258,6 +261,48 @@ class InvoiceController extends AbstractController
         $this->denyAccessUnlessGranted('invoiceDisplay', $invoice);
 
         $invoiceArray = $this->invoiceService->toArray($invoice);
+
+        return new JsonResponse($invoiceArray);
+    }
+
+
+
+//DISPLAY
+    /**
+     * Displays invoice
+     *
+     * @Route("/invoice/cascade/{invoiceId}",
+     *    name="invoice_cascade",
+     *    requirements={"invoiceId": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("invoice", expr="repository.findOneById(invoiceId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Invoice::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="invoiceId",
+     *     in="path",
+     *     description="Id of the invoice",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Invoice")
+     */
+    public function cascadeFromInvoice(Invoice $invoice)
+    {
+        $this->denyAccessUnlessGranted('invoiceDisplay', $invoice);
+
+        $invoiceArray = $this->cascadeService->cascadeFromInvoice($invoice);
 
         return new JsonResponse($invoiceArray);
     }

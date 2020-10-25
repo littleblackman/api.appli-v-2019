@@ -337,8 +337,6 @@ class StaffController extends AbstractController
     }
 
 
-
-
 //CREATE
     /**
      * Creates a Staff
@@ -377,6 +375,7 @@ class StaffController extends AbstractController
 
         return new JsonResponse($createdData);
     }
+    
 
 //MODIFY
     /**
@@ -428,6 +427,95 @@ class StaffController extends AbstractController
         $modifiedData = $this->staffService->modify($staff, $request->getContent());
 
         return new JsonResponse($modifiedData);
+    }
+
+
+//MODIFY ZONE
+    /**
+     * Add driverZone on staff
+     *
+     * @Route("staff/fastAddDriveZone/{staffId}",
+     *    name="staff_add_drvierzone",
+     *    requirements={"staffId": "^([0-9]+)$"},
+     *    methods={"HEAD", "PUT"})
+     * @Entity("staff", expr="repository.findOneById(staffId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="staff", ref=@Model(type=Staff::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="staffId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the staff",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Staff",
+     *     required=true,
+     *     @Model(type=StaffType::class)
+     * )
+     * @SWG\Tag(name="Staff")
+     */
+    public function addDriverZone(Request $request, Staff $staff)
+    {
+        $this->denyAccessUnlessGranted('staffModify', $staff);
+
+        $result = $this->staffService->addDriverZone($staff, $request->getContent());
+
+        return new JsonResponse($result);
+
+    }
+
+//UPDATE PRIORITY ZONE
+    /**
+     * Displays staff using its id
+     *
+     * @Route("/staff/updatePriorityZone/{driverZoneId}/{priority}",
+     *    name="staff_priority_zone",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Staff::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Tag(name="Staff")
+     */
+    public function updatePriority($driverZoneId, $priority)
+    {
+        //$this->denyAccessUnlessGranted('staffDisplay', $staff);
+
+        $driverZone = $this->staffService->updateZone($driverZoneId, $priority);
+
+        return new JsonResponse($driverZone);
     }
 
 //DELETE

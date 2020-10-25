@@ -9,6 +9,8 @@ use App\Entity\Product;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\Service\CascadeService;
+
 
 /**
  * RegistrationService class.
@@ -29,12 +31,16 @@ class RegistrationService implements RegistrationServiceInterface
         EntityManagerInterface $em,
         MainServiceInterface $mainService,
         ProductServiceInterface $productService,
-        ChildPresenceService $childPresenceService
+        ChildPresenceService $childPresenceService,
+        CascadeService $cascadeService,
+        PersonService $personService
     ) {
         $this->em = $em;
         $this->mainService = $mainService;
         $this->productService = $productService;
         $this->ChildPresenceService = $childPresenceService;
+        $this->cascadeService = $cascadeService;
+        $this->personService = $personService;
     }
 
     /**
@@ -90,28 +96,33 @@ class RegistrationService implements RegistrationServiceInterface
      */
     public function create(string $data)
     {
-
         //Submits data
         $object = new Registration();
+
         $this->mainService->create($object);
+
         $data = $this->mainService->submit($object, 'registration-create', $data);
+
         $this->addSpecificData($object, $data);
 
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
-       // return $object->getChild()->toArray();
-
         //Persists data
         $this->mainService->persist($object);
 
-
         // create presence, activity and transport
-        $product = $this->em->getRepository('App:Product')->find($data['product']);
+        if($data['product']) {
+            $product = $this->em->getRepository('App:Product')->find($data['product']);
+        } else {
+            $product = $object->getProduct();
+        }
 
-       // return $this->productService->toArray($product);
+        // return $this->productService->toArray($product);
 
         $target['hasLunch'] = $product->getLunch();
+
+        $object->setHasLunch($product->getLunch());
 
         // if date is not selectable or not
         if (!$product->getIsDateSelectable()) {
@@ -120,64 +131,66 @@ class RegistrationService implements RegistrationServiceInterface
             foreach ($linkDates as $linkDate) {
                 $target['dates'][] = $linkDate->getDate();
             }
-
         } else {
             // if date is selectable
-            $target['dates'][] = [];
+            foreach ($data['sessions'] as $mydate) {
+                $target['dates'][] = new \DateTime($mydate['date']);
+            }
         }
 
         // if location is selectable or not
-        if(!$product->getIsLocationSelectable()) {
+        if (!$product->getIsLocationSelectable()) {
             // not selectable
-            $linkLocations = $product->getLocations();
             $target['location'] = $product->getLocations()[0]->getLocation();
-           
         } else {
             // if location is selectable
             $target['location'] = null;
         }
 
         // if hours is selectable or not
-        if(!$product->getIsHourSelectable()) {
+        if (!$product->getIsHourSelectable()) {
             // not selectable
-            $linkHours = $product->getHours();
             $target['hours']['start'] = $product->getHours()[0]->getStart();
-            $target['hours']['end'] = $product->getHours()[0]->getEnd();            
+            $target['hours']['end'] = $product->getHours()[0]->getEnd();
         } else {
             // if location is selectable
             $target['hours'] = [];
         }
 
         // if sport is selectable or not
-        if(!$product->getIsSportSelectable()) {
+        if (!$product->getIsSportSelectable()) {
             // not selectable
             $linkSports = $product->getSports();
             foreach ($linkSports as $linkSport) {
                 $target['sport'][] = $linkSports->getSport();
             }
-
         } else {
             // if sports is selectable
-            foreach($data['sports'] as $sportData) {
+            foreach ($data['sports'] as $sportData) {
                 $sport = $this->em->getRepository('App:Sport')->find($sportData['sportId']);
                 $target['sports'][] = $sport;
-
-            } 
+            }
         }
 
         // if transport
-        if($product->getTransport()) {
+        if ($product->getTransport()) {
             $target['pickup']['dropin'] = $product->getHourDropin();
             $target['pickup']['dropoff'] = $product->getHourDropoff();
         }
 
         $target['hasTransport'] = $product->getTransport();
+        $object->setHasTransport($product->getTransport());
+
+        $this->mainService->modify($object);
+        $this->mainService->persist($object);
+
+        // had data in registration
 
         // create presence and cascade to transport
-        foreach($target['dates'] as $targetDate) {
-           $this->ChildPresenceService->createFromRegistrationAndData($object, $targetDate, $target['location'], $target['hours'], $target['sports'], $target['hasLunch'], $target['hasTransport'], $target['pickup']);
-        }
-       
+        foreach ($target['dates'] as $targetDate) {
+            $this->cascadeService->createFromRegistrationAndData($object, $targetDate, $target['location'], $target['hours'], $target['sports'], $target['hasLunch'], $target['hasTransport'], $target['pickup']);
+         }
+
 
         //Returns data
         return array(
@@ -225,6 +238,27 @@ class RegistrationService implements RegistrationServiceInterface
             ->getRepository('App:Registration')
             ->findAllByPersonAndStatus($personId, $status)
         ;
+    }
+
+    /**
+     * Returns the list of regisration by child from date to date
+     */
+    public function findAllByChild($childId, $from, $to) {
+
+        $child = $this->em->getRepository('App:Child')->find($childId);
+        $from = new DateTime($from);
+        $to   = new DateTime($to);
+        if($registrations = $this->em->getRepository('App:Registration')->findAllByChild($child, $from, $to)) {
+            foreach($registrations as $registration) {
+                $result[] = $this->toArray($registration);
+            }
+        } else {
+            $result = null;
+        }
+        
+       
+        return $result;
+
     }
 
     /**
@@ -302,12 +336,16 @@ class RegistrationService implements RegistrationServiceInterface
         //Gets related person
         if (null !== $object->getPerson() && !$object->getPerson()->getSuppressed()) {
             $objectArray['person'] = $this->mainService->toArray($object->getPerson()->toArray());
+        } else {
+            if($person = $this->personService->findByUserId($object->getCreatedBy())) {
+                $objectArray['person'] = $this->mainService->toArray($person->toArray());
+            }
         }
 
         //Gets related product
         if (null !== $object->getProduct() && !$object->getProduct()->getSuppressed()) {
             $objectArray['product'] = $this->productService->toArray($object->getProduct());
-        }
+        } 
 
         //Gets related location
         if (null !== $object->getLocation() && !$object->getLocation()->getSuppressed()) {

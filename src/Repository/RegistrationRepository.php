@@ -70,6 +70,21 @@ class RegistrationRepository extends EntityRepository
         ;
     }
 
+    public function findByInvoice($invoice, $status = null) {
+        $qb = $this->createQueryBuilder('r')
+            ->where('r.invoice = :invoice')
+            ->andWhere('r.suppressed = 0')
+            ->setParameter('invoice', $invoice)
+            ->orderBy('r.registration', 'DESC');
+
+        if($status) {   
+            $qb->andWhere('r.status = :status')
+            ->setParameter('status', 'paid');
+        };
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * Returns the registration if not suppressed
      */
@@ -82,5 +97,26 @@ class RegistrationRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult()
         ;
+    }
+
+    /**
+     * return all by child from a date to another
+     */
+    public function findAllByChild($child, $from, $to) {
+
+        $qb = $this->createQueryBuilder('r')
+                ->where('r.child = :child')
+                ->orderBy('r.registration', 'DESC')
+                ->andWhere('r.suppressed = 0')
+                ->andWhere('r.registration >= :from')
+                ->andWhere('r.registration <= :to')
+                ->setParameter('child', $child)
+                ->setParameter(':from', $from)
+                ->setParameter(':to', $to)
+               ;
+
+        
+        return $qb->getQuery()->getResult();
+
     }
 }

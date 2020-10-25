@@ -90,6 +90,31 @@ class RegistrationController extends AbstractController
         return new JsonResponse($registrationsArray);
     }
 
+    //LIST BY CHILD ID AND DATE FROM TO
+    /**
+     * Lists all the registrations ny child id
+     *
+     * @Route("/registration/childList/{childId}/{from}/{to}",
+     *    name="registration_list_by_child",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Registration::class))
+     *     )
+     * )
+     * @SWG\Tag(name="Registration")
+     */
+    public function listByChild(Request $request, $childId, $from, $to)
+    {
+        $registrationsArray = $this->registrationService->findAllByChild($childId, $from, $to);        
+        return new JsonResponse($registrationsArray);
+    }
+
+
 //LIST BY ALL EXCEPT CART STATUS
     /**
      * Lists all the registrations excepting those with cart status

@@ -104,6 +104,19 @@ class TransactionRepository extends EntityRepository
         ;
     }
 
+    public function findLatestByInvoice($invoice) {
+        return $this->createQueryBuilder('t')
+            ->where('t.invoice = :invoice')
+            ->andWhere('t.suppressed = 0')
+            ->andWhere("t.status = 'process' ")
+            ->setParameter('invoice', $invoice)
+            ->orderBy('t.date', 'DESC')
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+    }
+
     /**
      * Returns the transaction if not suppressed by internalOrder
      */

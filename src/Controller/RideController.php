@@ -17,7 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * RideController class
+ * RideController class.
+ *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class RideController extends AbstractController
@@ -29,15 +30,15 @@ class RideController extends AbstractController
     public function __construct(
         RideServiceInterface $rideService,
         StaffServiceInterface $staffService
-    )
-    {
+    ) {
         $this->rideService = $rideService;
         $this->staffService = $staffService;
     }
 
-//LIST
+    //LIST
+
     /**
-     * Lists all the rides coming or finished
+     * Lists all the rides coming or finished.
      *
      * @Route("/ride/list/{status}",
      *    name="ride_list",
@@ -82,7 +83,6 @@ class RideController extends AbstractController
      */
     public function listAllByStatus(Request $request, PaginatorInterface $paginator, $status)
     {
-
         $this->denyAccessUnlessGranted('rideList');
 
         $rides = $paginator->paginate(
@@ -94,15 +94,15 @@ class RideController extends AbstractController
         $ridesArray = array();
         foreach ($rides->getItems() as $ride) {
             $ridesArray[] = $this->rideService->toArray($ride);
-        };
+        }
 
         return new JsonResponse($ridesArray);
     }
 
+    //LIST BY DATE FROM TO
 
-//LIST BY DATE FROM TO
     /**
-     * Lists all the rides for tv-list for a specific date
+     * Lists all the rides for tv-list for a specific date.
      *
      * @Route("/ride/tv-list/{date}/{from}/{to}",
      *    name="ride_tv_list",
@@ -145,14 +145,15 @@ class RideController extends AbstractController
      */
     public function listByDateFromTo(Request $request, $date, $from, $to)
     {
-        $ridesArray =  $this->rideService->findRideTvList($date, $from, $to);
+        $ridesArray = $this->rideService->findRideTvList($date, $from, $to);
+
         return new JsonResponse($ridesArray);
     }
 
-    
-//LIST BY DATE
+    //LIST BY DATE
+
     /**
-     * Lists all the rides for a specific date
+     * Lists all the rides for a specific date.
      *
      * @Route("/ride/list/{date}",
      *    name="ride_list_date",
@@ -195,7 +196,7 @@ class RideController extends AbstractController
      */
     public function listByDate(Request $request, PaginatorInterface $paginator, $date)
     {
-        ini_set('memory_limit', '512M');
+        ini_set('memory_limit', '4096M');
 
         $this->denyAccessUnlessGranted('rideList');
 
@@ -208,14 +209,15 @@ class RideController extends AbstractController
         $ridesArray = array();
         foreach ($rides->getItems() as $ride) {
             $ridesArray[] = $this->rideService->toArray($ride);
-        };
+        }
 
         return new JsonResponse($ridesArray);
     }
 
-//LIST BY DATE
+    //LIST BY DATE
+
     /**
-     * Lists all the rides for a specific date
+     * Lists all the rides for a specific date.
      *
      * @Route("/ride/realtime/{date}/{kind}/{moment}",
      *    name="ride_realtime_list_date",
@@ -253,16 +255,15 @@ class RideController extends AbstractController
         $ridesArray = array();
         foreach ($rides as $ride) {
             $ridesArray[] = $this->rideService->toArray($ride);
-        };
+        }
 
         return new JsonResponse($ridesArray);
     }
 
+    //DUPLICATE RIDE FROM DAY TO ANOTHER DAY
 
-
-//DUPLICATE RIDE FROM DAY TO ANOTHER DAY
     /**
-     * Duplicates all rides from a day to another day
+     * Duplicates all rides from a day to another day.
      *
      * @Route("/ride/duplicate/{source}/{target}",
      *    name="ride_duplicate",
@@ -291,7 +292,6 @@ class RideController extends AbstractController
      */
     public function duplicate($source, $target)
     {
-
         $this->denyAccessUnlessGranted('rideList');
 
         $message = $this->rideService->duplicateRecursive($source, $target);
@@ -299,14 +299,10 @@ class RideController extends AbstractController
         return new JsonResponse($message);
     }
 
+    //DISPLAY BY DATE AND STAFFID
 
-
-
-
-
-//DISPLAY BY DATE AND STAFFID
     /**
-     * Displays the rides for a specific date and staff
+     * Displays the rides for a specific date and staff.
      *
      * @Route("/ride/retrieve-group-activity/{date}/{staffId}/{kind}",
      *    name="ride_retrieve-group-activity_date_staff",
@@ -351,21 +347,20 @@ class RideController extends AbstractController
      */
     public function retrieveGroupActivityByDateAndStaff($date, $staffId, $kind)
     {
-       // $this->denyAccessUnlessGranted('rideDisplay');
-        if(!$staff = $this->staffService->findOneById($staffId)) return new JsonResponse(['status' => 'error: staff doesn\'t exist']);
+        // $this->denyAccessUnlessGranted('rideDisplay');
+        if (!$staff = $this->staffService->findOneById($staffId)) {
+            return new JsonResponse(['status' => 'error: staff doesn\'t exist']);
+        }
 
         $childsArray = $this->rideService->retrieveGroupActivity($staff, $date, $kind);
 
         return new JsonResponse($childsArray);
     }
 
+    //DISPLAY BY DATE AND STAFFID
 
-
-
-
-//DISPLAY BY DATE AND STAFFID
     /**
-     * Displays the rides for a specific date and staff
+     * Displays the rides for a specific date and staff.
      *
      * @Route("/ride/display/{date}/{staffId}",
      *    name="ride_display_date_staff",
@@ -403,7 +398,8 @@ class RideController extends AbstractController
      */
     public function displayByDateAndStaff($date, $staffId)
     {
-       // $this->denyAccessUnlessGranted('rideDisplay');
+        // $this->denyAccessUnlessGranted('rideDisplay');
+        ini_set('memory_limit', '1024M');
 
         $ridesArray = array();
         $staff = $this->staffService->findOneById($staffId);
@@ -411,15 +407,16 @@ class RideController extends AbstractController
             $rides = $this->rideService->findAllByDateByStaff($date, $staff);
             foreach ($rides as $ride) {
                 $ridesArray[] = $this->rideService->toArray($ride);
-            };
+            }
         }
 
         return new JsonResponse($ridesArray);
     }
 
-//DISPLAY BY ID
+    //DISPLAY BY ID
+
     /**
-     * Displays the ride using its id
+     * Displays the ride using its id.
      *
      * @Route("/ride/display/{rideId}",
      *    name="ride_list_id",
@@ -453,16 +450,17 @@ class RideController extends AbstractController
      */
     public function display(Ride $ride)
     {
-       // $this->denyAccessUnlessGranted('rideDisplay', $ride);
+        // $this->denyAccessUnlessGranted('rideDisplay', $ride);
 
         $rideArray = $this->rideService->toArray($ride);
 
         return new JsonResponse($rideArray);
     }
 
-//CREATE
+    //CREATE
+
     /**
-     * Creates a Ride
+     * Creates a Ride.
      *
      * @Route("/ride/create",
      *    name="ride_create",
@@ -499,9 +497,10 @@ class RideController extends AbstractController
         return new JsonResponse($createdData);
     }
 
-//CREATE MULTIPLE
+    //CREATE MULTIPLE
+
     /**
-     * Creates multiples Rides
+     * Creates multiples Rides.
      *
      * @Route("/ride/create-multiple",
      *    name="ride_create_multiple",
@@ -540,9 +539,10 @@ class RideController extends AbstractController
         return new JsonResponse($createdData);
     }
 
-//MODIFY
+    //MODIFY
+
     /**
-     * Modifies ride
+     * Modifies ride.
      *
      * @Route("/ride/modify/{rideId}",
      *    name="ride_modify",
@@ -592,9 +592,10 @@ class RideController extends AbstractController
         return new JsonResponse($modifiedData);
     }
 
-//DELETE
+    //DELETE
+
     /**
-     * Deletes ride and moves all the pickups as "Non pris en charge"
+     * Deletes ride and moves all the pickups as "Non pris en charge".
      *
      * @Route("/ride/delete/{rideId}",
      *    name="ride_delete",

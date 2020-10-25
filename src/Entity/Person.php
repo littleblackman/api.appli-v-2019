@@ -191,6 +191,14 @@ class Person
         return $this;
     }
 
+    public function getFullnameReverse() {
+        return $this->getLastname().' '.$this->getFirstname();
+    }
+
+    public function getFullname() {
+        return $this->getFirstname().' '.$this->getLastname();
+    }
+
     public function getPhoto(): ?string
     {
         return $this->photo;

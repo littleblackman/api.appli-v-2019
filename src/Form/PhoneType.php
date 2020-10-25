@@ -20,6 +20,9 @@ class PhoneType extends AbstractType
             ->add('name', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('isPrefered', TextType::class, array(
+                'required' => false,
+                ))
             ->add('phone', TextType::class, array(
                 'required' => false,
                 ))

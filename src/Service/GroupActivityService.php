@@ -201,7 +201,216 @@ class GroupActivityService implements GroupActivityServiceInterface
 
     public function duplicateRecursive($source, $target) {
 
+        $debug = []; $message = '';
+
+        $flush = true;
+
+        $margeTime = 70; // 70 <=> 30 minutes
+
+        // A retrieve all group from source
+        if(!$source_groups = $this->findAllByDate($source)) return ['message' => 'no_groups_founded_in_source'];
+
+        // A Bis retrieve ALL PA in target day
+        if(!$target_activitys = $this->em->getRepository('App:PickupActivity')->findAllByDate($target)) return ['message' => 'no_activity_on_target_day'];
+
+        // create an array with child and all activity create by child (array of child present with an activity)
+        foreach($target_activitys as $activity_t) {
+            $childPresenceTargets[$activity_t->getChild()->getChildId()][$activity_t->getSport()->getSportId()] = [
+                                                                                                                    'start'   => $activity_t->getStart()->format('Hi'),
+                                                                                                                    'end'     => $activity_t->getEnd()->format('Hi'),
+                                                                                                                    'activity' => $activity_t
+                                                                                                             ];
+            if(!$flush) {
+                $childPresenceTargetsDebug[$activity_t->getChild()->getChildId()][$activity_t->getSport()->getSportId()] = [
+                    'start'   => $activity_t->getStart()->format('Hi'),
+                    'end'     => $activity_t->getEnd()->format('Hi'),
+                    'activity' => $activity_t->toArray()
+             ];
+             $debug['childPresenceTargets'] = $childPresenceTargetsDebug;  
+            }                                                                                                    
+        }
+
+
+        // B List all coach present in target day
+        $presenceStaffs =  $this->em->getRepository('App:StaffPresence')->findStaffsByPresenceDate($target);
+        foreach($presenceStaffs as $presenceStaff) {
+            $staffTarget[$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff();
+            if(!$flush) $debug['staffTarget'][$presenceStaff->getStaff()->getStaffId()] = $presenceStaff->getStaff()->getPerson()->getFirstname().' '.$presenceStaff->getStaff()->getPerson()->getLastname();
+        }
+
+        // C create group in target GROUP_TARGET
+        foreach($source_groups as $group_s) {
+
+            // create target date object
+             $target_date = new DateTime($target);
+        
+    
+             // create target group
+             ($group_s->getArea() == null) ? $area = "" : $area = $group_s->getArea();
+ 
+             $group_t = new GroupActivity();
+             $group_t->setDate($target_date);
+             $group_t->setName($group_s->getName());
+             $group_t->setAge($group_s->getAge());
+             $group_t->setStart($group_s->getStart());
+             $group_t->setEnd($group_s->getEnd());
+             $group_t->setLunch($group_s->getLunch());
+             $group_t->setComment($group_s->getComment());
+             $group_t->setLocation($group_s->getLocation());
+             $group_t->setArea($area);
+             $group_t->setSport($group_s->getSport());
+             
+             $userId = 99;
+             $group_t->setCreatedAt(new DateTime());
+             $group_t->setCreatedBy($userId);
+             $group_t->setUpdatedAt(new DateTime());
+             $group_t->setUpdatedBy($userId);
+             $group_t->setSuppressed(0);
+ 
+             $this->em->persist($group_t);
+             if($flush) $this->em->flush();
+ 
+             $this->em->persist($group_t);
+             if($flush) $this->em->flush();
+
+             $target_groups[$group_s->getgroupActivityId()] = $group_t;
+             if(!$flush) $debug['target_group'][$group_s->getgroupActivityId()] = $group_t->toArray();
+ 
+        }
+   
+        // D Loop on groupe source and retrieve groupe target to update
+        foreach($source_groups as $group_s) {
+
+             // group data source
+             $sport_id = $group_s->getSport()->getSportId();
+             $start    = intval($group_s->getStart()->format('Hi'));
+             $end      = intval($group_s->getEnd()->format('Hi'));
+
+             // groupe t associated
+             $group_t  = $target_groups[$group_s->getgroupActivityId()];
+
+            // add staff
+            if($group_s->getStaff()) {
+
+                foreach($group_s->getStaff() as $staffLink) {
+                    $staff_s = $staffLink->getStaff();
+
+                    // check if staff is present on target day
+                    if(key_exists($staff_s->getStaffId(), $staffTarget) && ($staff_s instanceof Staff) )  {
+
+                        if ($staff_s instanceof Staff) {
+                            $linkStaffGroup = new GroupActivityStaffLink();
+                            $linkStaffGroup->setGroupActivity($group_t);
+                            $linkStaffGroup->setStaff($staff_s);
+
+                            // persist link
+                            $this->em->persist($linkStaffGroup);
+                            if($flush) $this->em->flush();
+            
+                            // persist group_t
+                            $group_t->addStaff($linkStaffGroup, false);
+                            $this->em->persist($group_t);
+                            if($flush) $this->em->flush();
+                        }
+
+                    }  else {
+                        $messages['staff_not_founded_on_target_day'][] = $staff_s->getPerson()->getFullname();
+                    }
+        
+                }
+            }
+
+
+            // get all acivitiy in group_s
+            foreach($group_s->getPickupActivities() as $activity_link_s) {
+
+
+                // activity source
+                $activity_s = $activity_link_s->getPickupActivity();
+
+                // check if child_soruce has an activity_TARGET
+                $child_id = $activity_s->getChild()->getChildId();
+                if(key_exists($child_id, $childPresenceTargets)) {
+
+                    $childDataTarget = $childPresenceTargets[$child_id];
+                    
+                    // if child source has an activity in target date
+                    if(key_exists($sport_id, $childDataTarget)) {
+
+                        $chilDataActivityTarget = $childDataTarget[$sport_id];
+
+
+                        // check if group time is beetween child presence activity
+                        $childActivityTargetStart = intval($chilDataActivityTarget['start']) - $margeTime;
+                        $childActivityTargetEnd   = intval($chilDataActivityTarget['end']) + $margeTime;
+
+
+                        if($childActivityTargetStart <= $start &&  $end <= $childActivityTargetEnd) {
+
+                            $activity_t = $chilDataActivityTarget['activity'];
+                            
+                            // add activity to group_t
+                            $link = new PickupActivityGroupActivityLink();
+                            $link->setPickupActivity($activity_t);
+                            $link->setGroupActivity($group_t);
+
+                            // persist ling
+                            $this->em->persist($link);
+                            if($flush) $this->em->flush();
+
+                            // persist group_t
+                            $group_t->addPickupActivity($link);
+                            $this->em->persist($group_t);
+                            if($flush) $this->em->flush();
+
+                            $messages['child_founded_and_updated'][] = $activity_t->getChild()->getFullnameReverse().' '.$activity_s->getSport()->getName(); 
+
+
+                        } else {
+                            $messages['child_founded_but_presence_is_not_compatible'][] = $activity_s->getChild()->getFullnameReverse().
+                                                                                               ' Présence :'.$childActivityTargetStart.'-'.$childActivityTargetEnd.
+                                                                                               ' - Groupe : '.$start.'-'.$end;
+                        }
+
+
+
+                    } else {
+                        $messages['child_founded_but_has_not_sport_source_on_target'][] = $activity_s->getChild()->getFullnameReverse().' '.$activity_s->getSport()->getName();
+                    }
+
+                } else {
+                    $messages['child_not_founded_on_target'][] = $activity_s->getChild()->getFullnameReverse();
+                }
+
+
+
+            }
+
+
+        }
+
+
+        foreach($messages as $key => $datas) {
+            sort($datas);
+            $arr[$key] = $datas; 
+        }
+
+        if(!$flush) {
+            $returnData = ['messages' => $arr, 'debug' => $debug];
+        }  else {
+            $returnData = $arr;
+        }
+       
+        return $returnData;
+    }
+
+
+
+    public function duplicateRecursiveSAV($source, $target) {
+
         $debug = [];
+
+        $flush = false;
 
         // A retrieve all group from source
         if(!$source_groups = $this->findAllByDate($source)) return ['message' => 'source_no_groups'];
@@ -209,12 +418,14 @@ class GroupActivityService implements GroupActivityServiceInterface
         // B retrieve all activitys on target
         if(!$target_activitys = $this->em->getRepository('App:PickupActivity')->findAllByDate($target)) return ['message' => 'no_target_activities'];
 
-        // C create a table sport / child_id = activity object
+        // C create a table sport / child_id = activity object WITH THE TARGET INFORMATION
         foreach($target_activitys as $a) {
             if($a->getSport()) {
-                $activitysArray[$a->getSport()->getSportId()][$a->getChild()->getChildId()] = $a;
+                if($a->getChild()->getChildId() == 11538) $activitysArray[$a->getSport()->getSportId()][$a->getChild()->getChildId()] = $a->toArray();
             }
         }
+
+        return [$activitysArray];
 
         // D List all coach present in target day
         $presenceStaffs =  $this->em->getRepository('App:StaffPresence')->findStaffsByPresenceDate($target);
@@ -243,13 +454,7 @@ class GroupActivityService implements GroupActivityServiceInterface
                         $targetStaffNameArray[] = $person->getFirstname().' '.$person->getLastname();
                         $message['target_staff_present'][] = $person->getFirstname().' '.$person->getLastname();
 
-                      } else {
-                          /*
-                        $targetStaffArray[] = null;
-                        $person = $staff_s->getPerson();
-                        $targetStaffNameArray = "driver absent";
-                        $message['target_staff_absent'][] = $person->getFirstname().' '.$person->getLastname();*/
-                      }
+                      } 
         
                 }
             } else {
@@ -280,7 +485,7 @@ class GroupActivityService implements GroupActivityServiceInterface
             $group_t->setSuppressed(0);
 
             $this->em->persist($group_t);
-            $this->em->flush();
+            if($flush) $this->em->flush();
 
             // add staff to group
             if($targetStaffArray) {
@@ -304,39 +509,53 @@ class GroupActivityService implements GroupActivityServiceInterface
             }
 
             $this->em->persist($group_t);
-            $this->em->flush();
+            if($flush) $this->em->flush();
 
 
-            // boucle all actvity and check if in table present find the same
+            // boucle all group-actvity target and check if in there is an pickup activty 
             foreach($group_s->getPickupActivities() as $activity_link_s) {
 
+                // activity source
                 $activity_s = $activity_link_s->getPickupActivity();
-                // add to groups
-
+                
+                // add to group if the group as the sport and if child is in the acticitiyArray
                 if($activity_s->getSport() && \key_exists($activity_s->getChild()->getChildId(), $activitysArray[$activity_s->getSport()->getSportId()])) {
+                    
                     // new activity
                     $activity_t = $activitysArray[$activity_s->getSport()->getSportId()][$activity_s->getChild()->getChildId()];
-                    $start_time_string = $target.' '.$activity_s->getStart()->format('H:i:s');
-                    $activity_t->setStart(new DateTime($start_time_string));
-                    $activity_t->setDate($target_date);
-                    $activity_t->setChild($activity_s->getChild());
-                    $activity_t->setLocation($activity_s->getLocation());
-                    $activity_t->setSport($activity_s->getSport());
-            
 
-                    $this->em->persist($activity_t);
-                    $this->em->flush();
 
-                    // add activity to group
-                    $link = new PickupActivityGroupActivityLink();
-                    $link->setPickupActivity($activity_t);
-                    $link->setGroupActivity($group_t);
-                    $this->em->persist($link);
-                    $this->em->flush();
-                    $group_t->addPickupActivity($link);
+                    // if activty can 
 
-                    $message['target_child_associated_to_group'][$activity_s->getChild()->getChildId()] = $activity_s->getChild()->getLastname().' '.$activity_s->getChild()->getFirstname();
-    
+                    //return array($group_s->toArray(), $activity_t->toArray());
+
+                    if($activity_s->getStart() == $activity_t->getStart() && $activity_s->getEnd() == $activity_t->getEnd())
+                    {
+
+                        $start_time_string = $target.' '.$activity_s->getStart()->format('H:i:s');
+                        $activity_t->setStart(new DateTime($start_time_string));
+                        $activity_t->setDate($target_date);
+                        $activity_t->setChild($activity_s->getChild());
+                        $activity_t->setLocation($activity_s->getLocation());
+                        $activity_t->setSport($activity_s->getSport());
+                
+
+                        $this->em->persist($activity_t);
+                        if($flush) $this->em->flush();
+
+                        // add activity to group
+                        $link = new PickupActivityGroupActivityLink();
+                        $link->setPickupActivity($activity_t);
+                        $link->setGroupActivity($group_t);
+                        $this->em->persist($link);
+                        $this->em->flush();
+                        $group_t->addPickupActivity($link);
+
+                        $message['target_child_associated_to_group'][$activity_s->getChild()->getChildId()] = $activity_s->getChild()->getLastname().' '.$activity_s->getChild()->getFirstname();
+        
+                    } else {
+                        $message['child_founded_but_times_different'][] = $activity_s->getChild()->getLastname().' '.$activity_s->getChild()->getFirstname();
+                    }
                     // debug line, delete after debug
  //                   $debug[$debugId][] = $t_pickup->toArray();
 
@@ -350,7 +569,7 @@ class GroupActivityService implements GroupActivityServiceInterface
             }
 
             $this->em->persist($group_t);
-            $this->em->flush();
+            if($flush) $this->em->flush();
         }
 
 

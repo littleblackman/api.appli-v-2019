@@ -247,6 +247,18 @@ class PickupActivityService implements PickupActivityServiceInterface
         }
     }
 
+    public function updateAllRegistration(string $data) {
+        $dataArray = is_array($data) ? $data : json_decode($data, true);
+
+        $sport = $this->em->getRepository('App:Sport')->findOneById($dataArray['sportId']);
+
+        foreach($dataArray['pickupActivityIds'] as $pickupActivityId) {
+            $activity = $this->em->getRepository('App:PickupActivity')->find($pickupActivityId);
+            $activity->setSport($sport);
+            $this->mainService->persist($activity);
+        }
+    }
+
     /**
      * Creates the GroupActivity.
      */
@@ -528,6 +540,17 @@ class PickupActivityService implements PickupActivityServiceInterface
             'message' => 'PickupActivity modifié',
             'pickupActivity' => $this->toArray($object),
         );
+    }
+
+
+    public function associatedByRegistration($currentActivity) {
+
+        $arr = [];
+        $activitys = $this->em->getRepository('App:PickupActivity')->findByCreatedAtAndChild($currentActivity->getCreatedAt()->format('Y-m-d'), $currentActivity->getChild());
+        foreach($activitys as $activity) {
+            $arr[] = $activity->toArray();
+        }
+        return $arr;
     }
 
     public function updateChildPresenceStatus($child, $date, $status) {

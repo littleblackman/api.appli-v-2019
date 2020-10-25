@@ -14,7 +14,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 
 /**
- * Product
+ * Product.
  *
  * @ORM\Table(name="product")
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -66,20 +66,6 @@ class Product
      */
     private $nameEn;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="message_fr", type="string", length=128, nullable=true)
-     */
-    private $messageFr;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="message_en", type="string", length=128, nullable=true)
-     */
-    private $messageEn;
-
 
     /**
      * @var string|null
@@ -104,7 +90,7 @@ class Product
 
     /**
      * @var string|null
-     * deprecated use totals
+     *                  deprecated use totals
      * @ORM\Column(name="prices", type="string", nullable=true)
      */
     private $prices;
@@ -115,14 +101,14 @@ class Product
     private $totals;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="transport", type="boolean")
      */
     private $transport;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="lunch", type="boolean")
      */
@@ -152,39 +138,32 @@ class Product
     private $mail;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="is_location_selectable", type="boolean")
      */
     private $isLocationSelectable;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="is_date_selectable", type="boolean")
      */
     private $isDateSelectable;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="is_hour_selectable", type="boolean")
      */
     private $isHourSelectable;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="is_sport_selectable", type="boolean")
      */
     private $isSportSelectable;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_full", type="boolean", nullable=true)
-     */
-    private $isFull;
 
     /**
      * @var string|null
@@ -245,7 +224,6 @@ class Product
     private $totalVat;
     private $totalTtc;
 
-
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -257,16 +235,14 @@ class Product
         $this->totalHt = 0;
         $this->totalVat = 0;
         $this->totalTtc = 0;
-
     }
 
     /**
-     * Converts the entity in an array
+     * Converts the entity in an array.
      */
     public function toArray()
     {
         $objectArray = get_object_vars($this);
-
 
         //Specific data
         if (null !== $objectArray['hourDropin']) {
@@ -276,10 +252,29 @@ class Product
             $objectArray['hourDropoff'] = $objectArray['hourDropoff']->format('H:i:s');
         }
 
-
         if (null !== $objectArray['prices']) {
             $objectArray['prices'] = $this->getPrices();
             $objectArray['totals'] = $this->getTotals();
+        }
+
+
+        if (isset($objectArray['dates']) && $objectArray['dates'] !==  null) {
+
+            $arr = [];
+            foreach($this->getDates() as  $link) {
+                $date = $link->getDate();
+                $arr[$date->format('Ymd')] = $date->format('Y-m-d');
+            }
+
+            ksort($arr);
+
+            if(count($arr) > 0) {
+                $objectArray['start_date'] = $arr[array_key_first($arr)];
+                $objectArray['start_key'] = array_key_first($arr);
+            }
+
+          
+            $objectArray['dates'] = $arr;
         }
 
 
@@ -327,30 +322,6 @@ class Product
         return $this;
     }
 
-
-    public function getMessageFr(): ?string
-    {
-        return $this->messageFr;
-    }
-
-    public function setMessageFr(?string $messageFr): self
-    {
-        $this->messageFr = $messageFr;
-
-        return $this;
-    }
-
-    public function getMessageEn(): ?string
-    {
-        return $this->messageEn;
-    }
-
-    public function setMessageEn(?string $messageEn): self
-    {
-        $this->messageEn = $messageEn;
-
-        return $this;
-    }
 
     public function getNameEn(): ?string
     {
@@ -414,11 +385,10 @@ class Product
 
     public function getTotals(): ?array
     {
-
         $this->totals = ['totalVat' => $this->totalHt, 'totalHt' => $this->totalVat, 'totalTtc' => $this->totalTtc];
 
         $prices = $this->getPrices();
-        foreach($prices as $price) {
+        foreach ($prices as $price) {
             $this->totals['totalHt'] += $price['totalHt'];
             $this->totals['totalTtc'] += $price['totalTtc'];
             $this->totals['totalVat'] += $price['totalVat'];
@@ -430,7 +400,6 @@ class Product
 
         return $this->totals;
     }
-
 
     public function getTransport(): ?bool
     {
@@ -528,18 +497,7 @@ class Product
         return $this;
     }
 
-    public function getIsFull(): ?bool
-    {
-        return $this->isFull;
-    }
-
-    public function setIsFull(bool $isFull): self
-    {
-        $this->isFull = $isFull;
-
-        return $this;
-    }
-
+  
     public function getIsSportSelectable(): ?bool
     {
         return $this->isSportSelectable;

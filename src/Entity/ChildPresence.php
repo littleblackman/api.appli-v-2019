@@ -99,6 +99,14 @@ class ChildPresence
      */
     private $statusChange;
 
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="last_day_of_week", type="date")
+     */
+    private $lastDayOfWeek;
+
     /**
      * Converts the entity in an array
      */
@@ -115,6 +123,9 @@ class ChildPresence
         }
         if (null !== $objectArray['end']) {
             $objectArray['end'] = $objectArray['end']->format('H:i:s');
+        }
+        if (null !== $objectArray['lastDayOfWeek']) {
+            $objectArray['lastDayOfWeek'] = $objectArray['lastDayOfWeek']->format('Y-m-d');
         }
 
         return $objectArray;
@@ -185,6 +196,18 @@ class ChildPresence
         return $this;
     }
 
+    public function getLastDayOfWeek(): ?DateTimeInterface
+    {
+        return $this->lastDayOfWeek;
+    }
+
+    public function setLastDayOfWeek(?DateTimeInterface $date): self
+    {
+        $this->lastDayOfWeek = $date;
+
+        return $this;
+    }
+
     public function getStart(): ?DateTimeInterface
     {
         return $this->start;
@@ -232,5 +255,10 @@ class ChildPresence
         $this->statusChange = $statusChange;
 
         return $this;
+    }
+
+    public function getHasLunch() {
+        if(!$this->getRegistration()) return null;
+        return $this->getRegistration()->getHasLunch();
     }
 }

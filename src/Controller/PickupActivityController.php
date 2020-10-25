@@ -299,6 +299,50 @@ class PickupActivityController extends AbstractController
         return new JsonResponse($pickupActivityArray);
     }
 
+
+     /**
+     * Displays pickupActivity
+     *
+     * @Route("/pickup-activity/associatedByRegistration/{pickupActivityId}",
+     *    name="pickup_activity_associated_by_registration",
+     *    requirements={"pickupActivityId": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("pickupActivity", expr="repository.findOneById(pickupActivityId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=PickupActivity::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="pickupActivityId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the pickupActivity",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="PickupActivity")
+     */
+    public function associatedByRegistration(PickupActivity $pickupActivity) {
+
+        $this->denyAccessUnlessGranted('pickupActivityDisplay', $pickupActivity);
+
+        $pickupActivityArray = $this->pickupActivityService->associatedByRegistration($pickupActivity);
+
+        return new JsonResponse($pickupActivityArray);
+    }
+
 //CREATE
     /**
      * Creates a PickupActivity
@@ -334,6 +378,46 @@ class PickupActivityController extends AbstractController
         $this->denyAccessUnlessGranted('pickupActivityCreate');
 
         $createdData = $this->pickupActivityService->create($request->getContent());
+
+        return new JsonResponse($createdData);
+    }
+
+
+//CREATE
+    /**
+     * Creates a PickupActivity
+     *
+     * @Route("/pickup-activity/updateAllRegistration",
+     *    name="pickup_activity_update_all_registration",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="pickupActivity", ref=@Model(type=PickupActivity::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the PickupActivity",
+     *     required=true,
+     *     @Model(type=PickupActivityType::class)
+     * )
+     * @SWG\Tag(name="PickupActivity")
+     */
+    public function updateAllRegistration(Request $request)
+    {
+        $this->denyAccessUnlessGranted('pickupActivityCreate');
+
+        $createdData = $this->pickupActivityService->updateAllRegistration($request->getContent());
 
         return new JsonResponse($createdData);
     }

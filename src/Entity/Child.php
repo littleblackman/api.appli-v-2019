@@ -8,13 +8,12 @@ use App\Entity\Traits\UpdateTrait;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 
 /**
- * Child
+ * Child.
  *
  * @ORM\Table(name="child")
  * @ORM\Entity(repositoryClass="App\Repository\ChildRepository")
@@ -57,6 +56,10 @@ class Child
      */
     private $lastname;
 
+    private $fullname;
+
+    private $fullnameReverse;
+
     /**
      * @var string|null
      *
@@ -94,7 +97,7 @@ class Child
     private $school;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="france_resident", type="boolean")
      */
@@ -106,14 +109,12 @@ class Child
      */
     private $persons;
 
-
     /**
      * @var string|null
      *
      * @ORM\Column(name="pickup_instruction", type="string", length=35, nullable=true)
      */
     private $pickupInstruction;
-
 
     /**
      * @ORM\OneToMany(targetEntity="ChildChildLink", mappedBy="child")
@@ -135,14 +136,49 @@ class Child
      */
     private $comment;
 
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="medical_certificate", type="string", nullable=true)
+     */
+    private $medicalCertificate;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="sportif_profil", type="string", nullable=true)
+     */
+    private $sportifProfil;
+
+    /**
+     * @var Family
+     *
+     * @ORM\ManyToOne(targetEntity="Staff", inversedBy="childs")
+     * @ORM\JoinColumn(name="staff_id", referencedColumnName="staff_id")
+     */
+    private $staff;
+
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="child_hand", type="string", nullable=true)
+     */
+    private $childHand;
+
     public function __construct()
     {
         $this->persons = new ArrayCollection();
         $this->siblings = new ArrayCollection();
+
+        $this->fullname = $this->getFirstname().' '.$this->getLastname();
+        $this->fullnameReverse = $this->getLastname().' '.$this->getFirstname();
+
+
     }
 
     /**
-     * Converts the entity in an array
+     * Converts the entity in an array.
      */
     public function toArray()
     {
@@ -153,6 +189,15 @@ class Child
             $objectArray['birthdate'] = $objectArray['birthdate']->format('Y-m-d');
         }
 
+        if($objectArray['staff'] != null) {
+            $objectArray['staff'] = ['staffId' => $this->staff->getStaffId(),
+                                     'fullname' => $this->staff->getFullname()
+                                    ];
+        }
+
+        $objectArray['fullname'] = $this->getFullname();
+        $objectArray['fullnameReverse'] = $this->getFullnameReverse();
+
         return $objectArray;
     }
 
@@ -160,6 +205,7 @@ class Child
     public function setChildId(?int $childId): self
     {
         $this->childId = $childId;
+
         return $this;
     }
 
@@ -167,6 +213,7 @@ class Child
     public function setFamilyId(?int $familyId): self
     {
         $this->familyId = $familyId;
+
         return $this;
     }
 
@@ -209,6 +256,15 @@ class Child
         $this->lastname = $lastname;
 
         return $this;
+    }
+    
+
+    public function getFullnameReverse() {
+        return $this->getLastname().' '.$this->getFirstname();
+    }
+
+    public function getFullname() {
+        return $this->getFirstname().' '.$this->getLastname();
     }
 
     public function getPhone(): ?string
@@ -364,6 +420,102 @@ class Child
     {
         $this->comment = $comment;
 
+        return $this;
+    }
+
+    /**
+     * Get the value of medicalCertificate.
+     *
+     * @return string|null
+     */
+    public function getMedicalCertificate()
+    {
+        return $this->medicalCertificate;
+    }
+
+    /**
+     * Set the value of medicalCertificate.
+     *
+     * @param string|null $medicalCertificate
+     *
+     * @return self
+     */
+    public function setMedicalCertificate($medicalCertificate)
+    {
+        $this->medicalCertificate = $medicalCertificate;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of sportifProfil.
+     *
+     * @return string|null
+     */
+    public function getSportifProfil()
+    {
+        return $this->sportifProfil;
+    }
+
+    /**
+     * Set the value of sportifProfil.
+     *
+     * @param string|null $sportifProfil
+     *
+     * @return self
+     */
+    public function setSportifProfil($sportifProfil)
+    {
+        $this->sportifProfil = $sportifProfil;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of childHand.
+     *
+     * @return string|null
+     */
+    public function getChildHand()
+    {
+        return $this->childHand;
+    }
+
+    /**
+     * Set the value of childHand.
+     *
+     * @param string|null $childHand
+     *
+     * @return self
+     */
+    public function setChildHand($childHand)
+    {
+        $this->childHand = $childHand;
+
+        return $this;
+    }
+
+
+    public function setStaff($staff) {
+        $this->staff = $staff;
+        if($staff != null) {
+            $staff->addChild($this);
+        }
+        return $this;
+    }
+
+    public function getStaff() {
+        return $this->staff;
+    }
+
+    public function addStaff($staff) {
+        $this->staff = $staff;
+        return $this;
+    }
+
+    public function removeStaff($staff) {
+        $this->staff = null;
+        $staff->removeChild($this);
         return $this;
     }
 }

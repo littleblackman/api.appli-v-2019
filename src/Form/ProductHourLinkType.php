@@ -32,6 +32,15 @@ class ProductHourLinkType extends AbstractType
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 ))
+            ->add('messageFr', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('messageEn', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('isFull', CheckboxType::class, array(
+                'required' => false,
+                ))
         ;
     }
 

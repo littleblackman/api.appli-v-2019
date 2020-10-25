@@ -153,4 +153,24 @@ class PhoneService implements PhoneServiceInterface
 
         return $objectArray;
     }
+
+    public function updateIsPrefered($phone, $type) {
+        $currentIsPrefered = array_map('trim', explode(',', $phone->getIsPrefered()));
+        // is i need to add
+        if(!in_array($type, $currentIsPrefered)) {
+            $currentIsPrefered[] = $type;
+            $action = "add";
+        } else {
+            $key = array_search($type, $currentIsPrefered);
+            unset($currentIsPrefered[$key]);
+            $action = "delete";
+        }
+
+        $phone->setIsPrefered(implode(',' , $currentIsPrefered));
+
+        $this->mainService->persist($phone);
+
+        return ['phoneId' => $phone->getPhoneId(), 'action' => $action];
+
+    }
 }

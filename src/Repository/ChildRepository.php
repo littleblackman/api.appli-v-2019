@@ -31,12 +31,24 @@ class ChildRepository extends EntityRepository
         return $this->createQueryBuilder('c')
             ->where('LOWER(c.firstname) LIKE :term OR LOWER(c.lastname) LIKE :term')
             ->andWhere('c.suppressed = 0')
-            ->orderBy('c.lastname', 'ASC')
-            ->addOrderBy('c.firstname', 'ASC')
+            ->orderBy('c.firstname', 'ASC')
+            ->addOrderBy('c.lastname', 'ASC')
             ->setParameter('term', '%' . strtolower($term) . '%')
             ->getQuery()
         ;
     }
+
+    public function findAllSearchResult(string $term, $name, $start = "%") {
+        return $this->createQueryBuilder('c')
+        ->where('LOWER(c.'.$name.') LIKE :term')
+        ->andWhere('c.suppressed = 0')
+        ->orderBy('c.lastname', 'ASC')
+        ->addOrderBy('c.firstname', 'ASC')
+        ->setParameter('term', $start . strtolower($term) . '%')
+        ->getQuery()
+        ->getResult();
+    }
+
 
     /**
      * Returns the child if not suppressed

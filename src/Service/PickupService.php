@@ -412,6 +412,91 @@ class PickupService implements PickupServiceInterface
         ;
     }
 
+    
+    public function listByWeek($monday) {
+
+
+        $groupTimes = [
+                            0 => '00h - 8h',
+                            1 => '08h - 10h',
+                            2 => '10h - 12h',
+                            3 => '12h - 14h',
+                            4 => '14h - 16h',
+                            5 => '16h - 18h',
+                            6 => '18h - 24h'
+        ];
+
+
+        $currentDate = new DateTime($monday);
+    
+
+        for($i = 0; $i < 7; $i++) {
+
+            foreach(['dropin', 'dropoff'] as $kind) {
+                $pickups = $this->findAllByDate($currentDate->format('Y-m-d'), $kind);
+                if($pickups) {
+                    foreach($pickups as $pickup) {
+                        $child = $pickup->getChild();
+                        if($ride = $pickup->getRide()) {
+                            $rideInfo = $ride->getName().' '.$ride->getStart()->format('H:i');
+                            ($ride->getStaff()) ? $driver = $ride->getStaff()->getPerson()->getFirstname() : $driver = null; 
+                        } else {
+                            $rideInfo = null;
+                            $driver   = null;
+                        }
+
+                        $start = $pickup->getStart()->format('G');
+
+                        if($start < 8) $key = 0;
+                        if($start >= 8  && $start < 10) $key = 1;
+                        if($start >= 10 && $start < 12) $key = 2;
+                        if($start >= 12 && $start < 14) $key = 3;
+                        if($start >= 14 && $start < 16) $key = 4;
+                        if($start >= 16 && $start < 18) $key = 5;
+                        if($start >= 18) $key = 6;
+
+
+                        $all[$kind][$groupTimes[$key]][$pickup->getChild()->getLastname().$pickup->getPickupId()] = [
+                                                                            'pickupId'    => $pickup->getPickupId(),
+                                                                            'childId'     => $child->getChildId(),
+                                                                            'firstname'   => $child->getFirstname(),
+                                                                            'lastname'    => $child->getLastname(),
+                                                                            'status'      => $pickup->getStatus(),
+                                                                            'address'     => $pickup->getAddress(),
+                                                                            'start'       => $pickup->getStart()->format('H:i'),
+                                                                            'payment_due' => $pickup->getPaymentDue(),
+                                                                            'payment_done'=> $pickup->getPaymentDone(),
+                                                                            'ride_data'   => $rideInfo,
+                                                                            'driver'      => $driver,
+                                                                            'info_medical'=> $child->getMedical()
+
+                        ];
+                    }
+                } else {
+                    $all[$kind] = [];
+                }
+                if(count($all[$kind]) > 0) {
+                    foreach($all[$kind] as $groupTime => $element) {
+                        ksort($element);
+                        $all[$kind][$groupTime] = $element;
+                    }
+                    ksort($all[$kind]);
+                }
+               
+                
+            }
+            
+            $result[$currentDate->format('Y-m-d')] = $all;
+
+            $currentDate = $currentDate->modify('+1 day');
+
+            unset($all);
+        }
+
+
+        return $result;
+    }
+
     /**
      * Gets all the Pickups by status.
      */
@@ -432,6 +517,19 @@ class PickupService implements PickupServiceInterface
             ->getRepository('App:Pickup')
             ->findAllUnaffected($date, $kind)
         ;
+    }
+
+    public function retrieveByChildId($childId, $from, $to) {
+
+        $child = $this->em->getRepository('App:Child')->find($childId);
+        $from = new DateTime($from);
+        $to   = new DateTime($to);
+        $results = [];
+        $pickups = $this->em->getRepository('App:Pickup')->findByChildAndFromToDate($child, $from, $to);
+        foreach($pickups as $pickup) {
+            $results[$pickup->getStart()->format('Y-m')][$pickup->getStart()->format('W')][] = $this->toArray($pickup);
+        }
+        return $results;
     }
 
     /**
@@ -470,7 +568,7 @@ class PickupService implements PickupServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function modify(Pickup $object, string $data)
+    public function modify(Pickup $object, string $data, $sender = null)
     {
         $status_original = $object->getStatus();
 
@@ -496,18 +594,23 @@ class PickupService implements PickupServiceInterface
 
             // update presence and activity on cascade if npec or pec
             if ($object->getStatus() == 'npec' || $object->getStatus() == 'pec' || $object->getStatus() == null || $object->getStatus() == '') {
+                
+                // in case of dropoff should we change other status ?
+
                 $this->childPresenceService->updateStatus($object->getChild(), $object->getStart(), $object->getStatus());
             }
 
-            // modify other pickup same day
-            $allpa = $this->em->getRepository('App:Pickup')->findAllByChildAndDate($object->getChild(), $object->getStart()->format('Y-m-d'));
-            if ($allpa) {
-                foreach ($allpa as $mypa) {
-                    $mypa->setStatus($object->getStatus());
-                    $mypa->setStatusChange(new DateTime());
-                    $this->em->persist($mypa);
-                    $this->em->flush();
-                }
+            // modify other pickup same day & NOT SEND BY DRIVER
+            if($sender != 'driver') {
+                    $allpa = $this->em->getRepository('App:Pickup')->findAllByChildAndDate($object->getChild(), $object->getStart()->format('Y-m-d'));
+                    if ($allpa) {
+                        foreach ($allpa as $mypa) {
+                            $mypa->setStatus($object->getStatus());
+                            $mypa->setStatusChange(new DateTime());
+                            $this->em->persist($mypa);
+                            $this->em->flush();
+                        }
+                    }
             }
         }
 

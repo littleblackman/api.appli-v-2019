@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\DriverZone;
 use App\Entity\Staff;
-use App\Entity\User;
+use App\Entity\User; 
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -42,6 +42,23 @@ class StaffService implements StaffServiceInterface
 
         $this->mainService->create($driverZone);
         $this->mainService->persist($driverZone);
+
+        return $driverZone;
+    }
+
+    public function addDriverZone($staff, $data) {
+        $data = json_decode($data, true);
+        $driverZone = $this->addZone($staff, $data['postal'], 1);
+        return $driverZone->toArray();
+    }
+
+    public function updateZone($driverZoneId, $priority) {
+        $driverZone = $this->em->getRepository('App:DriverZone')->find($driverZoneId);
+        $driverZone->setPriority($priority);
+        $this->em->persist($driverZone);
+        $this->em->flush();
+
+        return $driverZone->toArray();
     }
 
     /**

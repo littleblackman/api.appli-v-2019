@@ -72,6 +72,14 @@ class Week
     private $season;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="group_name", type="string", length=60, nullable=true)
+     */
+    private $groupName;
+
+
+    /**
      * Converts the entity in an array
      */
     public function toArray()
@@ -151,4 +159,18 @@ class Week
 
         return $this;
     }
+
+    public function getGroupName(): ?string
+    {
+        return $this->groupName;
+    }
+
+    public function setGroupName(?string $name): self
+    {
+        $this->groupName = $name;
+
+        return $this;
+    }
+
+    
 }

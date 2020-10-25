@@ -98,10 +98,18 @@ class Staff
      */
     private $groupActivities;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Child", mappedBy="staff")
+     * @SWG\Property(ref=@Model(type=Child::class))
+     */
+    private $childs;
+
     public function __construct()
     {
         $this->driverZones = new ArrayCollection();
         $this->groupActivities = new ArrayCollection();
+        $this->childs = new ArrayCollection();
+
     }
 
     /**
@@ -119,6 +127,9 @@ class Staff
         if($this->getPerson()) {
           $objectArray['person'] = $this->getPerson()->toArray($type);
         }
+
+        $objectArray['fullname'] = $this->getFullname();
+        $objectArray['fullnameReverse'] = $this->getFullnameReverse();
 
         if($type == "light") {
 
@@ -148,6 +159,7 @@ class Staff
     {
         return $this->staffId;
     }
+    
 
     public function getKind(): ?string
     {
@@ -174,9 +186,17 @@ class Staff
         return $this;
     }
 
+    public function getFullname() {
+        return $this->person->getFullname();
+    }
+
+    public function getFullnameReverse() {
+        return $this->person->getFullnameReverse();
+    }
+
     public function getIsSupervisor(): ?Int
     {
-        return $this->$isSupervisor;
+        return $this->isSupervisor;
     }
 
     public function setIsSupervisor(?int $isSupervisor): self
@@ -294,5 +314,31 @@ class Staff
         }
 
         return $this;
+    }
+
+    public function addChild($child) {
+        if (!$this->childs->contains($child)) {
+            $this->childs[] = $child;
+
+            // test if staff not exist in child
+            if($child->getStaff() != $this) {
+                $child->addStaff($this);
+            }
+        }
+        return $this;
+    }
+
+    public function removeChild($child) {
+        if ($this->childs->contains($child)) {
+            $this->childs->removeElement($child);
+
+            // test if staff not exist in child
+            if ($child->getStaff() === $this) {
+                $child->setStaff(null);
+            }
+        }
+
+        return $this;
+
     }
 }

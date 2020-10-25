@@ -163,6 +163,13 @@ class TransactionService implements TransactionServiceInterface
             ->findAllByDatePerson($date, $person)
         ;
     }
+ 
+    public function findByInvoice($invoice) {
+        return $this->em
+        ->getRepository('App:Transaction')
+        ->findLatestByInvoice($invoice)
+    ;
+    }
 
     /**
      * Returns the list of all transactions for a specific date and person

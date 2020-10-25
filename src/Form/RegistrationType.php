@@ -1,4 +1,4 @@
- <?php
+<?php
 
 namespace App\Form;
 
@@ -7,12 +7,14 @@ use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Product;
 use App\Entity\Transaction;
+use App\Entity\Address;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,7 +28,6 @@ class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        
         $builder
             ->add('registration', DateTimeType::class, array(
                 'required' => false,
@@ -39,6 +40,10 @@ class RegistrationType extends AbstractType
             ->add('person', EntityType::class, array(
                 'required' => false,
                 'class' => Person::class,
+                ))
+            ->add('address', EntityType::class, array(
+                'required' => false,
+                'class' => Address::class,
                 ))
             ->add('product', EntityType::class, array(
                 'required' => false,
@@ -73,15 +78,24 @@ class RegistrationType extends AbstractType
             ->add('transaction', EntityType::class, array(
                 'required' => false,
                 'class' => Transaction::class,
-            ));  
-                /*
+            ))
             ->add('dates', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('hasLunch', IntegerType::class, array(
+            ->add('start', TimeType::class, array(
+                'required' => false,
+                'input' => 'datetime',
+                'widget' => 'single_text',
+                ))
+            ->add('end', TimeType::class, array(
+                'required' => false,
+                'input' => 'datetime',
+                'widget' => 'single_text',
+                ))
+            ->add('hasLunch', TextType::class, array(
                 'required' => false,
                 ))
-            ->add('hasTransport', IntegerType::class, array(
+            ->add('hasTransport', TextType::class, array(
                 'required' => false,
                 ))
             ->add('dropoffTime', DateTimeType::class, array(
@@ -92,17 +106,7 @@ class RegistrationType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text',
                 ))
-            ->add('address', TextType::class, array(
-                'required' => false,
-                ))
-            ->add('town', TextType::class, array(
-                'required' => false,
-                ))
-            ->add('postal', TextType::class, array(
-                'required' => false,
-                ))*/
-
-        ;
+           ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -2,12 +2,17 @@
 
 namespace App\Service;
 
+
 use App\Entity\ChildPresence;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Entity\PickupActivity;
 use App\Entity\Pickup;
+use App\Entity\Meal;
+use App\Service\CascadeService;
+
+use DateTimeInterface;
 
 /**
  * ChildPresenceService class.
@@ -17,23 +22,26 @@ use App\Entity\Pickup;
 class ChildPresenceService implements ChildPresenceServiceInterface
 {
     private $em;
-
     private $childService;
-
     private $mainService;
-
     private $pickupActivityService;
+    private $mealService;
+    private $cascadeService;
 
     public function __construct(
         EntityManagerInterface $em,
         ChildServiceInterface $childService,
         MainServiceInterface $mainService,
-        PickupActivityServiceInterface $pickupActivityService
+        PickupActivityServiceInterface $pickupActivityService,
+        MealServiceInterface $mealService,
+        CascadeService $cascadeService
     ) {
         $this->em = $em;
         $this->childService = $childService;
         $this->mainService = $mainService;
         $this->pickupActivityService = $pickupActivityService;
+        $this->mealService = $mealService;;
+        $this->cascadeService = $cascadeService;
     }
 
     /**
@@ -49,6 +57,8 @@ class ChildPresenceService implements ChildPresenceServiceInterface
             $object->setEnd(DateTime::createFromFormat('H:i:s', $data['end']));
         }
     }
+
+
 
     /**
      * {@inheritdoc}
@@ -73,6 +83,9 @@ class ChildPresenceService implements ChildPresenceServiceInterface
 
                     //Persists data
                     $this->mainService->persist($object);
+
+                    // create Meal from Child Presence
+                    $this->createMealFromChildPresence($object);
                 }
             }
 
@@ -86,102 +99,80 @@ class ChildPresenceService implements ChildPresenceServiceInterface
         throw new UnprocessableEntityHttpException('Submitted data is not an array -> '.json_encode($data));
     }
 
-    public function createFromRegistrationAndData($registration, $date, $location, $hours, $sports, $hasLunch, $hasTransport, $pickupsData)
-    {
-        // $presenceDate = new \DateTime($date);
-
-        // create presence
-
-        $object = new ChildPresence();
-        $this->mainService->create($object);
-
-        $object->setRegistration($registration);
-        $object->setChild($registration->getChild());
-        $object->setLocation($location);
-        $object->setDate($date);
-        $object->setStart($hours['start']);
-        $object->setEnd($hours['end']);
-        $object->setStatus(' ');
-
-        $this->mainService->persist($object);
-
-        // create pickup activity
-        foreach ($sports as $sport) {
-            $object = new PickupActivity();
-            $this->mainService->create($object);
-
-            $object->setDate($date);
-            $object->setRegistration($registration);
-            $object->setChild($registration->getChild());
-            $object->setStart($hours['start']);
-            $object->setEnd($hours['end']);
-            $object->setSport($sport);
-            $object->setLocation($location);
-
-            //Persists data
-            $this->mainService->persist($object);
-        }
-
-        // ahd lunch
-        if($hasLunch == 1) {
-
-            $lunch = $this->em->getRepository('App:Sport')->find(10);
-
-            $object = new PickupActivity();
-            $this->mainService->create($object);
-
-            $object->setDate($date);
-            $object->setRegistration($registration);
-            $object->setChild($registration->getChild());
-            $object->setStart($hours['start']);
-            $object->setEnd($hours['end']);
-            $object->setSport($lunch);
-            $object->setLocation($location);
-
-            //Persists data
-            $this->mainService->persist($object);
-        }
-
-
-        // create pickup
-        if ($hasTransport) {
-            $child = $registration->getChild();
-            $person = $child->getPersons()[0]->getPerson();
-
-            $address = $person->getAddresses()[0]->getAddress();
-
-            foreach ($pickupsData as $kind => $timePickup) {
-                $start = new \DateTime($date->format('Y-m-d').' '.$timePickup->format('H:i:s'));
-
-                //Submits data
-                $object = new Pickup();
-                $this->mainService->create($object);
-
-                $object->setChild($registration->getChild());
-                $object->setKind($kind);
-                $object->setStart($start);
-                $object->setRegistration($registration);
-                $object->setPhone(null);
-                $object->setPostal($address->getPostal());
-                $object->setAddress($address->getAddress().', '.$address->getPostal().' '.$address->getTown());
-
-                //Checks coordinates
-                $this->checkCoordinates($object);
-                $this->mainService->persist($object);
-            }
-        }
+    public function createMealFromChildPresence($object) {
+        if(!$object->getRegistration()->getHasLunch()) return null;
+        return $this->mealService->createMealFromChildPresence($object);
     }
 
-    public function checkCoordinates($object, $force = false)
-    {
-        if ($force ||
-            null === $object->getLatitude() ||
-            null === $object->getLongitude() ||
-            null === $object->getPostal() ||
-            5 != strlen($object->getPostal())
-        ) {
-            $this->mainService->addCoordinates($object);
-        }
+
+    public function updateLastDayOfWeek($currentDateString) {
+
+        (!$currentDateString) ? $currentDate = date('Y-m-d') : $currentDate = $currentDateString;
+
+        // find the sunday of the week
+        $sunday = date("Y-m-d", strtotime("next sunday", strtotime($currentDate)));
+
+        // retrieve all child presence on current day
+        $childPresences = $this->em->getRepository(('App:ChildPresence'))->findBy(['date' => new DateTime($currentDate)]);
+
+        if(!$childPresences) return 'no_child_presence_on_'.$currentDate;
+
+        // loop on each child presence
+        foreach($childPresences as $presence) {
+
+            // get child 
+            $child = $presence->getChild();
+
+            // search child presece >= currentDate and <= sunday of week
+            $lastPresence = $this->em->getRepository('App:ChildPresence')->findPresenceBetween($child, $currentDate, $sunday);
+
+            // update lastPresence with the lastDay
+            if($lastPresence) {
+
+                // set null to current date
+                $presence->setLastDayOfWeek(null);
+                $this->em->persist($presence);
+                $this->em->flush($presence);
+
+
+                // set lastPresence the date
+                $lastPresence->setLastDayOfWeek($lastPresence->getDate());
+                $this->em->persist($lastPresence);
+                $this->em->flush($lastPresence);
+
+
+
+                /***** update pickup */
+                // retrieve pickup from presence and update
+
+
+
+                // retrive pickup from lastpresence and update
+                
+
+                /***** update pickupactivity */
+
+                if ($pickupActivitys = $this->em->getRepository('App:PickupActivity')->findBy(['child' => $child, 'date' => $presence->getDate()])) {
+                    
+                    foreach ($pickupActivitys as $pa) {
+                    //    $pa->setStatus($status);
+                     //   $pa->setStatusChange(new DateTime());
+                      //  $this->em->persist($pa);
+                       // $this->em->flush();
+                    }
+                }
+
+                
+
+
+
+            }
+
+      
+        
+
+
+        return ['status' => 'last day of week updated for '.$currentDate];
     }
 
     /**
@@ -189,9 +180,14 @@ class ChildPresenceService implements ChildPresenceServiceInterface
      */
     public function delete(ChildPresence $object, $return = true)
     {
-        //Persists data
+        //cascade
+        if($object->getRegistration()) {
+            $return = $this->cascadeService->deleteChildPresence($object);
+        } 
+
         $this->mainService->delete($object);
         $this->mainService->persist($object);
+
 
         if ($return) {
             return array(
@@ -201,12 +197,27 @@ class ChildPresenceService implements ChildPresenceServiceInterface
         }
     }
 
+    public function deleteByArrayStringList($idsList) {
+        $data = explode(',', $idsList);
+
+        foreach ($data as $childPresence) {
+            $childPresence = $this->em->getRepository('App:ChildPresence')->find($childPresence);
+            if ($childPresence instanceof ChildPresence) {
+                $this->delete($childPresence, false);
+            }
+        }
+        return $data;
+    }
+    
+
     /**
      * Deletes ChildPresence by array of ids.
      */
     public function deleteByArray(string $data)
     {
+
         $data = json_decode($data, true);
+
         if (is_array($data) && !empty($data)) {
             foreach ($data as $childPresence) {
                 $childPresence = $this->em->getRepository('App:ChildPresence')->findByData($childPresence);
@@ -255,6 +266,74 @@ class ChildPresenceService implements ChildPresenceServiceInterface
         ;
     }
 
+
+    public function findByChildBetweenDates($childId, $from, $to) {
+
+        $child = $this->em->getRepository('App:Child')->find($childId);
+        $from = new DateTime($from);
+        $to   = new DateTime($to);
+        if($childPresences = $this->em->getRepository('App:ChildPresence')->findByChildBetweenDates($child, $from, $to)) {
+            foreach($childPresences as $childPresence) {
+                $result[$childPresence->getDate()->format('Y-m').'-01'][] = $this->toArray($childPresence);
+            }
+        } else {
+            $result = null;
+        }
+        
+       
+        return $result;
+    }
+
+    public function findAllWeekPresences($monday)
+    {
+        $currentDate = new DateTime($monday);
+        $presences = [];
+        $childPresencesArray = null;
+
+        for($i = 0; $i < 7; $i++) {
+
+            $childPresences = $this->findAllByDate($currentDate->format('Y-m-d'));
+            if(!$childPresences) {
+                $presences[$currentDate->format('Y-m-d')] = null;
+            } else {
+                foreach ($childPresences as $childPresence) {
+                    if($childPresence->getChild()) {
+                        $child = $childPresence->getChild();
+                        ($childPresence->getRegistration()) ? $registrationId = $childPresence->getRegistration()->getRegistrationId() : $registrationId = "unknow";
+                        if($childPresence->getLastDayOfWeek() != null) {
+                            $lastDayOfWeek = $childPresence->getLastDayOfWeek()->format('Y-m-d');
+                        } else {
+                            $lastDayOfWeek = null;
+                        }
+                        $childPresencesArray[] = [
+                                                    'start' => $childPresence->getStart()->format('H:i:s'),
+                                                    'end'   => $childPresence->getEnd()->format('H:i:s'),
+                                                    'childId' => $child->getChildId(),
+                                                    'urlPhoto' => $child->getPhoto(),
+                                                    'firstname' => $child->getFirstname(),
+                                                    'lastname'  => $child->getLastname(),
+                                                    'childPresenceId' => $childPresence->getChildPresenceId(),
+                                                    'registrationid' => $registrationId,
+                                                    'lastDayOfWeek' => $lastDayOfWeek
+
+                        ];
+                    } else {
+                        $childPresencesArray[] = [
+                            'childPresenceId' => $childPresence->getChildPresenceId(),
+                            'registrationid' => $childPresence->getRegistration()->getRegistrationId()
+                        ];
+                    }
+                 };
+                 $presences[$currentDate->format('Y-m-d')] = $childPresencesArray;
+                 unset($childPresencesArray);
+            }
+           
+            $currentDate = $currentDate->modify('+1 day');
+        }
+
+        return $presences;
+    }
+
     /**
      * Returns the list of presence by child.
      *
@@ -266,6 +345,14 @@ class ChildPresenceService implements ChildPresenceServiceInterface
             ->getRepository('App:ChildPresence')
             ->findByChild($childId, $date)
         ;
+    }
+
+
+    public function findByLatestCreated($childId) { 
+        return $this->em
+        ->getRepository('App:ChildPresence')
+        ->findLatestCreatedByChildId($childId)
+    ;
     }
 
     /**

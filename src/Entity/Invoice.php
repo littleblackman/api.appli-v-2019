@@ -45,6 +45,14 @@ class Invoice
     private $child;
 
     /**
+     * @var Person
+     *
+     * @ORM\OneToOne(targetEntity="Person")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
+     */
+    private $person;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="name_fr", type="string", length=128, nullable=true)
@@ -85,6 +93,14 @@ class Invoice
      * @ORM\Column(name="number", type="string", length=24, nullable=true)
      */
     private $number;
+
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="status", type="string", length=200, nullable=true)
+     */
+    private $status;
 
     /**
      * @var string|null
@@ -174,6 +190,18 @@ class Invoice
         return $this;
     }
 
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?Person $person): self
+    {
+        $this->person = $person;
+
+        return $this;
+    }
+
     public function getNameFr(): ?string
     {
         return $this->nameFr;
@@ -242,6 +270,18 @@ class Invoice
     public function setNumber(?string $number): self
     {
         $this->number = $number;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

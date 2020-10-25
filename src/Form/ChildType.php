@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\School;
+use App\Entity\Staff;
+
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -13,7 +15,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * ChildType FormType
+ * ChildType FormType.
+ *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class ChildType extends AbstractType
@@ -56,6 +59,15 @@ class ChildType extends AbstractType
             ->add('pickup_instruction', TextType::class, array(
                 'required' => false,
                 ))
+            ->add('medicalCertificate', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('sportifProfil', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('childHand', TextType::class, array(
+                'required' => false,
+                ))
             ->add('franceResident', CheckboxType::class, array(
                 'required' => false,
                 ))
@@ -70,6 +82,10 @@ class ChildType extends AbstractType
                 'entry_type' => ChildChildLinkType::class,
                 'mapped' => false,
                 'allow_extra_fields' => true,
+                ))
+            ->add('staff', EntityType::class, array(
+                'required' => false,
+                'class' => Staff::class,
                 ))
 
         ;

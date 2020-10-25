@@ -8,6 +8,8 @@ use App\Entity\Child;
 use App\Entity\MealFoodLink;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use DateTime;
+
 
 /**
  * MealService class
@@ -44,18 +46,86 @@ class MealService implements MealServiceInterface
         }
     }
 
+    public function deleteFromChildPresence($childPresence) {
+
+        $date  = $childPresence->getDate();
+        $child = $childPresence->getChild();
+
+        if(!$meal = $this->ifMealExist($child, $date, 'child')) return null;
+        
+        $this->delete($meal);
+        
+        return true;
+    }
+
+    public function createMealFromChildPresence($childPresence) {
+
+        $date  = $childPresence->getDate();
+        $child = $childPresence->getChild();
+
+        if(!$meal = $this->ifMealExist($child, $date, 'child')) {
+            $meal = new Meal();
+            $meal->setDate($date);
+            $meal->setChild($child);
+            $this->em->persist($meal);
+            $this->em->flush();
+        }
+        
+        return $meal;
+    }
+
+    public function ifMealExist($people, $date, $type) {
+
+        if($type == "child") {
+            if(!$object = $this->em->getRepository('App:Meal')->findOneBy(['child' => $people, 'date' => $date])) return null;
+        }
+
+        if($type == "person") {
+            if(!$object = $this->em->getRepository('App:Meal')->findOneBy(['person' => $people, 'date' => $date])) return null;
+        }
+
+        return $object;
+
+    }
+
+    public function ifMealExistFromData($data) {
+
+        $datas = json_decode($data, true);
+        $date = new DateTime($datas['date']);
+
+        if(isset($data['child']) && $datas['child'] != '') {
+            $type = "child";
+            if(!$people = $this->em->getRepository('App:Child')->find($datas['child'])) return null;
+        }
+        if(isset($data['person']) && $datas['person'] != '') {
+            $type = "person";
+            if($people = $this->em->getRepository('App:Person')->find($datas['person'])) return null;
+        }
+
+        if(!isset($people)) return null;
+
+        return $this->ifMealExist($people, $date, $type);
+    }
+
+
+
     /**
      * {@inheritdoc}
      */
     public function create(string $data)
     {
-        //Submits data
-        $object = new Meal();
-        $this->mainService->create($object);
-        $data = $this->mainService->submit($object, 'meal-create', $data);
 
-        //Checks if entity has been filled
-        $this->isEntityFilled($object);
+        //Submits data
+        if(!$object = $this->ifMealExistFromData($data)) {
+            $object = new Meal();
+            $this->mainService->create($object);
+            $data = $this->mainService->submit($object, 'meal-create', $data);
+    
+            //Checks if entity has been filled
+            $this->isEntityFilled($object);
+        } else {
+            $data = json_decode($data, true);
+        }
 
         //Adds links from food to meal
         if (array_key_exists('links', $data)) {

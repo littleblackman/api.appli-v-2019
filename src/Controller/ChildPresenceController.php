@@ -88,6 +88,108 @@ class ChildPresenceController extends AbstractController
         return new JsonResponse($childPresencesArray);
     }
 
+
+
+//LIST WEEK
+    /**
+     * Lists all the child presences for a week from monday
+     *
+     * @Route("/child/presence/listWeek/{monday}",
+     *    name="child_presence_listWeek_monday",
+     *    requirements={"date": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=ChildPresence::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="date",
+     *     in="path",
+     *     description="Date for the child presence (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="ChildPresence")
+     */
+    public function listWeek(Request $request, $monday)
+    {
+        $this->denyAccessUnlessGranted('childPresenceList');
+
+        $childPresencesArray = $this->childPresenceService->findAllWeekPresences($monday);
+
+        return new JsonResponse($childPresencesArray);
+    }
+
+//DISPLAY
+    /**
+     * Displays childPresence using childId and date (optional)
+     *
+     * @Route("/child/presence/display/{childId}/{from}/{to}",
+     *    name="child_presence_byChild_between",
+     *    requirements={
+     *        "childId": "^([0-9]+)",
+     *        "from": "^(all|([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2})|([0-9]{4}))$",
+     *        "to": "^(all|([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2})|([0-9]{4}))$"
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=ChildPresence::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="childId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the child",
+     *     type="integer",
+     * )
+     * @SWG\Parameter(
+     *     name="from",
+     *     in="path",
+     *     description="Date for the child presence (YYYY-MM-DD | YYYY-MM | YYYY )",
+     *     type="string",
+     *     default="null",
+     * )
+     * @SWG\Parameter(
+     *     name="to",
+     *     in="path",
+     *     description="Date for the child presence (YYYY-MM-DD | YYYY-MM | YYYY )",
+     *     type="string",
+     *     default="null",
+     * )
+     * @SWG\Tag(name="ChildPresence")
+     */
+    public function byChildBetweenDate($childId, $from, $to)
+    {
+        $this->denyAccessUnlessGranted('childPresenceDisplay');
+
+        $childPresencesArray = $this->childPresenceService->findByChildBetweenDates($childId, $from, $to);
+        
+
+        return new JsonResponse($childPresencesArray);
+    }
+
 //DISPLAY
     /**
      * Displays childPresence using childId and date (optional)
@@ -145,6 +247,99 @@ class ChildPresenceController extends AbstractController
         return new JsonResponse($childPresencesArray);
     }
 
+
+//DISPLAY LATEST CREATED
+    /**
+     * Displays childPresence using childId 
+     *
+     * @Route("/child/presence/latest/created/{childId}",
+     *    name="child_presence_latest_created",
+     *    requirements={
+     *        "childId": "^([0-9]+)"
+     *    },
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=ChildPresence::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="childId",
+     *     in="path",
+     *     required=true,
+     *     description="Id of the child",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="ChildPresence")
+     */
+    public function latestCreated($childId)
+    {
+        $this->denyAccessUnlessGranted('childPresenceDisplay');
+
+        $childPresencesArray = array();
+        foreach ($this->childPresenceService->findByLatestCreated($childId) as $childPresence) {
+            $childPresencesArray[$childPresence->getDate()->format('Ymd')] = $this->childPresenceService->toArray($childPresence);
+        };
+
+        ksort($childPresencesArray);
+
+        return new JsonResponse($childPresencesArray);
+    }
+
+
+    //UPDATE
+    /**
+     * Creates ChildPresence
+     *
+     * @Route("/child/presence/update/last-day-of-week/{currentDate}",
+     *    name="child_presence_update_last_day_of_week",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="currentDate",
+     *     in="path",
+     *     description="update the last day of week in child presence",
+     *     required=false,
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=ChildPresenceType::class))
+     *     )
+     * )
+     * @SWG\Tag(name="ChildPresence")
+     */
+    public function updateLastDayOfWeek($currentDate = null) {
+        $this->denyAccessUnlessGranted('childPresenceCreate');
+
+        $createdData = $this->childPresenceService->updateLastDayOfWeek($currentDate);
+
+        return new JsonResponse($createdData);
+    }
+
+
 //CREATE
     /**
      * Creates ChildPresence
@@ -186,6 +381,51 @@ class ChildPresenceController extends AbstractController
         return new JsonResponse($createdData);
     }
 
+
+//DISPLAY BY ID
+    /**
+     * Deletes childPresence using its id
+     *
+     * @Route("/child/presence/retrieve/{childPresenceId}",
+     *    name="child_presence_retrieve",
+     *    requirements={"childPresenceId": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("childPresence", expr="repository.findOneById(childPresenceId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="childPresenceId",
+     *     in="path",
+     *     description="Id for the ChildPresence",
+     *     required=true,
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="ChildPresence")
+     */
+    public function retrieve(ChildPresence $childPresence)
+    {
+        $this->denyAccessUnlessGranted('childPresenceDelete', $childPresence);
+
+        $childPresencesArray = $this->childPresenceService->toArray($childPresence);
+
+        return new JsonResponse($childPresencesArray);
+    }
+
 //DELETE BY ID
     /**
      * Deletes childPresence using its id
@@ -221,7 +461,7 @@ class ChildPresenceController extends AbstractController
      * )
      * @SWG\Tag(name="ChildPresence")
      */
-    public function delete(ChildPresence $childPresence)
+    public function delete(ChildPresence $childPresence = null)
     {
         $this->denyAccessUnlessGranted('childPresenceDelete', $childPresence);
 
@@ -270,6 +510,53 @@ class ChildPresenceController extends AbstractController
 
         return new JsonResponse($suppressedData);
     }
+    
+
+
+//DELETE BY ARRAY OF IDS
+    /**
+     * Deletes childPresence
+     *
+     * @Route("/child/presence/delete/string/{idsList}",
+     *    name="child_presence_delete_by_array_string",
+     *    methods={"HEAD", "DELETE"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the ChildPresence",
+     *     required=true,
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=ChildPresenceType::class))
+     *     )
+     * )
+     * @SWG\Tag(name="ChildPresence")
+     */
+    public function deleteByArrayString(Request $request, $idsList)
+    {
+        $this->denyAccessUnlessGranted('childPresenceDelete');
+
+        $suppressedData = $this->childPresenceService->deleteByArrayStringList($idsList);
+
+        return new JsonResponse($suppressedData);
+    }
+
+
+
+
 
 //DELETE BY REGISTRATION_ID
     /**

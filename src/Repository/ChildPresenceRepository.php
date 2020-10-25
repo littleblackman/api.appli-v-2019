@@ -43,6 +43,23 @@ class ChildPresenceRepository extends EntityRepository
         ;
     }
 
+    public function findPresenceBetween($child, $from, $to){
+
+        return $this->createQueryBuilder('pr')
+            ->where('pr.suppressed = 0')
+            ->andWhere('pr.child = :child')
+            ->andWhere('pr.date >= :from')
+            ->andWhere('pr.date <= :to')
+            ->orderBy('pr.date', 'DESC')
+            ->setParameter('child', $child)
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     /**
      * Returns all the childPresence by date
      */
@@ -59,6 +76,50 @@ class ChildPresenceRepository extends EntityRepository
             ->addOrderBy('pr.start', 'ASC')
             ->setParameter('date', $date . '%')
             ->setParameter('status', 'npec')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByChildBetweenDates($child, $from, $to) {
+       
+        $qb = $this->createQueryBuilder('pr')
+            ->where('pr.child = :child')
+            ->andWhere('pr.suppressed = 0')
+            ->andWhere('pr.date >= :from')
+            ->andWhere('pr.date <= :to')
+            ->orderBy('pr.date', 'ASC')
+            ->addOrderBy('pr.start', 'ASC')
+            ->setParameter(':from', $from)
+            ->setParameter(':to', $to)
+            ->setParameter('child', $child)
+        ;
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
+    /**
+     * Returns all the childPresence by child
+     */
+    public function findLatestCreatedByChildId($childId, $limit = 10)
+    {
+
+        $qb = $this->createQueryBuilder('pr')
+            ->addSelect('c')
+            ->leftJoin('pr.child', 'c')
+            ->where('pr.child = :childId')
+            ->andWhere('pr.suppressed = 0')
+            ->orderBy('pr.updatedAt', 'DESC')
+            ->addOrderBy('pr.start', 'ASC')
+            ->setParameter('childId', $childId)
+            ->setMaxResults(10)
+        ;
+
+        return $qb
             ->getQuery()
             ->getResult()
         ;
@@ -81,6 +142,7 @@ class ChildPresenceRepository extends EntityRepository
             ->addOrderBy('pr.start', 'ASC')
             ->setParameter('childId', $childId)
         ;
+
 
         if ('all' !== $date) {
             $qb->setParameter('date', $date . '%');

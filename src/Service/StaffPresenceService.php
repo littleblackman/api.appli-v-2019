@@ -83,6 +83,7 @@ class StaffPresenceService implements StaffPresenceServiceInterface
                     $object = new StaffPresence();
 
 
+                    if(!isset($staffPresence['location']) || $staffPresence['location'] == "") $staffPresence['location'] = 6;
                     $location = $this->em->getRepository('App:Location')->find($staffPresence['location']);
 
                     $staffPresence['location'] = $location;
@@ -330,7 +331,7 @@ class StaffPresenceService implements StaffPresenceServiceInterface
         $staffPresences = $this->em->getRepository('App:StaffPresence')->findAllBetweenDates($seasonStart, $seasonEnd, $staff);
         $staffPresencesArray = array();
         foreach ($staffPresences as $staffPresence) {
-            $staffPresencesArray[] = $staffPresence->toArray();
+            $staffPresencesArray[$staffPresence->getDate()->format('Y-m-d')] = $staffPresence->toArray();
         }
 
         $result['staff'] = $staff->toArray();

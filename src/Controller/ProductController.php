@@ -66,15 +66,10 @@ class ProductController extends AbstractController
     public function listAll(Request $request, PaginatorInterface $paginator)
     {
         $this->denyAccessUnlessGranted('productList');
-/*
-        $products = $paginator->paginate(
-            $this->productService->findAll(),
-            $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
-        );
-*/
+
         $productArray = [];
         $products = $this->productService->findAllActiveProducts();
+
         foreach ($products as $product) {
             $productsArray[] = $this->productService->toArray($product);
         };
@@ -241,6 +236,48 @@ class ProductController extends AbstractController
 
         return new JsonResponse($productArray);
     }
+
+
+//DISPLAY
+    /**
+     * Displays product
+     *
+     * @Route("/product/registrations/{productId}",
+     *    name="product_registrations",
+     *    requirements={"productId": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("product", expr="repository.findOneById(productId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Product::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="productId",
+     *     in="path",
+     *     description="Id of the product",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Product")
+     */
+    public function registrations(Product $product)
+    {
+        $this->denyAccessUnlessGranted('productDisplay', $product);
+
+        $registrationsListChilds = $this->productService->getRegistrationsByProduct($product);
+
+        return new JsonResponse($registrationsListChilds);
+    }
+
 
 //CREATE
     /**

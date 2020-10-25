@@ -66,6 +66,48 @@ class PhoneController extends AbstractController
         return new JsonResponse($phoneArray);
     }
 
+
+
+//UPDATE IS PREFERED
+    /**
+     * Change phone is prefered
+     *
+     * @Route("/phone/isPrefered/{phoneId}/{type}",
+     *    name="phone_isPrefered",
+     *    requirements={"phoneId": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("phone", expr="repository.findOneById(phoneId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Phone::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="phoneId",
+     *     in="path",
+     *     description="Id of the phone",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Phone")
+     */
+    public function isPrefered(Phone $phone, $type)
+    {
+        $this->denyAccessUnlessGranted('phoneDisplay', $phone);
+        $result = $this->phoneService->updateIsPrefered($phone, $type);
+        return new JsonResponse($result);
+    }
+
+
+
 //CREATE
     /**
      * Creates phone

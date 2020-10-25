@@ -95,6 +95,8 @@ class RideService implements RideServiceInterface
 
         }
 
+
+
         // E duplicate rides on the new days if not exist
         foreach($source_rides as $s_ride) {
 
@@ -102,15 +104,19 @@ class RideService implements RideServiceInterface
             $target_date = new DateTime($target);
 
             // check if staff in source is present in target
-            if(key_exists($s_ride->getStaff()->getStaffId(), $staffArray)) {
+            if( ($s_ride->getStaff()) && key_exists($s_ride->getStaff()->getStaffId(), $staffArray)) {
               $staff = $s_ride->getStaff();
               $person = $s_ride->getStaff()->getPerson();
               $staff_name = $person->getFirstname().' '.$person->getLastname();
             } else {
               $staff = null;
-              $person = $s_ride->getStaff()->getPerson();
+              ($s_ride->getStaff()) ? $person = $s_ride->getStaff()->getPerson() : $person = null;
               $staff_name = "driver absent";
-              $message['target_staff_absent'][] = $person->getFirstname().' '.$person->getLastname();
+              if($person) {
+                  $message['target_staff_absent'][] = $person->getFirstname().' '.$person->getLastname();
+              } else {
+                $message['target_staff_absent'][] = "aucun staff trouvé sur le ride ".$s_ride->getRideId();
+              }
             }
 
 
@@ -530,6 +536,48 @@ class RideService implements RideServiceInterface
                         $mealArray = null;
                     }
                     $pickups[$i]['child']['latestMeal'] = $mealArray;
+
+
+                    if($registration = $pickup->getRegistration()){
+                        if($product = $registration->getProduct()) {
+                                    $productName = $product->getNameFr();
+                                    $hasLunch    = $product->getLunch();
+                                
+                                    if (null !== $product->getHours()) {
+                                        $hours = array();
+                                        $j = 0;
+                                        foreach ($product->getHours() as $hour) {
+                                            if (null !== $hour->getStart()) {
+                                                $hours[$j]['start'] = $hour->getStart()->format('H:i');
+                                            }
+                                            if (null !== $hour->getEnd()) {
+                                                $hours[$j]['end'] = $hour->getEnd()->format('H:i');
+                                            }
+                                            if (null !== $hour->getIsFull()) {
+                                                $hours[$j]['is_full'] = $hour->getIsFull();
+                                            }
+                                            if (null !== $hour->getMessageFr()) {
+                                                $hours[$j]['message_fr'] = $hour->getMessageFr();
+                                            }
+                                            if (null !== $hour->getMessageEn()) {
+                                                $hours[$j]['message_en'] = $hour->getMessageEn();
+                                            }
+                                            ++$j;
+                                        }
+                                    }
+
+                                    $productHours = $hours;
+                        
+                        }
+                        $registrationData = [
+                                                "registrationId" => $registration->getRegistrationId(),
+                                                "hasLunch"       => $hasLunch,
+                                                "productHours"   => $productHours,
+                                                "productName"    => $productName
+                                            ];
+                        $pickups[$i]['registrationData'] = $registrationData;
+                        
+                    }
 
 
 

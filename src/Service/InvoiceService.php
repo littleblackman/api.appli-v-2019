@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Invoice;
 use App\Entity\InvoiceComponent;
 use App\Entity\InvoiceProduct;
+use App\Service\TransactionServiceInterface;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -21,11 +22,13 @@ class InvoiceService implements InvoiceServiceInterface
 
     public function __construct(
         EntityManagerInterface $em,
-        MainServiceInterface $mainService
+        MainServiceInterface $mainService,
+        TransactionServiceInterface $transactionService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
+        $this->transactionService = $transactionService;
     }
 
     /**
@@ -179,6 +182,9 @@ class InvoiceService implements InvoiceServiceInterface
      */
     public function modify(Invoice $object, string $data)
     {
+
+        $firstStatuts = $object->getStatus();
+
         //Submits data
         $data = $this->mainService->submit($object, 'invoice-modify', $data);
         $this->addSpecificData($object, $data);
@@ -189,6 +195,17 @@ class InvoiceService implements InvoiceServiceInterface
         //Persists data
         $this->mainService->modify($object);
         $this->mainService->persist($object);
+
+
+        $firstStatuts = "test"; // delete for prod
+        if($object->getStatus() != $firstStatuts) {
+            if($transaction = $this->transactionService->findByInvoice($object)) {
+                $transaction->setStatus($object->getStatus());
+                $this->mainService->modify($transaction);
+                $this->mainService->persist($transaction);
+
+            }
+        }
 
         //Returns data
         return array(

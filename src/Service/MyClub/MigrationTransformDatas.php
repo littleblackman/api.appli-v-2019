@@ -141,9 +141,16 @@ trait MigrationTransformDatas
             }
 
 
+            if($data['address_type_id'] == null OR $data['address_type_id'] == "") {
+                $nameType = "Défault";
+            } else {
+                $nameType = $this->padaref_ref[$data['address_type_id']];
+            }
+
+
             // address
             $address[$data['address_id']] = [
-                                        'name' => $this->padaref_ref[$data['address_type_id']],
+                                        'name' => $nameType,
                                         'address' => $data['address'],
                                         'postal' => $data['postal'],
                                         'town' => $data['town'],
@@ -151,9 +158,17 @@ trait MigrationTransformDatas
                                 ];
 
 
+
+            if($data['telephon_type_id'] == null OR $data['telephon_type_id'] == "") {
+                $nameType = "Défault";
+            } else {
+                $nameType = $this->padaref_ref[$data['telephon_type_id']];
+            }
+                    
+
             // phone
             $phones[$data['phone_id']] = [
-                                        'name' => $this->padaref_ref[$data['telephon_type_id']],
+                                        'name' => $nameType,
                                         'phone' => $data['phone']
                                 ];
 

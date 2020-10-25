@@ -147,6 +147,65 @@ class ChildController extends AbstractController
         return new JsonResponse($childrenArray);
     }
 
+
+//SEARCH
+    /**
+     * Searches for %{term}% in firstname|lastname for Child
+     *
+     * @Route("/child/fastsearch/{term}",
+     *    name="child_fast_search",
+     *    requirements={"term": "^([a-zA-Z0-9\ \-]+)"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Child::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="term",
+     *     in="path",
+     *     required=true,
+     *     description="Searched term",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Child")
+     */
+    public function fastSearch(Request $request, string $term)
+    {
+        $this->denyAccessUnlessGranted('childList');
+
+        $term = str_replace("27", "'", $term);
+        $childArray = $this->childService->findFastSearch($term);
+
+        return new JsonResponse($childArray);
+    }
+
 //DISPLAY
     /**
      * Displays child

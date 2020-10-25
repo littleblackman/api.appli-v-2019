@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Child;
+use App\Entity\Person;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -25,6 +26,10 @@ class InvoiceType extends AbstractType
                 'required' => false,
                 'class' => Child::class,
                 ))
+            ->add('person', EntityType::class, array(
+                'required' => false,
+                'class' => Person::class,
+                ))
             ->add('nameFr', TextType::class, array(
                 'required' => false,
                 ))
@@ -42,6 +47,9 @@ class InvoiceType extends AbstractType
                 'widget' => 'single_text',
                 ))
             ->add('number', TextType::class, array(
+                'required' => false,
+                ))
+            ->add('status', TextType::class, array(
                 'required' => false,
                 ))
             ->add('paymentMethod', TextType::class, array(

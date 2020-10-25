@@ -258,6 +258,7 @@ class MigrationCreateEntity
         $this->em->persist($childChildLink);
         $this->em->flush();
 
+        $link = "unknown";
         if(($child_ref->getGender() == 'h' || $child_ref->getGender() == 'f') && $c->getGender() == 'h') $link = "Frère";
         if(($child_ref->getGender() == 'h' || $child_ref->getGender() == 'f') && $c->getGender() == 'f') $link = "Soeur";
 

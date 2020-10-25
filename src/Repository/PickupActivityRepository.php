@@ -27,6 +27,18 @@ class PickupActivityRepository extends EntityRepository
         ;
     }
 
+    public function findByCreatedAtAndChild($date, $child) {
+        return $this->createQueryBuilder('pa')
+        ->where('pa.child = :child')
+        ->andWhere('pa.createdAt like :date')
+        ->andWhere('pa.suppressed = 0')
+        ->setParameter('date', $date.'%')
+        ->setParameter('child', $child)
+        ->orderBy('pa.start', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
+
     /**
      * Returns all the pickupActivities by date
      */

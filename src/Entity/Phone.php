@@ -44,6 +44,13 @@ class Phone
     /**
      * @var string|null
      *
+     * @ORM\Column(name="is_prefered", type="string", length=50, nullable=true)
+     */
+    private $isPrefered;
+
+    /**
+     * @var string|null
+     *
      * @ORM\Column(name="phone", type="string", length=35, nullable=true)
      */
     private $phone;
@@ -96,6 +103,17 @@ class Phone
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    public function getIsPrefered(): ?string
+    {
+        return $this->isPrefered;
+    }
+
+    public function setIsPrefered(?string $isPrefered): self
+    {
+        $this->isPrefered = $isPrefered;
         return $this;
     }
 

@@ -245,6 +245,7 @@ class MigrationMyClubService
          // create family from child data
          $familyArray = $this->importFamily($childArray['family_id']);
 
+
          if(!$datas = $this->extractFamilyDatas($familyArray)) return null;
          // update user & person
          //

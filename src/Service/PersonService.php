@@ -235,6 +235,18 @@ class PersonService implements PersonServiceInterface
         ;
     }
 
+       /**
+     * Returns the Person using its user's identifier
+     * @return array
+     */
+    public function findByUserId($userId)
+    {
+        return $this->em
+            ->getRepository('App:Person')
+            ->findByUserId($userId)
+        ;
+    }
+
     /**
      * Finds one with its id
      * @return array

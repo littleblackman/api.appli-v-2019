@@ -98,6 +98,101 @@ class PickupController extends AbstractController
         return new JsonResponse($pickupsArray);
     }
 
+
+
+//DISPLAY
+    /**
+     * Displays pickup
+     *
+     * @Route("/pickup/listByChildId/{childId}/{from}/{to}",
+     *    name="pickup_listByChildId",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Pickup::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function retrieveByChildId($childId, $from, $to)
+    {
+       // $this->denyAccessUnlessGranted('pickupDisplay', $pickup);
+
+        $result = $this->pickupService->retrieveByChildId($childId, $from, $to);
+
+        return new JsonResponse($result);
+    }
+
+
+
+
+
+
+
+
+//LIST  PICKUP WEEK
+    /**
+     * Lists all the pickups by date and status for a week
+     *
+     * @Route("/pickup/listWeek/{monday}",
+     *    name="pickup_list_week",
+     *    requirements={
+     *        "monday": "^(([0-9]{4}-[0-9]{2}-[0-9]{2})|([0-9]{4}-[0-9]{2}))$",
+     *    },
+     *    defaults={"status": "null"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Pickup::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="monday",
+     *     in="path",
+     *     description="Date for the pickup (YYYY-MM-DD | YYYY-MM)",
+     *     type="string",
+     * )
+     * @SWG\Parameter(
+     *     name="status",
+     *     in="path",
+     *     description="Status for the Pickup automatic|absent|supported|null",
+     *     type="string",
+     *     default="null",
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function listWeekStatus(Request $request, $monday)
+    {
+        $this->denyAccessUnlessGranted('pickupList');
+
+        $pickupsArray = $this->pickupService->listByWeek($monday);
+    
+
+        return new JsonResponse($pickupsArray);
+    }
+
+
+
 //LIST NOT AFFECTED
     /**
      * Lists all the pickups by date not affected to a ride
@@ -475,8 +570,9 @@ class PickupController extends AbstractController
     /**
      * Modifies pickup
      *
-     * @Route("/pickup/modify/{pickupId}",
+     * @Route("/pickup/modify/{pickupId}/{sender}",
      *    requirements={"pickupId": "^([0-9]+)$"},
+     *    defaults={"sender": "null"},
      *    methods={"HEAD", "PUT"})
      * @Entity("pickup", expr="repository.findOneById(pickupId)")
      *
@@ -513,11 +609,11 @@ class PickupController extends AbstractController
      * )
      * @SWG\Tag(name="Pickup")
      */
-    public function modify(Request $request, Pickup $pickup)
+    public function modify(Request $request, Pickup $pickup, $sender = null)
     {
         $this->denyAccessUnlessGranted('pickupModify', $pickup);
 
-        $modifiedData = $this->pickupService->modify($pickup, $request->getContent());
+        $modifiedData = $this->pickupService->modify($pickup, $request->getContent(), $sender);
 
         return new JsonResponse($modifiedData);
     }

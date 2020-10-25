@@ -18,7 +18,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
- * ProductService class
+ * ProductService class.
+ *
  * @author Laurent Marquet <laurent.marquet@laposte.net>
  */
 class ProductService implements ProductServiceInterface
@@ -33,15 +34,14 @@ class ProductService implements ProductServiceInterface
         ComponentServiceInterface $componentService,
         EntityManagerInterface $em,
         MainServiceInterface $mainService
-    )
-    {
+    ) {
         $this->componentService = $componentService;
         $this->em = $em;
         $this->mainService = $mainService;
     }
 
     /**
-     * Adds link between Product and Component
+     * Adds link between Product and Component.
      */
     public function addComponent($data, Product $object)
     {
@@ -66,7 +66,7 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Adds link between Product and Sport
+     * Adds link between Product and Sport.
      */
     public function addSportLink(int $sportId, Product $object)
     {
@@ -82,7 +82,7 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Adds link between Product and Category
+     * Adds link between Product and Category.
      */
     public function addCategoryLink(int $categoryId, Product $object)
     {
@@ -98,7 +98,7 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Adds link between Product and Location
+     * Adds link between Product and Location.
      */
     public function addLocationLink(int $locationId, Product $object)
     {
@@ -114,7 +114,7 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Adds link between Product and Date
+     * Adds link between Product and Date.
      */
     public function addDateLink($data, Product $object)
     {
@@ -132,19 +132,26 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Adds link between Product and Hour
+     * Adds link between Product and Hour.
      */
     public function addHourLink($data, Product $object)
     {
         if (array_key_exists('start', $data) && array_key_exists('end', $data)) {
-            $start = $data['start'] instanceof DateTime ? $data['start'] : new DateTime('1970-01-01' . $data['start']);
-            $end = $data['end'] instanceof DateTime ? $data['end'] : new DateTime('1970-01-01' . $data['end']);
+            $start = $data['start'] instanceof DateTime ? $data['start'] : new DateTime('1970-01-01'.$data['start']);
+            $end = $data['end'] instanceof DateTime ? $data['end'] : new DateTime('1970-01-01'.$data['end']);
+            (isset($data['isFull'])) ? $isFull = $data['isFull'] : $isFull = 0;
+            (isset($data['messageEn'])) ? $messageEn = $data['messageEn'] : $messageEn = null;
+            (isset($data['messageFr'])) ? $messageFr = $data['messageFr'] : $messageFr = null;
+
             if ($start instanceof DateTime && $end instanceof DateTime) {
                 $productHourLink = new ProductHourLink();
                 $productHourLink
                     ->setProduct($object)
                     ->setStart($start)
                     ->setEnd($end)
+                    ->setIsFull($isFull)
+                    ->setMessageEn($messageEn)
+                    ->setMessageFr($messageFr)
                 ;
                 $this->em->persist($productHourLink);
             }
@@ -152,7 +159,7 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Adds specific data that could not be added via generic method
+     * Adds specific data that could not be added via generic method.
      */
     public function addSpecificData(Product $object, array $data)
     {
@@ -211,7 +218,7 @@ class ProductService implements ProductServiceInterface
             if (array_key_exists($key, $data)) {
                 $links = $data[$key];
                 if (null !== $links && is_array($links) && !empty($links)) {
-                    $method = 'add' . ucfirst($value) . 'Link';
+                    $method = 'add'.ucfirst($value).'Link';
                     foreach ($links as $link) {
                         $this->$method((int) $link[$value], $object);
                     }
@@ -255,7 +262,7 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Calculates the totals by ventilated vat rate
+     * Calculates the totals by ventilated vat rate.
      */
     public function calculateVatTotals($components)
     {
@@ -326,13 +333,37 @@ class ProductService implements ProductServiceInterface
         );
     }
 
+
+    public function getRegistrationsByProduct($product) {
+        $registrations = $this->em->getRepository('App:Registration')->findBy(['product' => $product, 'suppressed' => 0]);
+
+        $arr = [];
+
+        foreach($registrations as $registration) {
+            $child = $registration->getChild();
+            $arr[$child->getFullnameReverse()][] = [
+                                                'childId'         => $child->getChildId(),
+                                                'fullnameReverse' => $registration->getChild()->getFullnameReverse(),
+                                                'registrationId'  => $registration->getRegistrationId(),
+                                                'updatedAt'       => $registration->getUpdatedAt()->format('Y-m-d'),
+                                                'status'          => $registration->getStatus()
+            ];
+        }
+
+        ksort($arr);
+
+        return $arr;
+
+    }
+
     /**
-     * Returns the list of all products in the array format
+     * Returns the list of all products in the array format.
+     *
      * @return array
      */
     public function findAll($all = 0)
     {
-        if($all == 1) {
+        if ($all == 1) {
             return $this->em
                 ->getRepository('App:Product')
                 ->findAll()
@@ -342,13 +373,11 @@ class ProductService implements ProductServiceInterface
                 ->getRepository('App:Product')
                 ->findNotArchived();
         }
-
-
-
     }
 
     /**
-     * Returns the list of all products linked to a child in the array format
+     * Returns the list of all products linked to a child in the array format.
+     *
      * @return array
      */
     public function findAllByChild($childId)
@@ -360,7 +389,8 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Searches the term in the Product collection
+     * Searches the term in the Product collection.
+     *
      * @return array
      */
     public function findAllSearch(string $term)
@@ -378,7 +408,7 @@ class ProductService implements ProductServiceInterface
     {
         if (null === $object->getNameFr() ||
             null === $object->getDescriptionFr()) {
-            throw new UnprocessableEntityHttpException('Missing data for Product -> ' . json_encode($object->toArray()));
+            throw new UnprocessableEntityHttpException('Missing data for Product -> '.json_encode($object->toArray()));
         }
     }
 
@@ -407,12 +437,12 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * Removes links from Product
+     * Removes links from Product.
      */
     public function removeLinks(Product $object, array $data)
     {
         foreach ($data as $field) {
-            $method = 'get' . ucfirst($field);
+            $method = 'get'.ucfirst($field);
             if (!$object->$method()->isEmpty()) {
                 foreach ($object->$method() as $link) {
                     $this->em->remove($link);
@@ -423,7 +453,8 @@ class ProductService implements ProductServiceInterface
 
     public function findAllActiveProducts()
     {
-        $products = $this->em->getRepository('App:Product')->findBy(['suppressed' => 0], array('nameFr'=>'asc'));
+        $products = $this->em->getRepository('App:Product')->findBy(['suppressed' => 0], array('nameFr' => 'asc'));
+
         return $products;
     }
 
@@ -462,11 +493,11 @@ class ProductService implements ProductServiceInterface
             'sports' => 'sport',
         );
         foreach ($linksArray as $key => $value) {
-            $methodCollection = 'get' . ucfirst($key);
-            $methodObject = 'get' . ucfirst($value);
+            $methodCollection = 'get'.ucfirst($key);
+            $methodObject = 'get'.ucfirst($value);
             if (null !== $object->$methodCollection()) {
                 $links = array();
-                foreach($object->$methodCollection() as $link) {
+                foreach ($object->$methodCollection() as $link) {
                     if (!$link->$methodObject()->getSuppressed()) {
                         $links[] = $this->mainService->toArray($link->$methodObject()->toArray());
                     }
@@ -478,7 +509,7 @@ class ProductService implements ProductServiceInterface
         //Gets related components
         if (null !== $object->getComponents()) {
             $components = array();
-            foreach($object->getComponents() as $component) {
+            foreach ($object->getComponents() as $component) {
                 if (!$component->getSuppressed()) {
                     $components[] = $this->mainService->toArray($component->toArray());
                 }
@@ -489,7 +520,7 @@ class ProductService implements ProductServiceInterface
         //Gets related dates
         if (null !== $object->getDates()) {
             $dates = array();
-            foreach($object->getDates() as $date) {
+            foreach ($object->getDates() as $date) {
                 if (null !== $date->getDate()) {
                     $dates[] = $date->getDate()->format('Y-m-d');
                 }
@@ -501,14 +532,23 @@ class ProductService implements ProductServiceInterface
         if (null !== $object->getHours()) {
             $hours = array();
             $i = 0;
-            foreach($object->getHours() as $hour) {
+            foreach ($object->getHours() as $hour) {
                 if (null !== $hour->getStart()) {
                     $hours[$i]['start'] = $hour->getStart()->format('H:i');
                 }
                 if (null !== $hour->getEnd()) {
                     $hours[$i]['end'] = $hour->getEnd()->format('H:i');
                 }
-                $i++;
+                if (null !== $hour->getIsFull()) {
+                    $hours[$i]['is_full'] = $hour->getIsFull();
+                }
+                if (null !== $hour->getMessageFr()) {
+                    $hours[$i]['message_fr'] = $hour->getMessageFr();
+                }
+                if (null !== $hour->getMessageEn()) {
+                    $hours[$i]['message_en'] = $hour->getMessageEn();
+                }
+                ++$i;
             }
             $objectArray['hours'] = $hours;
         }
