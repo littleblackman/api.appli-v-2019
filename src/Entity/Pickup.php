@@ -169,6 +169,12 @@ class Pickup
      */
     private $paymentDone;
 
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="last_day_of_week", type="date")
+     */
+    private $lastDayOfWeek;
 
     /**
      * Converts the entity in an array
@@ -196,6 +202,9 @@ class Pickup
 
         }
 
+        if (null !== $objectArray['lastDayOfWeek']) {
+            $objectArray['lastDayOfWeek'] = $objectArray['lastDayOfWeek']->format('Y-m-d');
+        }
 
 
         return $objectArray;
@@ -442,8 +451,16 @@ class Pickup
         return $this;
     }
 
+    public function getLastDayOfWeek(): ?DateTimeInterface
+    {
+        return $this->lastDayOfWeek;
+    }
 
+    public function setLastDayOfWeek(?DateTimeInterface $date): self
+    {
+        $this->lastDayOfWeek = $date;
 
-
+        return $this;
+    }
 
 }

@@ -220,6 +220,14 @@ class Product
      */
     private $sports;
 
+      /**
+     * @var string|null
+     *
+     * @ORM\Column(name="personal_status", type="string", nullable=true)
+     */
+    private $personalStatus;
+
+
     private $totalHt;
     private $totalVat;
     private $totalTtc;
@@ -271,10 +279,16 @@ class Product
             if(count($arr) > 0) {
                 $objectArray['start_date'] = $arr[array_key_first($arr)];
                 $objectArray['start_key'] = array_key_first($arr);
+            } else {
+                $objectArray['start_date'] = null;
+                $objectArray['start_key'] = null;
             }
 
           
             $objectArray['dates'] = $arr;
+        } else {
+            $objectArray['start_date'] = null;
+            $objectArray['start_key'] = null;
         }
 
 
@@ -728,6 +742,30 @@ class Product
                 $sport->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of personalStatus
+     *
+     * @return  string|null
+     */ 
+    public function getPersonalStatus()
+    {
+        return $this->personalStatus;
+    }
+
+    /**
+     * Set the value of personalStatus
+     *
+     * @param  string|null  $personalStatus
+     *
+     * @return  self
+     */ 
+    public function setPersonalStatus($personalStatus)
+    {
+        $this->personalStatus = $personalStatus;
 
         return $this;
     }

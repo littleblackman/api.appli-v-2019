@@ -150,6 +150,8 @@ class Invoice
      */
     private $invoiceProducts;
 
+    private $transaction;
+
     public function __construct()
     {
         $this->invoiceProducts = new ArrayCollection();
@@ -387,5 +389,14 @@ class Invoice
         }
 
         return $this;
+    }
+
+    public function setTransaction(Transaction $transaction) {
+        $this->transaction;
+        return $this;
+    }
+
+    public function getTransaction() {
+        return $this->transaction;
     }
 }

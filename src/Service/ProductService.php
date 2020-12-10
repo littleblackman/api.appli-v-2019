@@ -282,6 +282,22 @@ class ProductService implements ProductServiceInterface
         return $prices;
     }
 
+    public function fastUpdate(string $data) {
+        $dataArray = is_array($data) ? $data : json_decode($data, true);
+
+        foreach($dataArray['idList'] as $id) {
+            if($product = $this->em->getRepository('App:Product')->find($id)) {
+                if(isset($dataArray['visibility'])) {
+                    $product->setVisibility($dataArray['visibility']);
+                    $this->mainService->persist($product);
+                }
+
+            }
+        }
+
+        return $dataArray;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -298,6 +314,15 @@ class ProductService implements ProductServiceInterface
 
         //Persists data
         $this->mainService->persist($object);
+
+
+
+        if($object->getVisibility() == "personvisibility") {
+            $object->setPersonalStatus('awaiting');
+        }
+
+        $this->em->persist($object);
+        $this->em->flush();
 
         //Returns data
         return array(
@@ -346,7 +371,8 @@ class ProductService implements ProductServiceInterface
                                                 'fullnameReverse' => $registration->getChild()->getFullnameReverse(),
                                                 'registrationId'  => $registration->getRegistrationId(),
                                                 'updatedAt'       => $registration->getUpdatedAt()->format('Y-m-d'),
-                                                'status'          => $registration->getStatus()
+                                                'status'          => $registration->getStatus(),
+                                                'sessions'        => $registration->getSessions()
             ];
         }
 
@@ -427,6 +453,14 @@ class ProductService implements ProductServiceInterface
         //Persists data
         $this->mainService->modify($object);
         $this->mainService->persist($object);
+
+
+        if($object->getVisibility() == "personvisibility") {
+            $object->setPersonalStatus('awaiting');
+        }
+
+        $this->em->persist($object);
+        $this->em->flush();
 
         //Returns data
         return array(
@@ -544,9 +578,13 @@ class ProductService implements ProductServiceInterface
                 }
                 if (null !== $hour->getMessageFr()) {
                     $hours[$i]['message_fr'] = $hour->getMessageFr();
+                } else {
+                    $hours[$i]['message_fr'] = null;
                 }
                 if (null !== $hour->getMessageEn()) {
                     $hours[$i]['message_en'] = $hour->getMessageEn();
+                } else {
+                    $hours[$i]['message_en'] = null;
                 }
                 ++$i;
             }
@@ -554,5 +592,17 @@ class ProductService implements ProductServiceInterface
         }
 
         return $objectArray;
+    }
+
+    public function findProductPersonal($child) {
+
+        $products = $this->em->getRepository('App:Product')->findBy(['suppressed' => 0, 'child' => $child, 'visibility' => 'personvisibility', 'personalStatus' => 'awaiting'], array('nameFr' => 'asc'));
+        $arr = [];
+        foreach($products as $product) {
+            $arr[] = $product->toArray();  
+        }
+        return $arr;
+
+
     }
 }

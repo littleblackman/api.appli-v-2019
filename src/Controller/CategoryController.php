@@ -66,18 +66,12 @@ class CategoryController extends AbstractController
     public function listAll(Request $request, PaginatorInterface $paginator)
     {
         $this->denyAccessUnlessGranted('categoryList');
-/*
-        $categories = $paginator->paginate(
-            $this->categoryService->findAll(),
-            $request->query->getInt('page', 1),
-            $request->query->getInt('size', 50)
-        );*/
 
         $categoriesArray = array();
 
         $categories = $this->categoryService->findAllActive();
 
-        foreach ($categories->getItems() as $category) {
+        foreach ($categories as $category) {
             $categoriesArray[] = $this->categoryService->toArray($category);
         };
 

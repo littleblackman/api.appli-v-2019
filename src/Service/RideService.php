@@ -96,7 +96,6 @@ class RideService implements RideServiceInterface
         }
 
 
-
         // E duplicate rides on the new days if not exist
         foreach($source_rides as $s_ride) {
 
@@ -163,26 +162,65 @@ class RideService implements RideServiceInterface
             $debugId = $t_ride->getName().' '.$staff_name;
             $debug[$debugId] = [];
 
+
             // list all pickup in source if exist child exist in target > affect in ride
             foreach($s_ride->getPickups() as $o_pickup) {
 
-              if(\key_exists($o_pickup->getChild()->getChildId(), $p_targets[$t_ride->getKind()])) {
+                $kindname = $t_ride->getKind();
+
+              if(\key_exists($o_pickup->getChild()->getChildId(), $p_targets[$kindname])) {
                 // new pickup
-                $t_pickup = $p_targets[$t_ride->getKind()][$o_pickup->getChild()->getChildId()];
-                $t_pickup->setSortOrder($o_pickup->getSortOrder());
-                $start_time_string = $target.' '.$o_pickup->getStart()->format('H:i:s');
-                $t_pickup->setStart(new DateTime($start_time_string));
-                $t_pickup->setPhone($o_pickup->getPhone());
-                $t_pickup->setPostal($o_pickup->getPostal());
-                $t_pickup->setAddress($o_pickup->getAddress());
-                $t_pickup->setLatitude($o_pickup->getLatitude());
-                $t_pickup->setLongitude($o_pickup->getLongitude());
-                $t_ride->addPickup($t_pickup);
+                $t_pickup = $p_targets[$kindname][$o_pickup->getChild()->getChildId()];
 
-                $message['target_child_associated_to_ride'][$o_pickup->getChild()->getChildId()] = $o_pickup->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();
+                // check if same moment
 
-                // debug line, delete after debug
-                $debug[$debugId][] = $t_pickup->toArray();
+                $is_valid = 0;
+                
+                $t_time = intval($t_pickup->getStart()->format('Hi'));
+                $o_time = intval($o_pickup->getStart()->format('Hi'));
+
+                if( $kindname == "dropin") {
+                    if($t_time < 1200) $t_moment = "AM";
+                    if($t_time > 1200) $t_moment = "PM";
+
+                    if($o_time < 1200) $o_moment = "AM";
+                    if($o_time > 1200) $o_moment = "PM";
+                } else {
+                    if($t_time < 1300) $t_moment = "AM";
+                    if($t_time > 1500) $t_moment = "PM";
+
+                    if($o_time < 1300) $o_moment = "AM";
+                    if($o_time > 1500) $o_moment = "PM";
+
+                }
+
+                if($t_moment == $o_moment) $is_valid = 1;
+
+                if($is_valid) { 
+                    
+                    if($t_pickup->getRegistration()->getProduct() != $o_pickup->getRegistration()->getProduct()) {
+                        $message['target_child_exists_but_different_product'][] =  $o_pickup->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();
+                    }
+                    $t_pickup->setSortOrder($o_pickup->getSortOrder());
+                    $start_time_string = $target.' '.$o_pickup->getStart()->format('H:i:s');
+                    $t_pickup->setStart(new DateTime($start_time_string));
+                    $t_pickup->setPhone($o_pickup->getPhone());
+                    $t_pickup->setPostal($o_pickup->getPostal());
+                    $t_pickup->setAddress($o_pickup->getAddress());
+                    $t_pickup->setLatitude($o_pickup->getLatitude());
+                    $t_pickup->setLongitude($o_pickup->getLongitude());
+                    $t_ride->addPickup($t_pickup);
+    
+                    $message['target_child_associated_to_ride'][$o_pickup->getChild()->getChildId()] = $o_pickup->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();
+    
+                    // debug line, delete after debug
+                    $debug[$debugId][] = $t_pickup->toArray();
+
+                   
+                } else {
+                    $message['no_start_time_for'][] =  $o_pickup->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();
+                }
+              
 
               } else  {
                 $message['target_child_not_in_target'][$o_pickup->getChild()->getChildId()] = $o_pickup->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();
@@ -193,12 +231,12 @@ class RideService implements RideServiceInterface
 
         }
 
-        asort($message['target_child_associated_to_ride']);
-        asort($message['target_child_not_in_target']);
+        if(isset($message['target_child_associated_to_ride'])) asort($message['target_child_associated_to_ride']);
+        if(isset($message['target_child_not_in_target'])) asort($message['target_child_not_in_target']);
 
 
 
-        return [$debug, $message];
+        return [$message];
     }
 
     public function retrieveGroupActivity($staff, $date, $kind) {

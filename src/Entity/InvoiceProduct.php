@@ -127,6 +127,10 @@ class InvoiceProduct
     {
         $objectArray = get_object_vars($this);
 
+        if (null !== $objectArray['descriptionFr']) {
+            $objectArray['descriptionFr'] = unserialize($objectArray['descriptionFr']);
+        }
+
         return $objectArray;
     }
 
@@ -173,7 +177,7 @@ class InvoiceProduct
 
     public function getDescriptionFr(): ?string
     {
-        return $this->descriptionFr;
+        return null !== $this->descriptionFr ? unserialize($this->descriptionFr) : null;
     }
 
     public function setDescriptionFr(?string $descriptionFr): self

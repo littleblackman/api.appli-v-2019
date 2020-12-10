@@ -315,7 +315,7 @@ class RegistrationController extends AbstractController
      */
     public function create(Request $request)
     {
-        $this->denyAccessUnlessGranted('registrationCreate');
+      //  $this->denyAccessUnlessGranted('registrationCreate'); // changer la route pour le client
 
         $createdData = $this->registrationService->create($request->getContent());
 
@@ -367,7 +367,7 @@ class RegistrationController extends AbstractController
      */
     public function modify(Request $request, Registration $registration)
     {
-        $this->denyAccessUnlessGranted('registrationModify', $registration);
+      //  $this->denyAccessUnlessGranted('registrationModify', $registration); // changer la route pour le client
 
         $modifiedData = $this->registrationService->modify($registration, $request->getContent());
 
@@ -418,7 +418,7 @@ class RegistrationController extends AbstractController
      */
     public function delete(Registration $registration)
     {
-        $this->denyAccessUnlessGranted('registrationDelete', $registration);
+      //  $this->denyAccessUnlessGranted('registrationDelete', $registration); // changer la route pour le client
 
         $suppressedData = $this->registrationService->delete($registration);
 

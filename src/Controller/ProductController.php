@@ -71,7 +71,9 @@ class ProductController extends AbstractController
         $products = $this->productService->findAllActiveProducts();
 
         foreach ($products as $product) {
-            $productsArray[] = $this->productService->toArray($product);
+            if($product->getVisibility() != "archived") {
+                $productsArray[] = $this->productService->toArray($product);
+            }
         };
 
         return new JsonResponse($productsArray);
@@ -242,6 +244,46 @@ class ProductController extends AbstractController
     /**
      * Displays product
      *
+     * @Route("/product/productPersonal/{childId}",
+     *    name="display_product_personal",
+     *    requirements={"childId": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     * @Entity("product", expr="repository.findOneById(productId)")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Product::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="childId",
+     *     in="path",
+     *     description="Id of the child",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Product")
+     */
+    public function displayProductPersonal($childId)
+    {
+
+        $productArray = $this->productService->findProductPersonal($childId);
+
+        return new JsonResponse($productArray);
+    }
+
+
+//DISPLAY
+    /**
+     * Displays product
+     *
      * @Route("/product/registrations/{productId}",
      *    name="product_registrations",
      *    requirements={"productId": "^([0-9]+)$"},
@@ -318,6 +360,45 @@ class ProductController extends AbstractController
         return new JsonResponse($createdData);
     }
 
+
+//FAST UPDATE
+    /**
+     * Creates product
+     *
+     * @Route("/product/fastUpdate",
+     *    name="product_fastUpdate",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="product", ref=@Model(type=Product::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the Product",
+     *     required=true,
+     *     @Model(type=ProductType::class)
+     * )
+     * @SWG\Tag(name="Product")
+     */
+    public function fastUpdate(Request $request)
+    {
+        $this->denyAccessUnlessGranted('productCreate');
+
+        $createdData = $this->productService->fastUpdate($request->getContent());
+
+        return new JsonResponse($createdData);
+    }
 //MODIFY
     /**
      * Modifies product

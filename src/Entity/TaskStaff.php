@@ -71,7 +71,6 @@ class TaskStaff
     private $supervisor;
 
 
-
     /**
      * @ORM\Column(name="step", type="string", length=255, nullable=true)
      */
@@ -103,6 +102,12 @@ class TaskStaff
      * @ORM\Column(name="remote_address", type="string", length=255, nullable=true)
      */
     private $remoteAddress;
+
+
+    /**
+     * @ORM\Column(name="criticity", type="string", length=20, nullable=true)
+     */
+    private $criticity;
 
     /**
      *@var string[] | null ()
@@ -309,5 +314,25 @@ class TaskStaff
         }
 
         return $objectArray;
+    }
+
+    /**
+     * Get the value of criticity
+     */ 
+    public function getCriticity()
+    {
+        return $this->criticity;
+    }
+
+    /**
+     * Set the value of criticity
+     *
+     * @return  self
+     */ 
+    public function setCriticity($criticity)
+    {
+        $this->criticity = $criticity;
+
+        return $this;
     }
 }

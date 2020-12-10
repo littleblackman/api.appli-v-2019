@@ -96,6 +96,7 @@ class RegistrationService implements RegistrationServiceInterface
      */
     public function create(string $data)
     {
+
         //Submits data
         $object = new Registration();
 
@@ -105,97 +106,38 @@ class RegistrationService implements RegistrationServiceInterface
 
         $this->addSpecificData($object, $data);
 
+
+        if($object->getPreferences() == null) {
+            $dataArray = is_array($data) ? $data : json_decode($data, true);
+            if(isset($dataArray['address'])) {
+
+                if($addressPref = $this->em->getRepository('App:Address')->find($dataArray['address'])) {
+                    $arr[0]['address'] = $dataArray['address'];
+                    $arr[0]['postal']  = $addressPref->getPostal();
+
+                    $object->setPreferences(serialize($arr));
+                }               
+            } 
+
+        }
+
         //Checks if entity has been filled
         $this->isEntityFilled($object);
 
         //Persists data
         $this->mainService->persist($object);
 
-        // create presence, activity and transport
-        if($data['product']) {
-            $product = $this->em->getRepository('App:Product')->find($data['product']);
-        } else {
-            $product = $object->getProduct();
+       
+        if($object->getStatus() != "cart") {
+            $message = $this->cascadeService->cascadeFromRegistration($object);
         }
-
-        // return $this->productService->toArray($product);
-
-        $target['hasLunch'] = $product->getLunch();
-
-        $object->setHasLunch($product->getLunch());
-
-        // if date is not selectable or not
-        if (!$product->getIsDateSelectable()) {
-            // if not selectable
-            $linkDates = $product->getDates();
-            foreach ($linkDates as $linkDate) {
-                $target['dates'][] = $linkDate->getDate();
-            }
-        } else {
-            // if date is selectable
-            foreach ($data['sessions'] as $mydate) {
-                $target['dates'][] = new \DateTime($mydate['date']);
-            }
-        }
-
-        // if location is selectable or not
-        if (!$product->getIsLocationSelectable()) {
-            // not selectable
-            $target['location'] = $product->getLocations()[0]->getLocation();
-        } else {
-            // if location is selectable
-            $target['location'] = null;
-        }
-
-        // if hours is selectable or not
-        if (!$product->getIsHourSelectable()) {
-            // not selectable
-            $target['hours']['start'] = $product->getHours()[0]->getStart();
-            $target['hours']['end'] = $product->getHours()[0]->getEnd();
-        } else {
-            // if location is selectable
-            $target['hours'] = [];
-        }
-
-        // if sport is selectable or not
-        if (!$product->getIsSportSelectable()) {
-            // not selectable
-            $linkSports = $product->getSports();
-            foreach ($linkSports as $linkSport) {
-                $target['sport'][] = $linkSports->getSport();
-            }
-        } else {
-            // if sports is selectable
-            foreach ($data['sports'] as $sportData) {
-                $sport = $this->em->getRepository('App:Sport')->find($sportData['sportId']);
-                $target['sports'][] = $sport;
-            }
-        }
-
-        // if transport
-        if ($product->getTransport()) {
-            $target['pickup']['dropin'] = $product->getHourDropin();
-            $target['pickup']['dropoff'] = $product->getHourDropoff();
-        }
-
-        $target['hasTransport'] = $product->getTransport();
-        $object->setHasTransport($product->getTransport());
-
-        $this->mainService->modify($object);
-        $this->mainService->persist($object);
-
-        // had data in registration
-
-        // create presence and cascade to transport
-        foreach ($target['dates'] as $targetDate) {
-            $this->cascadeService->createFromRegistrationAndData($object, $targetDate, $target['location'], $target['hours'], $target['sports'], $target['hasLunch'], $target['hasTransport'], $target['pickup']);
-         }
 
 
         //Returns data
         return array(
             'status' => true,
             'message' => 'Inscription ajoutée',
+            'messages' => $message,
             'registration' => $this->toArray($object),
         );
     }
@@ -288,6 +230,9 @@ class RegistrationService implements RegistrationServiceInterface
      */
     public function modify(Registration $object, string $data)
     {
+
+        $firstStatus = $object->getStatus();
+
         //Submits data
         $data = $this->mainService->submit($object, 'registration-modify', $data);
         $this->addSpecificData($object, $data);
@@ -298,6 +243,16 @@ class RegistrationService implements RegistrationServiceInterface
         //Persists data
         $this->mainService->modify($object);
         $this->mainService->persist($object);
+          
+        if($firstStatus == "cart" && $object->getStatus() == "paid") {
+
+            $arr[] = 'in';
+            $message = $this->cascadeService->cascadeFromRegistration($object);
+        } else {
+            $arr[] = 'out';
+
+        }
+return $message;
 
         //Returns data
         return array(

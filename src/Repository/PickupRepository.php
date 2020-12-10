@@ -135,6 +135,21 @@ class PickupRepository extends EntityRepository
         ;
     }
 
+    public function findByChildAndDate($child, $date) {
+        return $this->createQueryBuilder('p')
+            ->where('p.child = :child')
+            ->andWhere('p.start like :date')
+            ->andWhere('p.suppressed = 0')
+            //->andWhere('p.kind = :kind')
+            ->setParameter('date', $date . '%')
+            ->setParameter('child', $child)
+            //->setParameter('kind', $kind)
+            ->orderBy('p.start')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     /**
      * Returns all the pickups that are not affected to a ride
      */

@@ -116,6 +116,13 @@ class PickupActivity
      */
     private $groupActivities;
 
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="last_day_of_week", type="date")
+     */
+    private $lastDayOfWeek;
+
     public function __construct()
     {
         $this->groupActivities = new ArrayCollection();
@@ -148,6 +155,10 @@ class PickupActivity
 
         if (null !== $objectArray['child']) {
             $objectArray['child'] = $this->getChild()->toArray();
+        }
+
+        if (null !== $objectArray['lastDayOfWeek']) {
+            $objectArray['lastDayOfWeek'] = $objectArray['lastDayOfWeek']->format('Y-m-d');
         }
 
 
@@ -310,4 +321,17 @@ class PickupActivity
 
         return $this;
     }
+
+    public function getLastDayOfWeek(): ?DateTimeInterface
+    {
+        return $this->lastDayOfWeek;
+    }
+
+    public function setLastDayOfWeek(?DateTimeInterface $date): self
+    {
+        $this->lastDayOfWeek = $date;
+
+        return $this;
+    }
+
 }

@@ -144,33 +144,49 @@ class ChildPresenceService implements ChildPresenceServiceInterface
 
                 /***** update pickup */
                 // retrieve pickup from presence and update
-
-
-
-                // retrive pickup from lastpresence and update
-                
-
-                /***** update pickupactivity */
-
-                if ($pickupActivitys = $this->em->getRepository('App:PickupActivity')->findBy(['child' => $child, 'date' => $presence->getDate()])) {
+                if ($pickups = $this->em->getRepository('App:Pickup')->findByChildAndDate($child, $presence->getDate()->format('Y-m-d'))) {
                     
-                    foreach ($pickupActivitys as $pa) {
-                    //    $pa->setStatus($status);
-                     //   $pa->setStatusChange(new DateTime());
-                      //  $this->em->persist($pa);
-                       // $this->em->flush();
+                    foreach ($pickups as $p) {
+                        $p->setLastDayOfWeek(null);
+                        $this->em->persist($p);
+                        $this->em->flush();
                     }
                 }
 
-                
+                if ($pickups = $this->em->getRepository('App:Pickup')->findByChildAndDate($child, $lastPresence->getDate()->format('Y-m-d'))) {
+                    
+                    foreach ($pickups as $p) {
+                        $p->setLastDayOfWeek($lastPresence->getDate());
+                        $this->em->persist($p);
+                        $this->em->flush();
+                    }
+                }
+              
 
 
 
+                /***** update pickupactivity */
+                // retrive pickup from lastpresence and update
+                if ($pickupActivitys = $this->em->getRepository('App:PickupActivity')->findBy(['child' => $child, 'date' => $presence->getDate()])) {
+                    
+                    foreach ($pickupActivitys as $pa) {
+                        $pa->setLastDayOfWeek(null);
+                        $this->em->persist($pa);
+                        $this->em->flush();
+                    }
+                }
+                if ($pickupActivitys = $this->em->getRepository('App:PickupActivity')->findBy(['child' => $child, 'date' => $lastPresence->getDate()])) {
+                    
+                    foreach ($pickupActivitys as $pa) {
+                        $pa->setLastDayOfWeek($lastPresence->getDate());
+                        $this->em->persist($pa);
+                        $this->em->flush();
+                    }
+                }
+  
             }
-
-      
-        
-
+    
+        }
 
         return ['status' => 'last day of week updated for '.$currentDate];
     }

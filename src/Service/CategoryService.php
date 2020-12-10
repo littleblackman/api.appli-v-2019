@@ -55,7 +55,7 @@ class CategoryService implements CategoryServiceInterface
 
     public function findAllActive() {
         $categories = $this->em->getRepository('App:Category')->findActiveProducts();
-        return $categories;
+        return $categories;  // methode à créer
     }
 
     /**
@@ -149,8 +149,8 @@ class CategoryService implements CategoryServiceInterface
         if (null !== $object->getProducts()) {
             $products = array();
             foreach($object->getProducts() as $productLink) {
-                if (!$productLink->getProduct()->getSuppressed()) {
-                    $products[] = $this->mainService->toArray($productLink->getProduct()->toArray());
+                if (!$productLink->getProduct()->getSuppressed() && $productLink->getProduct()->getVisibility()!="archived") {
+                    $products[] = $this->productService->toArray($productLink->getProduct());
                 }
             }
             $objectArray['products'] = $products;

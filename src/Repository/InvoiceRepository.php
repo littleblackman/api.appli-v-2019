@@ -36,6 +36,44 @@ class InvoiceRepository extends EntityRepository
         ;
     }
 
+    public function findByStatus($dateStart, $dateEnd, $status = "paid", $mode = "all") {
+
+        $qb = $this->createQueryBuilder('i')
+        ->where('i.date BETWEEN :dateStart AND :dateEnd')
+        ->andWhere('i.status = :status')
+        ->andWhere('i.suppressed = 0');
+
+
+        if($mode != "all") {
+            $qb->andWhere('i.paymentMethod = :mode');
+            $qb->setParameter('mode', strtoupper($mode));
+        };
+
+        return $qb->orderBy('i.date', 'DESC')
+        ->setParameter('status', $status)
+        ->setParameter('dateStart', $dateStart)
+        ->setParameter('dateEnd', $dateEnd)
+        ->getQuery()
+        ->getResult()
+        ;
+
+    }
+
+    public function findByPerson($person, $year) {
+        return $this->createQueryBuilder('i')
+        ->where('i.person = :person')
+        ->andwhere('i.date LIKE :year')
+        ->andWhere('i.status = :status')
+        ->andWhere('i.suppressed = 0')
+        ->orderBy('i.date', 'DESC')
+        ->setParameter('person', $person)
+        ->setParameter('year', $year.'%')
+        ->setParameter('status', "paid")
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+
     /**
      * Returns all the invoices with dates between those provided
      */

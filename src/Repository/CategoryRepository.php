@@ -40,21 +40,14 @@ class CategoryRepository extends EntityRepository
 
     public function findActiveProducts() {
         return $this->createQueryBuilder('c')
-
-        ->leftJoin('c.products', 'link')
-        ->leftJoin('')
-        ->where('link.meal = :meal')
-        ->setParameter('meal', $meal)
+        ->innerJoin('c.products', 'link')
+        ->innerJoin('link.product', 'p')
+        ->where('c.suppressed = 0')
+        ->andWhere('p.visibility <> \'archived\'')
+        ->orderBy('c.orderItem','ASC')
         ->getQuery()
         ->getResult()
-    ;
-
-
-        ->where('c.categoryId = :categoryId')
-        ->andWhere('c.suppressed = 0')
-        ->setParameter('categoryId', $categoryId)
-        ->getQuery()
-        ->getOneOrNullResult()
-    ;
+        ;
     }
+
 }

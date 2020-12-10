@@ -80,6 +80,8 @@ class TaskStaffService implements TaskStaffServiceInterface
         isset($values['duration'])       ?  $duration = $values['duration'] : $duration = null;
         isset($values['date_limit'])     ?  $dateL = $values['date_limit'] : $dateL = $values['date_task'];;
         isset($values['type'])           ?  $type = $values['type'] : $type = null;
+        isset($values['criticity'])      ?  $criticity = $values['criticity'] : $criticity = 99;
+
 
         if(!$task_id) $type = "basic";
 
@@ -105,6 +107,7 @@ class TaskStaffService implements TaskStaffServiceInterface
             $object->setDateLimit($dateLimit);
             $object->setDuration($duration);
             $object->setType($type);
+            $object->setCriticity($criticity);
             $object->setRemoteAddress($remoteAddress);
 
 
@@ -131,6 +134,7 @@ class TaskStaffService implements TaskStaffServiceInterface
                 $object2->setDateTask($dateTask);
                 $object2->setDateLimit($dateLimit);
                 $object2->setDuration(null);
+                $object2->setCriticity($criticity);
                 $object2->setRemoteAddress($remoteAddress);
                 $object2->setType($type);
 
