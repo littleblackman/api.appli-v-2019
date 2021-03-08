@@ -31,6 +31,41 @@ class CategoryController extends AbstractController
     /**
      * Lists all the categories
      *
+     * @Route("/category/listStandard",
+     *    name="category_list_standard",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Category::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Tag(name="Category")
+     */
+    public function listStandard(Request $request)
+    {
+        $this->denyAccessUnlessGranted('categoryList');
+
+        $categoriesArray = array();
+
+        $categoriesArray = $this->categoryService->findAllStandard();
+
+        return new JsonResponse($categoriesArray);
+    }
+
+
+
+//LIST
+    /**
+     * Lists all the categories
+     *
      * @Route("/category/list",
      *    name="category_list",
      *    methods={"HEAD", "GET"})

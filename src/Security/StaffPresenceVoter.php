@@ -126,6 +126,7 @@ class StaffPresenceVoter extends Voter
             'ROLE_COACH',
             'ROLE_MANAGER',
             'ROLE_ADMIN',
+            'ROLE_ASSISTANT'
         );
 
         foreach ($roles as $role) {
@@ -148,6 +149,7 @@ class StaffPresenceVoter extends Voter
             'ROLE_COACH',
             'ROLE_MANAGER',
             'ROLE_ADMIN',
+            'ROLE_ASSISTANT'
         );
 
         foreach ($roles as $role) {

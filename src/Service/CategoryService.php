@@ -58,6 +58,19 @@ class CategoryService implements CategoryServiceInterface
         return $categories;  // methode à créer
     }
 
+
+    public function findAllStandard() {
+        $categoriesArray = [];
+        $categories = $this->em->getRepository('App:Category')->findBy(
+                                                                         ['suppressed' => 0],
+                                                                         ['orderItem' => 'ASC']
+                                                                        );
+        foreach($categories as $category) {
+            $categoriesArray[] = $category->toArray();
+        }
+        return $categoriesArray;  
+    }
+
     /**
      * {@inheritdoc}
      */

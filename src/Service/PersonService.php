@@ -10,6 +10,7 @@ use App\Entity\PersonPhoneLink;
 use App\Entity\UserPersonLink;
 use App\Entity\Phone;
 use App\Service\PhoneService;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -23,6 +24,8 @@ class PersonService implements PersonServiceInterface
 
     private $staffService;
 
+    private $notificationService;
+
     private $em;
 
     private $mainService;
@@ -32,7 +35,8 @@ class PersonService implements PersonServiceInterface
         StaffServiceInterface $staffService,
         EntityManagerInterface $em,
         MainServiceInterface $mainService,
-        PhoneService $phoneService
+        PhoneService $phoneService,
+        NotificationService $notificationService
 
     )
     {
@@ -41,6 +45,9 @@ class PersonService implements PersonServiceInterface
         $this->em = $em;
         $this->mainService = $mainService;
         $this->phoneService = $phoneService;
+        $this->notificationService = $notificationService;
+
+
     }
 
     /**
@@ -109,12 +116,41 @@ class PersonService implements PersonServiceInterface
         $this->addSpecificData($object, $data);
         $this->em->flush();
 
+
+        $this->notificationService->create([
+            "target_role" => "ROLE_ADMIN",
+            "name"        => "Personne",
+            "description" => "Création d'une nouvelle personne : ".$object->getFullname(),
+            "url"         => "/person/display/id/".$object->getPersonId()."/"
+        ]);
+
         //Returns data
         return array(
             'status' => true,
             'message' => 'Personne ajoutée',
             'person' => $this->toArray($object),
         );
+    }
+
+
+    public function associate($personId, $childId) {
+        $person = $this->em->getRepository('App:Person')->find($personId);
+        $child  = $this->em->getRepository('App:Child')->find($childId);
+
+        $childPersonLink = new ChildPersonLink();
+        $childPersonLink
+            ->setRelation("Parent")
+            ->setChild($child)
+            ->setPerson($person)
+        ;
+        $this->em->persist($childPersonLink);
+        $this->em->flush();
+
+        return [ 
+                    'ChildPersonLinkId' => $childPersonLink->getChildPersonLinkId(),
+                    'personId' => $person->getPersonId(),
+                    'childId'  => $child->getChildId() 
+                ];
     }
 
     /**
@@ -142,6 +178,24 @@ class PersonService implements PersonServiceInterface
         }
         
         return array($resultArra);
+    }
+
+    public function unassociate($personId1, $personId2) {
+
+        if(!$person1 = $this->em->getRepository('App:Person')->find($personId1)) return ['message' => 'person1 not founded'];
+        foreach($person1->getRelated() as $link) {
+            $currentRelatedId = $link->getPerson()->getPersonId();
+
+            $arr[] = $currentRelatedId;
+
+            if($personId2 == $currentRelatedId) {
+
+                $this->em->remove($link);
+                $this->em->flush();
+            }
+        }
+
+        return ['message' => 'person-unassociate-personId-'.$personId2];
     }
 
     /**
@@ -207,7 +261,7 @@ class PersonService implements PersonServiceInterface
     {
         return $this->em
             ->getRepository('App:Person')
-            ->findAll()
+            ->findBy(['suppressed' => 0], ['personId' => 'DESC'])
         ;
     }
 
@@ -399,5 +453,48 @@ class PersonService implements PersonServiceInterface
         }
 
         return $objectArray;
+    }
+
+    public function listDoublon() {
+
+
+        $letter = 'A';
+
+        $persons = $this->em->getRepository('App:Person')->findDoublon($letter);
+
+        $uniqueLastname = [];
+        $doublonLastname = [];
+
+        foreach($persons as $person) {
+            $keyLastname = $person['lastname'];
+
+            // vérifie si existe dans uniquelastname
+
+
+                if(in_array($keyLastname, $uniqueLastname)) {
+                    // si oui 
+
+                    // recupère clé de uniqueLastname
+
+                    // ajoute uniquelastname dans doublon
+
+                    // ajoute nouveau dans doublon
+                } else {
+
+                }
+                
+
+                // si non ajout à uniqueLastname
+
+
+
+
+        }
+
+        // 2ème boucle dans unqiueLastname pour vérifier firstname
+
+        return $persons;
+
+
     }
 }

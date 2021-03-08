@@ -111,6 +111,12 @@ class Person
      */
     private $userPersonLink;
 
+    /**
+     * @ORM\OneToMany(targetEntity="NotificationPersonLink", mappedBy="person", cascade={"persist"})
+     * @SWG\Property(ref=@Model(type=Notification::class))
+     */
+    private $notificationPersonLinks;
+
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
@@ -397,6 +403,37 @@ class Person
             // set the owning side to null (unless already changed)
             if ($related->getRelated() === $this) {
                 $related->setRelated(null);
+            }
+        }
+
+        return $this;
+    }
+
+        /**
+     * @return Collection|NotificationStaffLinks[]
+     */
+    public function getNotificationPersonLinks(): Collection
+    {
+        return $this->notificationPersonLinks;
+    }
+
+    public function addNotificationPersonLink(NotificationPersonLink $notificationPersonLink): self
+    {
+        if (!$this->notificationPersonLinks->contains($notificationPersonLink)) {
+            $this->notificationPersonLinks[] = $notificationPersonLink;
+            $notificationPersonLink->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotificationPersonLink(NotificationPersonLink $notificationPersonLink): self
+    {
+        if ($this->notificationPersonLinks->contains($notificationPersonLink)) {
+            $this->notificationPersonLinks->removeElement($notificationPersonLink);
+            // set the owning side to null (unless already changed)
+            if ($notificationPersonLink->getPerson() === $this) {
+                $notificationPersonLink->setPerson(null);
             }
         }
 

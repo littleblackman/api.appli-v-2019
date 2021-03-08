@@ -135,9 +135,32 @@ class CascadeService
           
 
             // create Meal from Child Presence
-            if($registration->getHasLunch() == 1) {
+            if($registration->getHasLunch() == 1 || $registration->getProduct()->getLunch() == 1) {
                 if($this->mealService->createMealFromChildPresence($object)) {
                     $messages[] = "meal created";
+
+
+                    // create pickup activity lunch 
+                    $lunch = $this->em->getRepository('App:Sport')->find(10);
+                    $luncActivity = new PickupActivity();
+                    $this->mainService->create($luncActivity);
+
+                    $luncActivity->setRegistration($registration);
+                    $luncActivity->setChild($registration->getChild());
+                    $luncActivity->setDate($currentSession['date']);
+                    $luncActivity->setStart($currentSession['start']);
+                    $luncActivity->setEnd($currentSession['end']);
+                    $luncActivity->setSport($lunch);
+                    $luncActivity->setLocation($registration->getLocation());
+
+                    //Persists data
+                    $this->mainService->persist($luncActivity);
+
+                    $messages[] = "lunch presence created";
+
+
+                                
+
                 }
             } else {
                 $messages[] = "no meal created";

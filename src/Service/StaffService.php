@@ -75,6 +75,25 @@ class StaffService implements StaffServiceInterface
      */
     public function create(string $data)
     {
+
+        // test if exist
+        $dataTest = json_decode($data, true);
+        $person = $this->em->getRepository('App:Person')->find($dataTest['person']);
+        if($staff = $this->em->getRepository('App:Staff')->findOneBy(['person' => $person])) {
+            $staff->setSuppressed(0);
+            $staff->setSuppressedAt(null);
+            $staff->setMaxChildren($dataTest['maxChildren']);
+            $this->em->persist($staff);
+            $this->em->flush();
+    
+            return array(
+                'status' => true,
+                'message' => 'Staff réactivé',
+                'staff' => $this->toArray($staff),
+            ); 
+        }
+
+
         //Submits data
         $object = new Staff();
         $this->mainService->create($object);

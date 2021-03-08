@@ -55,6 +55,22 @@ class PickupRepository extends EntityRepository
 
 
     /**
+     * Returns all the pickups by date
+     */
+    public function findByRegistrationAndDate($date, $registrationId)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.start LIKE :date')
+            ->andWhere('p.registration = :registrationId')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('date', $date . '%')
+            ->setParameter('registrationId', $registrationId)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
      * Returns all the pickups by status
      */
     public function findOneByStaffAndDate(Staff $staff, $date, $which)

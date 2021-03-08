@@ -347,7 +347,7 @@ class InvoiceController extends AbstractController
     {
        // $this->denyAccessUnlessGranted('invoiceCreate'); // changer la route pour le client
 
-        $createdData = $this->invoiceService->create($request->getContent());
+        $createdData = $this->invoiceService->createManuel($request->getContent());
 
         return new JsonResponse($createdData);
     }

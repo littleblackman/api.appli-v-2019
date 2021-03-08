@@ -707,6 +707,53 @@ class PickupController extends AbstractController
 
 
 
+
+
+//LIST BY REGISTRATION_ID
+    /**
+     * list pickup using the registrationId
+     *
+     * @Route("/pickup/list-by-registration/{registrationId}",
+     *    name="pickup_list_by_registration",
+     *    requirements={"registrationId": "^([0-9]+)$"},
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="registrationId",
+     *     in="path",
+     *     required=true,
+     *     description="RegistrationId linked to the pickup",
+     *     type="integer",
+     * )
+     * @SWG\Tag(name="Pickup")
+     */
+    public function listByRegistrationId(int $registrationId)
+    {
+
+        $pickups = $this->pickupService->listByRegistrationId($registrationId);
+
+        return new JsonResponse($pickups);
+    }
+
+
+
+
 //GET LAST PEC
     /**
      * Get last PEC time changed by child_id

@@ -147,6 +147,50 @@ class PersonController extends AbstractController
         return new JsonResponse($personsArray);
     }
 
+
+//associate child to personn
+    /**
+     * Displays person using its user's identifier
+     *
+     * @Route("/person/associateChild/{personId}/{childId}",
+     *    name="person_associateChild",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Person::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="Not Found",
+     * )
+     * @SWG\Parameter(
+     *     name="persoinId",
+     *     in="path",
+     *     required=true,
+     *     description="User's identifier of the person",
+     *     type="string",
+     * )
+     * @SWG\Tag(name="Person")
+     */
+    public function associatedPersonChild($personId, $childId)
+    {
+        $result = $this->personService->associate($personId, $childId);
+
+        return new JsonResponse($result);
+    }
+
+
+
+
 //DISPLAY WITH ID
     /**
      * Displays person using its id
@@ -410,6 +454,104 @@ class PersonController extends AbstractController
         $this->denyAccessUnlessGranted('personList');
 
         $result = $this->personService->getPersonFromNumber($number);
+
+        return new JsonResponse($result);
+    }
+
+
+
+//UNASSOCIATE PERSON
+    /**
+     * unassociate 2 persones
+     *
+     * @Route("/person/unassociate/{personId1}/{personId2}",
+     *    name="person_unassociate",
+     *    methods={"HEAD", "DELETE"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Person::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Person")
+     */
+    public function personUnassociate($personId1, $personId2)
+    {
+        $this->denyAccessUnlessGranted('personList');
+
+      
+        $result = $this->personService->unassociate($personId1, $personId2);
+        
+
+        return new JsonResponse($result);
+    }
+
+
+
+//LIST DOUBLON
+    /**
+     * Lists all the persons doublon
+     *
+     * @Route("/person/doublon",
+     *    name="person_doublon",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Person::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     description="Number of the page",
+     *     type="integer",
+     *     default="1",
+     * )
+     * @SWG\Parameter(
+     *     name="size",
+     *     in="query",
+     *     description="Number of records",
+     *     type="integer",
+     *     default="50",
+     * )
+     * @SWG\Tag(name="Person")
+     */
+    public function listDoublon(Request $request)
+    {
+        $this->denyAccessUnlessGranted('personList');
+
+      
+        $result = $this->personService->listDoublon();
+        
 
         return new JsonResponse($result);
     }

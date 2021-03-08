@@ -285,7 +285,7 @@ class RegistrationController extends AbstractController
 
 //CREATE
     /**
-     * Creates a registration
+     * Creates a registration form client view (inscription en ligne)
      *
      * @Route("/registration/create",
      *    name="registration_create",
@@ -321,6 +321,7 @@ class RegistrationController extends AbstractController
 
         return new JsonResponse($createdData);
     }
+
 
 //MODIFY
     /**

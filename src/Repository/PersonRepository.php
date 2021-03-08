@@ -70,6 +70,22 @@ class PersonRepository extends EntityRepository
         ;
     }
 
+    /**
+     * Returns the person using its user role
+     */
+    public function findByUserRole(string $role)
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.userPersonLink', 'ul')
+            ->leftJoin('ul.user', 'u')
+            ->where('u.roles like :role')
+            ->andWhere('p.suppressed = 0')
+            ->setParameter('role', "%".$role."%")
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 
     /**
      * Returns the person if not suppressed
@@ -83,5 +99,14 @@ class PersonRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult()
         ;
+    }
+
+
+    public function findDoublon($letter) {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT person_id, lastname, firstname FROM `person` WHERE lastname like "'.$letter.'%" ORDER BY lastname, firstname';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 }

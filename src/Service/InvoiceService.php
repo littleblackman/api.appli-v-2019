@@ -93,6 +93,7 @@ class InvoiceService implements InvoiceServiceInterface
      */
     public function create(string $data)
     {
+
         //Submits data
         $object = new Invoice();
         $this->mainService->create($object);
@@ -112,6 +113,164 @@ class InvoiceService implements InvoiceServiceInterface
             'invoice' => $this->toArray($object),
         );
     }
+
+    public function createManuel(string $sendData) {
+        $dataArray = is_array($sendData) ? $sendData : json_decode($sendData, true);
+
+        // test person first
+        if(isset($dataArray['person'])) {
+            if(!$person = $this->em->getRepository('App:Person')->find($dataArray['person'])) return ['message' => "person_data_send_but_not_founded"];
+        }
+
+        // test child if exist
+        if(isset($dataArray['child'])) {
+            if(!$child = $this->em->getRepository('App:Child')->find($dataArray['child'])) return ['message' => "child_data_send_but_no_founded"];
+        } else {
+            $child = null;
+        }
+
+        // create person if from child if exist
+        if(!isset($person) && isset($child)) {
+            if($child == null) return "no_child_data_send_no_person_data_send";
+            if(!$person = $child->getPersons()[0]->getPerson()) return ['message' => "child_founded_but_no_person_founded"];
+        }
+
+
+        (isset($dataArray['nameFr'])) ? $nameFr = $dataArray['nameFr'] : $nameFr = null;
+        (isset($dataArray['nameEn'])) ? $nameEn = $dataArray['nameEn'] : $nameEn = null;
+        (isset($dataArray['date'])) ? $date = new DateTime($dataArray['date']): $date = new DateTime();
+
+        (isset($dataArray['paymentMethod'])) ? $paymentMethod = $dataArray['paymentMethod'] : $paymentMethod = "cb";
+
+
+        (isset($dataArray['address']))  ? $address  = $dataArray['address'] : $address = null;
+        (isset($dataArray['postal']))   ? $postal   = $dataArray['postal'] : $postal = null;
+        (isset($dataArray['town']))     ? $town     = $dataArray['town'] : $town = null;
+        (isset($dataArray['priceTtc'])) ? $priceTtc = $dataArray['priceTtc'] : $priceTtc = null;
+
+
+
+        (isset($dataArray['descriptionFr'])) ? $descriptionFr = $dataArray['descriptionFr'] : $descriptionFr = null;
+        (isset($dataArray['descriptionEn'])) ? $descriptionEn = $dataArray['descriptionEn'] : $descriptionEn = null;
+
+        // set status to paid if no status
+        (isset($dataArray['status'])) ? $status = $dataArray['status'] : $status = "paid";
+        (isset($dataArray['number'])) ? $number = $dataArray['number'] : $number = null;
+                  
+        $invoice = new Invoice();
+        $invoice->setPerson($person);
+        $invoice->setChild($child);
+        $invoice->setNameFr($nameFr);
+        $invoice->setNameEn($nameEn);
+        $invoice->setDescriptionFr($descriptionFr);
+        $invoice->setDescriptionEn($descriptionEn);
+        $invoice->setDate($date);
+        $invoice->setStatus($status);
+        $invoice->setPaymentMethod($paymentMethod);
+        $invoice->setAddress($address);
+        $invoice->setPostal($postal);
+        $invoice->setTown($town);
+        $invoice->setPriceTtc($priceTtc);
+        $invoice->setNumber($number);
+
+        //Persists data
+        $this->mainService->create($invoice);
+        $this->mainService->persist($invoice);
+
+        /*
+       "invoiceProducts":[
+           {"nameFr":"Matin - stage","descriptionFr":"Matin\u00e9e \u00e0 la carte","priceTtc":"130","priceHt":"","totalTtc":"130","totalHt":"","
+            invoiceComponents":[{"nameFr":"Repas collation","nameEn":" ","priceHt":"10.91","quantity":"1","vat":"10","priceVat":"1.09","priceTtc":"12","totalHt":"10.91","totalTtc":"12"},
+            {"nameFr":"Transport \u00e0 domicile","nameEn":"Test ","priceHt":"62.73","quantity":"1","vat":"10","priceVat":"6.27","priceTtc":"69","totalHt":"62.73","totalTtc":"69"},{"nameFr":"Enseignement sportif - \u00e9cole","nameEn":"test ","priceHt":"40.83","quantity":"1","vat":"20","priceVat":"8.17","priceTtc":"49","totalHt":"40.83","totalTtc":"49"}],"quantity":"1"},{"nameFr":"Anniversaire, Sorties","descriptionFr":"Anniversaire, Sorties","priceTtc":"20","priceHt":"16","totalTtc":"20","totalHt":"16","invoiceComponents":[{"nameFr":"Anniversaire, Sorties","priceHt":"16","quantity":"1","vat":"20","priceVat":"4","priceTtc":"20","totalHt":"16","totalTtc":"20"}],"quantity":"1"}]}
+*/
+
+
+        if(isset($dataArray['invoiceProducts'])) {
+
+            foreach($dataArray['invoiceProducts'] as $product) {
+        
+
+                $description = [
+                    'registration_id' => null,
+                    'child_id' => $child->getChildId(),
+                    'child_name' => $child->getFullname(),
+                    'dates' => implode('|', [$dataArray['date']])
+                ];
+    
+    
+                $invoiceProduct = new InvoiceProduct();
+                $invoiceProduct->setInvoice($invoice);
+                $invoiceProduct->setNameFr($product['nameFr']);
+                $invoiceProduct->setDescriptionFr(serialize($description));
+                $invoiceProduct->setPriceTtc($product['priceTtc']);
+                $invoiceProduct->setQuantity($product['quantity']);  // check NB SESSION IN REGISTRATIONS
+                
+                $this->mainService->modify($invoiceProduct);
+                $this->mainService->persist($invoiceProduct);
+    
+    
+                foreach($product['invoiceComponents'] as $component) {
+    
+                    $invoiceComponent = new InvoiceComponent();
+                    $invoiceComponent->setInvoiceProduct($invoiceProduct);
+                    $invoiceComponent->setNameFr($component['nameFr']);
+                    $invoiceComponent->setVat($component['vat']);
+                    $invoiceComponent->setPriceHt($component['priceHt']);
+                    $invoiceComponent->setPriceVat($component['priceVat']);
+                    $invoiceComponent->setPriceTtc($component['priceTtc']);
+                    $invoiceComponent->setQuantity($component['quantity']);
+                    $invoiceComponent->setTotalHt($component['totalHt']);
+                   // $invoiceComponent->setTotalVat($component['totalVat']);
+                    $invoiceComponent->setTotalTtc($component['totalTtc']);
+    
+                    $this->mainService->modify($invoiceComponent);
+                    $this->mainService->persist($invoiceComponent);
+    
+                    $invoiceProduct->addInvoiceComponent($invoiceComponent);
+    
+                    $this->mainService->modify($invoiceProduct);
+                    $this->mainService->persist($invoiceProduct);
+    
+    
+                }
+    
+                $invoice->addInvoiceProduct($invoiceProduct);
+    
+                $this->mainService->modify($invoice);
+                $this->mainService->persist($invoice);
+    
+            }
+
+        }
+
+
+        if($status == "paid") $invoice = $this->updateInvoiceNumber($invoice);
+
+        return array(
+            'status' => true,
+            'message' => 'Facture ajoutée',
+            'invoice' => $this->toArray($invoice),
+        );
+
+
+    }
+
+
+    public function updateInvoiceNumber($invoice) {
+        $parameter = $this->em->getRepository('App:Parameter')->findOneBy(['name' => 'last_invoice_number']);
+
+        $newNumber = $parameter->getValue() + 1;
+
+        $invoice->setNumber($newNumber);
+        $parameter->setValue($newNumber);
+
+        $this->mainService->persist($invoice);
+
+        $this->mainService->persist($parameter);
+
+        return $invoice;
+    }
+
 
     /**
      * {@inheritdoc}

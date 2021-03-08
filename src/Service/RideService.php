@@ -196,7 +196,8 @@ class RideService implements RideServiceInterface
 
                 if($t_moment == $o_moment) $is_valid = 1;
 
-                if($is_valid) { 
+
+                if($is_valid && $t_pickup->getRegistration() != null && $o_pickup->getRegistration() != null) { 
                     
                     if($t_pickup->getRegistration()->getProduct() != $o_pickup->getRegistration()->getProduct()) {
                         $message['target_child_exists_but_different_product'][] =  $o_pickup->getChild()->getLastname().' '.$o_pickup->getChild()->getFirstname();

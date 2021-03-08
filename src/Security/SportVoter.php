@@ -130,6 +130,8 @@ class SportVoter extends Voter
         $roles = array(
             'ROLE_MANAGER',
             'ROLE_ADMIN',
+            'ROLE_ASSISTANT'
+
         );
 
         foreach ($roles as $role) {
@@ -150,6 +152,7 @@ class SportVoter extends Voter
         $roles = array(
             'ROLE_MANAGER',
             'ROLE_ADMIN',
+            'ROLE_ASSISTANT'
         );
 
         foreach ($roles as $role) {

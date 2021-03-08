@@ -98,6 +98,8 @@ class Staff
      */
     private $groupActivities;
 
+
+
     /**
      * @ORM\OneToMany(targetEntity="Child", mappedBy="staff")
      * @SWG\Property(ref=@Model(type=Child::class))
@@ -108,6 +110,7 @@ class Staff
     {
         $this->driverZones = new ArrayCollection();
         $this->groupActivities = new ArrayCollection();
+        $this->notificationLinks = new ArrayCollection();
         $this->childs = new ArrayCollection();
 
     }
@@ -339,6 +342,6 @@ class Staff
         }
 
         return $this;
-
     }
+
 }

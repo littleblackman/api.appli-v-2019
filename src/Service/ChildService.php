@@ -7,6 +7,8 @@ use App\Entity\ChildChildLink;
 use App\Entity\ChildPersonLink;
 use App\Entity\Person;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\NotificationService;
+
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
@@ -21,15 +23,19 @@ class ChildService implements ChildServiceInterface
 
     private $personService;
 
+    private $notificationService;
+
     public function __construct(
         EntityManagerInterface $em,
         MainServiceInterface $mainService,
-        PersonServiceInterface $personService
+        PersonServiceInterface $personService,
+        NotificationService $notificationService
     )
     {
         $this->em = $em;
         $this->mainService = $mainService;
         $this->personService = $personService;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -112,6 +118,14 @@ class ChildService implements ChildServiceInterface
 
         //Persists data
         $this->mainService->persist($object);
+
+      
+        $this->notificationService->create([
+            "target_role" => "ROLE_ADMIN",
+            "name"        => "Enfant",
+            "description" => "Création d'un nouvel enfant : ".$object->getFullname(),
+            "url"         => "/child/display/id/".$object->getChildId()."/"
+        ]);
 
         //Returns data
         return array(

@@ -93,8 +93,8 @@ class MailService implements MailServiceInterface
      */
     public function isEntityFilled(Mail $object)
     {
-        if (null === $object->getTitle() ||
-            null === $object->getContent()) {
+        if (null === $object->getSubjectFr() ||
+            null === $object->getContentFr()) {
             throw new UnprocessableEntityHttpException('Missing data for Mail -> ' . json_encode($object->toArray()));
         }
     }

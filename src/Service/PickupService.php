@@ -316,6 +316,17 @@ class PickupService implements PickupServiceInterface
         throw new UnprocessableEntityHttpException('Submitted data is not an array -> '.json_encode($data));
     }
 
+
+    public function listByRegistrationId(int $registrationId) {
+        $pickups = $this->em->getRepository('App:Pickup')->findByRegistrationId($registrationId);
+        if (!empty($pickups)) {
+            foreach ($pickups as $pickup) {
+                $arr[] = $this->toArray($pickup);
+            }
+        }
+        return ['pickups' => $arr];
+    }
+
     /**
      * {@inheritdoc}
      */
