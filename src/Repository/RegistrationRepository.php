@@ -37,7 +37,7 @@ class RegistrationRepository extends EntityRepository
         ->where('r.status = :cart')
         ->andWhere('r.suppressed = 0')
         ->orderBy('r.registration', 'DESC')
-        ->setParameter('cart', 'en attente')
+        ->setParameter('cart', 'waiting')
         ->getQuery()
         ->getResult();
     ;
