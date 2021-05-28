@@ -52,7 +52,7 @@ class CascadeService
     public function cascadeFromInvoice($invoice) {
 
         // retrieve registrations from invoice
-        if(!$registrations = $this->em->getRepository('App:Registration')->findByInvoice($invoice, 'paid')) return ['no registration'];
+        if(!$registrations = $this->em->getRepository('App:Registration')->findByInvoice($invoice, 'payed')) return ['no registration'];
 
 
         foreach($registrations as $registration) {

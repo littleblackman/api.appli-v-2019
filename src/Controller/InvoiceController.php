@@ -226,7 +226,7 @@ class InvoiceController extends AbstractController
 
         $this->denyAccessUnlessGranted('invoiceList');
         $invoicesArray = array();
-        $invoicesArray = $this->invoiceService->findAll('paid', 1000, $dateStart, $dateEnd, $mode);
+        $invoicesArray = $this->invoiceService->findAll('payed', 1000, $dateStart, $dateEnd, $mode);
     
         return new JsonResponse($invoicesArray);
     }

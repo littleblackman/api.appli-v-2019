@@ -155,6 +155,10 @@ class AppFormFactory implements AppFormFactoryInterface
             case 'week-modify':
                 $form = WeekType::class;
                 break;
+            case 'historic-sms-create':
+            case 'historic-sms-modify':
+                    $form = HistoricSmsType::class;
+                    break;
             default:
                 $form = null;
                 break;

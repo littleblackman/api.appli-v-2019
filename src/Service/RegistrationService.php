@@ -105,10 +105,10 @@ class RegistrationService implements RegistrationServiceInterface
 
         $data = $dataArray2;
 
-        unset($data['freeAddress']);
-        unset($data['freePostal']);
-        unset($data['freeTown']);
-        unset($data['pickupDatePaiement']);
+        if(isset($data['freeAddress'])) unset($data['freeAddress']);
+        if(isset($data['freePostal'])) unset($data['freePostal']);
+        if(isset($data['freeTown'])) unset($data['freeTown']);
+        if(isset($data['pickupDatePaiement'])) unset($data['pickupDatePaiement']);
 
         //Submits data
         $object = new Registration();
@@ -142,48 +142,55 @@ class RegistrationService implements RegistrationServiceInterface
        
         if($object->getStatus() != "cart") {
             $message = $this->cascadeService->cascadeFromRegistration($object);
+        } else {
+            $message = "registration ".$object->getRegistrationId()." created in cart status";
         }
 
 
         /*** UPDATE FREE ADDRESS ON PICKUP */
 
         // update free address if exist
-        if($dataArray2['freeAddress'] != "" && $dataArray2['freePostal'] != ""  &&   $dataArray2['freeTown']) {
-            $pickups = $this->em->getRepository('App:Pickup')->findBy(['registration' => $object]);
-            if (!empty($pickups)) {
-                foreach ($pickups as $pickup) {
-                    $pickup->setAddress($dataArray2['freeAddress'].' - '.$dataArray2['freePostal'].' - '.$dataArray2['freeTown']);
-                    $pickup->setPostal($dataArray2['freePostal']);
-                    $this->pickupService->checkCoordinates($pickup);
-                    $this->mainService->persist($pickup);
+        if(isset($dataArray2['freeAddress'])) {
+            if($dataArray2['freeAddress'] != "" && $dataArray2['freePostal'] != ""  &&   $dataArray2['freeTown']) {
+                $pickups = $this->em->getRepository('App:Pickup')->findBy(['registration' => $object]);
+                if (!empty($pickups)) {
+                    foreach ($pickups as $pickup) {
+                        $pickup->setAddress($dataArray2['freeAddress'].' - '.$dataArray2['freePostal'].' - '.$dataArray2['freeTown']);
+                        $pickup->setPostal($dataArray2['freePostal']);
+                        $this->pickupService->checkCoordinates($pickup);
+                        $this->mainService->persist($pickup);
+                    }
                 }
             }
+    
         }
-
+       
 
         /*** UPDATE PAIEMENT  */
 
-        if($dataArray2['pickupDatePaiement'] != "") {
+        if(isset($dataArray2['pickupDatePaiement']))  {
+            if($dataArray2['pickupDatePaiement'] != "") {
 
-            $el = explode(',' , $dataArray2['pickupDatePaiement']);
+                $el = explode(',' , $dataArray2['pickupDatePaiement']);
 
-            if(!isset($el[1])) {
-                $arr = [$dataArray2['pickupDatePaiement']];
-            } else {
-                $arr = $el;
-            }
+                if(!isset($el[1])) {
+                    $arr = [$dataArray2['pickupDatePaiement']];
+                } else {
+                    $arr = $el;
+                }
 
-            foreach($arr as $a) {
-                $elements = explode('|', $a);
+                foreach($arr as $a) {
+                    $elements = explode('|', $a);
 
-                $price = $elements[0];
-                $date  = $elements[1];
-    
-                $pickups = $this->em->getRepository('App:Pickup')->findByRegistrationAndDate($date, $object->getRegistrationId());
-                foreach ($pickups as $pickup) {
-                    if($pickup->getKind() == "dropin") {
-                        $pickup->setPaymentDue($price);
-                        $this->mainService->persist($pickup);
+                    $price = $elements[0];
+                    $date  = $elements[1];
+        
+                    $pickups = $this->em->getRepository('App:Pickup')->findByRegistrationAndDate($date, $object->getRegistrationId());
+                    foreach ($pickups as $pickup) {
+                        if($pickup->getKind() == "dropin") {
+                            $pickup->setPaymentDue($price);
+                            $this->mainService->persist($pickup);
+                        }
                     }
                 }
             }
@@ -216,6 +223,17 @@ class RegistrationService implements RegistrationServiceInterface
             'message' => 'Inscription supprimée',
         );
     }
+
+
+    public function awaitingPayment($from = null, $to = null) {
+
+        if(!$registrations = $this->em->getRepository('App:Registration')->findAwaiting()) return ['message' => 'no regisrations founded'];
+        foreach($registrations as $registration) {
+            $result[] = $this->toArray($registration);
+        }
+        return $result;
+    }
+
 
     /**
      * Returns the list of all registrations related to status in the array format.
@@ -301,7 +319,7 @@ class RegistrationService implements RegistrationServiceInterface
         $this->mainService->modify($object);
         $this->mainService->persist($object);
           
-        if($firstStatus == "cart" && $object->getStatus() == "paid") {
+        if($firstStatus == "cart" && $object->getStatus() == "payed") {
 
             $arr[] = 'in';
             $message = $this->cascadeService->cascadeFromRegistration($object);
@@ -309,7 +327,6 @@ class RegistrationService implements RegistrationServiceInterface
             $arr[] = 'out';
 
         }
-return $message;
 
         //Returns data
         return array(
@@ -353,6 +370,8 @@ return $message;
                 $objectArray['person'] = $this->mainService->toArray($person->toArray());
             }
         }
+        
+      
 
         //Gets related product
         if (null !== $object->getProduct() && !$object->getProduct()->getSuppressed()) {

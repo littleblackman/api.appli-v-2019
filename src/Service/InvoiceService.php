@@ -153,8 +153,8 @@ class InvoiceService implements InvoiceServiceInterface
         (isset($dataArray['descriptionFr'])) ? $descriptionFr = $dataArray['descriptionFr'] : $descriptionFr = null;
         (isset($dataArray['descriptionEn'])) ? $descriptionEn = $dataArray['descriptionEn'] : $descriptionEn = null;
 
-        // set status to paid if no status
-        (isset($dataArray['status'])) ? $status = $dataArray['status'] : $status = "paid";
+        // set status to payed if no status
+        (isset($dataArray['status'])) ? $status = $dataArray['status'] : $status = "payed";
         (isset($dataArray['number'])) ? $number = $dataArray['number'] : $number = null;
                   
         $invoice = new Invoice();
@@ -244,7 +244,7 @@ class InvoiceService implements InvoiceServiceInterface
         }
 
 
-        if($status == "paid") $invoice = $this->updateInvoiceNumber($invoice);
+        if($status == "payed") $invoice = $this->updateInvoiceNumber($invoice);
 
         return array(
             'status' => true,
@@ -294,7 +294,7 @@ class InvoiceService implements InvoiceServiceInterface
      * Returns the list of all invoices in the array format
      * @return array
      */
-    public function findAll($status = "paid", $limit = 500, $dateStart = null, $dateEnd = null, $mode = 'all')
+    public function findAll($status = "payed", $limit = 500, $dateStart = null, $dateEnd = null, $mode = 'all')
     {
         if(!$dateStart) {
             $year = date('Y')-1;
@@ -451,7 +451,7 @@ class InvoiceService implements InvoiceServiceInterface
         $this->mainService->persist($object);
 
 
-        if($object->getStatus() == "paid" && $object->getStatus() != $firstStatus) {
+        if($object->getStatus() == "payed" && $object->getStatus() != $firstStatus) {
             $parameter = $this->em->getRepository('App:Parameter')->findOneBy(['name' => 'last_invoice_number']);
 
             $newNumber = $parameter->getValue() + 1;
@@ -476,7 +476,7 @@ class InvoiceService implements InvoiceServiceInterface
                     $product = $registration->getProduct();
 
                     if($product->getPersonalStatus() == "awaiting") {
-                        $product->setPersonalStatus('paid');
+                        $product->setPersonalStatus('payed');
                     }
 
                     $this->em->persist($product);

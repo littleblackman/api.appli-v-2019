@@ -36,7 +36,7 @@ class InvoiceRepository extends EntityRepository
         ;
     }
 
-    public function findByStatus($dateStart, $dateEnd, $status = "paid", $mode = "all") {
+    public function findByStatus($dateStart, $dateEnd, $status = "payed", $mode = "all") {
 
         $qb = $this->createQueryBuilder('i')
         ->where('i.date BETWEEN :dateStart AND :dateEnd')
@@ -68,7 +68,7 @@ class InvoiceRepository extends EntityRepository
         ->orderBy('i.date', 'DESC')
         ->setParameter('person', $person)
         ->setParameter('year', $year.'%')
-        ->setParameter('status', "paid")
+        ->setParameter('status', "payed")
         ->getQuery()
         ->getResult()
         ;

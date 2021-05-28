@@ -343,6 +343,7 @@ class PickupActivityController extends AbstractController
         return new JsonResponse($pickupActivityArray);
     }
 
+
 //CREATE
     /**
      * Creates a PickupActivity

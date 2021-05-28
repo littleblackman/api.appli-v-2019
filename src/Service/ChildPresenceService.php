@@ -315,12 +315,47 @@ class ChildPresenceService implements ChildPresenceServiceInterface
                 foreach ($childPresences as $childPresence) {
                     if($childPresence->getChild()) {
                         $child = $childPresence->getChild();
-                        ($childPresence->getRegistration()) ? $registrationId = $childPresence->getRegistration()->getRegistrationId() : $registrationId = "unknow";
+                        if($registration = $childPresence->getRegistration()) {
+                            $registrationId = $registration->getRegistrationId();
+                            $registrationStatus = $registration->getStatus();
+
+                            // product
+                            if($product = $registration->getProduct()) {
+                                $hasTransport = $product->getTransport();
+                            } else {
+                                $hasTransport = "unknown";
+                            }
+
+                        } else {
+                            $registrationId = "unknown";
+                            $hasTransport = "unknown";
+                            $registrationStatus = "unknown";
+
+                        }
                         if($childPresence->getLastDayOfWeek() != null) {
                             $lastDayOfWeek = $childPresence->getLastDayOfWeek()->format('Y-m-d');
                         } else {
                             $lastDayOfWeek = null;
                         }
+
+                        // pickup associated
+                        if($pickups = $this->em->getRepository('App:Pickup')->findByChildAndDate($child,$currentDate->format('Y-m-d') )) {
+                            $paymentDue = "unknown";
+                            $paymentDone = "unknown";
+
+                            foreach($pickups as $pickup) {
+                                if($pickup->getPaymentDue() > 0) {
+                                    $paymentDue = $pickup->getPaymentDue();
+                                    $paymentDone = $pickup->getPaymentDone();
+                                    
+                                }
+                            }
+                        } else {
+                            $paymentDue = "unknown";
+                            $paymentDone = "unknown";
+                        }
+
+
                         $childPresencesArray[] = [
                                                     'start' => $childPresence->getStart()->format('H:i:s'),
                                                     'end'   => $childPresence->getEnd()->format('H:i:s'),
@@ -330,8 +365,12 @@ class ChildPresenceService implements ChildPresenceServiceInterface
                                                     'lastname'  => $child->getLastname(),
                                                     'childPresenceId' => $childPresence->getChildPresenceId(),
                                                     'registrationid' => $registrationId,
-                                                    'lastDayOfWeek' => $lastDayOfWeek
-
+                                                    'lastDayOfWeek' => $lastDayOfWeek,
+                                                    'status'   => $childPresence->getStatus(),
+                                                    'hasTransport' => $hasTransport,
+                                                    'registrationStatus' => $registrationStatus,
+                                                    'paymentDue' => $paymentDue,
+                                                    'paymentDone' => $paymentDone
                         ];
                     } else {
                         $childPresencesArray[] = [

@@ -11,6 +11,7 @@ use App\Entity\StaffPresence;
 
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpCsFixer\Console\Output\NullOutput;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
@@ -71,7 +72,6 @@ class GroupActivityService implements GroupActivityServiceInterface
             $this->em->persist($groupActivityStaffLink);
         }
     }
-
     
     public function findByDateBetween($date, $from, $to) {
         $groups = $this->em->getRepository('App:GroupActivity')->findByDateBetween($date, $from, $to);
@@ -199,6 +199,141 @@ class GroupActivityService implements GroupActivityServiceInterface
         }
     }
 
+    public function duplicateGroup($source, $options = []) {
+
+
+        (isset($options['target_date'])) ? $target_date = $options['target_date'] : $target_date = $source->getDate();
+        ($source->getArea() == null) ? $area = "" : $area = $source->getArea();
+        (isset($options['start'])) ? $target_start = $options['start'] : $target_start = $source->getStart();
+        (isset($options['end'])) ? $target_end = $options['end'] : $target_end = $source->getEnd();
+        (isset($options['isLunch'])) ? $isLunch = $options['isLunch'] : $isLunch = $source->getLunch();
+
+        if($isLunch) {
+            $sport = $this->em->getRepository('App:Sport')->find(10); 
+        } else {
+            $sport = $source->getSport();
+        }
+
+        $group_t = new GroupActivity();
+        $group_t->setDate($target_date);
+        $group_t->setName($source->getName());
+        $group_t->setAge($source->getAge());
+        $group_t->setStart($target_start);
+        $group_t->setEnd($target_end);
+        $group_t->setLunch($isLunch);
+        $group_t->setComment($source->getComment());
+        $group_t->setLocation($source->getLocation());
+        $group_t->setArea($area);
+        $group_t->setSport($sport);
+        
+        $userId = 99;
+        $group_t->setCreatedAt(new DateTime());
+        $group_t->setCreatedBy($userId);
+        $group_t->setUpdatedAt(new DateTime());
+        $group_t->setUpdatedBy($userId);
+        $group_t->setSuppressed(0);
+
+        $this->em->persist($group_t);
+        $this->em->flush();
+
+
+        // copy staff
+        foreach($source->getStaff() as $link) {
+            $staff = $link->getStaff();
+
+            $linkStaffGroup = new GroupActivityStaffLink();
+            $linkStaffGroup->setGroupActivity($group_t);
+            $linkStaffGroup->setStaff($staff);
+
+            // persist link
+            $this->em->persist($linkStaffGroup);
+            $this->em->flush();
+
+            // persist group_t
+            $group_t->addStaff($linkStaffGroup, false);
+            $this->em->persist($group_t);
+            $this->em->flush();
+            
+        }
+
+            // copy staff
+        foreach($source->getPickupActivities() as $link) {
+            $activity = $link->getPickupActivity();
+
+
+            $activityStart = $activity->getStart()->format('Hi');
+            $activityEnd   = $activity->getEnd()->format('Hi');
+
+            $groupStart    = $group_t->getStart()->format('Hi');
+            $groupEnd      = $group_t->getEnd()->format('Hi');
+
+            // add activity to group_t
+            if($activityStart <= $groupStart  && $activityEnd >= $groupEnd) {
+
+
+                $conditions = [
+                                'child' => $activity->getChild(),
+                                'sport' => $sport,
+                                'date'  => $group_t->getDate()
+                ];
+
+                if($lunchActivity = $this->em->getRepository('App:PickupActivity')->findOneBy($conditions)) {
+
+                    $activity = $lunchActivity;
+
+                    $link = new PickupActivityGroupActivityLink();
+                    $link->setPickupActivity($activity);
+                    $link->setGroupActivity($group_t);
+
+                    // persist ling
+                    $this->em->persist($link);
+                    $this->em->flush();
+
+                    // persist group_t
+                    $group_t->addPickupActivity($link);
+                    $this->em->persist($group_t);
+                    $this->em->flush();
+                }
+                
+                  
+            }
+        }
+
+        return $group_t;
+    }
+
+
+    public function duplicateMoment($data) {
+        $data  = json_decode($data, true);
+        $startDate = new DateTime();
+        $el = explode(':', $data['targetMoment']);
+        $startDate->setTime(intval($el[0]), intval($el[1]));
+        $minEnd = intval($el[1]) + 45;
+        $hourEnd = intval($el[0]);
+        if($minEnd > 59) {
+            $minEnd = $minEnd - 60;
+            $hourEnd++;
+        }
+        $endDate = new DateTime();
+        $endDate->setTime($hourEnd, $minEnd);
+
+
+        if($data['lunch'] == 1) {
+            $isLunch = true;
+        } else {
+            $isLunch = false;
+        }
+
+
+        foreach(json_decode($data['groupsId']) as $group_id) {
+            $group = $this->em->getRepository('App:GroupActivity')->find($group_id);
+            $target = $this->duplicateGroup($group, ['start' => $startDate, 'end' => $endDate, 'isLunch' => $isLunch]);
+        } 
+
+        return [];
+
+    }
+
     public function duplicateRecursive($source, $target) {
 
         $debug = []; $message = '';
@@ -266,9 +401,6 @@ class GroupActivityService implements GroupActivityServiceInterface
              $group_t->setUpdatedAt(new DateTime());
              $group_t->setUpdatedBy($userId);
              $group_t->setSuppressed(0);
- 
-             $this->em->persist($group_t);
-             if($flush) $this->em->flush();
  
              $this->em->persist($group_t);
              if($flush) $this->em->flush();

@@ -541,7 +541,7 @@ class Product
         return $this->hourDropin;
     }
 
-    public function setHourDropin(DateTimeInterface $hourDropin): self
+    public function setHourDropin(?DateTimeInterface $hourDropin): self
     {
         $this->hourDropin = $hourDropin;
 
@@ -553,7 +553,7 @@ class Product
         return $this->hourDropoff;
     }
 
-    public function setHourDropoff(DateTimeInterface $hourDropoff): self
+    public function setHourDropoff(?DateTimeInterface $hourDropoff): self
     {
         $this->hourDropoff = $hourDropoff;
 

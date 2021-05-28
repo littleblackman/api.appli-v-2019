@@ -321,6 +321,22 @@ class ChildService implements ChildServiceInterface
             $objectArray['siblings'] = $siblings;
         }
 
+        // get latest sport done
+        if($latestRegistration = $this->em->getRepository('App:Registration')->findLatest($object)) {
+            if (null !== $latestRegistration->getSports()) {
+                $sports = array();
+                foreach ($latestRegistration->getSports() as $sport) {
+                    if (!$sport->getSport()->getSuppressed()) {
+                        $sports[] = $this->mainService->toArray($sport->getSport()->toArray());
+                    }
+                }
+                $objectArray['sports'] = $sports;
+            }
+            $objectArray['latestRegistrationId'] = $latestRegistration->getRegistrationId();
+
+        }
+
+
         return $objectArray;
     }
 

@@ -191,6 +191,45 @@ class GroupActivityController extends AbstractController
 
 
 
+// DUPLICATE
+    /**
+     * duplicate moment on same day to another hour
+     *
+     * @Route("/group-activity/duplicateMoment",
+     *    name="group",
+     *    methods={"HEAD", "POST"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         @SWG\Property(property="status", type="boolean"),
+     *         @SWG\Property(property="message", type="string"),
+     *         @SWG\Property(property="groupActivity", ref=@Model(type=GroupActivity::class)),
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Parameter(
+     *     name="data",
+     *     in="body",
+     *     description="Data for the groupActivity",
+     *     required=true,
+     *     @Model(type=GroupActivityType::class)
+     * )
+     * @SWG\Tag(name="GroupActivity")
+     */
+    public function duplicateMoment(Request $request)
+    {
+        $createdData = $this->groupActivityService->duplicateMoment($request->getContent());
+        return new JsonResponse($createdData);
+
+    }
+
+
+
 
 
     //LIST BY LUNCH AND DATE

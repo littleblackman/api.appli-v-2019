@@ -33,7 +33,7 @@ class RegistrationController extends AbstractController
      *
      * @Route("/registration/list/{status}",
      *    name="registration_list",
-     *    requirements={"status": "^(cart|in-progress|paid)$"},
+     *    requirements={"status": "^(cart|in-progress|payed)$"},
      *    defaults={"status": "null"},
      *    methods={"HEAD", "GET"})
      *
@@ -52,7 +52,7 @@ class RegistrationController extends AbstractController
      * @SWG\Parameter(
      *     name="status",
      *     in="path",
-     *     description="null|cart|in-progress|paid registrations",
+     *     description="null|cart|in-progress|payed registrations",
      *     type="string",
      *     default="null",
      * )
@@ -113,6 +113,38 @@ class RegistrationController extends AbstractController
         $registrationsArray = $this->registrationService->findAllByChild($childId, $from, $to);        
         return new JsonResponse($registrationsArray);
     }
+
+
+//LIST ALL AWAITING PAYMENT
+    /**
+     * Lists all the registrations excepting those with cart status
+     *
+     * @Route("/registration/awaiting-payment/",
+     *    name="registration_awaiting_payment",
+     *    methods={"HEAD", "GET"})
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Registration::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="Access denied",
+     * )
+     * @SWG\Tag(name="Registration")
+     */
+    public function awaitingPayment(Request $request)
+    {
+
+        $registrationsArray = $this->registrationService->awaitingPayment();
+        return new JsonResponse($registrationsArray);
+    }
+
+
 
 
 //LIST BY ALL EXCEPT CART STATUS
@@ -177,7 +209,7 @@ class RegistrationController extends AbstractController
      *    name="registration_list_person_status",
      *    requirements={
      *        "personId": "^([0-9]+)$",
-     *        "status": "^(cart|in-progress|paid)$"
+     *        "status": "^(cart|in-progress|payed)$"
      *    },
      *    defaults={"status": "null"},
      *    methods={"HEAD", "GET"})
@@ -204,7 +236,7 @@ class RegistrationController extends AbstractController
      * @SWG\Parameter(
      *     name="status",
      *     in="path",
-     *     description="null|cart|in-progress|paid registrations",
+     *     description="null|cart|in-progress|payed registrations",
      *     type="string",
      *     default="null",
      * )
@@ -425,4 +457,7 @@ class RegistrationController extends AbstractController
 
         return new JsonResponse($suppressedData);
     }
+
+
+
 }

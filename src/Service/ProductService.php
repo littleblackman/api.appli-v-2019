@@ -165,10 +165,24 @@ class ProductService implements ProductServiceInterface
     {
         //Should be done from RideType but it returns null...
         if (array_key_exists('hourDropin', $data)) {
-            $object->setHourDropin(DateTime::createFromFormat('H:i:s', $data['hourDropin']));
+
+            if( $data['hourDropin'] == "") {
+                $dateToAdd = null;
+            } else {
+                $dateToAdd = DateTime::createFromFormat('H:i:s', $data['hourDropin']);
+            }
+
+            $object->setHourDropin($dateToAdd);
         }
         if (array_key_exists('hourDropoff', $data)) {
-            $object->setHourDropoff(DateTime::createFromFormat('H:i:s', $data['hourDropoff']));
+
+            if( $data['hourDropoff'] == "") {
+                $dateToAdd = null;
+            } else {
+                $dateToAdd = DateTime::createFromFormat('H:i:s', $data['hourDropoff']);
+            } 
+
+            $object->setHourDropoff($dateToAdd);
         }
 
         //Converts to boolean
@@ -366,13 +380,26 @@ class ProductService implements ProductServiceInterface
 
         foreach($registrations as $registration) {
             $child = $registration->getChild();
+            $phones = [];
+            foreach($child->getPersons() as $link) {
+                $person = $link->getPerson();
+                foreach($person->getPhones() as $phoneLink) {
+                    if (!$phoneLink->getPhone()->getSuppressed()) {
+                        $phones[] = $this->mainService->toArray($phoneLink->getPhone()->toArray());
+                    }
+                }
+                $phones['persons'] = $phones;
+            }
+
             $arr[$child->getFullnameReverse()][] = [
                                                 'childId'         => $child->getChildId(),
-                                                'fullnameReverse' => $registration->getChild()->getFullnameReverse(),
+                                                'fullnameReverse' => $child->getFullnameReverse(),
                                                 'registrationId'  => $registration->getRegistrationId(),
                                                 'updatedAt'       => $registration->getUpdatedAt()->format('Y-m-d'),
                                                 'status'          => $registration->getStatus(),
-                                                'sessions'        => $registration->getSessions()
+                                                'sessions'        => $registration->getSessions(),
+                                                'phones'          => $phones,
+                                                'personal'        => $child->getPhone()
             ];
         }
 

@@ -32,7 +32,7 @@ class NotificationService implements NotificationServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function create($dataSend)
+    public function create(string $dataSend)
     {
 
         $data = is_array($dataSend) ? $dataSend : json_decode($dataSend, true);

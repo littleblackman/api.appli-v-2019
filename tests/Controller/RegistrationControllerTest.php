@@ -65,7 +65,7 @@ class RegistrationControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{"status": "paid"}'
+            '{"status": "payed"}'
         );
         $response = $this->clientAuthenticated->getResponse();
         $this->assertJsonResponse($response, 200);
@@ -85,7 +85,7 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertArrayHasKey('registrationId', $first);
 
         //Tests list with status
-        $this->clientAuthenticated->request('GET', '/registration/list/paid');
+        $this->clientAuthenticated->request('GET', '/registration/list/payed');
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
         $this->assertInternalType('array', $content);
@@ -93,7 +93,7 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertArrayHasKey('registrationId', $first);
 
         //Tests list with personId and status
-        $this->clientAuthenticated->request('GET', '/registration/list/1/paid');
+        $this->clientAuthenticated->request('GET', '/registration/list/1/payed');
         $response = $this->clientAuthenticated->getResponse();
         $content = $this->assertJsonResponse($response, 200);
         $this->assertInternalType('array', $content);

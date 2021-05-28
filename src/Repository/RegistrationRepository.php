@@ -32,6 +32,33 @@ class RegistrationRepository extends EntityRepository
         ;
     }
 
+    public function findAwaiting() {
+        return $this->createQueryBuilder('r')
+        ->where('r.status = :cart')
+        ->andWhere('r.suppressed = 0')
+        ->orderBy('r.registration', 'DESC')
+        ->setParameter('cart', 'en attente')
+        ->getQuery()
+        ->getResult();
+    ;
+    }
+
+    public function findLatest($child, $hasSport = true) {
+        $qb = $this->createQueryBuilder('r')
+        ->innerJoin('r.sports', 'link')
+        ->where('r.child = :child')
+        ->orderBy('r.updatedAt', 'DESC')
+        ->andWhere('r.suppressed = 0')
+        ->andWhere('r.status <> :cart')
+        ->setParameter('child', $child)
+        ->setParameter('cart', "cart")
+        ->setMaxResults(1)
+       ;
+        return $qb->getQuery()->getOneOrNullResult()
+        ;
+    }
+
+
     /**
      * Returns all the registrations related to person and status in an array
      */
@@ -79,7 +106,7 @@ class RegistrationRepository extends EntityRepository
 
         if($status) {   
             $qb->andWhere('r.status = :status')
-            ->setParameter('status', 'paid');
+            ->setParameter('status', 'payed');
         };
 
         return $qb->getQuery()->getResult();
